@@ -6,6 +6,7 @@ import PublicInvite from './pages/PublicInvite'
 import NewDesign from './pages/NewDesign'
 import Design2 from './pages/Design2'
 import Design3 from './pages/Design3'
+import Design4 from './pages/Design4'
 
 export default function App() {
   return (
@@ -17,6 +18,7 @@ export default function App() {
       <Route path="/newDesign" element={<NewDesign />} />
       <Route path="/design2" element={<Design2 />} />
       <Route path="/design3" element={<Design3 />} />
+      <Route path="/design4" element={<Design4 />} />
     </Routes>
   )
 }
