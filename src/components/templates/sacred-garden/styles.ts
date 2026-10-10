@@ -1,0 +1,15 @@
+export const SG = {
+  bg: '#0a2e1a',
+  bgLight: '#0f3d24',
+  bgCard: '#0d3520',
+  gold: '#c9a84c',
+  goldLight: '#d4b86a',
+  goldDim: 'rgba(201, 168, 76, 0.3)',
+  cream: '#f5f0e8',
+  creamMuted: 'rgba(245, 240, 232, 0.7)',
+  rose: '#c45c6a',
+  roseSoft: '#d4848e',
+  fontScript: "'Great Vibes', cursive",
+  fontSerif: "'Playfair Display', serif",
+  fontBody: "'Lora', serif",
+};
