@@ -109,3 +109,48 @@
  .mohad-rahma .mr-event .mr-nikah-label{margin-top:10px}
  .mohad-rahma .mr-event .mr-actions{margin-top:12px;flex-direction:row;gap:4px 14px}
 }
+
+/* Keep floral borders through the introduction; clear them only behind the cards. */
+.mohad-rahma .mr-celebrations{
+ position:relative;
+ isolation:isolate;
+ max-width:none;
+ width:100%;
+ padding-inline:0;
+ padding-bottom:0;
+ background:none;
+}
+.mohad-rahma .mr-celebration-heading{padding-inline:15%}
+.mohad-rahma .mr-celebration-body{
+ position:relative;
+ isolation:isolate;
+ display:flow-root;
+ padding:0 4% 40px;
+}
+.mohad-rahma .mr-celebration-body::before{
+ content:"";
+ position:absolute;
+ z-index:-1;
+ inset:0;
+ pointer-events:none;
+ background:#e4d5b8 url('/images/royal-grace/general.jpg') center top / 155% auto repeat-y;
+ -webkit-mask-image:linear-gradient(to bottom,transparent,#000 40px);
+ mask-image:linear-gradient(to bottom,transparent,#000 40px);
+}
+@media(max-width:600px){
+ .mohad-rahma .mr-celebrations{padding-inline:0}
+ .mohad-rahma .mr-events{width:100%;max-width:470px}
+}
+
+/* Restart the floral border immediately after the plain celebrations area. */
+.mohad-rahma .mr-celebrations + .mr-gallery{
+ width:100%;
+ max-width:none;
+ padding-inline:15%;
+ background:url('/images/royal-grace/general.jpg') center top / 100% auto repeat-y;
+}
+.mohad-rahma .mr-celebrations + .mr-gallery>h2,
+.mohad-rahma .mr-celebrations + .mr-gallery>p{
+ max-width:492px;
+ margin-inline:auto;
+}

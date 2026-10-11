@@ -95,6 +95,7 @@ export default function MohadRahma() {
       <section className="rg-section"><Divider /><p className="rg-eyebrow">Counting down to Nikah & Wedding</p><h2 className="rg-script">Until our forever</h2><Countdown /><Divider /></section>
       <section className="rg-section mr-celebrations" aria-labelledby="mr-celebrations-title">
         <div className="mr-celebration-heading"><CelebrationBotanical className="mr-heading-flower"/><p className="rg-eyebrow">Together, in celebration</p><h2 id="mr-celebrations-title" className="rg-script">Moments that<br/>become memories</h2><p className="mr-intro">Five gatherings. One beautiful beginning.</p><Divider /><p className="mr-year">December 2026 <span>✧</span> All times in IST</p></div>
+        <div className="mr-celebration-body">
         <div className="mr-events">{events.map(event => <article className={`mr-event ${event.id === 'nikah' ? 'mr-main-event' : ''}`} key={event.id} aria-labelledby={`mr-title-${event.id}`}>
           <img className="mr-stationery-art" src={`${ASSETS}${event.id === 'nikah' ? 'sage-stationery-unframed.png' : 'ivory-stationery-unframed.png'}`} alt="" aria-hidden="true" loading="lazy"/><div className="mr-stationery-heading">M <span>&</span> R</div>
           <div className="mr-event-heading">
@@ -108,6 +109,7 @@ export default function MohadRahma() {
           <div className="mr-actions"><a className="mr-directions" href={event.map} target="_blank" rel="noreferrer" aria-label={`Directions to ${event.venue}`}>Directions <span>↗</span></a><a className="mr-calendar" href={`${SOURCE}/events/${event.id}/calendar`} target="_blank" rel="noreferrer" aria-label={`Add ${event.title} to calendar`}>Save the date <span>+</span></a></div>
         </article>)}</div>
         <div className="mr-celebration-close"><span aria-hidden="true">♡</span><p className="rg-script">Every celebration is sweeter with you.</p></div>
+        </div>
       </section>
       <section className="rg-section mr-gallery"><Divider /><p className="rg-eyebrow">Captured with love</p><h2 className="rg-script">Every moment, held close.</h2><p>Visit the gallery as the celebration unfolds and relive the memories with us.</p><a className="rg-button" href={`${SOURCE}/gallery`} target="_blank" rel="noreferrer">Explore the gallery ↗</a><Divider /></section>
       <footer className="rg-ending"><p className="rg-eyebrow">Made with love for our family and friends</p><h2 className="rg-script">Forever & ever</h2><Divider /><span className="rg-script">Mohad & Rahma</span><p className="rg-eyebrow">20 · 12 · 26</p></footer>
