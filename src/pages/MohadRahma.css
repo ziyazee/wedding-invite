@@ -154,3 +154,39 @@
  max-width:492px;
  margin-inline:auto;
 }
+
+/* Keep the still visible until the opening video has a rendered frame. */
+.mohad-rahma .mr-opening-poster{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;pointer-events:none;opacity:1;transition:opacity .18s ease}
+.mohad-rahma .mr-opening-poster-hidden{opacity:0}
+.mohad-rahma .rg-open{-webkit-tap-highlight-color:transparent}
+@media(min-width:1000px){.mohad-rahma .mr-opening-poster{object-fit:contain;background:#cfc2ab}}
+@media(prefers-reduced-motion:reduce){.mohad-rahma .mr-opening-poster{transition:none}}
+
+/* A compact invitation composition, contained within the botanical paper. */
+.mohad-rahma .mr-events{gap:28px}
+.mohad-rahma .mr-event,
+.mohad-rahma .mr-event.mr-main-event{display:block;padding:0;min-height:0;filter:none}
+.mr-event-paper{position:relative;isolation:isolate;display:flex;flex-direction:column;justify-content:center;box-sizing:border-box;min-height:640px;padding:104px 19% 126px;filter:drop-shadow(0 6px 7px #514b301a)}
+.mohad-rahma .mr-event h3{font-size:36px;line-height:1.18;overflow-wrap:normal;text-wrap:balance}
+.mr-event-date{display:flex;align-items:center;justify-content:center;gap:13px;margin-top:22px;color:#9b8550;line-height:1}
+.mr-event-date>strong{font-size:48px;font-weight:400}
+.mr-event-date>span{font-size:18px;text-align:left;line-height:1.25;border-left:1px solid currentColor;padding-left:13px}
+.mr-event-date small{display:block;font-size:13px;letter-spacing:2px;margin-top:3px}
+.mohad-rahma .mr-main-event .mr-event-date{color:#fff5d9}
+.mohad-rahma .mr-event .mr-weekday{margin:12px 0 0;font-size:10px;letter-spacing:1.2px}
+.mohad-rahma .mr-event .mr-time{font-size:20px;margin-top:3px}
+.mohad-rahma .mr-event .mr-venue-row{margin-top:20px}
+.mohad-rahma .mr-event h4{font-size:23px;line-height:1.25;overflow-wrap:normal;text-wrap:balance}
+.mohad-rahma .mr-event .mr-address{font-size:15px;line-height:1.4;margin-top:5px;overflow-wrap:normal;text-wrap:balance}
+.mohad-rahma .mr-event .mr-actions{margin:16px auto 0;width:100%;flex-direction:column;gap:0}
+.mohad-rahma .mr-event .mr-actions>a{min-height:36px;font-size:14px;white-space:nowrap}
+.mohad-rahma .mr-event .mr-actions .mr-calendar{font-size:12px;min-height:32px}
+@media(max-width:600px){
+ .mr-event-paper{min-height:550px;padding:82px 19% 101px}
+ .mohad-rahma .mr-event h3{font-size:31px}
+ .mr-event-date{margin-top:18px}
+ .mr-event-date>strong{font-size:42px}
+ .mr-event-date>span{font-size:17px}
+ .mohad-rahma .mr-event h4{font-size:22px}
+ .mohad-rahma .mr-event .mr-venue-row{margin-top:16px}
+}

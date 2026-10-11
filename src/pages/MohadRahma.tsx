@@ -3,6 +3,7 @@ import './Design2.css'
 import './MohadRahma.css'
 import HeartDateReveal from './HeartDateReveal'
 import FlowerTrail from './FlowerTrail'
+import InvitationLayoutEditor from './InvitationLayoutEditor'
 
 const ASSETS = '/images/royal-grace/'
 const eventDate = new Date('2026-12-20T11:00:00+05:30')
@@ -37,6 +38,7 @@ export default function MohadRahma() {
   const [opened, setOpened] = useState(false)
   const [namesVisible, setNamesVisible] = useState(false)
   const [videoFailed, setVideoFailed] = useState(false)
+  const [videoFrameReady, setVideoFrameReady] = useState(false)
 
   useEffect(() => {
     const previousTitle = document.title
@@ -63,8 +65,16 @@ export default function MohadRahma() {
   return <main className="royal-grace mohad-rahma">
     <FlowerTrail />
     <audio ref={audio} src="/bisara.mp3" loop preload="auto" />
-    <section className={`rg-hero ${namesVisible ? 'rg-is-open' : ''}`} style={!opened ? { backgroundImage: `url('${ASSETS}opening-poster.jpg')` } : undefined} aria-label="Wedding invitation">
-      {!videoFailed && <video ref={video} src={`${ASSETS}opening.mp4`} poster={`${ASSETS}opening-poster.jpg`} muted playsInline preload="auto" onError={() => { setVideoFailed(true); if (opened) setNamesVisible(true) }} onEnded={() => setNamesVisible(true)} />}
+    <section className={`rg-hero ${namesVisible ? 'rg-is-open' : ''}`} style={!namesVisible ? { backgroundImage: `url('${ASSETS}opening-poster.jpg')` } : undefined} aria-label="Wedding invitation">
+      {!videoFailed && <video ref={video} src={`${ASSETS}opening.mp4`} poster={`${ASSETS}opening-poster.jpg`} muted playsInline preload="auto" onPlaying={event => {
+        const player = event.currentTarget
+        if (typeof player.requestVideoFrameCallback === 'function') {
+          player.requestVideoFrameCallback(() => setVideoFrameReady(true))
+        } else {
+          requestAnimationFrame(() => requestAnimationFrame(() => setVideoFrameReady(true)))
+        }
+      }} onError={() => { setVideoFailed(true); if (opened) setNamesVisible(true) }} onEnded={() => setNamesVisible(true)} />}
+      <img className={`mr-opening-poster ${videoFrameReady || namesVisible ? 'mr-opening-poster-hidden' : ''}`} src={`${ASSETS}opening-poster.jpg`} alt="" aria-hidden="true" fetchPriority="high" />
       <div className="rg-hero-shade" />
       {!opened && <button className="rg-open" onClick={openInvitation} aria-label="Open your invitation" />}
       <div className="rg-names" aria-hidden={!namesVisible}>
@@ -96,18 +106,19 @@ export default function MohadRahma() {
       <section className="rg-section mr-celebrations" aria-labelledby="mr-celebrations-title">
         <div className="mr-celebration-heading"><CelebrationBotanical className="mr-heading-flower"/><p className="rg-eyebrow">Together, in celebration</p><h2 id="mr-celebrations-title" className="rg-script">Moments that<br/>become memories</h2><p className="mr-intro">Five gatherings. One beautiful beginning.</p><Divider /><p className="mr-year">December 2026 <span>✧</span> All times in IST</p></div>
         <div className="mr-celebration-body">
-        <div className="mr-events">{events.map(event => <article className={`mr-event ${event.id === 'nikah' ? 'mr-main-event' : ''}`} key={event.id} aria-labelledby={`mr-title-${event.id}`}>
-          <img className="mr-stationery-art" src={`${ASSETS}${event.id === 'nikah' ? 'sage-stationery-unframed.png' : 'ivory-stationery-unframed.png'}`} alt="" aria-hidden="true" loading="lazy"/><div className="mr-stationery-heading">M <span>&</span> R</div>
+        <InvitationLayoutEditor><div className="mr-events">{events.map(event => <article className={`mr-event ${event.id === 'nikah' ? 'mr-main-event' : ''}`} key={event.id} aria-labelledby={`mr-title-${event.id}`}>
+          <div className="mr-event-paper">
+          <img className="mr-stationery-art" src={`${ASSETS}${event.id === 'nikah' ? 'sage-stationery-unframed.png' : 'ivory-stationery-unframed.png'}`} alt="" aria-hidden="true" loading="lazy"/>
           <div className="mr-event-heading">
-            <div className="mr-title-column"><h3 id={`mr-title-${event.id}`} className="rg-script">{event.title.split(' — ')[0]}</h3></div>
-            <p className="mr-weekday">{event.date.split(',')[0]}</p>
-            <time dateTime={event.iso} className="mr-date-column"><span>DEC</span><strong>{event.iso.slice(8,10)}</strong><small>2026</small></time>
-            <p className="mr-time">{event.time}<span>IST</span></p>
+            <div className="mr-title-column"><h3 data-layout-id={`${event.id}:title`} id={`mr-title-${event.id}`} className="rg-script">{event.title.split(' — ')[0]}</h3></div>
+            <time data-layout-id={`${event.id}:date`} dateTime={event.iso} className="mr-event-date"><strong>{event.iso.slice(8,10)}</strong><span>December<small>2026</small></span></time>
+            <p data-layout-id={`${event.id}:weekday`} className="mr-weekday">{event.date.split(',')[0]}</p>
+            <p data-layout-id={`${event.id}:time`} className="mr-time">{event.time}<span>IST</span></p>
           </div>
-          <div className="mr-venue-row"><h4>{event.venue}</h4><p className="mr-address">{event.address}</p></div>
-          {event.id === 'nikah' && <p className="mr-nikah-label">Two hearts. One beautiful beginning.</p>}
-          <div className="mr-actions"><a className="mr-directions" href={event.map} target="_blank" rel="noreferrer" aria-label={`Directions to ${event.venue}`}>Directions <span>↗</span></a><a className="mr-calendar" href={`${SOURCE}/events/${event.id}/calendar`} target="_blank" rel="noreferrer" aria-label={`Add ${event.title} to calendar`}>Save the date <span>+</span></a></div>
-        </article>)}</div>
+          <div className="mr-venue-row"><h4 data-layout-id={`${event.id}:venue`}>{event.venue}</h4><p data-layout-id={`${event.id}:address`} className="mr-address">{event.address}</p></div>
+          <div className="mr-actions"><a data-layout-id={`${event.id}:directions`} className="mr-directions" href={event.map} target="_blank" rel="noreferrer" aria-label={`Directions to ${event.venue}`}>Directions <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true" style={{ flexShrink: 0 }}><path d="M6 18 18 6M6 6h12v12" /></svg></a><a data-layout-id={`${event.id}:calendar`} className="mr-calendar" href={`${SOURCE}/events/${event.id}/calendar`} target="_blank" rel="noreferrer" aria-label={`Add ${event.title} to calendar`}>Save the date <span>+</span></a></div>
+          </div>
+        </article>)}</div></InvitationLayoutEditor>
         <div className="mr-celebration-close"><span aria-hidden="true">♡</span><p className="rg-script">Every celebration is sweeter with you.</p></div>
         </div>
       </section>
