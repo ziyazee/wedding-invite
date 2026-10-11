@@ -18,7 +18,7 @@ const events = [
 function Divider() { return <div className="rg-divider" aria-hidden="true"><span />✧<span /></div> }
 
 function CelebrationBotanical({ className = '' }: { className?: string }) {
-  return <svg className={className} viewBox="0 0 160 230" fill="none" aria-hidden="true"><g stroke="currentColor" strokeWidth="1"><path d="M18 221C94 157 54 84 143 13M62 163 22 117M76 133l57-35M92 84 60 40M65 159l64 28"/>{[[37,198,-35],[54,177,40],[64,148,-40],[72,121,38],[84,96,-28],[102,66,35],[121,37,-25],[43,143,-36],[104,116,48],[101,178,62]].map(([x,y,r],i)=><path key={i} transform={`translate(${x} ${y}) rotate(${r})`} d="M0 0Q-24-16-12-37Q7-26 0 0ZM0 0-12-32" fill="currentColor" fillOpacity={i%2?'.16':'.27'}/>)}</g>{[[140,16],[59,40],[21,117],[134,96],[129,187]].map(([x,y],i)=><g key={i} transform={`translate(${x} ${y})`}>{[0,72,144,216,288].map(r=><ellipse key={r} cx="0" cy="-7" rx="4.5" ry="8" transform={`rotate(${r})`} fill="var(--mr-petal, #f9f1d9)" stroke="currentColor" strokeWidth=".5"/>)}<circle r="2.6" fill="#b7a374"/></g>)}</svg>
+  return <img className={className} src={`${ASSETS}celebration-roses.png`} alt="" aria-hidden="true" loading="lazy" />
 }
 
 function Countdown() {
@@ -82,23 +82,30 @@ export default function MohadRahma() {
     </section>
 
     {opened && <div className="rg-paper" id="rg-welcome">
-      <section className="rg-section rg-welcome"><p className="rg-eyebrow">Together with their families</p><Divider /><h2 className="rg-script">Our wedding celebration</h2><p>We cannot wait to celebrate this chapter with the people who mean the most to us.</p><Divider /><span className="rg-signature rg-script">Mohad & Rahma</span><p className="rg-eyebrow">Our wedding day · Sunday, December 20</p></section>
-      <section className="rg-section"><p className="rg-eyebrow">Save the moments</p><h2 className="rg-script">Save our date</h2><HeartDateReveal date="20 December 2026" day="Sunday" time="11:00 in the morning" /></section>
+      <section className="rg-section rg-welcome">
+        <p className="rg-eyebrow">An invitation from the heart</p>
+        <Divider />
+        <h2 className="rg-script">Two souls. One beautiful journey.</h2>
+        <p>With the blessings of Allah and the love of our families, we invite you to celebrate the beginning of our forever.</p>
+        <p>Your presence, your prayers, and your love will make our day complete.</p>
+        <Divider />
+        <span className="rg-signature rg-script">Mohad &amp; Rahma</span>
+      </section>
+      <section className="rg-section"><h2 className="rg-script">Save our date</h2><HeartDateReveal date="20 December 2026" day="Sunday" time="11:00 in the morning" /></section>
       <section className="rg-section"><Divider /><p className="rg-eyebrow">Counting down to Nikah & Wedding</p><h2 className="rg-script">Until our forever</h2><Countdown /><Divider /></section>
       <section className="rg-section mr-celebrations" aria-labelledby="mr-celebrations-title">
         <div className="mr-celebration-heading"><CelebrationBotanical className="mr-heading-flower"/><p className="rg-eyebrow">Together, in celebration</p><h2 id="mr-celebrations-title" className="rg-script">Moments that<br/>become memories</h2><p className="mr-intro">Five gatherings. One beautiful beginning.</p><Divider /><p className="mr-year">December 2026 <span>✧</span> All times in IST</p></div>
-        <div className="mr-events">{events.map((event, index) => <article className={`mr-event ${event.id === 'nikah' ? 'mr-main-event' : ''}`} key={event.id} aria-labelledby={`mr-title-${event.id}`}>
-          <div className="mr-date-seal" aria-hidden="true"><span>DEC</span><strong>{event.iso.slice(8,10)}</strong><span>2026</span></div>
-          <div className="mr-event-paper"><CelebrationBotanical className="mr-card-flower mr-card-flower-left"/><CelebrationBotanical className="mr-card-flower mr-card-flower-right"/>
-            <div className="mr-event-content"><p className="mr-day">{event.date.split(',')[0]} <span>·</span> {event.time}</p>
-            {event.id === 'nikah' && <p className="mr-nikah-label">The heart of our celebration</p>}
-            <h3 id={`mr-title-${event.id}`} className="rg-script">{event.title.split(' — ')[0]}</h3>
-            <time className="mr-full-date" dateTime={event.iso}>{event.date}, 2026 · {event.time}</time>
-            <div className="mr-ornament" aria-hidden="true"><span/>❧<span/></div>
-            <h4>{event.venue}</h4><p className="mr-address">{event.address}</p>
-            <div className="mr-actions"><a className="mr-directions" href={event.map} target="_blank" rel="noreferrer" aria-label={`Directions to ${event.venue}`}><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.3" aria-hidden="true"><path d="M20 10c0 6-8 12-8 12S4 16 4 10a8 8 0 1 1 16 0Z"/><circle cx="12" cy="10" r="2.5"/></svg>Find your way <span>↗</span></a><a className="mr-calendar" href={`${SOURCE}/events/${event.id}/calendar`} target="_blank" rel="noreferrer" aria-label={`Add ${event.title} to calendar`}>Save the date <span>+</span></a></div>
-            <span className="mr-chapter" aria-hidden="true">{String(index + 1).padStart(2, '0')} <i>of</i> 05</span></div>
+        <div className="mr-events">{events.map(event => <article className={`mr-event ${event.id === 'nikah' ? 'mr-main-event' : ''}`} key={event.id} aria-labelledby={`mr-title-${event.id}`}>
+          <img className="mr-stationery-art" src={`${ASSETS}${event.id === 'nikah' ? 'sage-stationery-unframed.png' : 'ivory-stationery-unframed.png'}`} alt="" aria-hidden="true" loading="lazy"/><div className="mr-stationery-heading">M <span>&</span> R</div>
+          <div className="mr-event-heading">
+            <div className="mr-title-column"><h3 id={`mr-title-${event.id}`} className="rg-script">{event.title.split(' — ')[0]}</h3></div>
+            <p className="mr-weekday">{event.date.split(',')[0]}</p>
+            <time dateTime={event.iso} className="mr-date-column"><span>DEC</span><strong>{event.iso.slice(8,10)}</strong><small>2026</small></time>
+            <p className="mr-time">{event.time}<span>IST</span></p>
           </div>
+          <div className="mr-venue-row"><h4>{event.venue}</h4><p className="mr-address">{event.address}</p></div>
+          {event.id === 'nikah' && <p className="mr-nikah-label">Two hearts. One beautiful beginning.</p>}
+          <div className="mr-actions"><a className="mr-directions" href={event.map} target="_blank" rel="noreferrer" aria-label={`Directions to ${event.venue}`}>Directions <span>↗</span></a><a className="mr-calendar" href={`${SOURCE}/events/${event.id}/calendar`} target="_blank" rel="noreferrer" aria-label={`Add ${event.title} to calendar`}>Save the date <span>+</span></a></div>
         </article>)}</div>
         <div className="mr-celebration-close"><span aria-hidden="true">♡</span><p className="rg-script">Every celebration is sweeter with you.</p></div>
       </section>

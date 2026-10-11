@@ -1,9 +1,96 @@
-/* Floral stationery for the five celebrations, scoped to the personalised invitation. */
-.mohad-rahma .mr-celebrations{max-width:760px;padding:42px 55px 65px;position:relative}.mr-celebration-heading{position:relative;text-align:center;padding-top:115px}.mr-heading-flower{position:absolute;width:110px;height:155px;left:50%;top:-20px;transform:translateX(-50%) rotate(35deg);color:#7e8b62}.mohad-rahma .mr-celebration-heading h2{font-size:51px;line-height:1.15;margin:16px 0 20px}.mohad-rahma .mr-intro{font-size:16px;font-style:italic;color:#76805f;margin:0}.mr-celebration-heading .rg-divider{margin:24px auto 17px}.mohad-rahma .mr-year{font-size:10px;letter-spacing:.13em;margin:0;text-transform:uppercase}.mr-year>span{margin:0 12px;color:#a29265}.mr-events{position:relative;display:flex;flex-direction:column;align-items:center;gap:84px;margin:78px auto 0;padding-bottom:18px}.mr-events:before{content:'';position:absolute;top:0;bottom:-28px;left:50%;width:1px;background:linear-gradient(#a09c6e70,#7d8c5f90,#a09c6e70);pointer-events:none}.mr-event{position:relative;width:89%;isolation:isolate}.mr-event:nth-child(even){align-self:flex-end}.mr-event:nth-child(odd){align-self:flex-start}.mr-event-paper{position:relative;background:linear-gradient(125deg,#fff9e9f0,#eee8d5f5 75%,#e4dfc8);border:1px solid #a8aa805e;border-radius:6px 6px 42px 6px;box-shadow:0 12px 28px #48523c10,4px 5px 0 -1px #e5dfca,4px 5px 0 0 #a8aa8040;overflow:hidden;padding:69px 38px 26px;text-align:center}.mr-event-paper:before{content:'';position:absolute;inset:10px;border:1px solid #a2a77d45;border-radius:2px 2px 32px 2px;pointer-events:none}.mr-event-paper:after{content:'';position:absolute;top:18px;left:18px;right:18px;bottom:18px;border-top:1px solid #a2a77d25;border-bottom:1px solid #a2a77d25;pointer-events:none}.mr-event-content{position:relative;z-index:1}.mr-date-seal{position:absolute;top:-37px;left:50%;transform:translateX(-50%);width:79px;height:79px;border-radius:50%;background:#e5e7d6;outline:1px solid #aaa67b;outline-offset:5px;border:1px solid #a5aa81;display:flex;flex-direction:column;align-items:center;justify-content:center;color:#596845;z-index:3;box-shadow:0 6px 12px #3b443218}.mr-date-seal span{font-size:7px;letter-spacing:.2em;line-height:1.4;font-family:Arial,sans-serif}.mr-date-seal strong{font-size:34px;font-weight:400;line-height:1.12;font-family:'Cormorant Garamond',Georgia,serif}.mohad-rahma .mr-day{font-size:10px;letter-spacing:.16em;text-transform:uppercase;color:#7b8564;line-height:1.7;margin:0 0 13px}.mr-day>span{padding:0 7px;color:#b3a273}.mohad-rahma .mr-event h3{font-size:42px;line-height:1.15;font-weight:400;margin:12px 0 16px;text-wrap:balance}.mr-full-date{position:absolute;width:1px;height:1px;padding:0;margin:-1px;overflow:hidden;clip-path:inset(50%);white-space:nowrap;border:0}.mr-ornament{display:flex;align-items:center;justify-content:center;gap:12px;color:#a39768;font-size:26px;line-height:1.3;margin:15px auto 18px}.mr-ornament>span{height:1px;width:40px;background:linear-gradient(90deg,transparent,#a3976870)}.mr-ornament>span:last-child{transform:rotate(180deg)}.mr-event h4{font-size:23px;font-weight:500;line-height:1.4;margin:0 auto;max-width:290px;color:#536343}.mohad-rahma .mr-address{font-size:15px;color:#859072;margin:7px 0 0;line-height:1.6}.mr-card-flower{position:absolute;width:128px;height:184px;color:#819165;opacity:.65;pointer-events:none;z-index:0}.mr-card-flower-left{left:-54px;top:85px;transform:rotate(10deg)}.mr-card-flower-right{right:-43px;bottom:18px;transform:scaleX(-1) rotate(12deg);opacity:.5}.mr-actions{display:flex;flex-direction:column;align-items:center;gap:13px;margin-top:25px}.mr-directions{display:inline-flex;gap:10px;align-items:center;justify-content:center;min-height:43px;color:#f8f2e0;background:#647452;border:1px solid #647452;padding:10px 20px;text-decoration:none;font-size:13px;border-radius:24px;box-shadow:inset 0 0 0 3px #f6f0da15;transition:background .2s,transform .2s}.mr-directions svg{width:14px;height:16px}.mr-directions>span{margin-left:9px}.mr-directions:hover{background:#445a3b;transform:translateY(-2px)}.mr-calendar{color:#7a8665;text-decoration:none;font-size:11px;letter-spacing:.04em;padding:4px 0;border-bottom:1px solid #9b9e7860;line-height:1.4}.mr-calendar span{margin-left:14px}.mr-calendar:hover{color:#3d5635;border-color:currentColor}.mr-chapter{display:block;font-size:8px;letter-spacing:.2em;color:#a4a88d;margin-top:23px}.mr-chapter i{font-size:10px;letter-spacing:0;margin:0 6px}.mr-main-event{width:100%;align-self:center!important;margin-top:8px}.mr-main-event .mr-event-paper{padding-top:82px;background:radial-gradient(ellipse at top,#75835f,#4c5e40 75%);border:1px solid #b7af806b;border-radius:46% 46% 8px 8px / 22% 22% 8px 8px;box-shadow:0 16px 35px #35452f2a;min-height:410px;color:#fcf3dd}.mr-main-event .mr-event-paper:before{border-color:#d5c59265;border-radius:46% 46% 3px 3px / 22% 22% 3px 3px}.mr-main-event .mr-event-paper:after{display:none}.mr-main-event .mr-date-seal{background:#e9dec0;border-color:#b9a777;outline-color:#b9a777;color:#616b46}.mohad-rahma .mr-main-event .mr-day{color:#e2dfc4}.mohad-rahma .mr-nikah-label{font-size:8px;letter-spacing:.17em;text-transform:uppercase;color:#cfc39c;margin:13px 0 0}.mohad-rahma .mr-main-event h3{font-size:51px;color:#fff4d9;margin-top:11px}.mr-main-event h4{color:#f0e9cc;font-size:26px}.mohad-rahma .mr-main-event .mr-address{color:#ccd1b5}.mr-main-event .mr-ornament{color:#d2c396}.mr-main-event .mr-ornament>span{background:linear-gradient(90deg,transparent,#d2c39680)}.mr-main-event .mr-card-flower{color:#d9dfba;opacity:.4;--mr-petal:#ecdfbf}.mr-main-event .mr-directions{background:#eee4c8;color:#4b5a3a;border-color:#eee4c8;box-shadow:inset 0 0 0 3px #6d7a5020}.mr-main-event .mr-directions:hover{background:#fff4da}.mr-main-event .mr-calendar{color:#dbe0c4;border-color:#bdc6a260}.mr-main-event .mr-chapter{color:#b5c09d}.mr-celebration-close{position:relative;text-align:center;margin:44px 0 0}.mr-celebration-close>span{color:#849269;font-size:23px;background:#e8e3cf;display:inline-grid;place-items:center;width:45px;height:45px;border-radius:50%;border:1px solid #a8ad8955}.mohad-rahma .mr-celebration-close p{font-size:27px;line-height:1.4;margin:20px auto 0;max-width:320px;color:#697a52}.mr-gallery .rg-button{margin-bottom:15px}
-@media(max-width:600px){.mohad-rahma .mr-celebrations{padding:30px 8% 45px}.mr-celebration-heading{padding-top:105px}.mr-heading-flower{width:95px;height:140px;top:-15px}.mohad-rahma .mr-celebration-heading h2{font-size:40px;line-height:1.2}.mohad-rahma .mr-intro{font-size:14px}.mohad-rahma .mr-year{font-size:8px;letter-spacing:.09em}.mr-year>span{margin:0 7px}.mr-events{gap:79px;margin-top:68px}.mr-event{width:96%}.mr-event-paper{padding:61px 21px 24px;border-radius:5px 5px 32px 5px}.mr-event-paper:before{inset:8px;border-radius:2px 2px 25px 2px}.mr-date-seal{width:68px;height:68px;top:-32px;outline-offset:4px}.mr-date-seal strong{font-size:30px}.mr-date-seal span{font-size:6px}.mohad-rahma .mr-day{font-size:8px;letter-spacing:.12em}.mr-day>span{padding:0 5px}.mohad-rahma .mr-event h3{font-size:34px;margin:12px 0 15px}.mr-event h4{font-size:22px;max-width:220px}.mohad-rahma .mr-address{font-size:14px}.mr-card-flower{width:100px;height:154px}.mr-card-flower-left{left:-49px;top:84px}.mr-card-flower-right{right:-40px;bottom:22px}.mr-ornament{font-size:23px;margin:13px auto 17px}.mr-ornament>span{width:28px}.mr-directions{font-size:12px;padding:9px 18px}.mr-calendar{font-size:11px;padding:6px 0}.mr-actions{gap:10px;margin-top:23px}.mr-main-event{width:100%}.mr-main-event .mr-event-paper{padding:70px 23px 26px;min-height:0;border-radius:46% 46% 7px 7px / 18% 18% 7px 7px}.mr-main-event .mr-event-paper:before{border-radius:46% 46% 3px 3px / 18% 18% 3px 3px}.mohad-rahma .mr-main-event h3{font-size:42px}.mohad-rahma .mr-nikah-label{font-size:7px;letter-spacing:.12em}.mr-main-event h4{font-size:23px}.mr-chapter{margin-top:20px}.mohad-rahma .mr-celebration-close p{font-size:25px;max-width:260px}}
-@media(prefers-reduced-motion:reduce){.mr-directions{transition:none}.mr-directions:hover{transform:none}}
+/* Floral itinerary and event typography. */
+.mohad-rahma .mr-celebrations{max-width:720px;padding:40px 65px 55px}.mr-celebration-heading{position:relative;padding-top:110px;text-align:center}.mr-heading-flower{position:absolute;top:-20px;left:50%;width:105px;height:150px;transform:translateX(-50%) rotate(35deg);color:#81845e}.mohad-rahma .mr-celebration-heading h2{font-size:49px;line-height:1.18;margin:16px 0 20px}.mohad-rahma .mr-intro{font-size:16px;font-style:italic;color:#778062;margin:0}.mr-celebration-heading .rg-divider{margin:23px auto 17px}.mohad-rahma .mr-year{font-size:10px;letter-spacing:.12em;text-transform:uppercase;margin:0}.mr-year>span{margin:0 12px;color:#9e905e}.mr-events{width:86%;max-width:450px;margin:32px auto 0;display:flex;flex-direction:column;gap:12px}.mr-event{text-align:center;padding:20px 0 30px;color:#626948}.mr-event-flourish{display:flex;align-items:center;justify-content:center;gap:13px;font-size:32px;color:#9c976a;margin:0 auto 24px;line-height:1}.mr-event-flourish>span{height:1px;width:55px;background:linear-gradient(90deg,transparent,#a29d7080)}.mr-event-flourish>span:last-child{rotate:180deg}.mr-event-heading{display:flex;flex-direction:column;align-items:center}.mr-date-column{display:flex;align-items:center;justify-content:center;gap:14px;margin-bottom:20px}.mr-date-column>span,.mr-date-column>small{font-size:9px;letter-spacing:2px;color:#95844f;width:43px}.mr-date-column>span{text-align:right}.mr-date-column>small{text-align:left}.mr-date-column strong{font-size:44px;line-height:1;font-weight:400;color:#827443;font-style:italic}.mohad-rahma .mr-weekday{margin:0 0 10px;line-height:1.5;font-size:9px;letter-spacing:2px;text-transform:uppercase;color:#858267}.mohad-rahma .mr-event h3{font-size:45px;font-weight:400;line-height:1.13;margin:0;color:#596a45;text-wrap:balance}.mohad-rahma .mr-time{font-size:19px;margin:16px 0 0;line-height:1.4;color:#7b744d}.mr-time>span{font-size:8px;letter-spacing:1px;margin-left:7px;color:#9a926e}.mr-venue-row{margin-top:24px}.mr-event h4{font-size:25px;font-weight:500;line-height:1.35;margin:0;color:#66734f}.mohad-rahma .mr-address{font-size:17px;line-height:1.6;color:#858869;margin:5px 0 0}.mr-actions{margin-top:24px;display:flex;align-items:center;justify-content:center;gap:24px;flex-wrap:wrap}.mr-actions>a{display:inline-flex;align-items:center;justify-content:center;gap:12px;text-decoration:none;padding:7px 0;font-size:13px;color:#717349;border-bottom:1px solid #9c9f7070;transition:color .2s;min-height:36px}.mr-actions>a:hover{color:#3e5732;border-color:#596c43}.mr-actions>a>span{font-size:17px;color:#9b8f60}.mr-main-event{padding-top:28px;padding-bottom:35px}.mr-main-event .mr-date-column strong{font-size:57px;color:#64754c}.mohad-rahma .mr-main-event h3{font-size:57px;color:#4f653b}.mr-main-event .mr-event-flourish{color:#7e8d5c;font-size:38px;margin-bottom:30px}.mohad-rahma .mr-nikah-label{font-size:18px;font-style:italic;margin:19px 0 0;color:#7b8662;line-height:1.6}.mr-celebration-close{text-align:center;margin-top:28px}.mr-celebration-close>span{color:#87916d;font-size:27px}.mohad-rahma .mr-celebration-close p{font-size:27px;line-height:1.4;max-width:310px;margin:15px auto 0;color:#6d7956}.mr-gallery .rg-button{margin-bottom:15px}
+@media(max-width:600px){.mohad-rahma .mr-celebrations{padding:30px 12% 40px}.mr-celebration-heading{padding-top:100px}.mr-heading-flower{width:95px;height:140px;top:-15px}.mohad-rahma .mr-celebration-heading h2{font-size:38px}.mohad-rahma .mr-intro{font-size:14px}.mohad-rahma .mr-year{font-size:8px;letter-spacing:.04em}.mr-year>span{margin:0 5px}.mr-events{width:92%;gap:10px;margin-top:24px}.mr-event{padding:20px 0 25px}.mr-event-flourish{font-size:27px;gap:10px;margin-bottom:22px}.mr-event-flourish>span{width:42px}.mr-date-column{gap:11px;margin-bottom:18px}.mr-date-column strong{font-size:39px}.mr-date-column>span,.mr-date-column>small{font-size:8px;letter-spacing:1.3px;width:37px}.mohad-rahma .mr-weekday{font-size:8px;letter-spacing:1.5px;margin-bottom:10px}.mohad-rahma .mr-event h3{font-size:37px;line-height:1.15}.mohad-rahma .mr-time{font-size:17px;margin-top:14px}.mr-time>span{font-size:7px}.mr-venue-row{margin-top:22px}.mr-event h4{font-size:23px}.mohad-rahma .mr-address{font-size:15px}.mr-actions{margin-top:20px;gap:20px}.mr-actions>a{font-size:12px;gap:9px}.mr-main-event .mr-date-column strong{font-size:47px}.mohad-rahma .mr-main-event h3{font-size:46px}.mohad-rahma .mr-nikah-label{font-size:16px;margin-top:16px}.mr-main-event .mr-event-flourish{font-size:32px;margin-bottom:25px}.mohad-rahma .mr-celebration-close p{font-size:25px;max-width:270px}}
+@media(prefers-reduced-motion:reduce){.mr-actions>a{transition:none}}
 
-/* Keep every celebration card clear of the invitation's floral borders. */
-.mohad-rahma .mr-events{width:86%;margin-inline:auto}
-.mohad-rahma .mr-event,.mohad-rahma .mr-main-event{width:100%;align-self:center}
-@media(max-width:600px){.mohad-rahma .mr-events{width:88%}.mohad-rahma .mr-event-paper{padding-inline:18px}.mohad-rahma .mr-main-event .mr-event-paper{padding-inline:19px}}
+
+/* Bespoke embossed stationery: the frame is artwork, the content remains accessible HTML. */
+.mohad-rahma .mr-events{max-width:470px;width:91%;gap:38px;margin-top:40px}
+.mohad-rahma .mr-event{position:relative;isolation:isolate;padding:100px 18% 95px;min-height:680px;display:flex;flex-direction:column;justify-content:center;background:none;border:0;border-radius:0;box-shadow:none;filter:drop-shadow(0 8px 8px #514b3020)}
+.mr-stationery-art{position:absolute;inset:0;width:100%;height:100%;z-index:-1;pointer-events:none;object-fit:fill;mask-image:url('/images/royal-grace/stationery-silhouette.svg');mask-size:100% 100%;mask-repeat:no-repeat;-webkit-mask-image:url('/images/royal-grace/stationery-silhouette.svg');-webkit-mask-size:100% 100%;-webkit-mask-repeat:no-repeat}
+.mr-stationery-heading{font-family:'Dancing Script',cursive;font-size:23px;letter-spacing:4px;color:#a18a50;line-height:1;margin-bottom:23px}.mr-stationery-heading>span{font-size:14px;letter-spacing:0;margin:0 4px}
+.mr-event-heading{flex-direction:column-reverse}
+.mohad-rahma .mr-weekday{font-size:9px;letter-spacing:2px;color:#8e805b;margin-bottom:15px}
+.mohad-rahma .mr-event h3{font-size:40px;line-height:1.13;color:#6f704c;margin:0 -5px;text-wrap:balance}
+.mohad-rahma .mr-time{font-size:16px;color:#968051;margin-top:18px}
+.mr-date-column{margin:23px 0 0;gap:13px;padding-block:12px;border-block:1px solid #b7a56e55}
+.mr-date-column strong{font-size:43px!important;color:#9b8550!important;font-style:normal;line-height:1}
+.mr-date-column>span,.mr-date-column>small{font-size:8px;letter-spacing:1.5px;color:#9a8d68}
+.mr-venue-row{margin-top:23px}.mr-event h4{font-size:24px;line-height:1.3;color:#77734f}
+.mohad-rahma .mr-address{font-size:15px;color:#928762;margin-top:7px}
+.mr-actions{gap:7px;margin-top:22px;flex-direction:column}
+.mr-actions>a{font-size:12px;color:#8f7b45;border-color:#bba67180;min-height:30px;padding:5px 0}.mr-actions>a>span{font-size:14px;color:#a58e51}
+.mr-actions .mr-calendar{font-size:10px;border:0;opacity:.9}
+.mohad-rahma .mr-nikah-label{color:#99865b;font-size:15px;margin:16px -3px 0;line-height:1.4}
+.mohad-rahma .mr-main-event{min-height:710px}.mohad-rahma .mr-main-event h3{font-size:46px}
+@media(max-width:600px){
+.mohad-rahma .mr-celebrations{padding-inline:9%}
+.mohad-rahma .mr-events{width:95%;gap:28px}
+.mohad-rahma .mr-event{padding:78px 17% 78px;min-height:550px}
+.mr-stationery-heading{font-size:19px;margin-bottom:18px;letter-spacing:3px}
+.mohad-rahma .mr-weekday{font-size:8px;letter-spacing:1.2px;margin-bottom:13px}
+.mohad-rahma .mr-event h3{font-size:31px;line-height:1.14;margin-inline:-5px}
+.mohad-rahma .mr-time{font-size:14px;margin-top:14px}
+.mr-date-column{gap:10px;margin-top:18px;padding-block:10px}
+.mr-date-column strong{font-size:36px!important}.mr-date-column>span,.mr-date-column>small{font-size:7px;width:35px;letter-spacing:1px}
+.mr-venue-row{margin-top:19px}.mr-event h4{font-size:21px}.mohad-rahma .mr-address{font-size:13px;margin-top:5px}
+.mr-actions{margin-top:18px;gap:5px}.mr-actions>a{font-size:11px;min-height:29px;gap:12px}
+.mr-actions .mr-calendar{font-size:10px}
+.mohad-rahma .mr-main-event{min-height:590px}.mohad-rahma .mr-main-event h3{font-size:37px}.mohad-rahma .mr-nikah-label{font-size:13px}
+}
+
+/* Subdued ivory paper keeps the floral relief while blending with the backdrop. */
+.mohad-rahma .mr-event:not(.mr-main-event) .mr-stationery-art{filter:brightness(.94) saturate(.9)}
+
+/* Unframed sage botanical paper with ivory flowers and pearl relief. */
+.mohad-rahma .mr-main-event .mr-stationery-art{filter:none}
+.mohad-rahma .mr-main-event h3,
+.mohad-rahma .mr-main-event h4{color:#fff5d9}
+.mohad-rahma .mr-main-event .mr-stationery-heading,
+.mohad-rahma .mr-main-event .mr-weekday,
+.mohad-rahma .mr-main-event .mr-time,
+.mohad-rahma .mr-main-event .mr-time>span,
+.mohad-rahma .mr-main-event .mr-date-column>span,
+.mohad-rahma .mr-main-event .mr-date-column>small,
+.mohad-rahma .mr-main-event .mr-address,
+.mohad-rahma .mr-main-event .mr-nikah-label,
+.mohad-rahma .mr-main-event .mr-actions>a,
+.mohad-rahma .mr-main-event .mr-actions>a>span{color:#eee0b8}
+.mohad-rahma .mr-main-event .mr-date-column strong{color:#fff5d9!important}
+.mohad-rahma .mr-main-event .mr-date-column,
+.mohad-rahma .mr-main-event .mr-actions>a{border-color:#e0cf9670}
+.mohad-rahma .mr-main-event .mr-actions>a:hover{color:#fffaf0;border-color:#fff5d9}
+
+/* Keep the existing typefaces and palette; contain and group the details. */
+.mohad-rahma .mr-event{box-sizing:border-box}
+.mohad-rahma .mr-event-heading{flex-direction:column;width:100%;min-width:0}
+.mohad-rahma .mr-title-column,
+.mohad-rahma .mr-venue-row,
+.mohad-rahma .mr-actions{width:100%;min-width:0;max-width:100%}
+.mohad-rahma .mr-event h3{font-size:36px;line-height:1.22;margin:0;max-width:100%;overflow-wrap:anywhere;text-wrap:balance}
+.mohad-rahma .mr-event .mr-weekday{font-size:11px;line-height:1.5;letter-spacing:1.3px;margin:20px 0 0}
+.mohad-rahma .mr-event .mr-date-column{max-width:100%;box-sizing:border-box;gap:10px;margin:9px 0 0;padding:10px 0}
+.mohad-rahma .mr-event .mr-date-column strong{font-size:38px!important}
+.mohad-rahma .mr-event .mr-date-column>span,
+.mohad-rahma .mr-event .mr-date-column>small{font-size:11px;letter-spacing:1px;width:auto}
+.mohad-rahma .mr-event .mr-time{font-size:20px;line-height:1.4;margin:10px 0 0;white-space:nowrap}
+.mohad-rahma .mr-event .mr-time>span{font-size:10px}
+.mohad-rahma .mr-event .mr-venue-row{margin-top:22px}
+.mohad-rahma .mr-event h4{font-size:23px;line-height:1.35;overflow-wrap:anywhere;text-wrap:balance}
+.mohad-rahma .mr-event .mr-address{font-size:16px;line-height:1.5;margin-top:6px;overflow-wrap:anywhere;text-wrap:balance}
+.mohad-rahma .mr-event .mr-nikah-label{margin:16px 0 0;font-size:14px;line-height:1.5;text-wrap:balance}
+.mohad-rahma .mr-event .mr-actions{margin-top:20px;gap:4px}
+.mohad-rahma .mr-event .mr-actions>a{font-size:14px;max-width:100%;min-height:40px;box-sizing:border-box}
+.mohad-rahma .mr-event .mr-actions .mr-calendar{font-size:12px}
+@media(max-width:600px){
+ .mohad-rahma .mr-event h3{font-size:30px}
+ .mohad-rahma .mr-event h4{font-size:21px}
+ .mohad-rahma .mr-event .mr-date-column strong{font-size:34px!important}
+ .mohad-rahma .mr-event .mr-address{font-size:15px}
+ .mohad-rahma .mr-event .mr-time{font-size:19px}
+}
+
+/* Dimensional ivory roses share the invitation's botanical palette. */
+.mohad-rahma .mr-celebration-heading{padding-top:0}
+.mohad-rahma .mr-heading-flower{position:relative;display:block;inset:auto;width:230px;max-width:100%;height:auto;margin:0 auto 24px;transform:none;filter:none;object-fit:contain}
+@media(max-width:600px){.mohad-rahma .mr-heading-flower{width:205px;margin-bottom:20px}}
