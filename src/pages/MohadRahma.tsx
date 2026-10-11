@@ -46,6 +46,39 @@ export default function MohadRahma() {
     return () => { clearTimeout(timer.current); document.title = previousTitle }
   }, [])
 
+  useEffect(() => {
+    if (!opened || !('IntersectionObserver' in window)) return
+    if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) return
+    if (new URLSearchParams(window.location.search).get('edit') === '1') return
+    const paper = document.getElementById('rg-welcome')
+    if (!paper) return
+    const elements = paper.querySelectorAll<HTMLElement>([
+      '.rg-section > h2', '.rg-section > p', '.rg-signature',
+      '.rg-countdown', '.mr-celebration-heading > h2',
+      '.mr-celebration-heading > p', '[data-layout-id]',
+      '.mr-celebration-close > p', '.mr-gallery > a', '.rg-ending > *',
+    ].join(','))
+    const observer = new IntersectionObserver(entries => {
+      entries.forEach(entry => {
+        if (!entry.isIntersecting) return
+        entry.target.classList.add('mr-scroll-visible')
+        observer.unobserve(entry.target)
+      })
+    }, { threshold: 0.12, rootMargin: '0px 0px -20px 0px' })
+    elements.forEach((element, index) => {
+      element.style.setProperty('--mr-reveal-delay', `${(index % 3) * 60}ms`)
+      element.classList.add('mr-scroll-reveal')
+      observer.observe(element)
+    })
+    return () => {
+      observer.disconnect()
+      elements.forEach(element => {
+        element.classList.remove('mr-scroll-reveal', 'mr-scroll-visible')
+        element.style.removeProperty('--mr-reveal-delay')
+      })
+    }
+  }, [opened])
+
   function playMusic() {
     const player = audio.current
     if (!player) return

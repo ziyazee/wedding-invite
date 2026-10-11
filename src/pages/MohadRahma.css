@@ -190,3 +190,11 @@
  .mohad-rahma .mr-event h4{font-size:22px}
  .mohad-rahma .mr-event .mr-venue-row{margin-top:16px}
 }
+
+/* Fade once as text enters view, without changing saved layout transforms. */
+.mohad-rahma .mr-scroll-reveal{opacity:0;transition:opacity .85s ease var(--mr-reveal-delay,0ms)}
+.mohad-rahma .mr-scroll-reveal.mr-scroll-visible{opacity:1}
+.mohad-rahma .mr-scroll-reveal:focus-within{opacity:1;transition:none}
+@media(prefers-reduced-motion:reduce){
+ .mohad-rahma .mr-scroll-reveal{opacity:1;transition:none}
+}
