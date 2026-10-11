@@ -14,7 +14,7 @@ const particles = Array.from({ length: 90 }, (_, i) => ({
   borderRadius: i % 3 ? '2px' : '50%',
 }) as CSSProperties)
 
-export default function HeartDateReveal() {
+export default function HeartDateReveal({ date = '27 September 2026', day = 'Sunday', time = '5:00 in the evening' }: { date?: string; day?: string; time?: string }) {
   const id = `heart-${useId().replace(/:/g, '')}`
   const canvas = useRef<HTMLCanvasElement>(null)
   const previous = useRef<{ x: number; y: number } | null>(null)
@@ -89,7 +89,7 @@ export default function HeartDateReveal() {
     <svg width="0" height="0" aria-hidden="true" style={{ position: 'absolute' }}><defs><clipPath id={id} clipPathUnits="objectBoundingBox"><path d={HEART} transform="scale(.01)" /></clipPath></defs></svg>
     <div className="rg-heart-card">
       <div className="rg-heart-inner" style={{ clipPath: `url(#${id})` }}>
-        <div className="rg-heart-date"><span className="rg-script">You’re invited!</span><strong>27 September 2026</strong><span>Sunday</span><small>5:00 in the evening</small></div>
+        <div className="rg-heart-date"><span className="rg-script">You’re invited!</span><strong>{date}</strong><span>{day}</span><small>{time}</small></div>
         <canvas ref={canvas} className="rg-heart-coating" aria-hidden="true"
           onPointerDown={e => { e.currentTarget.setPointerCapture(e.pointerId); previous.current = null; scratch(e) }}
           onPointerMove={scratch} onPointerUp={() => { previous.current = null }}
