@@ -99,7 +99,7 @@
 @media(max-width:600px){
  .mohad-rahma .mr-events{width:100%;gap:24px}
  .mohad-rahma .mr-event,
- .mohad-rahma .mr-main-event{min-height:580px;padding:76px 14% 80px}
+ .mohad-rahma .mr-main-event{min-height:550px;padding:64px 14% 68px}
  .mohad-rahma .mr-event .mr-stationery-heading{margin-bottom:18px}
  .mohad-rahma .mr-event .mr-weekday{margin-top:18px}
  .mohad-rahma .mr-event .mr-date-column{margin-top:8px;padding-block:9px}
