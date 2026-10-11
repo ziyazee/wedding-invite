@@ -95,19 +95,19 @@
 .mohad-rahma .mr-heading-flower{position:relative;display:block;inset:auto;width:230px;max-width:100%;height:auto;margin:0 auto 24px;transform:none;filter:none;object-fit:contain}
 @media(max-width:600px){.mohad-rahma .mr-heading-flower{width:205px;margin-bottom:20px}}
 
-/* Shorter mobile stationery without reducing the reading sizes. */
+/* Taller mobile stationery uses the space freed by removing side borders. */
 @media(max-width:600px){
  .mohad-rahma .mr-events{width:100%;gap:24px}
  .mohad-rahma .mr-event,
- .mohad-rahma .mr-main-event{min-height:0;padding:56px 14% 60px}
- .mohad-rahma .mr-event .mr-stationery-heading{margin-bottom:12px}
- .mohad-rahma .mr-event .mr-weekday{margin-top:12px}
- .mohad-rahma .mr-event .mr-date-column{margin-top:6px;padding-block:6px}
- .mohad-rahma .mr-event .mr-time{margin-top:7px}
- .mohad-rahma .mr-event .mr-venue-row{margin-top:14px}
+ .mohad-rahma .mr-main-event{min-height:580px;padding:76px 14% 80px}
+ .mohad-rahma .mr-event .mr-stationery-heading{margin-bottom:18px}
+ .mohad-rahma .mr-event .mr-weekday{margin-top:18px}
+ .mohad-rahma .mr-event .mr-date-column{margin-top:8px;padding-block:9px}
+ .mohad-rahma .mr-event .mr-time{margin-top:10px}
+ .mohad-rahma .mr-event .mr-venue-row{margin-top:22px}
  .mohad-rahma .mr-event .mr-address{margin-top:4px}
- .mohad-rahma .mr-event .mr-nikah-label{margin-top:10px}
- .mohad-rahma .mr-event .mr-actions{margin-top:12px;flex-direction:row;gap:4px 14px}
+ .mohad-rahma .mr-event .mr-nikah-label{margin-top:16px}
+ .mohad-rahma .mr-event .mr-actions{margin-top:20px;flex-direction:row;gap:4px 14px}
 }
 
 /* Keep floral borders through the introduction; clear them only behind the cards. */

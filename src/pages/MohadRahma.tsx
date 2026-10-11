@@ -63,8 +63,8 @@ export default function MohadRahma() {
   return <main className="royal-grace mohad-rahma">
     <FlowerTrail />
     <audio ref={audio} src="/bisara.mp3" loop preload="auto" />
-    <section className={`rg-hero ${namesVisible ? 'rg-is-open' : ''}`} aria-label="Wedding invitation">
-      {!videoFailed && <video ref={video} src={`${ASSETS}opening.mp4`} muted playsInline preload="auto" onError={() => { setVideoFailed(true); if (opened) setNamesVisible(true) }} onEnded={() => setNamesVisible(true)} />}
+    <section className={`rg-hero ${namesVisible ? 'rg-is-open' : ''}`} style={!opened ? { backgroundImage: `url('${ASSETS}opening-poster.jpg')` } : undefined} aria-label="Wedding invitation">
+      {!videoFailed && <video ref={video} src={`${ASSETS}opening.mp4`} poster={`${ASSETS}opening-poster.jpg`} muted playsInline preload="auto" onError={() => { setVideoFailed(true); if (opened) setNamesVisible(true) }} onEnded={() => setNamesVisible(true)} />}
       <div className="rg-hero-shade" />
       {!opened && <button className="rg-open" onClick={openInvitation} aria-label="Open your invitation" />}
       <div className="rg-names" aria-hidden={!namesVisible}>
