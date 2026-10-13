@@ -23,7 +23,7 @@ export const mapURL = (venue: string, address: string, url = '') => url || `http
 export function nameSlug(groom: string, bride: string) {
   return `${groom}${bride}`.normalize('NFKD').replace(/[\u0300-\u036f]/g, '').toLowerCase().replace(/[^a-z0-9]/g, '').slice(0, 80) || 'wedding'
 }
-export const reservedSlugs = new Set(['assets','images','fonts','dashboard','create','preview','invite','newdesign','mohadrahma','api',...designs.map(d => `design${d.id}`)])
+export const reservedSlugs = new Set(['assets','images','fonts','dashboard','create','preview','invite','newdesign','mohadrahma','api','arjunmeera','rohankavya','aarongrace','danielsarah','vikramananya',...designs.map(d => `design${d.id}`)])
 export function validateDetails(value: unknown, allowRetired = false): InvitationData {
   if (!value || typeof value !== 'object') throw new Error('Invitation details are required.')
   const d = value as InvitationData

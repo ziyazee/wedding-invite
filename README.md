@@ -167,3 +167,12 @@ Locally, Vite stores submissions as individual JSON files in `.invitation-data/a
 ### Design 10 — Yasmin · An Ivory Beginning
 
 Preview `/design10`. Uses the complete portrait `public/video2.mp4` as a tap-to-play opening, with a skip control, reduced-motion fallback and a final-frame still. Names remain editable HTML. Includes ivory-and-sage celebration stationery, directions, music, and scroll reveals. Available in the dashboard and personalized invitation renderer. The `/create` application flow remains Royal Grace.
+
+### Featured sample invitations
+
+Five source-backed invitation examples are available without API/database setup. Their names, dates, and venues are fictional demonstration content. Each page uses its selected design and includes ceremony details appropriate to the sample couple.
+
+- Hindu: `/arjunmeera` (Embroidered Garden), `/rohankavya` (Secret Garden), `/vikramananya` (Royal Grace).
+- Christian: `/aarongrace` (Majestic), `/danielsarah` (Bloom).
+
+Sample details are maintained in `src/invitations/showcase.ts`. These routes are reserved so invitation creation cannot overwrite them.

@@ -4,7 +4,9 @@ export default function Landing() {
   return (
     <div className="min-h-screen bg-gradient-to-br from-rose-50 via-amber-50 to-orange-50 flex flex-col">
       <header className="px-6 py-4 flex items-center justify-between max-w-6xl mx-auto w-full">
-        <h1 className="font-[Playfair_Display] text-2xl font-bold text-gray-900">InviteCraft</h1>
+        <Link to="/" aria-label="Shaadi Invites home" className="block h-24 w-52 overflow-hidden">
+          <img src="/logo.png" alt="Shaadi Invites" className="h-full w-full object-contain" />
+        </Link>
         <Link
           to="/dashboard"
           className="text-sm font-medium text-gray-700 hover:text-gray-900 transition-colors"
