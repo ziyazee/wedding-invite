@@ -1,9 +1,8 @@
-import { Route, Routes } from 'react-router-dom'
+import { Navigate, Route, Routes } from 'react-router-dom'
 import Landing from './pages/Landing'
 import Create from './pages/Create'
 import Preview from './pages/Preview'
 import PublicInvite from './pages/PublicInvite'
-import NewDesign from './pages/NewDesign'
 import Design2 from './pages/Design2'
 import Design3 from './pages/Design3'
 import Design4 from './pages/Design4'
@@ -11,16 +10,21 @@ import Design5 from './pages/Design5'
 import Design6 from './pages/Design6'
 import Design7 from './pages/Design7'
 import Design8 from './pages/Design8'
+import Design9 from './pages/Design9'
+import Design10 from './pages/Design10'
 import MohadRahma from './pages/MohadRahma'
+import Dashboard from './pages/Dashboard'
+import GeneratedInvitation from './pages/GeneratedInvitation'
 
 export default function App() {
   return (
     <Routes>
       <Route path="/" element={<Landing />} />
+      <Route path="/dashboard" element={<Dashboard />} />
       <Route path="/create" element={<Create />} />
       <Route path="/preview/:id" element={<Preview />} />
       <Route path="/invite/:slug" element={<PublicInvite />} />
-      <Route path="/newDesign" element={<NewDesign />} />
+      <Route path="/newDesign" element={<Navigate to="/dashboard" replace />} />
       <Route path="/design2" element={<Design2 />} />
       <Route path="/design3" element={<Design3 />} />
       <Route path="/design4" element={<Design4 />} />
@@ -28,7 +32,10 @@ export default function App() {
       <Route path="/design6" element={<Design6 />} />
       <Route path="/design7" element={<Design7 />} />
       <Route path="/design8" element={<Design8 />} />
+      <Route path="/design9" element={<Design9 />} />
+      <Route path="/design10" element={<Design10 />} />
       <Route path="/mohadrahma" element={<MohadRahma />} />
+      <Route path="/:slug" element={<GeneratedInvitation />} />
     </Routes>
   )
 }

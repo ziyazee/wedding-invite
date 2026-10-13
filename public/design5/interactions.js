@@ -1,18 +1,10 @@
 (() => {
   'use strict';
   document.documentElement.classList.add('js');
-  const opening = document.querySelector('#opening');
-  const video = opening.querySelector('video');
-  const openButton = document.querySelector('#open-invitation');
   const music = document.querySelector('#music-track');
   const musicButton = document.querySelector('#music');
   const reducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
-  let opened = false;
-  let revealTimer;
-  video.muted = true;
-  video.pause();
-  document.body.style.overflow = 'hidden';
-
+  musicButton.hidden = false;
   function updateMusic() {
     const playing = !music.paused;
     musicButton.setAttribute('aria-label', playing ? 'Mute music' : 'Play music');
@@ -26,35 +18,7 @@
     if (music.paused) music.play().catch(updateMusic);
     else music.pause();
   });
-  function revealNames() { opening.classList.add('revealed'); }
-  function finishVideo() {
-    clearTimeout(revealTimer);
-    video.pause();
-    video.poster = '/design5/assets/opened.jpg';
-    video.style.background = 'url(/design5/assets/opened.jpg) center / cover';
-    revealNames();
-  }
-  function openInvitation() {
-    if (opened) return;
-    opened = true;
-    opening.classList.add('opened');
-    document.body.style.overflow = '';
-    openButton.tabIndex = -1;
-    musicButton.hidden = false;
-    music.play().catch(updateMusic);
-    if (reducedMotion) {
-      video.removeAttribute('src');
-      video.load();
-      finishVideo();
-      return;
-    }
-    video.currentTime = 0;
-    video.play().catch(finishVideo);
-    revealTimer = window.setTimeout(revealNames, 4000);
-  }
-  opening.addEventListener('click', openInvitation);
-  video.addEventListener('ended', revealNames);
-  video.addEventListener('error', () => { if (opened) finishVideo(); });
+  updateMusic();
 
   const observer = new IntersectionObserver(entries => {
     for (const entry of entries) {

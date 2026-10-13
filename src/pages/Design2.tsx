@@ -1,4 +1,5 @@
-import { useEffect, useRef, useState } from 'react'
+import PersonalMusic from '../invitations/PersonalMusic'
+import { useEffect, useState } from 'react'
 import './Design2.css'
 import HeartDateReveal from './HeartDateReveal'
 import FlowerTrail from './FlowerTrail'
@@ -20,43 +21,22 @@ function Countdown() {
 }
 
 export default function Design2() {
-  const video = useRef<HTMLVideoElement>(null)
-  const audio = useRef<HTMLAudioElement>(null)
-  const timer = useRef<ReturnType<typeof setTimeout> | undefined>(undefined)
-  const [opened, setOpened] = useState(false)
-  const [namesVisible, setNamesVisible] = useState(false)
-  const [videoFailed, setVideoFailed] = useState(false)
+  const opened = true
+  const namesVisible = true
   const [saved, setSaved] = useState(false)
   const [saveError, setSaveError] = useState(false)
 
   useEffect(() => {
     const previousTitle = document.title
     document.title = 'Zohan & Rose — Royal Grace'
-    return () => { clearTimeout(timer.current); document.title = previousTitle }
+    return () => { document.title = previousTitle }
   }, [])
-
-  function playMusic() {
-    const player = audio.current
-    if (!player) return
-    player.volume = 0.4
-    void player.play().catch(() => {})
-  }
-
-  function openInvitation() {
-    setOpened(true)
-    playMusic()
-    if (videoFailed || window.matchMedia('(prefers-reduced-motion: reduce)').matches) { setNamesVisible(true); return }
-    video.current?.play().catch(() => { setVideoFailed(true); setNamesVisible(true) })
-    timer.current = setTimeout(() => setNamesVisible(true), 6000)
-  }
 
   return <main className="royal-grace">
     <FlowerTrail />
-    <audio ref={audio} src={`${ASSETS}music.mp3`} loop preload="auto" />
+    <PersonalMusic src={`${ASSETS}music.mp3`} />
     <section className={`rg-hero ${namesVisible ? 'rg-is-open' : ''}`} aria-label="Wedding invitation">
-      {!videoFailed && <video ref={video} src={`${ASSETS}opening.mp4`} muted playsInline preload="auto" onError={() => { setVideoFailed(true); if (opened) setNamesVisible(true) }} onEnded={() => setNamesVisible(true)} />}
       <div className="rg-hero-shade" />
-      {!opened && <button className="rg-open" onClick={openInvitation} aria-label="Open your invitation" />}
       <div className="rg-names" aria-hidden={!namesVisible}>
         <span className="rg-heart">♥</span><p className="rg-script">We’re getting married</p><Divider />
         <h1><span>Zohan</span><i>&</i><span>Rose</span></h1>

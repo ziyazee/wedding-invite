@@ -1,0 +1,8 @@
+name = "wedding-invite"
+pages_build_output_dir = "./dist"
+compatibility_date = "2026-10-11"
+
+[[d1_databases]]
+binding = "INVITATIONS_DB"
+database_name = "wedding-invitations"
+database_id = "REPLACE_WITH_YOUR_D1_DATABASE_ID"

@@ -6,7 +6,7 @@ export default function Landing() {
       <header className="px-6 py-4 flex items-center justify-between max-w-6xl mx-auto w-full">
         <h1 className="font-[Playfair_Display] text-2xl font-bold text-gray-900">InviteCraft</h1>
         <Link
-          to="/create"
+          to="/dashboard"
           className="text-sm font-medium text-gray-700 hover:text-gray-900 transition-colors"
         >
           Get Started
@@ -28,7 +28,7 @@ export default function Landing() {
             stunning invitation with a single link.
           </p>
           <Link
-            to="/create"
+            to="/dashboard"
             className="inline-block bg-gray-900 text-white px-10 py-4 rounded-full text-lg font-medium hover:bg-gray-800 transition-colors shadow-lg hover:shadow-xl"
           >
             Create Your Invitation

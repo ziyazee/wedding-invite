@@ -37,7 +37,7 @@ See the [Oxlint rules documentation](https://oxc.rs/docs/guide/usage/linter/rule
 - Reference: https://www.thedigitalyes.com/demo/secret-garden
 - Content: `public/design5/index.html`; layout: `reference.css`; local behavior and overrides: `interactions.js` and `interactions.css`.
 - Artwork, fonts, video, and music are served locally from `public/design5/assets/`. The reference application's scripts and backend are not loaded.
-- The curtain opens on tap or keyboard activation. Music starts on that gesture and has one mute control. Reduced motion skips the opening animation.
+- The invitation starts on the open garden still, with editable names and a separate music control.
 - RSVP supports attendance, guest count, a message, validation, saving, and updating on the current device. It explicitly identifies itself as a demo; **responses are not sent to the couple**. Connect a production RSVP endpoint before collecting guest replies.
 - To personalize, change the names, date, venue and programme in `index.html`, the countdown/calendar event in `interactions.js`, and the page title in `src/pages/Design5.tsx`. The reference date is October 3, 2026, so its countdown displays zero after that date.
 - Run `npm run build` and publish the **contents of `dist`**, not the source folder or `node_modules`. Hosting must provide SPA routing for `/design5`; the standalone `/design5/index.html` also works directly.
@@ -47,20 +47,20 @@ See the [Oxlint rules documentation](https://oxc.rs/docs/guide/usage/linter/rule
 - Route: `/design6`; standalone invitation: `/design6/index.html`.
 - Reference: https://www.thedigitalyes.com/demo/majestic
 - Content lives in `public/design6/index.html`. `reference.css` and `fonts.css` provide the design; `interactions.css` and `interactions.js` provide local behavior. Artwork, videos, music and fonts are in `public/design6/assets/`.
-- Includes the pearl envelope opening, looping chandelier and garden scene, music control, countdown, venue directions, calendar download, programme, dress code, gift panels, and RSVP with adult/child companions, allergies, transport, accommodation and song requests.
+- Includes a looping chandelier and garden scene, music control, countdown, venue directions, calendar download, programme, dress code, gift panels, and RSVP with adult/child companions, allergies, transport, accommodation and song requests.
 - RSVP saves and updates on the current device only. A backend is required to collect real guest replies. No reference payment or bank details are reused; the bank panel directs guests to contact the couple.
 - Personalize the invitation text in `index.html`, the countdown/calendar in `interactions.js`, and the page title in `src/pages/Design6.tsx`. Demo event: September 18, 2027, 17:00 in Italy.
-- Opening works by tap or keyboard; reduced motion skips the opening video and keeps the hero still. Video playback failure falls back to the invitation.
+- The invitation is immediately visible. Reduced motion keeps the decorative hero still.
 
 ## Design 7 — Bloom
 
 - Route: `/design7`; standalone invitation: `/design7/index.html`.
 - Reference: https://www.thedigitalyes.com/demo/bloom
 - Content: `public/design7/index.html`; design styles: `reference.css` and `fonts.css`; local interactions and overrides: `interactions.js` and `interactions.css`.
-- Includes both opening videos, background music, floral frames, countdown, welcome, venue, dress code, programme, expandable story, photo gallery, welcome evening, transport, accommodation and RSVP. All media and fonts are served locally from `public/design7/assets/`.
+- Includes background music, floral frames, countdown, welcome, venue, dress code, programme, expandable story, photo gallery, welcome evening, transport, accommodation and RSVP. All media and fonts are served locally from `public/design7/assets/`.
 - RSVP validates names and transport preferences, supports 1–10 guests with individual name fields, and saves/updates on the current device only. Connect a backend before collecting real guest replies.
 - Update the names, date, venues, travel information, story and hotel details in `index.html`; update countdown, map and calendar data in `interactions.js`; update the title in `src/pages/Design7.tsx`. The sample wedding date is September 27, 2026, so the countdown shows zero after that date.
-- Reduced motion skips the opening and stops gallery autoplay. The gallery supports touch scrolling, mouse dragging, keyboard scrolling, and a pause control.
+- Reduced motion stops gallery autoplay. The gallery supports touch scrolling, mouse dragging, keyboard scrolling, and a pause control.
 
 ## Design 8 — Noor · A Courtyard in Bloom
 
@@ -86,9 +86,84 @@ The displayed venue image now uses a real photograph of Falaknuma Palace: **The 
 ## Mohad & Rahma
 
 - Route: `/mohadrahma`.
-- Uses Design 2's Royal Grace styling, opening video, music, flower trail and heart date reveal.
+- Uses Design 2's Royal Grace styling, editable welcome screen, music, flower trail and heart date reveal.
 - Content source: https://mohad-rahma-wedding.fly.dev . Includes all five events (December 17–24, 2026), original directions, calendar links, and the original gallery.
 - Main wedding countdown: December 20, 2026 at 11:00 AM IST.
 - Page: `src/pages/MohadRahma.tsx`; scoped event styles: `src/pages/MohadRahma.css`. Edit event details in its `events` array.
 - `HeartDateReveal` accepts optional date/day/time props; Design 2 retains its existing default details.
 - The original gallery and calendar endpoints remain hosted on the source website. No sample RSVP, unrelated venue image, or invented dress/gift rules are included on this page.
+
+## Invitation dashboard
+
+Open `/dashboard` to choose from all eight designs, enter the couple's names, wedding date/time, venue, map link, additional celebrations, family details, and optional notes/music/gallery links. The home page's buttons now lead here.
+
+Submitting creates a groom-first URL such as `/ahmedsara`. Existing names and built-in routes are never overwritten: a suffix is added when necessary. `/mohadrahma` and the remaining demo routes retain their existing content. `/newDesign` (Sacred Romance) is retired and redirects to `/dashboard`. It cannot be selected for new invitations; existing saved invitations using it remain supported.
+
+### Local use
+
+Run `npm run dev -- --host 0.0.0.0`. The Vite API stores records in `.invitation-data/invitations.json`, which is ignored by Git. Records survive browser refreshes and server restarts. A second device reaching the same server can open the same invitation URL; creation does not rely on browser-local invitation storage. The dashboard's recent-invitations list is a browser-local shortcut list.
+
+The built static files alone cannot create or retrieve records. `vite preview` does not run the development API. Use Vite development for local creation, or deploy the Pages Functions and database below.
+
+### Cloudflare Pages storage
+
+The `functions/api/invitations/` endpoints use a D1 binding named `INVITATIONS_DB`. Database binding setup follows [Cloudflare Pages bindings](https://developers.cloudflare.com/pages/functions/bindings/).
+
+1. Create the database: `npx wrangler d1 create wedding-invitations`.
+2. Copy `wrangler.example.toml` to `wrangler.toml`, set your Pages project name, and insert the returned database ID.
+3. Initialize storage: `npx wrangler d1 execute wedding-invitations --remote --file=server/schema.sql`.
+4. Run `npm run build`.
+5. From this project directory, deploy the site and Functions with `npx wrangler pages deploy dist`.
+
+These steps require your Cloudflare account; no database has been created and no deployment has been performed by this change. Local records are not automatically copied into D1. Keep a backup of `.invitation-data` if you need to migrate local invitations.
+
+The SPA fallback is in `public/_redirects`; API Functions are scoped using `public/_routes.json`. See [Pages routing](https://developers.cloudflare.com/pages/functions/routing/) and [Wrangler configuration](https://developers.cloudflare.com/pages/functions/wrangler-configuration/).
+
+### Template personalization
+
+- Designs 1, 2, 4, 8, and 9 consume the shared invitation context in React. Design 2 uses the refined Royal Grace celebration cards from Mohad & Rahma.
+- Designs 3, 5, 6, and 7 retain their typography, artwork, scroll effects and countdown; their video opening gates have been removed. Their generated versions replace demo-only body sections with personalized welcome, event stationery, and optional notes. Original demo URLs are unchanged.
+- Dates and calendar downloads use the event's explicit UTC offset; select the offset applicable on the wedding date.
+- External music/gallery/map links must use HTTP(S). Music starts after a guest gesture when the browser allows it.
+- Names or initials baked into videos and images are artwork; changing text fields cannot rewrite those media pixels.
+- Generated invitations do not offer the demos' local-only RSVP forms. There is no guest-response collection endpoint in this dashboard.
+- Storage endpoints support creation and lookup, not editing/deletion. The dashboard has no account/login system.
+
+### Design 9 — Sunehri · The Golden Veil
+
+Preview `/design9`, or select it in `/dashboard` to create a personalized invitation. The demo uses Mohad and Rahma’s celebrations.
+
+`public/design9/curtain-portrait.mp4` is a centered 1080 × 1920 crop of the supplied curtain video. The complete 10.005-second duration and original audio track are preserved in the MP4. The MP4 is retained as an export asset. The website now opens directly on the final arch still with editable names and a separate music control.
+
+### Editable first screens
+
+Video opening scenes are removed from designs 2, 3, 5, 6, 7, and 9, including `/mohadrahma` and generated invitations. These designs immediately display their invitation content without downloading the opening video. Decorative background video in Majestic is retained. Designs 4 and 8 retain their code-driven openings. Archived video files remain on disk.
+
+### Customer creation experience — `/create`
+
+A single-page Royal Grace form collects groom full name, bride full name, wedding date and time (IST), and venue location. A + button adds optional events with their name, date, time, and location. There are no extra steps or preview panels.
+
+Submission saves a Royal Grace application through `POST /api/applications/`. It does not create an invitation or public URL. The customer sees a receipt reference. Applications are separate from the invitation catalog and dashboard history.
+
+### Cloudflare application storage
+
+Applications use the same `INVITATIONS_DB` D1 binding, in a separate `applications` table. Names, wedding date, submission time and status are indexed/queryable fields; the full details including additional events are stored as JSON in `payload`. The public endpoint only accepts submissions and does not list or return customer details.
+
+1. If not already created, run `npx wrangler d1 create wedding-invitations`.
+2. Copy `wrangler.example.toml` to `wrangler.toml` if needed and fill in the returned database ID (keep your existing configuration if already set up).
+3. Create the applications table: `npx wrangler d1 execute wedding-invitations --remote --file=server/applications.sql`.
+4. Run `npm run build`, then deploy from this project directory using `npx wrangler pages deploy dist` so Pages Functions are included.
+
+Use Cloudflare’s D1 dashboard console to review applications:
+
+```sql
+SELECT id, created_at, status, groom, bride, wedding_date, payload
+FROM applications
+ORDER BY created_at DESC;
+```
+
+Locally, Vite stores submissions as individual JSON files in `.invitation-data/applications/` (gitignored). Local applications are not automatically copied to D1. No Cloudflare database setup or deployment was performed by this code change. There is currently no application admin screen or notification delivery. The public submission endpoint validates data but has no CAPTCHA or submission rate limiter yet.
+
+### Design 10 — Yasmin · An Ivory Beginning
+
+Preview `/design10`. Uses the complete portrait `public/video2.mp4` as a tap-to-play opening, with a skip control, reduced-motion fallback and a final-frame still. Names remain editable HTML. Includes ivory-and-sage celebration stationery, directions, music, and scroll reveals. Available in the dashboard and personalized invitation renderer. The `/create` application flow remains Royal Grace.

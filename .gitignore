@@ -22,3 +22,6 @@ dist-ssr
 *.njsproj
 *.sln
 *.sw?
+
+# Personal invitation records saved by the local dashboard
+.invitation-data/

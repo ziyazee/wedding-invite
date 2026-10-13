@@ -1,3 +1,8 @@
+import PersonalNotes from '../invitations/PersonalNotes'
+import '../invitations/personalized.css'
+import { useInvitationDetails } from '../invitations/context';
+import { formatDate, formatTime, mapURL, weddingISO } from '../invitations/model';
+import Celebrations from '../invitations/Celebrations';
 import { useState, useEffect, useRef } from 'react';
 
 // ─── Data ───
@@ -166,9 +171,10 @@ function GoldDivider({ width = 180 }: { width?: number }) {
 
 // ─── Countdown ───
 function Countdown() {
+  const details = useInvitationDetails();
   const [now, setNow] = useState(Date.now());
   useEffect(() => { const id = setInterval(() => setNow(Date.now()), 1000); return () => clearInterval(id); }, []);
-  const diff = Math.max(0, new Date(WEDDING_DATE + 'T17:00:00').getTime() - now);
+  const diff = Math.max(0, new Date(details ? weddingISO(details) : WEDDING_DATE + 'T17:00:00').getTime() - now);
   const d = Math.floor(diff / 86400000);
   const h = Math.floor((diff % 86400000) / 3600000);
   const m = Math.floor((diff % 3600000) / 60000);
@@ -340,6 +346,9 @@ function Caption({ children }: { children: React.ReactNode }) {
 // MAIN PAGE
 // ═══════════════════════════════════════════════════
 export default function NewDesign() {
+  const details = useInvitationDetails();
+  const couple = details ? {groom:details.groom,bride:details.bride} : COUPLE;
+  const venue = details ? {name:details.venue,address:details.address} : VENUE;
   const [splashOpen, setSplashOpen] = useState(true);
 
   useEffect(() => {
@@ -368,11 +377,11 @@ export default function NewDesign() {
             <GoldDivider width={140} />
 
             <h1 style={{ fontFamily: F.script, fontSize: 'clamp(3rem, 10vw, 4.5rem)', color: C.rose, lineHeight: 1.1, margin: '0.3rem 0' }}>
-              {COUPLE.groom}
+              {couple.groom}
             </h1>
             <p style={{ fontFamily: F.script, fontSize: '1.5rem', color: C.textFaint }}>&amp;</p>
             <h1 style={{ fontFamily: F.script, fontSize: 'clamp(3rem, 10vw, 4.5rem)', color: C.rose, lineHeight: 1.1, margin: '0.3rem 0' }}>
-              {COUPLE.bride}
+              {couple.bride}
             </h1>
 
             {/* Rose image */}
@@ -380,7 +389,7 @@ export default function NewDesign() {
 
             <p style={{ fontFamily: F.serif, fontSize: '0.9rem', color: C.textSoft }}>Wedding Day</p>
             <p style={{ fontFamily: F.serif, fontSize: '1.3rem', color: C.gold, fontWeight: 600, margin: '0.15rem 0 0.5rem' }}>
-              27 . 09 . 26
+              {details ? formatDate(details.date) : "27 . 09 . 26"}
             </p>
             <GoldDivider />
           </div>
@@ -405,7 +414,7 @@ export default function NewDesign() {
             <p style={{ fontFamily: F.body, fontSize: '0.9rem', color: C.textSoft, lineHeight: 1.85, margin: '1rem auto', maxWidth: '340px' }}>
               Dear Friends and Family,
               <br /><br />
-              Join us for an evening of love, laughter, duas, and unforgettable memories as we begin our forever.
+              {details?.message || "Join us for an evening of love, laughter, duas, and unforgettable memories as we begin our forever."}
             </p>
             <GoldDivider />
           </div>
@@ -427,7 +436,7 @@ export default function NewDesign() {
             <img src="/images/right-element.png" alt="" style={{ position: 'absolute', right: '-30px', top: '30px', width: '60px', opacity: 0.5 }} />
             <SectionTitle>Schedule of Events</SectionTitle>
             <img src="/images/decor-events1.png" alt="" style={{ width: '100%', maxWidth: '240px', margin: '0 auto 1rem', display: 'block', opacity: 0.8 }} />
-            <Timeline />
+            {details ? <Celebrations /> : <Timeline />}
             <img src="/images/decor-events2.png" alt="" style={{ width: '100%', maxWidth: '240px', margin: '1.5rem auto 0', display: 'block', opacity: 0.8 }} />
           </div>
         </FadeIn>
@@ -437,12 +446,13 @@ export default function NewDesign() {
           <div style={{ padding: '2rem 0' }}>
             <GoldDivider />
             <Caption>Venue</Caption>
-            <h3 style={{ fontFamily: F.serif, fontSize: '1.25rem', color: C.text, fontWeight: 600, margin: '0.25rem 0' }}>{VENUE.name}</h3>
-            <p style={{ fontFamily: F.body, fontSize: '0.85rem', color: C.textSoft, lineHeight: 1.6 }}>{VENUE.address}</p>
-            <img src="/images/venue.png" alt="Venue" style={{
+            <h3 style={{ fontFamily: F.serif, fontSize: '1.25rem', color: C.text, fontWeight: 600, margin: '0.25rem 0' }}>{venue.name}</h3>
+            <p style={{ fontFamily: F.body, fontSize: '0.85rem', color: C.textSoft, lineHeight: 1.6 }}>{venue.address}</p>
+            {!details && <img src="/images/venue.png" alt="Venue" style={{
               width: '100%', borderRadius: '12px', marginTop: '1rem',
               border: `1px solid ${C.goldDim}`, boxShadow: '0 2px 12px rgba(0,0,0,0.06)',
-            }} />
+            }} />}
+            {details && <a href={mapURL(details.venue,details.address,details.map)} target="_blank" rel="noreferrer">Directions ↗</a>}
             <GoldDivider />
           </div>
         </FadeIn>
@@ -450,10 +460,10 @@ export default function NewDesign() {
         {/* ═══ Guest Guidelines ═══ */}
         <FadeIn>
           <div style={{ padding: '1.5rem 0', display: 'flex', flexDirection: 'column', gap: '10px' }}>
-            {[
+            {(details ? [{img:'/images/decor-gift.png',title:'Gift note',text:details.giftNote},{img:'/images/decor-dress.png',title:'Dress code',text:details.dressCode}].filter(g=>g.text) : [
               { img: '/images/decor-gift.png', title: 'Gift Preference', text: 'Kindly, no boxed gifts please.' },
               { img: '/images/decor-dress.png', title: 'Dress Code', text: 'We kindly ask guests to avoid deep red and maroon attire for the celebration.' },
-            ].map((g) => (
+            ]).map((g) => (
               <div key={g.title} style={{
                 background: C.cardBg, borderRadius: '14px', border: `1px solid ${C.goldDim}`,
                 padding: '1.25rem', textAlign: 'center', boxShadow: '0 2px 10px rgba(0,0,0,0.04)',
@@ -471,10 +481,11 @@ export default function NewDesign() {
           <div style={{ padding: '2rem 0' }}>
             <GoldDivider width={120} />
             <SectionTitle>RSVP</SectionTitle>
-            <Rsvp />
+            {details ? <p>{formatDate(details.date)} · {formatTime(details.time)}</p> : <Rsvp />}
           </div>
         </FadeIn>
 
+        <PersonalNotes notes={false}/>
         {/* ═══ Closing ═══ */}
         <FadeIn>
           <div style={{ padding: '2.5rem 0 4rem' }}>
@@ -488,7 +499,7 @@ export default function NewDesign() {
               Hope to see you there!
             </p>
             <p style={{ fontFamily: F.script, fontSize: '2.2rem', color: C.rose }}>
-              {COUPLE.groom} &amp; {COUPLE.bride}
+              {couple.groom} &amp; {couple.bride}
             </p>
             <GoldDivider />
           </div>

@@ -1,0 +1,4 @@
+CREATE TABLE IF NOT EXISTS invitations (
+  slug TEXT PRIMARY KEY,
+  payload TEXT NOT NULL
+);

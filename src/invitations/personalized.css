@@ -1,0 +1,22 @@
+.personal-celebrations{max-width:620px;margin:24px auto;text-align:center}.personal-celebrations article{padding:28px 14px;border-bottom:1px solid #9a926655}.personal-celebrations h3{font-family:Georgia,serif;font-size:28px;line-height:1.3;margin:8px 0 14px}.personal-celebrations h4{font-family:Georgia,serif;font-size:22px;margin:18px 0 6px}.personal-celebrations p{line-height:1.5}.personal-celebrations .personal-event-date{font-size:13px;letter-spacing:.04em}.personal-celebrations article>div{display:flex;justify-content:center;gap:18px;margin-top:18px;flex-wrap:wrap}.personal-celebrations a,.personal-celebrations button{color:inherit;font:inherit;background:none;border:0;border-bottom:1px solid currentColor;padding:8px 2px;text-decoration:none;cursor:pointer}.personal-celebrations strong{font-size:20px}
+.personal-notes{max-width:640px;padding:35px 25px;margin:auto;text-align:center}.personal-notes>div{margin-bottom:28px}.personal-notes h2{font:30px Georgia,serif;margin-bottom:14px}.personal-notes p{font-size:18px;line-height:1.6;white-space:pre-line}.personal-notes a{display:inline-block;color:inherit;margin:20px 0;border-bottom:1px solid currentColor}.nr-venue:has(>.nr-venue-copy:first-child){display:block;padding-top:40px}.nr-venue:has(>.nr-venue-copy:first-child)>.nr-venue-copy{margin:0 auto;max-width:650px}
+.personal-music{position:fixed;bottom:18px;right:18px;z-index:120;background:#f7f3e8;color:#40543c;border:1px solid #a7af99;border-radius:25px;padding:10px 16px;font:14px Georgia,serif;cursor:pointer}
+
+/* Optional details use the invitation's typography and a safe reading width. */
+.personal-notes{width:100%;box-sizing:border-box;padding:45px 28px}
+.personal-notes>div{max-width:420px;margin:0 auto 36px}
+.personal-notes h2{font-family:inherit;font-size:28px;font-weight:400;line-height:1.25;margin:0 0 22px;text-wrap:balance;overflow-wrap:anywhere}
+.personal-notes p{margin:8px 0 0;line-height:1.65;overflow-wrap:anywhere;text-wrap:pretty}
+.personal-notes .personal-note-ornament{display:block;font-size:25px;opacity:.65;margin-bottom:16px}
+.personal-notes .personal-family{margin:22px 0 0}
+.personal-notes .personal-family-label{display:block;font-size:10px;line-height:1.5;letter-spacing:.16em;text-transform:uppercase;opacity:.75}
+.mohad-rahma .personal-notes{max-width:none;padding:48px 17%;background:url('/images/royal-grace/general.jpg') center top / 100% auto repeat-y}
+.mohad-rahma .personal-notes h2{font-family:'Dancing Script','Great Vibes',cursive;font-size:38px;font-weight:400;color:var(--rg-ink)}
+.mohad-rahma .personal-notes p{font-size:20px;line-height:1.65;color:var(--rg-ink)}
+.mohad-rahma .personal-notes .personal-note-ornament{color:var(--rg-accent)}
+@media(max-width:600px){
+ .personal-notes{padding:36px 24px}
+ .mohad-rahma .personal-notes{padding:40px 17%}
+ .mohad-rahma .personal-notes h2{font-size:32px;line-height:1.25}
+ .mohad-rahma .personal-notes p{font-size:18px}
+}

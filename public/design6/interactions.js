@@ -2,19 +2,13 @@
   'use strict';
   document.documentElement.classList.add('js');
   const reducedMotion = matchMedia('(prefers-reduced-motion: reduce)').matches;
-  const opening = document.querySelector('#opening');
-  const intro = opening.querySelector('video');
   const hero = document.querySelector('main video');
   const music = document.querySelector('#music-track');
   const musicToggle = document.querySelector('#music-toggle');
-  const openButton = document.querySelector('#open-invitation');
-  let started = false;
-  let finished = false;
-  let fallbackTimer;
-  intro.muted = true;
+  const finished = true;
   hero.muted = true;
   music.volume = .4;
-  document.body.style.overflow = 'hidden';
+  musicToggle.hidden = false;
   const updateMusic = () => {
     musicToggle.setAttribute('aria-label', music.paused ? 'Play music' : 'Mute music');
     musicToggle.setAttribute('aria-pressed', String(!music.paused));
@@ -25,35 +19,9 @@
     if (music.paused) music.play().catch(updateMusic);
     else music.pause();
   });
-  function finishOpening() {
-    if (finished) return;
-    finished = true;
-    clearTimeout(fallbackTimer);
-    intro.pause();
-    opening.classList.add('finished');
-    document.body.style.overflow = '';
-    document.querySelectorAll('main > section:first-child [data-reveal]').forEach(el => el.classList.add('visible'));
-    if (!reducedMotion) hero.play().catch(() => {});
-    setTimeout(() => {
-      opening.hidden = true;
-      const heading = document.querySelector('h1');
-      heading.tabIndex = -1;
-      heading.focus({ preventScroll: true });
-    }, reducedMotion ? 0 : 1000);
-  }
-  function startOpening() {
-    if (started) return;
-    started = true;
-    musicToggle.hidden = false;
-    music.play().catch(updateMusic);
-    if (reducedMotion) { finishOpening(); return; }
-    openButton.textContent = 'Opening…';
-    intro.play().then(() => opening.classList.add('playing')).catch(finishOpening);
-    fallbackTimer = setTimeout(finishOpening, 18000);
-  }
-  opening.addEventListener('click', startOpening);
-  intro.addEventListener('ended', finishOpening);
-  intro.addEventListener('error', () => { if (started) finishOpening(); });
+  updateMusic();
+  document.querySelectorAll('main > section:first-child [data-reveal]').forEach(el => el.classList.add('visible'));
+  if (!reducedMotion) hero.play().catch(() => {});
   const reveals = new IntersectionObserver(entries => {
     entries.forEach(entry => {
       if (!entry.isIntersecting) return;

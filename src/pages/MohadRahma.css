@@ -198,3 +198,7 @@
 @media(prefers-reduced-motion:reduce){
  .mohad-rahma .mr-scroll-reveal{opacity:1;transition:none}
 }
+
+/* Avoid delayed double-tap handling on the opening screen. */
+.mohad-rahma .rg-open{touch-action:manipulation}
+.mohad-rahma .mr-opening-poster{transition-duration:.08s}
