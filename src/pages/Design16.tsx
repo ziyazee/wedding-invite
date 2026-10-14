@@ -82,7 +82,7 @@ export default function Design16() {
   }, [phase])
 
   useEffect(() => {
-    if (phase !== 'open' || matchMedia('(prefers-reduced-motion: reduce)').matches || !('IntersectionObserver' in window)) return
+    if (phase === 'closed' || matchMedia('(prefers-reduced-motion: reduce)').matches || !('IntersectionObserver' in window)) return
     const observer = new IntersectionObserver(entries => entries.forEach(entry => {
       if (!entry.isIntersecting) return
       entry.target.classList.add('d16-visible')
@@ -103,7 +103,7 @@ export default function Design16() {
   return <main ref={root} className={`d16-page d16-${phase}`}>
     <audio ref={audio} src={details.music || '/bisara.mp3'} loop preload="none" onPlay={() => setMusic(true)} onPause={() => setMusic(false)} />
     <section className="d16-entry" aria-label="Wedding invitation entry">
-      <video ref={video} className="d16-entry-video" src="/design16/entry.mp4" poster="/design16/entry-poster.jpg" muted playsInline preload="auto" onEnded={finish} onError={() => { if (phase === 'playing') finish() }} />
+      <video ref={video} className="d16-entry-video" src="/design16/entry-trimmed.mp4" poster="/design16/entry-poster.jpg" muted playsInline preload="auto" onEnded={finish} onError={() => { if (phase === 'playing') finish() }} />
       <div className="d16-entry-shade" />
       {phase === 'closed' && <button className="d16-enter" onClick={openInvitation}>
         <span aria-hidden="true">✧</span> Open invitation
@@ -116,7 +116,7 @@ export default function Design16() {
       </div>}
     </section>
 
-    {phase === 'open' && <>
+    {phase !== 'closed' && <>
       <div className="d16-seam-florals" aria-hidden="true" />
       <div id="d16-invitation" className="d16-paper">
       <section className="d16-intro d16-reveal">
