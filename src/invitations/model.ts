@@ -15,6 +15,7 @@ export const designs = [
   { id: 15, name: 'Ivory Arch · A Blessed Beginning', description: 'A cinematic ivory arch reveal with gold calligraphy, a live countdown, and elegant celebration cards.', route: '/design15', image: '/design15/preview.jpg', color: '#e9e2d4' },
   { id: 16, name: 'Sacred Mandap · A Vow at Dusk', description: 'A cinematic maroon curtain reveal opens onto a glowing mandap, with a Hindu wedding story in vermilion, ivory, and gold.', route: '/design16', image: '/design16/preview.jpg', color: '#6f201e' },
   { id: 17, name: 'Gulabi Mandap · A Celebration in Bloom', description: 'A rose-filled mandap with falling petals and a romantic Hindu wedding story in blush, ruby, and antique gold.', route: '/design17', image: '/design17/preview.jpg', color: '#a65364' },
+  { id: 18, name: 'Mandap at Dusk · Rahul & Naina', description: 'A sunset mandap reveal with a cinematic curtain opening and a personal name reveal.', route: '/design18', image: '/design18/preview.jpg', color: '#d19b72' },
 ] as const
 export interface Celebration { title: string; date: string; time: string; venue: string; address: string; map: string }
 export interface InvitationData {

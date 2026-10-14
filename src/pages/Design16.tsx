@@ -110,9 +110,7 @@ export default function Design16() {
       </button>}
       <button className="d16-music" aria-label={music ? 'Pause music' : 'Play music'} onClick={() => music ? audio.current?.pause() : void audio.current?.play().catch(() => {})}>{music ? 'Ⅱ' : '♫'}</button>
       {phase === 'open' && <div className="d16-ending-copy" aria-live="polite">
-        <p className="d16-ending-kicker">WITH THE BLESSINGS OF LORD GANESHA</p>
         <h1><span>{details.groom}</span><i>&</i><span>{details.bride}</span></h1>
-        <p className="d16-ending-date">JOIN US IN CELEBRATION · {formatDate(details.date)}</p>
       </div>}
     </section>
 
@@ -129,13 +127,7 @@ export default function Design16() {
           {details.brideFamily && <p><small>BRIDE’S FAMILY</small>{details.brideFamily}</p>}
         </div>}
         <Flourish /><span className="d16-signature d16-script">{details.groom} & {details.bride}</span>
-      </section>
-
-      <section className="d16-save-date d16-reveal">
-        <p className="d16-kicker">PLEASE SAVE THE DATE</p>
-        <h2 className="d16-script">A day made for us</h2>
-        <div className="d16-date-stamp"><span>{formatDate(details.date, { month: 'long' })}</span><strong>{formatDate(details.date, { day: '2-digit' })}</strong><span>{formatDate(details.date, { year: 'numeric' })}</span></div>
-        <p>{formatDate(details.date, { weekday: 'long' })} · {formatTime(details.time)} · {details.offset === '+05:30' ? 'IST' : `UTC${details.offset}`}</p>
+        <img className="d16-couple-art" src="/design16/couple-watercolor.png" alt="" aria-hidden="true" loading="lazy" />
       </section>
 
       <section className="d16-heart-section d16-reveal" aria-label="Scratch to reveal the wedding date">
