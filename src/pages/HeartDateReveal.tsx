@@ -14,7 +14,7 @@ const particles = Array.from({ length: 90 }, (_, i) => ({
   borderRadius: i % 3 ? '2px' : '50%',
 }) as CSSProperties)
 
-export default function HeartDateReveal({ date = '27 September 2026', day = 'Sunday', time = '5:00 in the evening' }: { date?: string; day?: string; time?: string }) {
+export default function HeartDateReveal({ date = '27 September 2026', day = 'Sunday', time = '5:00 in the evening', tone = 'sage' }: { date?: string; day?: string; time?: string; tone?: 'sage' | 'rose' }) {
   const id = `heart-${useId().replace(/:/g, '')}`
   const canvas = useRef<HTMLCanvasElement>(null)
   const previous = useRef<{ x: number; y: number } | null>(null)
@@ -32,17 +32,18 @@ export default function HeartDateReveal({ date = '27 September 2026', day = 'Sun
     ctx.clearRect(0, 0, width, height)
     ctx.save(); ctx.scale(width / 100, height / 100); ctx.clip(new Path2D(HEART)); ctx.scale(100 / width, 100 / height)
     const gradient = ctx.createRadialGradient(210, 150, 15, 300, 280, 420)
-    gradient.addColorStop(0, '#eee6d2'); gradient.addColorStop(.45, '#9aa584'); gradient.addColorStop(1, '#4a5540')
+    const palette = tone === 'rose' ? ['#f3e5c9', '#b27655', '#682d29'] : ['#eee6d2', '#9aa584', '#4a5540']
+    gradient.addColorStop(0, palette[0]); gradient.addColorStop(.45, palette[1]); gradient.addColorStop(1, palette[2])
     ctx.fillStyle = gradient; ctx.fillRect(0, 0, width, height)
     for (let i = 0; i < 24000; i++) {
-      ctx.fillStyle = ['#eee6d280', '#9aa584a0', '#4a554080', '#fff8eab0'][i % 4]
+      ctx.fillStyle = tone === 'rose' ? ['#f3e5c980', '#b2765580', '#682d2980', '#fff0d9a0'][i % 4] : ['#eee6d280', '#9aa584a0', '#4a554080', '#fff8eab0'][i % 4]
       ctx.fillRect(Math.random() * width, Math.random() * height, 1.5, 1.5)
     }
     for (let i = 0; i < 65; i++) {
       const x = Math.random() * width, y = Math.random() * height
-      ctx.fillStyle = '#fff9eab0'; ctx.fillRect(x - 3, y, 7, 1); ctx.fillRect(x, y - 3, 1, 7)
+      ctx.fillStyle = tone === 'rose' ? '#fff0d9b0' : '#fff9eab0'; ctx.fillRect(x - 3, y, 7, 1); ctx.fillRect(x, y - 3, 1, 7)
     }
-    ctx.fillStyle = '#35422d'; ctx.textAlign = 'center'; ctx.font = 'italic 32px Georgia'
+    ctx.fillStyle = tone === 'rose' ? '#5c2b25' : '#35422d'; ctx.textAlign = 'center'; ctx.font = 'italic 32px Georgia'
     ctx.fillText('A date with forever', 300, 260)
     ctx.font = '18px Georgia'; ctx.fillText('Scratch gently to discover', 300, 302)
     ctx.restore()
@@ -52,7 +53,7 @@ export default function HeartDateReveal({ date = '27 September 2026', day = 'Sun
       const index = (y * width + x) * 4 + 3
       if (pixels[index] > 200) samples.current.push(index)
     }
-  }, [])
+  }, [tone])
 
   useEffect(() => {
     if (!celebrating) return
@@ -84,7 +85,7 @@ export default function HeartDateReveal({ date = '27 September 2026', day = 'Sun
     if (samples.current.length && cleared / samples.current.length >= .4) reveal()
   }
 
-  return <div className={`rg-heart-reveal ${revealed ? 'is-revealed' : ''}`}>
+  return <div className={`rg-heart-reveal ${tone === 'rose' ? 'is-rose' : ''} ${revealed ? 'is-revealed' : ''}`}>
     <p className="rg-heart-title rg-script" aria-live="polite">{revealed ? 'Our forever begins' : 'Scratch to reveal'}</p>
     <svg width="0" height="0" aria-hidden="true" style={{ position: 'absolute' }}><defs><clipPath id={id} clipPathUnits="objectBoundingBox"><path d={HEART} transform="scale(.01)" /></clipPath></defs></svg>
     <div className="rg-heart-card">
@@ -98,7 +99,7 @@ export default function HeartDateReveal({ date = '27 September 2026', day = 'Sun
       <svg className="rg-heart-outline" viewBox="0 0 100 100" preserveAspectRatio="none" aria-hidden="true"><path d={HEART} fill="none" stroke="#78825b" strokeWidth="1.2" vectorEffect="non-scaling-stroke" /></svg>
     </div>
     {revealed && <p className="rg-reveal-message" role="status">Let the celebration begin! ♡</p>}
-    {celebrating && <div className="rg-confetti" aria-hidden="true">{particles.map((style, i) => <span key={i} style={style} />)}</div>}
+    {celebrating && <div className="rg-confetti" aria-hidden="true">{particles.map((style, i) => <span key={i} style={tone === 'rose' ? { ...style, background: ['#a44435', '#723229', '#ba8737', '#f1dfbd'][i % 4] } : style} />)}</div>}
     {!revealed && <button className="rg-text-button" onClick={reveal}>Or tap to reveal ♡</button>}
   </div>
 }

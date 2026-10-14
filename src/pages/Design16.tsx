@@ -2,6 +2,7 @@ import { useEffect, useRef, useState } from 'react'
 import { downloadCalendar } from '../invitations/calendar'
 import { useInvitationDetails } from '../invitations/context'
 import { formatDate, formatTime, mapURL, weddingISO, type InvitationData } from '../invitations/model'
+import HeartDateReveal from './HeartDateReveal'
 import './Design16.css'
 
 const demo: InvitationData = {
@@ -116,6 +117,7 @@ export default function Design16() {
     </section>
 
     {phase === 'open' && <>
+      <div className="d16-seam-florals" aria-hidden="true" />
       <div id="d16-invitation" className="d16-paper">
       <section className="d16-intro d16-reveal">
         <p className="d16-kicker">AN INVITATION FROM THE HEART</p><Flourish />
@@ -134,6 +136,10 @@ export default function Design16() {
         <h2 className="d16-script">A day made for us</h2>
         <div className="d16-date-stamp"><span>{formatDate(details.date, { month: 'long' })}</span><strong>{formatDate(details.date, { day: '2-digit' })}</strong><span>{formatDate(details.date, { year: 'numeric' })}</span></div>
         <p>{formatDate(details.date, { weekday: 'long' })} · {formatTime(details.time)} · {details.offset === '+05:30' ? 'IST' : `UTC${details.offset}`}</p>
+      </section>
+
+      <section className="d16-heart-section d16-reveal" aria-label="Scratch to reveal the wedding date">
+        <HeartDateReveal date={formatDate(details.date, { day: 'numeric', month: 'long', year: 'numeric' })} day={formatDate(details.date, { weekday: 'long' })} time={formatTime(details.time)} tone="rose" />
       </section>
 
       <section className="d16-countdown d16-reveal">
