@@ -1,5 +1,5 @@
 import PersonalMusic from '../invitations/PersonalMusic'
-import { useEffect, useState } from 'react'
+import { useEffect, useRef, useState } from 'react'
 import './Design2.css'
 import HeartDateReveal from './HeartDateReveal'
 import FlowerTrail from './FlowerTrail'
@@ -24,16 +24,26 @@ function Countdown({ target = eventDate }: { target?: Date }) {
 
 export default function Design2() {
   const details = useInvitationDetails()
-  const opened = true
-  const namesVisible = true
+  const video = useRef<HTMLVideoElement>(null)
+  const timer = useRef<ReturnType<typeof setTimeout> | undefined>(undefined)
+  const [opened, setOpened] = useState(false)
+  const [namesVisible, setNamesVisible] = useState(false)
+  const [videoFailed, setVideoFailed] = useState(false)
   const [saved, setSaved] = useState(false)
   const [saveError, setSaveError] = useState(false)
 
   useEffect(() => {
     const previousTitle = document.title
     document.title = details ? `${details.groom} & ${details.bride} — Royal Grace` : 'Zohan & Rose — Royal Grace'
-    return () => { document.title = previousTitle }
+    return () => { clearTimeout(timer.current); document.title = previousTitle }
   }, [details])
+
+  function openInvitation() {
+    setOpened(true)
+    if (videoFailed || window.matchMedia('(prefers-reduced-motion: reduce)').matches) { setNamesVisible(true); return }
+    video.current?.play().catch(() => { setVideoFailed(true); setNamesVisible(true) })
+    timer.current = setTimeout(() => setNamesVisible(true), 6000)
+  }
   const dateLabel = details ? formatDate(details.date) : '27 September 2026'
   const weddingDay = details ? new Intl.DateTimeFormat('en-US', { weekday: 'long', timeZone: 'UTC' }).format(new Date(`${details.date}T12:00:00Z`)) : 'Sunday'
 
@@ -41,7 +51,9 @@ export default function Design2() {
     <FlowerTrail />
     <PersonalMusic src={details?.music || `${ASSETS}music.mp3`} />
     <section className={`rg-hero ${namesVisible ? 'rg-is-open' : ''}`} aria-label="Wedding invitation">
+      {!videoFailed && <video ref={video} src={`${ASSETS}opening.mp4`} muted playsInline preload="auto" onError={() => { setVideoFailed(true); if (opened) setNamesVisible(true) }} onEnded={() => setNamesVisible(true)} />}
       <div className="rg-hero-shade" />
+      {!opened && <button className="rg-open" onClick={openInvitation} aria-label="Open your invitation" />}
       <div className="rg-names" aria-hidden={!namesVisible}>
         <span className="rg-heart">♥</span><p className="rg-script">We’re getting married</p><Divider />
         <h1><span>{details?.groom || 'Zohan'}</span><i>&</i><span>{details?.bride || 'Rose'}</span></h1>

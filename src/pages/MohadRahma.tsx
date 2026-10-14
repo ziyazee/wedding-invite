@@ -1,7 +1,7 @@
 import PersonalMusic from '../invitations/PersonalMusic'
 import PersonalNotes from '../invitations/PersonalNotes'
 import '../invitations/personalized.css'
-import { useEffect, useState } from 'react'
+import { useEffect, useRef, useState } from 'react'
 import './Design2.css'
 import './MohadRahma.css'
 import HeartDateReveal from './HeartDateReveal'
@@ -48,13 +48,17 @@ export default function MohadRahma() {
     title:event.title,date:formatDate(event.date,{weekday:'long',month:'long',day:'numeric'}),
     iso:`${event.date}T${event.time}:00${details.offset}`,time:formatTime(event.time),venue:event.venue,address:event.address,map:mapURL(event.venue,event.address===event.venue?'':event.address,event.map),
   })) : defaultEvents
-  const opened = true
-  const namesVisible = true
+  const video = useRef<HTMLVideoElement>(null)
+  const timer = useRef<ReturnType<typeof setTimeout> | undefined>(undefined)
+  const [opened, setOpened] = useState(false)
+  const [namesVisible, setNamesVisible] = useState(false)
+  const [videoFailed, setVideoFailed] = useState(false)
+  const [videoFrameReady, setVideoFrameReady] = useState(false)
 
   useEffect(() => {
     const previousTitle = document.title
     document.title = `${couple} — Our Wedding`
-    return () => { document.title = previousTitle }
+    return () => { clearTimeout(timer.current); document.title = previousTitle }
   }, [couple])
 
   useEffect(() => {
@@ -90,11 +94,29 @@ export default function MohadRahma() {
     }
   }, [opened])
 
+  function openInvitation() {
+    if (opened) return
+    setOpened(true)
+    if (videoFailed || window.matchMedia('(prefers-reduced-motion: reduce)').matches) { setNamesVisible(true); return }
+    video.current?.play().catch(() => { setVideoFailed(true); setNamesVisible(true) })
+    timer.current = setTimeout(() => setNamesVisible(true), 6000)
+  }
+
   return <main className="royal-grace mohad-rahma">
     <FlowerTrail />
     <PersonalMusic src={details?.music || "/bisara.mp3"} />
-    <section className={`rg-hero ${namesVisible ? 'rg-is-open' : ''}`} aria-label="Wedding invitation">
+    <section className={`rg-hero ${namesVisible ? 'rg-is-open' : ''}`} style={!namesVisible ? { backgroundImage: `url('${ASSETS}opening-poster.jpg')` } : undefined} aria-label="Wedding invitation">
+      {!videoFailed && <video ref={video} src={`${ASSETS}opening.mp4`} poster={`${ASSETS}opening-poster.jpg`} muted playsInline preload="auto" onPlaying={event => {
+        const player = event.currentTarget
+        if (typeof player.requestVideoFrameCallback === 'function') {
+          player.requestVideoFrameCallback(() => setVideoFrameReady(true))
+        } else {
+          requestAnimationFrame(() => requestAnimationFrame(() => setVideoFrameReady(true)))
+        }
+      }} onError={() => { setVideoFailed(true); if (opened) setNamesVisible(true) }} onEnded={() => setNamesVisible(true)} />}
+      <img className={`mr-opening-poster ${videoFrameReady || namesVisible ? 'mr-opening-poster-hidden' : ''}`} src={`${ASSETS}opening-poster.jpg`} alt="" aria-hidden="true" fetchPriority="high" />
       <div className="rg-hero-shade" />
+      {!opened && <button className="rg-open" onClick={openInvitation} aria-label="Open your invitation" />}
       <div className="rg-names" aria-hidden={!namesVisible}>
         <span className="rg-heart">♥</span><p className="rg-script">We’re getting married</p><Divider />
         <h1><span>{groom}</span><i>&</i><span>{bride}</span></h1>

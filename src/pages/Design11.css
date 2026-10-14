@@ -1,0 +1,192 @@
+@import url('https://fonts.googleapis.com/css2?family=Asul&family=Elsie+Swash+Caps&family=Instrument+Serif&family=Jost:wght@300;400;500&family=Lusitana&family=Luxurious+Script&family=Philosopher&family=Open+Sans:wght@400;600&display=swap');
+
+/* ══════════════════════════════════════════════
+   Design 11 — Hindu temple wedding · Framer clone
+   Colors: maroon rgb(88,11,26), gold rgb(232,190,116),
+   ivory rgb(234,215,189), cream rgb(228,226,184)
+   Fonts: Asul, Luxurious Script, Instrument Serif,
+   Jost, Lusitana, Philosopher, Elsie Swash Caps
+   ══════════════════════════════════════════════ */
+
+.d11{
+  --maroon:#580b1a;
+  --maroon-deep:#460117;
+  --gold:#e8be74;
+  --gold-light:#e9d7b9;
+  --ivory:#ead7bd;
+  --cream:#e4e2b8;
+  --ink:#2f2417;
+  --ink-soft:rgba(47,36,23,0.85);
+  --white:#fff;
+  background:#0a0608;color:var(--white);
+  font-family:'Instrument Serif','Lusitana',Georgia,serif;
+  max-width:720px;margin:auto;overflow:hidden;
+  box-shadow:0 0 100px rgba(0,0,0,0.5);
+}
+.d11 *{box-sizing:border-box}
+.d11 img{max-width:100%;display:block}
+.d11 button{font:inherit;cursor:pointer}
+.d11 a,.d11 button{-webkit-tap-highlight-color:transparent;touch-action:manipulation}
+.d11 :focus-visible{outline:2px solid var(--gold);outline-offset:3px}
+
+/* ── Music button ── */
+.d11-music{position:fixed;top:16px;right:max(16px,calc((100vw - 720px)/2 + 16px));z-index:20;width:38px;height:38px;border:1px solid rgba(232,190,116,0.4);border-radius:50%;background:rgba(88,11,26,0.8);color:var(--gold);font-size:15px;backdrop-filter:blur(6px);display:flex;align-items:center;justify-content:center;transition:border-color .3s}
+.d11-music:hover{border-color:var(--gold)}
+
+/* ══ SCROLL-REVEAL ANIMATIONS (matching Framer) ══ */
+.d11-anim{opacity:0;transform:translateY(40px);transition:opacity 700ms ease,transform 700ms ease}
+.d11-anim.d11-visible{opacity:1;transform:translateY(0)}
+.d11-anim-d1{transition-delay:100ms}
+.d11-anim-d2{transition-delay:200ms}
+.d11-anim-d3{transition-delay:300ms}
+.d11-anim-d4{transition-delay:400ms}
+.d11-anim-d5{transition-delay:500ms}
+.d11-anim-d6{transition-delay:600ms}
+.d11-anim-d7{transition-delay:700ms}
+.d11-anim-d8{transition-delay:800ms}
+
+@keyframes weddingFade{from{opacity:.1}to{opacity:1}}
+@keyframes weddingFadeUp{from{opacity:.1;transform:translateY(10px)}to{opacity:1;transform:translateY(0)}}
+@keyframes d11-pulse{0%,100%{transform:scale(1);opacity:1}50%{transform:scale(1.05);opacity:0.8}}
+@keyframes d11-float{0%,100%{transform:translateY(0)}50%{transform:translateY(-8px)}}
+@keyframes d11-shimmer{0%{background-position:-200% 0}100%{background-position:200% 0}}
+
+/* ══════════ PAGE 1 — Hero ══════════ */
+.d11-p1{position:relative;height:100svh;min-height:560px;max-height:1280px;overflow:hidden;display:flex;align-items:center;justify-content:center}
+.d11-p1-sky{position:absolute;inset:0;width:100%;height:100%;object-fit:cover}
+.d11-p1-temple{position:absolute;bottom:0;left:50%;transform:translateX(-50%);width:85%;max-width:480px;object-fit:contain;z-index:1}
+.d11-p1-tree-l,.d11-p1-tree-r{position:absolute;bottom:0;width:42%;max-width:280px;object-fit:contain;z-index:2}
+.d11-p1-tree-l{left:-3%}
+.d11-p1-tree-r{right:-3%;transform:scaleX(-1)}
+.d11-p1-content{position:relative;z-index:3;text-align:center;padding:0 20px}
+.d11-p1-tagline{font-family:'Jost',sans-serif;font-weight:300;font-size:18px;letter-spacing:0.1em;text-transform:uppercase;color:var(--cream)}
+.d11-p1-name{font-family:'Asul',serif;font-size:clamp(60px,15vw,133px);line-height:129px;text-transform:uppercase;color:var(--white);text-shadow:0 4px 30px rgba(0,0,0,0.4)}
+.d11-p1-weds{font-family:'Asul',serif;font-size:clamp(28px,6vw,45px);line-height:129px;text-transform:uppercase;color:var(--white);text-shadow:0 2px 20px rgba(0,0,0,0.3)}
+
+/* ── Opening button ── */
+.d11-open-btn{position:absolute;bottom:clamp(40px,8vh,80px);left:50%;transform:translateX(-50%);z-index:5;border:0;background:rgba(88,11,26,0.6);backdrop-filter:blur(8px);color:var(--cream);padding:18px 36px;font-family:'Jost',sans-serif;font-size:11px;font-weight:400;letter-spacing:2.5px;text-transform:uppercase;border-radius:32px;border:1px solid rgba(228,226,184,0.35);animation:d11-pulse 3s ease-in-out infinite;transition:background .3s}
+.d11-open-btn:hover{background:rgba(88,11,26,0.85)}
+.d11-open-btn span{display:block;font-size:18px;margin-top:6px}
+
+/* ── Scroll prompt ── */
+.d11-scroll-prompt{position:absolute;bottom:24px;left:50%;transform:translateX(-50%);z-index:5;background:none;border:0;color:var(--cream);font-family:'Jost',sans-serif;font-size:10px;letter-spacing:2px;text-transform:uppercase;padding:12px;opacity:0.7}
+.d11-scroll-prompt span{display:block;font-size:20px;margin-top:4px;animation:d11-float 2.5s ease-in-out infinite}
+
+/* ══════════ PAGE 2 — Invite / Ganesh / Event ══════════ */
+.d11-p2{position:relative;min-height:100svh;overflow:hidden}
+.d11-p2-bg{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;z-index:0}
+.d11-p2-overlay{position:absolute;inset:0;background:rgba(88,11,26,0.35);z-index:1}
+.d11-p2-content{position:relative;z-index:2;padding:60px 24px;text-align:center;display:flex;flex-direction:column;align-items:center;gap:8px}
+.d11-p2-ganesh{width:100px;height:100px;object-fit:contain;opacity:0.85}
+.d11-p2-family{font-family:'Instrument Serif',serif;font-size:14px;color:var(--ivory);line-height:1.8;opacity:0.85;max-width:380px}
+.d11-p2-names{margin:16px 0}
+.d11-p2-name{font-family:'Luxurious Script',cursive;font-size:clamp(48px,10vw,72px);color:var(--maroon);line-height:1.1;text-shadow:0 2px 8px rgba(0,0,0,0.08)}
+.d11-p2-amp{font-family:'Luxurious Script',cursive;font-size:clamp(24px,5vw,40px);color:var(--gold);display:block;margin:2px 0}
+.d11-p2-invite-label{font-family:'Instrument Serif',serif;font-size:14px;letter-spacing:0.1em;text-transform:uppercase;color:var(--maroon);margin:12px 0 4px}
+
+/* ── Event card ── */
+.d11-event-card{background:rgba(255,255,255,0.1);backdrop-filter:blur(8px);border:1px solid rgba(234,215,189,0.2);border-radius:14px;padding:28px 22px;margin-top:16px;max-width:380px;width:100%}
+.d11-event-title{font-family:'Instrument Serif',serif;font-size:28px;color:var(--ivory);margin-bottom:14px;letter-spacing:0.015em}
+.d11-event-meta{display:flex;flex-wrap:wrap;gap:12px 18px;align-items:center;justify-content:center;margin-bottom:12px}
+.d11-event-chip{font-family:'Jost',sans-serif;font-weight:400;font-size:14px;color:var(--ivory);display:inline-flex;align-items:center;gap:8px}
+.d11-event-chip svg{width:14px;height:14px;fill:none;stroke:var(--gold);stroke-width:1.5}
+.d11-event-venue{font-family:'Jost',sans-serif;font-weight:500;font-size:14px;color:var(--ivory);text-transform:uppercase;letter-spacing:0.05em}
+.d11-event-desc{font-family:'Jost',sans-serif;font-weight:300;font-size:13px;color:var(--ivory);opacity:0.85;margin-top:10px}
+.d11-view-loc{display:inline-flex;align-items:center;gap:6px;margin-top:14px;font-family:'Jost',sans-serif;font-size:12px;letter-spacing:0.05em;color:var(--gold);text-decoration:none;border-bottom:1px solid rgba(232,190,116,0.3);padding-bottom:2px;transition:border-color .3s,color .3s}
+.d11-view-loc:hover{border-color:var(--gold);color:var(--gold-light)}
+
+/* ══════════ PAGE 3 — Photo Slideshow ══════════ */
+.d11-p3{position:relative;overflow:hidden;background:var(--maroon)}
+.d11-p3-track{display:flex;transition:transform 600ms ease}
+.d11-p3-slide{flex:0 0 100%;aspect-ratio:3/2;overflow:hidden;position:relative}
+.d11-p3-slide img{width:100%;height:100%;object-fit:cover;transition:transform 500ms ease}
+@media(hover:hover) and (pointer:fine){.d11-p3-slide img:hover{transform:scale(1.035)}}
+.d11-p3-controls{display:flex;justify-content:center;align-items:center;gap:12px;padding:14px 0;background:var(--maroon)}
+.d11-p3-arrow{width:32px;height:32px;border-radius:50%;border:1px solid rgba(234,215,189,0.3);background:none;color:var(--ivory);display:flex;align-items:center;justify-content:center;font-size:14px;transition:background .3s}
+.d11-p3-arrow:hover{background:rgba(255,255,255,0.1)}
+.d11-p3-dots{display:flex;gap:8px}
+.d11-p3-dot{width:8px;height:8px;border-radius:50%;background:rgba(234,215,189,0.25);border:0;padding:0;transition:background .3s,transform .3s}
+.d11-p3-dot.active{background:var(--gold);transform:scale(1.2)}
+
+/* ══════════ PAGE 4 — Couple + Countdown ══════════ */
+.d11-p4{position:relative;overflow:hidden;display:flex;flex-direction:column;align-items:center;background:linear-gradient(180deg,#f5dfc4 0%,#e8d4b8 50%,#c4a47a 100%);min-height:70svh}
+.d11-p4-sky{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;z-index:0}
+.d11-p4-clouds{position:absolute;top:5%;width:110%;left:-5%;object-fit:cover;z-index:1;opacity:0.6}
+.d11-p4-couple{position:relative;z-index:2;width:60%;max-width:300px;object-fit:contain;margin-top:auto;margin-bottom:0;border-radius:8px 8px 0 0;overflow:hidden}
+.d11-p4-countdown{position:relative;z-index:3;width:100%;background:rgba(88,11,26,0.93);padding:30px 24px 28px;text-align:center}
+.d11-p4-count-label{font-family:'Luxurious Script',cursive;font-size:clamp(26px,5.5vw,38px);color:var(--gold);margin-bottom:18px}
+.d11-p4-grid{display:flex;justify-content:center;gap:clamp(14px,4vw,28px)}
+.d11-p4-unit{display:flex;flex-direction:column;align-items:center;gap:4px}
+.d11-p4-unit strong{font-family:'Lusitana',serif;font-size:clamp(34px,8vw,56px);font-weight:400;color:var(--ivory);line-height:1;font-variant-numeric:tabular-nums}
+.d11-p4-unit span{font-family:'Jost',sans-serif;font-size:8px;letter-spacing:2.5px;text-transform:uppercase;color:var(--gold)}
+
+/* ══════════ PAGE 5 — Our Story ══════════ */
+.d11-p5{position:relative;overflow:hidden;padding:70px 24px;text-align:center;background:var(--maroon)}
+.d11-p5-bg{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;opacity:0.12;z-index:0}
+.d11-p5-content{position:relative;z-index:1;display:flex;flex-direction:column;align-items:center;gap:8px}
+.d11-p5-meet{font-family:'Philosopher',serif;font-size:12px;letter-spacing:0.13em;color:rgb(211,127,165);text-transform:uppercase}
+.d11-p5-bride-groom{font-family:'Elsie Swash Caps',cursive;font-size:clamp(22px,5vw,34px);color:var(--gold-light);letter-spacing:0.01em;margin:4px 0}
+.d11-p5-frame{position:relative;width:240px;max-width:75%;margin:20px 0}
+.d11-p5-frame-border{width:100%;position:relative;z-index:1}
+.d11-p5-couple-photo{position:absolute;top:13%;left:16%;width:68%;height:74%;object-fit:cover;z-index:0;border-radius:3px}
+.d11-p5-our-story{font-family:'Philosopher',serif;font-size:12px;letter-spacing:0.13em;color:rgb(211,127,165);text-transform:uppercase;margin-top:20px}
+.d11-p5-story{font-family:'Instrument Serif',serif;font-size:clamp(15px,3.5vw,19px);line-height:1.85;color:var(--ivory);max-width:460px;margin-top:12px}
+
+/* ══════════ PAGE 6 — RSVP ══════════ */
+.d11-p6{position:relative;overflow:hidden;padding:80px 24px;text-align:center;min-height:80svh;display:flex;flex-direction:column;align-items:center;justify-content:center}
+.d11-p6-bg{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;z-index:0}
+.d11-p6-overlay{position:absolute;inset:0;background:rgba(0,0,0,0.5);z-index:1}
+.d11-p6-content{position:relative;z-index:2;display:flex;flex-direction:column;align-items:center;gap:16px;max-width:400px}
+.d11-p6-will{font-family:'Luxurious Script',cursive;font-size:clamp(38px,8.5vw,60px);color:var(--gold);line-height:1.15}
+.d11-p6-join{font-family:'Lusitana',serif;font-size:clamp(38px,8.5vw,60px);color:var(--maroon);line-height:1.15;-webkit-text-stroke:0.5px var(--ivory);text-shadow:0 2px 12px rgba(0,0,0,0.3)}
+.d11-p6-note{font-family:'Jost',sans-serif;font-weight:300;font-size:14px;line-height:1.8;color:var(--ivory);opacity:0.92;margin:8px 0}
+.d11-p6-btn{display:inline-flex;align-items:center;gap:10px;padding:14px 30px;background:rgba(232,190,116,0.12);border:1px solid var(--gold);color:var(--gold);font-family:'Jost',sans-serif;font-size:11px;font-weight:400;letter-spacing:2px;text-transform:uppercase;text-decoration:none;border-radius:30px;transition:background .4s,color .4s,transform .2s,box-shadow .2s;backdrop-filter:blur(4px)}
+.d11-p6-btn:hover{background:var(--gold);color:var(--maroon);transform:translateY(-2px);box-shadow:0 8px 18px rgba(0,0,0,0.16)}
+.d11-p6-btn svg{width:18px;height:18px;fill:currentColor}
+.d11-p6-tap{font-family:'Jost',sans-serif;font-size:10px;letter-spacing:2.5px;text-transform:uppercase;color:var(--cream);opacity:0.65;margin-top:4px;animation:d11-pulse 3s ease-in-out infinite}
+
+/* ══════════ PAGE 7 — Instagram / Footer ══════════ */
+.d11-p7{position:relative;overflow:hidden;padding:52px 24px 60px;background:var(--maroon)}
+.d11-p7-bg{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;opacity:0.15;z-index:0}
+.d11-p7-content{position:relative;z-index:1;text-align:center;display:flex;flex-direction:column;align-items:center;gap:14px}
+.d11-p7-insta-label{font-family:'Jost',sans-serif;font-size:10px;letter-spacing:2.5px;text-transform:uppercase;color:var(--cream);opacity:0.75}
+.d11-p7-hashtag{font-family:'Luxurious Script',cursive;font-size:clamp(26px,5.5vw,38px);color:var(--gold)}
+.d11-p7-cards{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;width:100%;max-width:400px;margin:8px 0}
+.d11-p7-card{aspect-ratio:3/4;overflow:hidden;border-radius:10px;background:rgba(255,255,255,0.05)}
+.d11-p7-card img{width:100%;height:100%;object-fit:cover;transition:transform 500ms ease}
+@media(hover:hover) and (pointer:fine){.d11-p7-card img:hover{transform:scale(1.035)}}
+.d11-p7-insta-btn{display:inline-flex;align-items:center;gap:8px;padding:12px 24px;background:linear-gradient(135deg,#833ce8,#d400c6,#ff006e,#ffbe0b,#fb5607);border:0;color:var(--white);font-family:'Jost',sans-serif;font-size:11px;font-weight:500;letter-spacing:1.5px;text-transform:uppercase;text-decoration:none;border-radius:24px;transition:transform .2s,box-shadow .2s}
+.d11-p7-insta-btn:hover{transform:translateY(-2px);box-shadow:0 6px 16px rgba(0,0,0,0.25)}
+.d11-p7-footer{margin-top:28px;opacity:0.4;font-family:'Jost',sans-serif;font-size:11px;color:var(--cream);letter-spacing:0.5px}
+
+/* ── Multiple celebrations ── */
+.d11-celebrations{padding:40px 24px;background:var(--maroon)}
+.d11-celebrations-header{text-align:center;margin-bottom:28px}
+.d11-celebrations-header h2{font-family:'Luxurious Script',cursive;font-size:clamp(28px,6vw,42px);color:var(--gold);margin:0}
+.d11-celeb{background:rgba(255,255,255,0.08);backdrop-filter:blur(6px);border:1px solid rgba(234,215,189,0.18);border-radius:14px;padding:24px 20px;margin-bottom:18px;text-align:center}
+.d11-celeb h3{font-family:'Instrument Serif',serif;font-size:clamp(20px,4.5vw,28px);color:var(--ivory);margin:0 0 12px;letter-spacing:0.015em}
+.d11-celeb-meta{display:flex;flex-wrap:wrap;gap:10px 14px;justify-content:center;margin-bottom:10px}
+.d11-celeb-chip{font-family:'Jost',sans-serif;font-size:13px;color:var(--ivory);display:inline-flex;align-items:center;gap:5px}
+.d11-celeb-chip svg{width:13px;height:13px;fill:none;stroke:var(--gold);stroke-width:1.5}
+.d11-celeb-venue{font-family:'Jost',sans-serif;font-weight:500;font-size:13px;color:var(--gold);text-transform:uppercase;letter-spacing:0.04em}
+.d11-celeb-addr{font-family:'Jost',sans-serif;font-size:12px;color:var(--ivory);opacity:0.65;margin-top:4px}
+.d11-celeb-actions{display:flex;justify-content:center;gap:16px;margin-top:12px}
+.d11-celeb-actions a,.d11-celeb-actions button{font-family:'Jost',sans-serif;font-size:10px;letter-spacing:1.5px;text-transform:uppercase;color:var(--gold);text-decoration:none;border:none;background:none;border-bottom:1px solid rgba(232,190,116,0.2);padding:4px 0;cursor:pointer;transition:border-color .3s}
+.d11-celeb-actions a:hover,.d11-celeb-actions button:hover{border-color:var(--gold)}
+
+/* ── Notes ── */
+.d11-notes{text-align:center;padding:32px 24px;max-width:420px;margin:0 auto}
+.d11-notes-label{font-family:'Jost',sans-serif;font-size:9px;letter-spacing:2.5px;text-transform:uppercase;color:var(--gold);margin:16px 0 6px;display:block}
+.d11-notes p{font-family:'Instrument Serif',serif;font-size:15px;line-height:1.7;color:var(--ivory);opacity:0.85;margin:0}
+
+@media(max-width:420px){
+  .d11-p1-name{line-height:1}
+  .d11-p1-weds{line-height:1.2}
+  .d11-p5-frame{width:200px}
+  .d11-p7-cards{gap:6px}
+  .d11-event-card{padding:22px 16px}
+}
+@media(prefers-reduced-motion:reduce){
+  .d11 *{animation:none!important;transition:none!important}
+  .d11-anim{opacity:1;transform:none}
+}

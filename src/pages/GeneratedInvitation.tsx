@@ -11,6 +11,11 @@ import Design2 from './Design2'
 import Design8 from './Design8'
 import Design9 from './Design9'
 import Design10 from './Design10'
+import Design13 from './Design13'
+import Design14 from './Design14'
+import Design15 from './Design15'
+import Design16 from './Design16'
+import Design17 from './Design17'
 import { showcaseInvitations } from '../invitations/showcase'
 export default function GeneratedInvitation(){
  const {slug}=useParams();const [record,setRecord]=useState<SavedInvitation|null>(null);const [error,setError]=useState('')
@@ -19,5 +24,5 @@ export default function GeneratedInvitation(){
  if(error)return <main className="studio studio-empty"><h1>Invitation unavailable</h1><p role="alert">{error}</p><Link to="/dashboard">Back to the dashboard</Link></main>
  if(!record)return <main className="studio studio-empty" role="status">Opening your invitation…</main>
  const d=record.details
- return <InvitationContext.Provider value={d}>{(d.template===1||d.template===8)&&d.music&&<PersonalMusic src={d.music}/>}{d.template===1?<NewDesign/>:d.template===2?<Design2/>:d.template===4?<Design4/>:d.template===8?<Design8/>:d.template===9?<Design9/>:d.template===10?<Design10/>:<AnimatedInvitation details={d}/>}</InvitationContext.Provider>
+ return <InvitationContext.Provider value={d}>{(d.template===1||d.template===8)&&d.music&&<PersonalMusic src={d.music}/>}{d.template===1?<NewDesign/>:d.template===2?<Design2/>:d.template===4?<Design4/>:d.template===8?<Design8/>:d.template===9?<Design9/>:d.template===10?<Design10/>:d.template===13?<Design13/>:d.template===14?<Design14/>:d.template===15?<Design15/>:d.template===16?<Design16/>:d.template===17?<Design17/>:<AnimatedInvitation details={d}/>}</InvitationContext.Provider>
 }

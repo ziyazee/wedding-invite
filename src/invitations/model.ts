@@ -8,6 +8,13 @@ export const designs = [
   { id: 8, name: 'Noor · A Courtyard in Bloom', description: 'An original Muslim wedding invitation with a lattice-door reveal.', route: '/design8', image: '/design8/courtyard.png', color: '#d7dbc2' },
   { id: 9, name: 'Sunehri · The Golden Veil', description: 'An embroidered golden arch and a timeless ivory wedding story.', route: '/design9', image: '/design9/curtain-open.jpg', color: '#e9dfc9' },
   { id: 10, name: 'Yasmin · An Ivory Beginning', description: 'Silken curtains, white floral arches and an intimate ivory-and-sage celebration.', route: '/design10', image: '/design10/open.jpg', color: '#e8dfc8' },
+  { id: 11, name: 'Maitri · A Jewel-Tone Evening', description: 'Deep noir and antique gold with mandala filigree — a cinematic Hindu wedding invitation.', route: '/design11', image: '/design11/preview.jpg', color: '#1a1520' },
+  { id: 12, name: 'Kiran · Temple of Love', description: 'A sacred temple scene with maroon and gold — a grand Hindu wedding invitation with clouds and countdown.', route: '/design12', image: '/design12/preview.webp', color: '#580b1a' },
+  { id: 13, name: 'The Artful Love Story', description: 'An ornate Indian wedding invitation with a photo story, celebration details, and a countdown.', route: '/design13', image: '/design13/assets/zBRd2fZShor1nxxKvdVKhKU.webp', color: '#fbf5ed' },
+  { id: 14, name: 'Radha · A Timeless Union', description: 'A traditional Hindu wedding invitation with family blessings, a mehendi celebration, and a photo story.', route: '/design14', image: '/design14/assets/704nAPXndZuu4f9Y58HGiZKFCM.jpeg', color: '#f8f2e9' },
+  { id: 15, name: 'Ivory Arch · A Blessed Beginning', description: 'A cinematic ivory arch reveal with gold calligraphy, a live countdown, and elegant celebration cards.', route: '/design15', image: '/design15/preview.jpg', color: '#e9e2d4' },
+  { id: 16, name: 'Sacred Mandap · A Vow at Dusk', description: 'A cinematic maroon curtain reveal opens onto a glowing mandap, with a Hindu wedding story in vermilion, ivory, and gold.', route: '/design16', image: '/design16/preview.jpg', color: '#6f201e' },
+  { id: 17, name: 'Gulabi Mandap · A Celebration in Bloom', description: 'A rose-filled mandap with falling petals and a romantic Hindu wedding story in blush, ruby, and antique gold.', route: '/design17', image: '/design17/preview.jpg', color: '#a65364' },
 ] as const
 export interface Celebration { title: string; date: string; time: string; venue: string; address: string; map: string }
 export interface InvitationData {
@@ -23,7 +30,7 @@ export const mapURL = (venue: string, address: string, url = '') => url || `http
 export function nameSlug(groom: string, bride: string) {
   return `${groom}${bride}`.normalize('NFKD').replace(/[\u0300-\u036f]/g, '').toLowerCase().replace(/[^a-z0-9]/g, '').slice(0, 80) || 'wedding'
 }
-export const reservedSlugs = new Set(['assets','images','fonts','dashboard','create','preview','invite','newdesign','mohadrahma','api','arjunmeera','rohankavya','aarongrace','danielsarah','vikramananya',...designs.map(d => `design${d.id}`)])
+export const reservedSlugs = new Set(['assets','images','fonts','dashboard','create','preview','invite','newdesign','mohadrahma','api','arjunmeera','rohankavya','aarongrace','danielsarah','vikramananya','nikhiladiti',...designs.map(d => `design${d.id}`)])
 export function validateDetails(value: unknown, allowRetired = false): InvitationData {
   if (!value || typeof value !== 'object') throw new Error('Invitation details are required.')
   const d = value as InvitationData

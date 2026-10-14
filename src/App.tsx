@@ -12,6 +12,13 @@ import Design7 from './pages/Design7'
 import Design8 from './pages/Design8'
 import Design9 from './pages/Design9'
 import Design10 from './pages/Design10'
+import Design11 from './pages/Design11'
+import Design12 from './pages/Design12'
+import Design13 from './pages/Design13'
+import Design14 from './pages/Design14'
+import Design15 from './pages/Design15'
+import Design16 from './pages/Design16'
+import Design17 from './pages/Design17'
 import MohadRahma from './pages/MohadRahma'
 import Dashboard from './pages/Dashboard'
 import GeneratedInvitation from './pages/GeneratedInvitation'
@@ -34,6 +41,14 @@ export default function App() {
       <Route path="/design8" element={<Design8 />} />
       <Route path="/design9" element={<Design9 />} />
       <Route path="/design10" element={<Design10 />} />
+      <Route path="/design11" element={<Design11 />} />
+      <Route path="/design12" element={<Design12 />} />
+      <Route path="/design13" element={<Design13 />} />
+      <Route path="/design14" element={<Design14 />} />
+      <Route path="/design15" element={<Design15 />} />
+      <Route path="/design16" element={<Design16 />} />
+      <Route path="/design17" element={<Design17 />} />
+      <Route path="/mohadrahm" element={<Navigate to="/mohadrahma" replace />} />
       <Route path="/mohadrahma" element={<MohadRahma />} />
       <Route path="/:slug" element={<GeneratedInvitation />} />
     </Routes>

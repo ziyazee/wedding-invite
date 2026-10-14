@@ -60,6 +60,20 @@ export const showcaseInvitations: Record<string, SavedInvitation> = {
       ],
     },
   },
+  kiranrahul: {
+    slug: 'kiranrahul', createdAt: '2026-10-14T00:00:00.000Z', details: {
+      template: 11, groom: 'Kiran Mehta', bride: 'Rahul Joshi', date: '2026-12-15', time: '19:00', offset: '+05:30',
+      venue: 'Taj Hotel', address: 'Mumbai, Maharashtra, India', map: '',
+      message: 'Some souls are destined to find each other, no matter how long the journey. Krishna and Radha’s story wasn’t just about falling in love—it was about finding peace in each other’s presence, strength in every challenge, and a home in each other’s hearts. Through every smile, every tear, and every moment in between, their love only grew deeper. Today, as they take the sacred vows of forever, they carry with them not only dreams of a beautiful future but also the blessings of everyone who has been part of their journey. With hearts full of love and gratitude, they invite you to celebrate the beginning of their forever.',
+      groomFamily: 'The Mehta family', brideFamily: 'The Joshi family',
+      dressCode: 'Festive Indian attire in jewel tones.', giftNote: 'Your presence is the only gift we need.', music: '/bisara.mp3', gallery: '',
+      events: [
+        { title: 'Mehendi Night', date: '2026-12-15', time: '19:00', venue: 'Taj Hotel', address: 'Mumbai, Maharashtra, India', map: '' },
+        { title: 'Wedding Ceremony', date: '2026-12-16', time: '11:00', venue: 'Taj Hotel', address: 'Mumbai, Maharashtra, India', map: '' },
+        { title: 'Reception', date: '2026-12-16', time: '19:00', venue: 'Taj Hotel', address: 'Mumbai, Maharashtra, India', map: '' },
+      ],
+    },
+  },
   vikramananya: {
     slug: 'vikramananya', createdAt: '2026-10-14T00:00:00.000Z', details: {
       template: 2, groom: 'Vikram Reddy', bride: 'Ananya Nair', date: '2027-10-30', time: '18:00', offset: '+05:30',
@@ -71,6 +85,20 @@ export const showcaseInvitations: Record<string, SavedInvitation> = {
         { title: 'Ganesh puja & welcome', date: '2027-10-30', time: '09:00', venue: 'Saffron Palace Gardens', address: 'Hyderabad, Telangana, India', map: '' },
         { title: 'Wedding ceremony & mangalsutra', date: '2027-10-30', time: '18:00', venue: 'Saffron Palace Gardens', address: 'Hyderabad, Telangana, India', map: '' },
         { title: 'Dinner & family celebration', date: '2027-10-30', time: '20:30', venue: 'Saffron Palace Gardens', address: 'Hyderabad, Telangana, India', map: '' },
+      ],
+    },
+  },
+  nikhiladiti: {
+    slug: 'nikhiladiti', createdAt: '2026-10-14T00:00:00.000Z', details: {
+      template: 17, groom: 'Nikhil Mehta', bride: 'Aditi Kapoor', date: '2027-02-28', time: '17:30', offset: '+05:30',
+      venue: 'Jai Mahal Palace', address: 'Jaipur, Rajasthan, India', map: '',
+      message: 'With the blessings of Lord Ganesha and the love of our families, we invite you to join us as we exchange our vows and begin a life together.',
+      groomFamily: 'The Mehta family', brideFamily: 'The Kapoor family',
+      dressCode: 'Traditional Indian attire in rose, gold, or festive jewel tones is welcome.', giftNote: 'Your blessings and presence are the greatest gifts.', music: '/bisara.mp3', gallery: '',
+      events: [
+        { title: 'Haldi & Mehendi', date: '2027-02-27', time: '11:00', venue: 'Jai Mahal Palace', address: 'Jaipur, Rajasthan, India', map: '' },
+        { title: 'Wedding Ceremony & Saat Phere', date: '2027-02-28', time: '17:30', venue: 'Jai Mahal Palace', address: 'Jaipur, Rajasthan, India', map: '' },
+        { title: 'Reception & Dinner', date: '2027-02-28', time: '20:00', venue: 'Jai Mahal Palace', address: 'Jaipur, Rajasthan, India', map: '' },
       ],
     },
   },

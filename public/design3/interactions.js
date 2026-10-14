@@ -1,6 +1,50 @@
 (() => {
   const reducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)');
-  document.body.style.overflow = '';
+  const video = document.querySelector('#opening video');
+  const cover = document.getElementById('intro-cover');
+  const names = document.querySelectorAll('.opening-name');
+  let opened = false;
+  let completed = false;
+  let openingTimeout;
+  document.body.style.overflow = 'hidden';
+  history.scrollRestoration = 'manual';
+  window.scrollTo(0, 0);
+
+  function showNames() { names.forEach(el => el.classList.add('visible')); }
+  function finishOpening() {
+    if (completed) return;
+    completed = true;
+    clearTimeout(openingTimeout);
+    cover.remove();
+    document.body.style.overflow = '';
+    showNames();
+  }
+  function openInvitation() {
+    if (opened) return;
+    opened = true;
+    cover.classList.add('opening');
+    video.classList.remove('opacity-0');
+    video.classList.add('opacity-100');
+    openingTimeout = window.setTimeout(finishOpening, 22000);
+    if (reducedMotion.matches && Number.isFinite(video.duration)) {
+      video.currentTime = Math.max(0, video.duration - .05);
+      finishOpening();
+    } else {
+      video.play().catch(() => { video.classList.add('video-unavailable'); finishOpening(); });
+    }
+  }
+  cover.addEventListener('click', openInvitation);
+  cover.addEventListener('keydown', e => {
+    if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); openInvitation(); }
+  });
+  video.addEventListener('timeupdate', () => {
+    if (video.duration > 3 && video.currentTime >= video.duration - 3) showNames();
+  });
+  video.addEventListener('ended', finishOpening);
+  video.addEventListener('error', () => {
+    video.classList.add('video-unavailable');
+    if (opened) finishOpening();
+  });
 
   // Reference countdown shows three medallions, without seconds.
   function updateCountdown() {

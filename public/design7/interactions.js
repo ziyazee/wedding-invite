@@ -2,10 +2,14 @@
   'use strict';
   document.documentElement.classList.add('js');
   const reduced = matchMedia('(prefers-reduced-motion: reduce)').matches;
+  const opening = document.querySelector('#opening');
+  const [first, second] = opening.querySelectorAll('video');
   const music = document.querySelector('#music-track');
   const musicButton = document.querySelector('#music-toggle');
+  let started = false, stageTwo = false, finished = false, fallback;
+  first.muted = second.muted = true;
   music.volume = .4;
-  musicButton.hidden = false;
+  document.body.style.overflow = 'hidden';
   const syncMusic = () => {
     musicButton.setAttribute('aria-label', music.paused ? 'Play music' : 'Mute music');
     musicButton.setAttribute('aria-pressed', String(!music.paused));
@@ -16,7 +20,36 @@
     if (music.paused) music.play().catch(syncMusic);
     else music.pause();
   });
-  syncMusic();
+  function finish() {
+    if (finished) return;
+    finished = true;
+    clearTimeout(fallback);
+    document.body.style.overflow = '';
+    opening.classList.add('finished');
+    setTimeout(() => {
+      first.pause(); second.pause(); opening.hidden = true;
+      const heading = document.querySelector('h1'); heading.tabIndex = -1; heading.focus({ preventScroll: true });
+    }, reduced ? 0 : 850);
+  }
+  function nextStage() {
+    if (stageTwo || finished) return;
+    stageTwo = true;
+    second.play().then(() => opening.classList.add('stage-two')).catch(finish);
+  }
+  opening.addEventListener('click', () => {
+    if (started) return;
+    started = true; musicButton.hidden = false;
+    music.play().catch(syncMusic);
+    if (reduced) { finish(); return; }
+    document.querySelector('#open-invitation').textContent = 'Opening…';
+    first.play().then(() => opening.classList.add('stage-one')).catch(finish);
+    fallback = setTimeout(finish, 25000);
+  });
+  first.addEventListener('timeupdate', () => { if (first.duration - first.currentTime <= .5) nextStage(); });
+  first.addEventListener('ended', nextStage);
+  second.addEventListener('timeupdate', () => { if (second.duration - second.currentTime <= 1.2) finish(); });
+  second.addEventListener('ended', finish);
+  [first, second].forEach(video => video.addEventListener('error', () => { if (started) finish(); }));
 
   const observer = new IntersectionObserver(entries => entries.forEach(entry => {
     if (entry.isIntersecting) { entry.target.classList.add('visible'); observer.unobserve(entry.target); }
