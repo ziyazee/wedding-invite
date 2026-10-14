@@ -1,60 +1,138 @@
-import { Link } from 'react-router-dom';
+import { useLayoutEffect, useRef, useState } from 'react'
+import { Link } from 'react-router-dom'
+import './Landing.css'
+
+type Template = { id: number | string; name: string; mood: string; image: string; path?: string }
+
+const templates: Template[] = [
+  { id: 7, name: 'Bloom', mood: 'Garden · Ivory · Romantic', image: '/design7/assets/hero-bg-RvVOmFvi.png' },
+  { id: 8, name: 'Noor', mood: 'Moonlight · Sage · Modern', image: '/design8/courtyard.png' },
+  { id: 9, name: 'The Veiled Promise', mood: 'Ivory · Gold · Timeless', image: '/design9/curtain-open.jpg' },
+  { id: 10, name: 'Pearl Garden', mood: 'White · Rose · Garden', image: '/design10/open.jpg' },
+  { id: 11, name: 'Celestial Garden', mood: 'Starlight · Temple · Classic', image: '/design11/preview.webp' },
+  { id: 12, name: 'Moonlit Temple', mood: 'Twilight · Gold · Sacred', image: '/design12/preview.webp' },
+  { id: 15, name: 'Ivory Arch', mood: 'Ivory · Champagne · Elegant', image: '/design15/preview.jpg' },
+  { id: 16, name: 'Sacred Mandap', mood: 'Burgundy · Gold · Ceremony', image: '/design16/preview.jpg' },
+  { id: 17, name: 'Gulabi Mandap', mood: 'Rose · Champagne · Romance', image: '/design17/preview.jpg' },
+  { id: 18, name: 'Mandap at Dusk', mood: 'Sunset · Rose · Regal', image: '/design18/preview.jpg' },
+  { id: 'mohadrahma', name: 'Mohad & Rahma', mood: 'Royal Grace · Nikah · Celebration', image: '/images/royal-grace/opening-poster.jpg', path: '/mohadrahma' },
+]
 
 export default function Landing() {
+  const [selected, setSelected] = useState<number | string>(16)
+  const phoneScreen = useRef<HTMLDivElement>(null)
+  const [screenScale, setScreenScale] = useState(0.42)
+  const [previewKey, setPreviewKey] = useState(0)
+  const [previewLoaded, setPreviewLoaded] = useState(false)
+  const currentTemplate = templates.find(template => template.id === selected) ?? templates[0]
+
+  useLayoutEffect(() => {
+    const screen = phoneScreen.current
+    if (!screen) return
+    const resize = () => {
+      const scale = Math.min(screen.clientWidth / 402, screen.clientHeight / 874)
+      setScreenScale(previous => Math.abs(previous - scale) < 0.001 ? previous : scale)
+    }
+    resize()
+    const observer = new ResizeObserver(resize)
+    observer.observe(screen)
+    return () => observer.disconnect()
+  }, [])
+
+  function chooseTemplate(id: number | string) {
+    if (id === selected) return
+    setSelected(id)
+    setPreviewLoaded(false)
+    setPreviewKey(key => key + 1)
+  }
+
   return (
-    <div className="min-h-screen bg-gradient-to-br from-rose-50 via-amber-50 to-orange-50 flex flex-col">
-      <header className="px-6 py-4 flex items-center justify-between max-w-6xl mx-auto w-full">
-        <Link to="/" aria-label="Shaadi Invites home" className="block h-24 w-52 overflow-hidden">
-          <img src="/logo.png" alt="Shaadi Invites" className="h-full w-full object-contain" />
+    <div className="showcase-page">
+      <div className="showcase-atmosphere" aria-hidden="true">
+        <span className="showcase-glow showcase-glow-left" />
+        <span className="showcase-glow showcase-glow-right" />
+        <span className="showcase-star showcase-star-one">✦</span>
+        <span className="showcase-star showcase-star-two">✧</span>
+        <span className="showcase-star showcase-star-three">✧</span>
+      </div>
+
+      <header className="showcase-header">
+        <Link to="/" className="showcase-brand" aria-label="Shaadi Invites home">
+          <img src="/logo.png" alt="Shaadi Invites" />
         </Link>
-        <Link
-          to="/dashboard"
-          className="text-sm font-medium text-gray-700 hover:text-gray-900 transition-colors"
-        >
-          Get Started
-        </Link>
+        <Link to="/dashboard" className="showcase-create">Create your invitation <span aria-hidden="true">↗</span></Link>
       </header>
 
-      <main className="flex-1 flex items-center justify-center px-4">
-        <div className="text-center max-w-2xl">
-          <p className="text-sm tracking-[0.25em] uppercase text-rose-400 font-medium mb-4">
-            Wedding Invitation Builder
-          </p>
-          <h2 className="font-[Playfair_Display] text-5xl md:text-7xl font-bold text-gray-900 mb-6 leading-tight">
-            Beautiful invitations,
-            <br />
-            <span className="text-rose-500">in minutes</span>
-          </h2>
-          <p className="text-lg text-gray-600 mb-10 max-w-lg mx-auto leading-relaxed">
-            Choose a template, fill in your details, customize the layout, and share a
-            stunning invitation with a single link.
-          </p>
-          <Link
-            to="/dashboard"
-            className="inline-block bg-gray-900 text-white px-10 py-4 rounded-full text-lg font-medium hover:bg-gray-800 transition-colors shadow-lg hover:shadow-xl"
-          >
-            Create Your Invitation
-          </Link>
-
-          <div className="mt-16 grid grid-cols-3 gap-8 text-center">
-            <div>
-              <div className="text-3xl mb-2">🎨</div>
-              <h3 className="font-medium text-gray-900 mb-1">Pick a Template</h3>
-              <p className="text-sm text-gray-500">Three elegant designs to choose from</p>
+      <main className="showcase-content">
+        <section className="showcase-preview" aria-label="Interactive invitation preview">
+          <div className="phone-stage">
+            <div className="phone-halo" aria-hidden="true" />
+            <div className="phone-shadow" aria-hidden="true" />
+            <div className="iphone-frame" aria-label="iPhone 17 Pro preview">
+              <div className="iphone-screen" ref={phoneScreen}>
+                <iframe
+                  key={`${selected}-${previewKey}`}
+                  src={currentTemplate.path ?? `/design${selected}`}
+                  title={`${currentTemplate.name}: interactive wedding invitation`}
+                  allow="autoplay; fullscreen"
+                  style={{ transform: `scale(${screenScale})`, opacity: previewLoaded ? 1 : 0 }}
+                  onLoad={() => setPreviewLoaded(true)}
+                  allowFullScreen
+                />
+                <div className="dynamic-island" aria-hidden="true"><span /></div>
+                <div className="screen-glass" aria-hidden="true" />
+              </div>
             </div>
-            <div>
-              <div className="text-3xl mb-2">✏️</div>
-              <h3 className="font-medium text-gray-900 mb-1">Customize</h3>
-              <p className="text-sm text-gray-500">Drag and drop sections to your liking</p>
-            </div>
-            <div>
-              <div className="text-3xl mb-2">🔗</div>
-              <h3 className="font-medium text-gray-900 mb-1">Share</h3>
-              <p className="text-sm text-gray-500">One link your guests will love</p>
-            </div>
+            <div className="phone-caption"><span /> iPhone 17 Pro <span /></div>
           </div>
+
+          <div className="preview-heading">
+            <span className="preview-selected">{currentTemplate.name} <b>·</b> {typeof selected === 'number' ? `Design ${selected}` : 'Wedding invitation'}</span>
+            <button type="button" className="replay-button" onClick={() => { setPreviewLoaded(false); setPreviewKey(key => key + 1) }}>
+              <span aria-hidden="true">↻</span> Replay
+            </button>
+          </div>
+        </section>
+
+        <div className="showcase-copy">
+        <section className="template-section" aria-labelledby="template-title">
+          <div className="template-heading">
+            <div>
+              <p className="showcase-eyebrow">THE COLLECTION</p>
+              <h2 id="template-title">Choose your <em>beginning</em></h2>
+            </div>
+            <span className="template-count">11 <i>designs</i></span>
+          </div>
+          <div className="template-list" role="group" aria-label="Choose an invitation template">
+            {templates.map(template => {
+              const active = selected === template.id
+              return (
+                <button
+                  type="button"
+                  key={template.id}
+                  className={`template-card${active ? ' is-selected' : ''}`}
+                  aria-pressed={active}
+                  onClick={() => chooseTemplate(template.id)}
+                >
+                  <span className="template-image-wrap">
+                    <img src={template.image} alt="" />
+                    <span className="template-image-shade" />
+                    <span className="template-number">{typeof template.id === 'number' ? `DESIGN ${template.id}` : 'FEATURED'}</span>
+                    <span className="template-check" aria-hidden="true">{active ? '✓' : '↗'}</span>
+                  </span>
+                  <span className="template-copy">
+                    <span className="template-name">{template.name}</span>
+                    <span className="template-mood">{template.mood}</span>
+                  </span>
+                  <span className="template-active-label">SELECTED</span>
+                </button>
+              )
+            })}
+          </div>
+        </section>
+          <footer className="showcase-footer"><span>SHAADI INVITES</span><i /> A celebration begins with an invitation</footer>
         </div>
       </main>
     </div>
-  );
+  )
 }

@@ -6,9 +6,27 @@
 .d15-entry{position:relative;width:100%;max-width:720px;height:100svh;min-height:560px;max-height:1280px;margin:0 auto;overflow:hidden;background:#e9e2d4}
 .d15-entry-video{position:absolute;inset:0;z-index:1;width:100%;height:100%;object-fit:cover}
 .d15-entry-shade{position:absolute;inset:0;z-index:2;background:linear-gradient(180deg,#fff0 40%,#49412d28 100%);pointer-events:none}
-.d15-enter{position:absolute;z-index:3;top:50%;left:50%;transform:translate(-50%,-50%);width:auto;height:auto;border:1px solid #aa9564;border-radius:28px;background:#fbf7e9e8;color:#695637;display:flex;align-items:center;justify-content:center;gap:9px;padding:11px 19px;box-shadow:0 5px 22px #4d432425;font:10px Georgia,serif;letter-spacing:1.2px;white-space:nowrap;cursor:pointer}
+.d15-enter{position:absolute;z-index:3;top:50%;left:50%;display:flex;width:min(318px,calc(100% - 52px));min-height:122px;align-items:center;justify-content:center;gap:18px;transform:translate(-50%,-50%);padding:34px 25px 16px;border:1px solid #bd9d58;border-radius:160px 160px 12px 12px;background:radial-gradient(ellipse at 50% 5%,#fffef8 0,#f9f5e8 48%,#e8dfc8 100%);box-shadow:0 0 0 4px #35402c88,0 0 0 5px #e6d09a,0 10px 0 #736443,0 18px 36px #1d211c70,inset 0 1px #fff,inset 0 -8px 18px #b5a36e25;color:#536044;white-space:nowrap;cursor:pointer;transition:transform .3s ease,box-shadow .3s ease,filter .3s ease;animation:d15-arch-glow 3.6s ease-in-out infinite}
+.d15-enter::before{position:absolute;inset:7px;border:1px solid #b49a62;border-radius:150px 150px 7px 7px;content:"";pointer-events:none}
+.d15-enter::after{position:absolute;top:15px;left:50%;display:grid;width:26px;height:26px;transform:translateX(-50%);place-items:center;border:1px solid #c2a76d;border-radius:50%;background:#f6f0df;box-shadow:0 0 0 4px #f7f2e7;color:#9b8150;content:"✦";font:12px Georgia,serif}
+.d15-enter:hover{transform:translate(-50%,-52%);filter:brightness(1.035);box-shadow:0 0 0 4px #35402c88,0 0 0 5px #f0dda9,0 12px 0 #736443,0 22px 42px #1d211c88,inset 0 1px #fff,inset 0 -8px 18px #b5a36e25}
+.d15-enter:active{transform:translate(-50%,-48%);box-shadow:0 0 0 4px #35402c88,0 0 0 5px #e6d09a,0 4px 0 #736443,0 10px 20px #1d211c66,inset 0 1px #fff}
+.d15-enter:focus-visible{outline:2px solid #f4e4b6;outline-offset:11px}
+.d15-enter-ornament{position:relative;z-index:1;flex:none;color:#9d8653;font:italic 25px/1 'Cormorant Garamond',Georgia,serif;text-shadow:0 1px #fff}
+.d15-enter-ornament:last-child{transform:scaleX(-1)}
+.d15-enter-label{position:relative;z-index:1;display:flex;align-items:center;flex-direction:column;gap:5px}
+.d15-enter-label small{color:#8e7950;font:7px/1.2 Georgia,serif;letter-spacing:2px}
+.d15-enter-label strong{color:#48543e;font:italic 23px/1 'Cormorant Garamond',Georgia,serif;font-weight:600;letter-spacing:.015em;text-shadow:0 1px #fff}
+.d15-enter-label i{color:#898064;font:italic 11px/1.2 'Cormorant Garamond',Georgia,serif}
+@keyframes d15-arch-glow{0%,100%{filter:drop-shadow(0 0 0 #e4cc8b00)}50%{filter:drop-shadow(0 0 8px #e4cc8b88)}}
 .d15-kicker{font:9px/1.8 Georgia,serif;letter-spacing:2.5px;text-transform:uppercase;color:var(--d15-sage)}
-.d15-enter>span{font-size:16px;color:#a38a57}
+.d15-enter:hover{transform:translate(-50%,-52%);filter:brightness(1.08);box-shadow:0 0 0 4px #25301e70,0 0 0 5px #e5ce8c,0 17px 38px #1d211c80,inset 0 1px #f4e4b666}
+.d15-enter:active{transform:translate(-50%,-49%)}
+.d15-enter:focus-visible{outline:2px solid #f4e4b6;outline-offset:9px}
+.d15-enter-ornament{flex:none;color:#e6d19a;font-size:19px;text-shadow:0 0 12px #e2c47977}
+.d15-enter-label{display:flex;align-items:center;flex-direction:column;gap:5px}
+.d15-enter-label small{color:#e2d1a6;font:7px/1.2 Georgia,serif;letter-spacing:2px}
+.d15-enter-label strong{font:italic 19px/1 'Cormorant Garamond',Georgia,serif;font-weight:500;letter-spacing:.025em}
 .d15-music{position:absolute;z-index:4;right:calc(3% + 24px);bottom:calc(7.2% - 5px);width:46px;height:46px;border:1px solid #aa956477;border-radius:50%;background:#fbf7e9e8;color:#695637;cursor:pointer;font:18px Georgia,serif}
 .d15-ending-copy{position:absolute;z-index:3;top:55%;left:50%;width:min(90%,600px);transform:translate(-50%,-50%);text-align:center;color:#6b704f;text-shadow:0 2px 16px #fff,0 1px 3px #fff;animation:d15-end-fade 1.6s ease both;pointer-events:none}
 .d15-ending-kicker,.d15-ending-date{font:9px/1.8 Georgia,serif;letter-spacing:2.4px;text-transform:uppercase;margin:0;color:#776a47}
