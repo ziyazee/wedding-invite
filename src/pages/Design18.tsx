@@ -1,4 +1,4 @@
-import { useEffect, useRef, useState, type CSSProperties } from 'react'
+import { useEffect, useLayoutEffect, useRef, useState } from 'react'
 import { downloadCalendar } from '../invitations/calendar'
 import { useInvitationDetails } from '../invitations/context'
 import { formatDate, formatTime, mapURL, weddingISO, type InvitationData } from '../invitations/model'
@@ -37,11 +37,20 @@ function Arrow() {
 }
 
 function WrittenWord({ value, className = '' }: { value: string; className?: string }) {
-  return <span className={`d18-written-word ${className}`} aria-hidden="true">{Array.from(value).map((character, index) => {
-    if (/\s/.test(character)) return <span className="d18-letter-space" key={`space-${index}`} />
-    const style = { '--letter-delay': `${index * 0.34}s` } as CSSProperties
-    return <svg className="d18-script-letter" key={`${character}-${index}`} viewBox="0 0 80 120" preserveAspectRatio="none" style={style}><text x="40" y="94" textAnchor="middle">{character}</text></svg>
-  })}</span>
+  const text = useRef<SVGTextElement>(null)
+  const [width, setWidth] = useState(Math.max(60, value.length * 55))
+  useLayoutEffect(() => {
+    let mounted = true
+    const measure = () => {
+      const measured = text.current?.getComputedTextLength()
+      if (mounted && measured && Number.isFinite(measured)) setWidth(measured + 4)
+    }
+    measure()
+    void document.fonts?.ready.then(measure)
+    return () => { mounted = false }
+  }, [value])
+
+  return <span className={`d18-written-word ${className}`} aria-hidden="true"><svg className="d18-script-word-svg" viewBox={`0 0 ${width} 120`} style={{ width: `${width / 100}em` }}><text ref={text} x="0" y="94" textAnchor="start">{Array.from(value).map((character, index) => <tspan key={`${character}-${index}`} style={{ animationDelay: `${index * 0.16}s, ${index * 0.16 + 0.58}s` }}>{character}</tspan>)}</text></svg></span>
 }
 
 export default function Design18() {
@@ -49,7 +58,8 @@ export default function Design18() {
   const video = useRef<HTMLVideoElement>(null)
   const audio = useRef<HTMLAudioElement>(null)
   const root = useRef<HTMLElement>(null)
-  const [phase, setPhase] = useState<'closed' | 'playing' | 'open'>('closed')
+  const namesHeading = useRef<HTMLHeadingElement>(null)
+  const [phase, setPhase] = useState<'closed' | 'starting' | 'playing' | 'open'>('closed')
   const [showNames, setShowNames] = useState(false)
   const skipIntro = useRef(false)
   const [music, setMusic] = useState(false)
@@ -76,11 +86,33 @@ export default function Design18() {
       setPhase('open')
       return
     }
-    setPhase('playing')
+    setPhase('starting')
     if (video.current?.readyState && video.current.readyState >= 1) video.current.currentTime = 1.95
     else skipIntro.current = true
     void video.current?.play().catch(finish)
   }
+
+  useLayoutEffect(() => {
+    if (!showNames) return
+    const heading = namesHeading.current
+    const container = heading?.parentElement
+    if (!heading || !container) return
+
+    const fitNames = () => {
+      heading.style.setProperty('--d18-name-scale', '1')
+      const availableWidth = container.clientWidth
+      const contentWidth = heading.scrollWidth
+      if (availableWidth > 0 && contentWidth > availableWidth) {
+        heading.style.setProperty('--d18-name-scale', String(availableWidth / contentWidth))
+      }
+    }
+
+    fitNames()
+    const observer = new ResizeObserver(fitNames)
+    observer.observe(container)
+    void document.fonts?.ready.then(fitNames)
+    return () => observer.disconnect()
+  }, [showNames, details.groom, details.bride])
 
   useEffect(() => {
     const previousTitle = document.title
@@ -121,14 +153,14 @@ export default function Design18() {
   return <main ref={root} className={`d18-page d18-${phase}`}>
     <audio ref={audio} src={details.music || '/bisara.mp3'} loop preload="none" onPlay={() => setMusic(true)} onPause={() => setMusic(false)} />
     <section className="d18-entry" aria-label="Wedding invitation entry">
-      <video ref={video} className="d18-entry-video" src="/design18/entry.mp4" poster="/design18/entry-poster.jpg" muted playsInline preload="auto" onLoadedMetadata={() => { if (skipIntro.current && video.current) { video.current.currentTime = 1.95; skipIntro.current = false } }} onTimeUpdate={syncNameReveal} onEnded={finish} onError={() => { if (phase === 'playing') finish() }} />
+      <video ref={video} className="d18-entry-video" src="/design18/entry.mp4" poster="/design18/entry-poster.jpg" muted playsInline preload="auto" onLoadedMetadata={() => { if (skipIntro.current && video.current) { video.current.currentTime = 1.95; skipIntro.current = false } }} onPlaying={() => setPhase('playing')} onTimeUpdate={syncNameReveal} onEnded={finish} onError={() => { if (phase === 'starting' || phase === 'playing') finish() }} />
       <div className="d18-entry-shade" />
-      {phase === 'closed' && <button className="d18-enter" onClick={openInvitation}>
+      {(phase === 'closed' || phase === 'starting') && <button className="d18-enter" onClick={openInvitation}>
         <span aria-hidden="true">✧</span> Open invitation
       </button>}
       <button className="d18-music" aria-label={music ? 'Pause music' : 'Play music'} onClick={() => music ? audio.current?.pause() : void audio.current?.play().catch(() => {})}>{music ? 'Ⅱ' : '♫'}</button>
       {showNames && <div className="d18-ending-names" aria-live="polite">
-        <h1 aria-label={`${details.groom} weds ${details.bride}`}><WrittenWord value={details.groom} /><span className="d18-love-mark" aria-hidden="true"><svg viewBox="0 0 120 72"><path className="d18-heart" pathLength="1" d="M60 50 C49 39 31 27 31 14 C31 0 50 -1 60 12 C70 -1 89 0 89 14 C89 27 71 39 60 50Z"/></svg><WrittenWord value="Weds" className="d18-weds-word" /></span><WrittenWord value={details.bride} /><svg className="d18-name-swash" viewBox="0 0 600 70" preserveAspectRatio="none" aria-hidden="true"><path pathLength="1" d="M4 30 C93 8 184 8 255 35 C287 48 307 49 333 31 C398 -5 495 1 596 29" /></svg></h1>
+        <h1 ref={namesHeading} aria-label={`${details.groom} weds ${details.bride}`}><WrittenWord value={details.groom} /><span className="d18-love-mark" aria-hidden="true"><svg viewBox="0 0 120 72"><path className="d18-heart" pathLength="1" d="M60 50 C49 39 31 27 31 14 C31 0 50 -1 60 12 C70 -1 89 0 89 14 C89 27 71 39 60 50Z"/></svg><WrittenWord value="Weds" className="d18-weds-word" /></span><WrittenWord value={details.bride} /><svg className="d18-name-swash" viewBox="0 0 600 70" preserveAspectRatio="none" aria-hidden="true"><path pathLength="1" d="M4 30 C93 8 184 8 255 35 C287 48 307 49 333 31 C398 -5 495 1 596 29" /></svg></h1>
       </div>}
     </section>
 
