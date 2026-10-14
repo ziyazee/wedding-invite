@@ -4,6 +4,7 @@ body { margin: 0; overflow-x: hidden; }
 button:focus-visible, a:focus-visible { outline: 2px solid #6b7b43; outline-offset: 4px; }
 #hero { min-height: 100svh; }
 #opening { transition: opacity .8s ease; }
+#opening > img { transition: opacity .5s ease-in-out !important; }
 #opening.finished { opacity: 0 !important; pointer-events: none !important; }
 #opening.stage-one > video:first-of-type, #opening.stage-two > video { opacity: 1 !important; }
 #opening.stage-one > img, #opening.stage-two > img { opacity: 0 !important; }
@@ -44,3 +45,4 @@ button:focus-visible, a:focus-visible { outline: 2px solid #6b7b43; outline-offs
 .story-butterfly.left { left: 0; top: 0; }
 .story-butterfly.right { right: 0; bottom: 0; transform: scaleX(-1); }
 @media(min-width:768px) { .story-butterfly { width: 80px; top: 50% !important; bottom: auto !important; } }
+#hero h1:focus { outline: none; }

@@ -5,12 +5,12 @@ import './Landing.css'
 type Template = { id: number | string; name: string; mood: string; image: string; path?: string }
 
 const templates: Template[] = [
+  { id: 5, name: 'Secret Garden', mood: 'Garden · Ivory · Romantic', image: '/design5/assets/opened.jpg' },
+  { id: 6, name: 'Majestic', mood: 'Pearl · Chandeliers · Garden', image: '/design6/assets/hero-poster-DkA1j00-.jpg', path: '/design6' },
+  { id: 3, name: 'Embroidered Garden', mood: 'Wisteria · Swans · Romance', image: '/design3/assets/embroidered-swans-hero-v2.png' },
   { id: 7, name: 'Bloom', mood: 'Garden · Ivory · Romantic', image: '/design7/assets/hero-bg-RvVOmFvi.png' },
-  { id: 8, name: 'Noor', mood: 'Moonlight · Sage · Modern', image: '/design8/courtyard.png' },
-  { id: 9, name: 'The Veiled Promise', mood: 'Ivory · Gold · Timeless', image: '/design9/curtain-open.jpg' },
-  { id: 10, name: 'Pearl Garden', mood: 'White · Rose · Garden', image: '/design10/open.jpg' },
-  { id: 11, name: 'Celestial Garden', mood: 'Starlight · Temple · Classic', image: '/design11/preview.webp' },
-  { id: 12, name: 'Moonlit Temple', mood: 'Twilight · Gold · Sacred', image: '/design12/preview.webp' },
+  { id: 14, name: 'Radha · A Timeless Union', mood: 'Traditional · Hindu · Floral', image: '/design14/assets/704nAPXndZuu4f9Y58HGiZKFCM.jpeg' },
+  { id: 13, name: 'The Artful Love Story', mood: 'Ornate · Indian · Romantic', image: '/design13/assets/zBRd2fZShor1nxxKvdVKhKU.webp' },
   { id: 15, name: 'Ivory Arch', mood: 'Ivory · Champagne · Elegant', image: '/design15/preview.jpg' },
   { id: 16, name: 'Sacred Mandap', mood: 'Burgundy · Gold · Ceremony', image: '/design16/preview.jpg' },
   { id: 17, name: 'Gulabi Mandap', mood: 'Rose · Champagne · Romance', image: '/design17/preview.jpg' },
@@ -60,7 +60,6 @@ export default function Landing() {
         <Link to="/" className="showcase-brand" aria-label="Shaadi Invites home">
           <img src="/logo.png" alt="Shaadi Invites" />
         </Link>
-        <Link to="/dashboard" className="showcase-create">Create your invitation <span aria-hidden="true">↗</span></Link>
       </header>
 
       <main className="showcase-content">

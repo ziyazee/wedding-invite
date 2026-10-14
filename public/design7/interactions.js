@@ -3,11 +3,11 @@
   document.documentElement.classList.add('js');
   const reduced = matchMedia('(prefers-reduced-motion: reduce)').matches;
   const opening = document.querySelector('#opening');
-  const [first, second] = opening.querySelectorAll('video');
+  const [first] = opening.querySelectorAll('video');
   const music = document.querySelector('#music-track');
   const musicButton = document.querySelector('#music-toggle');
-  let started = false, stageTwo = false, finished = false, fallback;
-  first.muted = second.muted = true;
+  let started = false, finished = false, fallback;
+  first.muted = true;
   music.volume = .4;
   document.body.style.overflow = 'hidden';
   const syncMusic = () => {
@@ -27,14 +27,9 @@
     document.body.style.overflow = '';
     opening.classList.add('finished');
     setTimeout(() => {
-      first.pause(); second.pause(); opening.hidden = true;
+      first.pause(); opening.hidden = true;
       const heading = document.querySelector('h1'); heading.tabIndex = -1; heading.focus({ preventScroll: true });
     }, reduced ? 0 : 850);
-  }
-  function nextStage() {
-    if (stageTwo || finished) return;
-    stageTwo = true;
-    second.play().then(() => opening.classList.add('stage-two')).catch(finish);
   }
   opening.addEventListener('click', () => {
     if (started) return;
@@ -45,11 +40,8 @@
     first.play().then(() => opening.classList.add('stage-one')).catch(finish);
     fallback = setTimeout(finish, 25000);
   });
-  first.addEventListener('timeupdate', () => { if (first.duration - first.currentTime <= .5) nextStage(); });
-  first.addEventListener('ended', nextStage);
-  second.addEventListener('timeupdate', () => { if (second.duration - second.currentTime <= 1.2) finish(); });
-  second.addEventListener('ended', finish);
-  [first, second].forEach(video => video.addEventListener('error', () => { if (started) finish(); }));
+  first.addEventListener('ended', finish);
+  first.addEventListener('error', () => { if (started) finish(); });
 
   const observer = new IntersectionObserver(entries => entries.forEach(entry => {
     if (entry.isIntersecting) { entry.target.classList.add('visible'); observer.unobserve(entry.target); }
@@ -79,40 +71,45 @@
   });
   const storyButton = document.querySelector('[aria-controls="our-story-content"]');
   const story = document.querySelector('#our-story-content');
-  storyButton.addEventListener('click', () => {
-    story.hidden = !story.hidden;
-    storyButton.setAttribute('aria-expanded', String(!story.hidden));
-    storyButton.textContent = story.hidden ? 'Our Story' : 'Hide Story';
-  });
-  const gallery = document.querySelector('#our-story .animate-marquee');
-  const track = gallery.parentElement;
-  const controls = document.createElement('div'); controls.className='gallery-controls';
-  const pause = document.createElement('button'); pause.type='button'; controls.append(pause); track.after(controls);
-  let paused = reduced;
-  function updateGallery() {
-    gallery.style.animationPlayState = paused ? 'paused' : 'running';
-    pause.textContent = paused ? 'Play gallery' : 'Pause gallery';
-    pause.setAttribute('aria-pressed', String(paused));
+  if (storyButton && story) {
+    storyButton.addEventListener('click', () => {
+      story.hidden = !story.hidden;
+      storyButton.setAttribute('aria-expanded', String(!story.hidden));
+      storyButton.textContent = story.hidden ? 'Our Story' : 'Hide Story';
+    });
   }
-  pause.addEventListener('click', () => { paused = !paused; updateGallery(); }); updateGallery();
-  track.tabIndex=0; track.setAttribute('aria-label','Photo gallery. Scroll horizontally to browse.');
-  track.addEventListener('mouseenter', () => gallery.style.animationPlayState='paused');
-  track.addEventListener('mouseleave', updateGallery);
-  track.addEventListener('touchstart', () => { paused=true; updateGallery(); },{passive:true});
-  let drag;
-  track.addEventListener('pointerdown', event => {
-    if (event.pointerType !== 'mouse') return;
-    paused=true; updateGallery(); drag={x:event.clientX,scroll:track.scrollLeft}; track.setPointerCapture(event.pointerId);
-  });
-  track.addEventListener('pointermove', event => { if(drag) track.scrollLeft=drag.scroll+drag.x-event.clientX; });
-  track.addEventListener('pointerup', () => drag=null);
-  track.addEventListener('pointercancel', () => drag=null);
+  const gallery = document.querySelector('#our-story .animate-marquee');
+  if (gallery) {
+    const track = gallery.parentElement;
+    const controls = document.createElement('div'); controls.className='gallery-controls';
+    const pause = document.createElement('button'); pause.type='button'; controls.append(pause); track.after(controls);
+    let paused = reduced;
+    function updateGallery() {
+      gallery.style.animationPlayState = paused ? 'paused' : 'running';
+      pause.textContent = paused ? 'Play gallery' : 'Pause gallery';
+      pause.setAttribute('aria-pressed', String(paused));
+    }
+    pause.addEventListener('click', () => { paused = !paused; updateGallery(); }); updateGallery();
+    track.tabIndex=0; track.setAttribute('aria-label','Photo gallery. Scroll horizontally to browse.');
+    track.addEventListener('mouseenter', () => gallery.style.animationPlayState='paused');
+    track.addEventListener('mouseleave', updateGallery);
+    track.addEventListener('touchstart', () => { paused=true; updateGallery(); },{passive:true});
+    let drag;
+    track.addEventListener('pointerdown', event => {
+      if (event.pointerType !== 'mouse') return;
+      paused=true; updateGallery(); drag={x:event.clientX,scroll:track.scrollLeft}; track.setPointerCapture(event.pointerId);
+    });
+    track.addEventListener('pointermove', event => { if(drag) track.scrollLeft=drag.scroll+drag.x-event.clientX; });
+    track.addEventListener('pointerup', () => drag=null);
+    track.addEventListener('pointercancel', () => drag=null);
+  }
 
   const form=document.querySelector('#rsvp-form');
   const names=document.querySelector('#guest-names');
   const countOutput=document.querySelector('#guest-count');
   const minus=document.querySelector('#minus'), plus=document.querySelector('#plus');
   const status=document.querySelector('#rsvp-status');
+  if (!form || !names || !countOutput || !minus || !plus || !status) return;
   let count=1;
   function renderGuests(values) {
     const previous=values || [...names.querySelectorAll('input')].map(input=>input.value);
