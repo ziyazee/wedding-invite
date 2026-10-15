@@ -14,10 +14,6 @@ html, body {
   will-change: transform;
 }
 
-[data-d14-name="GATE 2"] {
-  transform: translate3d(0, var(--d14-gate-two-shift, 0), 0) !important;
-  will-change: transform;
-}
 
 #__d14-badge-container {
   display: none !important;
@@ -88,7 +84,4 @@ html, body {
     transform: none !important;
   }
 
-  [data-d14-name="GATE 2"] {
-    transform: none !important;
-  }
 }

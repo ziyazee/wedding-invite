@@ -1,13 +1,6 @@
 (() => {
   const root = document.querySelector('[data-d14-root]')
 
-  function selectBreakpoint() {
-    if (!root) return
-    const width = window.innerWidth
-    const variant = width >= 1440 ? 'd14-1cng0pt' : width >= 1201 ? 'd14-72rtr7' : width >= 810 ? 'd14-x93lnp' : 'd14-xjl96b'
-    root.classList.remove('d14-1cng0pt', 'd14-72rtr7', 'd14-x93lnp', 'd14-xjl96b')
-    root.classList.add(variant)
-  }
 
   function reveal(element) {
     const transform = element.style.transform
@@ -77,33 +70,10 @@
     window.addEventListener('resize', schedule, { passive: true })
   }
 
-  function connectSecondGateParallax() {
-    const gate = document.querySelector('[data-d14-name="GATE 2"]')
-    const page = gate?.closest('[data-d14-name^="PAGE"]')
-    if (!gate || !page || matchMedia('(prefers-reduced-motion: reduce)').matches) return
-    let scheduled = false
-    const update = () => {
-      const pageTop = window.scrollY + page.getBoundingClientRect().top
-      const distance = Math.max(0, Math.min(window.scrollY - pageTop, page.getBoundingClientRect().height))
-      gate.style.setProperty('--d14-gate-two-shift', `${Math.round(distance * 0.28)}px`)
-      scheduled = false
-    }
-    const schedule = () => {
-      if (scheduled) return
-      scheduled = true
-      requestAnimationFrame(update)
-    }
-    update()
-    window.addEventListener('scroll', schedule, { passive: true })
-    window.addEventListener('resize', schedule, { passive: true })
-  }
 
   document.querySelector('#__d14-badge-container')?.remove()
   createCloudLayer()
   connectTempleParallax()
-  connectSecondGateParallax()
-  selectBreakpoint()
   prepareReveals()
   connectAudio()
-  window.addEventListener('resize', selectBreakpoint, { passive: true })
 })()
