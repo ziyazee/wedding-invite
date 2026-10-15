@@ -93,52 +93,6 @@ html, body {
   aspect-ratio: auto;
 }
 
-.d14-JfqWY .d14-events-section {
-  position: relative;
-  flex: none;
-  display: flex;
-  justify-content: center;
-  width: 100%;
-  padding: clamp(32px, 6vw, 72px) 24px;
-  background: #a6e3ff url("/design14/assets/1Zg49ggjH1NeMsuurkKzD6m20vo.webp") center / cover no-repeat;
-}
-
-.d14-JfqWY .d14-events-section > .d14-in0jbm-container {
-  position: relative;
-  inset: auto;
-  width: min(100%, 360px);
-  height: 480px;
-  aspect-ratio: auto;
-  transform: none;
-}
-
-.d14-events-section .ssr-variant > div {
-  min-width: 0 !important;
-}
-
-/* Shorten the gold panel while retaining the image's approximate height. */
-.d14-events-section .ssr-variant > div > div:first-child {
-  flex: 0 0 40% !important;
-  height: 40% !important;
-}
-
-.d14-events-section .ssr-variant > div > div:last-child {
-  flex: 0 0 60% !important;
-  height: 60% !important;
-}
-
-@media (max-width: 809.98px) {
-  .d14-JfqWY .d14-events-section {
-    padding-inline: 12px;
-  }
-
-  .d14-JfqWY .d14-events-section > .d14-in0jbm-container {
-    width: min(100%, 390px);
-    /* Scale the compact card consistently on narrow mobile screens. */
-    height: min(480px, calc((100vw - 48px) * 480 / 308));
-  }
-}
-
 /* Clouds in the couple scene drift fully offscreen before each repeat. */
 [data-d14-name="PAGE 3"] [data-d14-name^="CLOUD"] {
   animation: d14-couple-cloud-drift 150s linear -61s infinite;
@@ -184,19 +138,6 @@ html, body {
   [data-d14-name="PAGE 3"] [data-d14-name="COUPLE"] {
     will-change: auto;
   }
-}
-
-/* Swipe anywhere on an event card without blocking vertical page scrolling. */
-.d14-celebration-card {
-  touch-action: pan-y pinch-zoom;
-  cursor: grab;
-  user-select: none;
-  -webkit-user-select: none;
-}
-
-.d14-celebration-card.is-dragging,
-.d14-celebration-card.is-dragging > div {
-  cursor: grabbing !important;
 }
 
 /* Keep the arch heading in its original typefaces, available locally. */
@@ -536,4 +477,75 @@ html, body {
 .d14-engagement-content .d14-engagement-venue-name {
   max-width: 100%;
   text-wrap: balance;
+}
+
+/* Temple closing scene: sky and drifting clouds behind the transparent artwork. */
+.d14-end-scene {
+  position: relative;
+  isolation: isolate;
+  flex: none;
+  width: 100%;
+  overflow: hidden;
+  background: #a6e3ff url('/design14/assets/1Zg49ggjH1NeMsuurkKzD6m20vo.webp') center / cover no-repeat;
+}
+
+.d14-end-scene-art {
+  position: relative;
+  z-index: 1;
+  display: block;
+  width: 100%;
+  height: auto;
+}
+
+.d14-end-clouds {
+  position: absolute;
+  inset: 0;
+  z-index: 0;
+  overflow: hidden;
+  pointer-events: none;
+}
+
+.d14-end-cloud {
+  position: absolute;
+  left: 0;
+  width: 60%;
+  height: auto;
+  animation: d14-end-cloud-drift 150s linear infinite;
+  will-change: transform;
+}
+
+.d14-end-cloud--high {
+  top: 1%;
+  width: 48%;
+  opacity: .85;
+  animation-duration: 180s;
+  animation-delay: -90s;
+}
+
+.d14-end-cloud--middle {
+  top: 12%;
+  animation-delay: -104s;
+}
+
+.d14-end-cloud--low {
+  top: 23%;
+  width: 52%;
+  opacity: .9;
+  animation-duration: 165s;
+  animation-delay: -60s;
+}
+
+@keyframes d14-end-cloud-drift {
+  from { transform: translate3d(230%, 0, 0); }
+  to { transform: translate3d(-110%, 0, 0); }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .d14-end-cloud {
+    animation: none;
+    will-change: auto;
+  }
+  .d14-end-cloud--high { left: 48%; }
+  .d14-end-cloud--middle { left: -16%; }
+  .d14-end-cloud--low { left: 62%; }
 }
