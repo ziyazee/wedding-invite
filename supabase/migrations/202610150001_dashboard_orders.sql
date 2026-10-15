@@ -34,7 +34,7 @@ insert into public.invitation_templates (id, template_code, name, category, thum
  (10,'yasmin','Yasmin · An Ivory Beginning','Classic','/design10/open.jpg','/design10'),
  (11,'maitri','Maitri · A Jewel-Tone Evening','Hindu','/design11/preview.webp','/design11'),
  (12,'kiran','Kiran · Temple of Love','Hindu','/design12/preview.webp','/design12'),
- (13,'artful-love-story','The Artful Love Story','Indian','/design13/assets/zBRd2fZShor1nxxKvdVKhKU.webp','/design13'),
+ (13,'artful-love-story','The Artful Love Story','Indian','/design13/assets/zBRd2fZShor1nxxKvdVKhKU.png','/design13'),
  (14,'radha','Radha · A Timeless Union','Hindu','/design14/assets/704nAPXndZuu4f9Y58HGiZKFCM.jpeg','/design14'),
  (15,'ivory-arch','Ivory Arch · A Blessed Beginning','Classic','/design15/preview.jpg','/design15'),
  (17,'gulabi-mandap','Gulabi Mandap · A Celebration in Bloom','Hindu','/design17/preview.jpg','/design17'),
