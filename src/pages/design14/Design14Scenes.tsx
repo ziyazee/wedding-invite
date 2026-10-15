@@ -191,11 +191,240 @@ export function CoupleScene() {
   )
 }
 
+function EngagementCard({ duplicate = false }: { duplicate?: boolean }) {
+  return (
+    <section data-carousel-clone={duplicate ? "" : undefined} aria-hidden={duplicate || undefined} inert={duplicate} className={"d14-engagement-section"} data-d14-name={"Engagement Ceremony"} id={"d14-engagement-slide" + (duplicate ? "-loop" : "")} aria-labelledby={"d14-engagement-title" + (duplicate ? "-loop" : "")} aria-roledescription={"slide"}>
+      <img className={"d14-engagement-art"} src={"/design14/assets/engagement.png"} width={"962"} height={"1634"} alt={""} loading={"lazy"} decoding={"async"} />
+      <article className={"d14-engagement-content"}>
+        <h2 className={"d14-engagement-heading"} id={"d14-engagement-title" + (duplicate ? "-loop" : "")}>
+          <span className={"d14-engagement-sr-only"}>
+            {"Engagement "}
+          </span>
+          {"Ceremony"}
+        </h2>
+        <time className={"d14-engagement-date"} dateTime={"12-11"}>
+          <span className={"d14-event-month"}>
+            {"December"}
+          </span>
+          <span className={"d14-engagement-date-row"}>
+            <svg className={"d14-engagement-floret"} viewBox={"0 0 30 54"} fill={"none"} stroke={"currentColor"} strokeWidth={"1.2"} aria-hidden={"true"}>
+              <path d={"M15 2C5 15 5 20 15 27C25 20 25 15 15 2ZM15 52C5 39 5 34 15 27C25 34 25 39 15 52ZM15 27C3 14-4 24 15 27C3 40-4 30 15 27ZM15 27C27 14 34 24 15 27C27 40 34 30 15 27Z"} />
+              <circle cx={"15"} cy={"27"} r={"3"} fill={"#9D3041"} />
+            </svg>
+            <span className={"d14-event-date-line"} aria-hidden={"true"} />
+            <span className={"d14-engagement-day"}>
+              {"11"}
+            </span>
+            <span className={"d14-event-date-line"} aria-hidden={"true"} />
+            <svg className={"d14-engagement-floret"} viewBox={"0 0 30 54"} fill={"none"} stroke={"currentColor"} strokeWidth={"1.2"} aria-hidden={"true"}>
+              <path d={"M15 2C5 15 5 20 15 27C25 20 25 15 15 2ZM15 52C5 39 5 34 15 27C25 34 25 39 15 52ZM15 27C3 14-4 24 15 27C3 40-4 30 15 27ZM15 27C27 14 34 24 15 27C27 40 34 30 15 27Z"} />
+              <circle cx={"15"} cy={"27"} r={"3"} fill={"#9D3041"} />
+            </svg>
+          </span>
+        </time>
+        <p className={"d14-engagement-time"}>
+          {"Evening"}
+        </p>
+        <div className={"d14-engagement-rule"} aria-hidden={"true"}>
+          <svg className={"d14-engagement-lotus"} viewBox={"0 0 60 44"} fill={"none"} stroke={"currentColor"} strokeWidth={"1.5"} aria-hidden={"true"}>
+            <path d={"M30 3C20 14 20 25 30 35C40 25 40 14 30 3ZM30 35C12 34 7 24 6 14C19 15 27 23 30 35ZM30 35C48 34 53 24 54 14C41 15 33 23 30 35ZM30 35C15 43 5 34 2 27C14 25 23 29 30 35ZM30 35C45 43 55 34 58 27C46 25 37 29 30 35Z"} />
+            <path d={"M20 40h20"} />
+          </svg>
+        </div>
+        <div className={"d14-engagement-venue"}>
+          <p className={"d14-engagement-venue-name"}>
+            {"Kshana by the Sea"}
+          </p>
+          <p className={"d14-engagement-venue-city"}>
+            {"Kaup"}
+          </p>
+        </div>
+        <svg className={"d14-engagement-footer-ornament"} viewBox={"0 0 180 50"} fill={"none"} stroke={"currentColor"} strokeWidth={"1.4"} strokeLinecap={"round"} aria-hidden={"true"}>
+          <path d={"M90 4C77 16 79 26 90 32C101 26 103 16 90 4ZM90 32C69 31 64 22 63 14C77 16 84 22 90 32ZM90 32C111 31 116 22 117 14C103 16 96 22 90 32ZM88 37C64 48 47 19 26 23C12 26 17 38 24 33M92 37C116 48 133 19 154 23C168 26 163 38 156 33M65 35C49 34 51 9 38 13C29 17 37 24 42 18M115 35C131 34 129 9 142 13C151 17 143 24 138 18M90 37v9"} />
+          <path d={"m90 41 3 4-3 4-3-4Z"} fill={"currentColor"} />
+        </svg>
+      </article>
+    </section>
+  )
+}
+
+function SangeethCard({ duplicate = false }: { duplicate?: boolean }) {
+  return (
+    <section data-carousel-clone={duplicate ? "" : undefined} aria-hidden={duplicate || undefined} inert={duplicate} className={"d14-engagement-section d14-sangeet-section"} data-d14-name={"Sangeeth Celebration"} id={"d14-sangeet-slide" + (duplicate ? "-loop" : "")} aria-labelledby={"d14-sangeet-title" + (duplicate ? "-loop" : "")} aria-roledescription={"slide"}>
+      <img className={"d14-engagement-art"} src={"/design14/assets/sangeet.png"} width={"962"} height={"1635"} alt={""} loading={"lazy"} decoding={"async"} />
+      <article className={"d14-engagement-content"}>
+        <h2 className={"d14-engagement-heading"} id={"d14-sangeet-title" + (duplicate ? "-loop" : "")}>
+          <span className={"d14-engagement-sr-only"}>
+            {"Sangeeth "}
+          </span>
+          {"Celebration"}
+        </h2>
+        <time className={"d14-engagement-date"} dateTime={"01-31"}>
+          <span className={"d14-event-month"}>
+            {"January"}
+          </span>
+          <span className={"d14-engagement-date-row"}>
+            <svg className={"d14-engagement-floret"} viewBox={"0 0 30 54"} fill={"none"} stroke={"currentColor"} strokeWidth={"1.2"} aria-hidden={"true"}>
+              <path d={"M15 2C5 15 5 20 15 27C25 20 25 15 15 2ZM15 52C5 39 5 34 15 27C25 34 25 39 15 52ZM15 27C3 14-4 24 15 27C3 40-4 30 15 27ZM15 27C27 14 34 24 15 27C27 40 34 30 15 27Z"} />
+              <circle cx={"15"} cy={"27"} r={"3"} fill={"#9D3041"} />
+            </svg>
+            <span className={"d14-event-date-line"} aria-hidden={"true"} />
+            <span className={"d14-engagement-day"}>
+              {"31"}
+            </span>
+            <span className={"d14-event-date-line"} aria-hidden={"true"} />
+            <svg className={"d14-engagement-floret"} viewBox={"0 0 30 54"} fill={"none"} stroke={"currentColor"} strokeWidth={"1.2"} aria-hidden={"true"}>
+              <path d={"M15 2C5 15 5 20 15 27C25 20 25 15 15 2ZM15 52C5 39 5 34 15 27C25 34 25 39 15 52ZM15 27C3 14-4 24 15 27C3 40-4 30 15 27ZM15 27C27 14 34 24 15 27C27 40 34 30 15 27Z"} />
+              <circle cx={"15"} cy={"27"} r={"3"} fill={"#9D3041"} />
+            </svg>
+          </span>
+        </time>
+        <p className={"d14-engagement-time"}>
+          {"Evening"}
+        </p>
+        <div className={"d14-engagement-rule"} aria-hidden={"true"}>
+          <svg className={"d14-engagement-lotus"} viewBox={"0 0 60 44"} fill={"none"} stroke={"currentColor"} strokeWidth={"1.5"} aria-hidden={"true"}>
+            <path d={"M30 3C20 14 20 25 30 35C40 25 40 14 30 3ZM30 35C12 34 7 24 6 14C19 15 27 23 30 35ZM30 35C48 34 53 24 54 14C41 15 33 23 30 35ZM30 35C15 43 5 34 2 27C14 25 23 29 30 35ZM30 35C45 43 55 34 58 27C46 25 37 29 30 35Z"} />
+            <path d={"M20 40h20"} />
+          </svg>
+        </div>
+        <div className={"d14-engagement-venue"}>
+          <p className={"d14-engagement-venue-name"}>
+            {"Shamili Beach Resort"}
+          </p>
+          <p className={"d14-engagement-venue-city"}>
+            {"Padukere"}
+          </p>
+        </div>
+        <svg className={"d14-engagement-footer-ornament"} viewBox={"0 0 180 50"} fill={"none"} stroke={"currentColor"} strokeWidth={"1.4"} strokeLinecap={"round"} aria-hidden={"true"}>
+          <path d={"M90 4C77 16 79 26 90 32C101 26 103 16 90 4ZM90 32C69 31 64 22 63 14C77 16 84 22 90 32ZM90 32C111 31 116 22 117 14C103 16 96 22 90 32ZM88 37C64 48 47 19 26 23C12 26 17 38 24 33M92 37C116 48 133 19 154 23C168 26 163 38 156 33M65 35C49 34 51 9 38 13C29 17 37 24 42 18M115 35C131 34 129 9 142 13C151 17 143 24 138 18M90 37v9"} />
+          <path d={"m90 41 3 4-3 4-3-4Z"} fill={"currentColor"} />
+        </svg>
+      </article>
+    </section>
+  )
+}
+
+function MarriageCard({ duplicate = false }: { duplicate?: boolean }) {
+  return (
+    <section data-carousel-clone={duplicate ? "" : undefined} aria-hidden={duplicate || undefined} inert={duplicate} className={"d14-engagement-section d14-wedding-section"} data-d14-name={"Marriage Ceremony"} id={"d14-wedding-slide" + (duplicate ? "-loop" : "")} aria-labelledby={"d14-wedding-title" + (duplicate ? "-loop" : "")} aria-roledescription={"slide"}>
+      <img className={"d14-engagement-art"} src={"/design14/assets/wedding.png"} width={"962"} height={"1635"} alt={""} loading={"lazy"} decoding={"async"} />
+      <article className={"d14-engagement-content"}>
+        <h2 className={"d14-engagement-heading"} id={"d14-wedding-title" + (duplicate ? "-loop" : "")}>
+          <span className={"d14-engagement-sr-only"}>
+            {"Marriage "}
+          </span>
+          {"Ceremony"}
+        </h2>
+        <time className={"d14-engagement-date"} dateTime={"02-03"}>
+          <span className={"d14-event-month"}>
+            {"February"}
+          </span>
+          <span className={"d14-engagement-date-row"}>
+            <svg className={"d14-engagement-floret"} viewBox={"0 0 30 54"} fill={"none"} stroke={"currentColor"} strokeWidth={"1.2"} aria-hidden={"true"}>
+              <path d={"M15 2C5 15 5 20 15 27C25 20 25 15 15 2ZM15 52C5 39 5 34 15 27C25 34 25 39 15 52ZM15 27C3 14-4 24 15 27C3 40-4 30 15 27ZM15 27C27 14 34 24 15 27C27 40 34 30 15 27Z"} />
+              <circle cx={"15"} cy={"27"} r={"3"} fill={"#9D3041"} />
+            </svg>
+            <span className={"d14-event-date-line"} aria-hidden={"true"} />
+            <span className={"d14-engagement-day"}>
+              {"3"}
+            </span>
+            <span className={"d14-event-date-line"} aria-hidden={"true"} />
+            <svg className={"d14-engagement-floret"} viewBox={"0 0 30 54"} fill={"none"} stroke={"currentColor"} strokeWidth={"1.2"} aria-hidden={"true"}>
+              <path d={"M15 2C5 15 5 20 15 27C25 20 25 15 15 2ZM15 52C5 39 5 34 15 27C25 34 25 39 15 52ZM15 27C3 14-4 24 15 27C3 40-4 30 15 27ZM15 27C27 14 34 24 15 27C27 40 34 30 15 27Z"} />
+              <circle cx={"15"} cy={"27"} r={"3"} fill={"#9D3041"} />
+            </svg>
+          </span>
+        </time>
+        <p className={"d14-engagement-time"}>
+          {"Morning"}
+        </p>
+        <div className={"d14-engagement-rule"} aria-hidden={"true"}>
+          <svg className={"d14-engagement-lotus"} viewBox={"0 0 60 44"} fill={"none"} stroke={"currentColor"} strokeWidth={"1.5"} aria-hidden={"true"}>
+            <path d={"M30 3C20 14 20 25 30 35C40 25 40 14 30 3ZM30 35C12 34 7 24 6 14C19 15 27 23 30 35ZM30 35C48 34 53 24 54 14C41 15 33 23 30 35ZM30 35C15 43 5 34 2 27C14 25 23 29 30 35ZM30 35C45 43 55 34 58 27C46 25 37 29 30 35Z"} />
+            <path d={"M20 40h20"} />
+          </svg>
+        </div>
+        <div className={"d14-engagement-venue"}>
+          <p className={"d14-engagement-venue-name"}>
+            {"Amrith Garden"}
+          </p>
+          <p className={"d14-engagement-venue-city"}>
+            {"Udupi"}
+          </p>
+        </div>
+        <svg className={"d14-engagement-footer-ornament"} viewBox={"0 0 180 50"} fill={"none"} stroke={"currentColor"} strokeWidth={"1.4"} strokeLinecap={"round"} aria-hidden={"true"}>
+          <path d={"M90 4C77 16 79 26 90 32C101 26 103 16 90 4ZM90 32C69 31 64 22 63 14C77 16 84 22 90 32ZM90 32C111 31 116 22 117 14C103 16 96 22 90 32ZM88 37C64 48 47 19 26 23C12 26 17 38 24 33M92 37C116 48 133 19 154 23C168 26 163 38 156 33M65 35C49 34 51 9 38 13C29 17 37 24 42 18M115 35C131 34 129 9 142 13C151 17 143 24 138 18M90 37v9"} />
+          <path d={"m90 41 3 4-3 4-3-4Z"} fill={"currentColor"} />
+        </svg>
+      </article>
+    </section>
+  )
+}
+
+function ReceptionCard({ duplicate = false }: { duplicate?: boolean }) {
+  return (
+    <section data-carousel-clone={duplicate ? "" : undefined} aria-hidden={duplicate || undefined} inert={duplicate} className={"d14-engagement-section d14-reception-section"} data-d14-name={"Reception Celebration"} id={"d14-reception-slide" + (duplicate ? "-loop" : "")} aria-labelledby={"d14-reception-title" + (duplicate ? "-loop" : "")} aria-roledescription={"slide"}>
+      <img className={"d14-engagement-art"} src={"/design14/assets/reception.png"} width={"962"} height={"1635"} alt={""} loading={"lazy"} decoding={"async"} />
+      <article className={"d14-engagement-content"}>
+        <h2 className={"d14-engagement-heading"} id={"d14-reception-title" + (duplicate ? "-loop" : "")}>
+          <span className={"d14-engagement-sr-only"}>
+            {"Reception "}
+          </span>
+          {"Celebration"}
+        </h2>
+        <time className={"d14-engagement-date"} dateTime={"02-04"}>
+          <span className={"d14-event-month"}>
+            {"February"}
+          </span>
+          <span className={"d14-engagement-date-row"}>
+            <svg className={"d14-engagement-floret"} viewBox={"0 0 30 54"} fill={"none"} stroke={"currentColor"} strokeWidth={"1.2"} aria-hidden={"true"}>
+              <path d={"M15 2C5 15 5 20 15 27C25 20 25 15 15 2ZM15 52C5 39 5 34 15 27C25 34 25 39 15 52ZM15 27C3 14-4 24 15 27C3 40-4 30 15 27ZM15 27C27 14 34 24 15 27C27 40 34 30 15 27Z"} />
+              <circle cx={"15"} cy={"27"} r={"3"} fill={"#9D3041"} />
+            </svg>
+            <span className={"d14-event-date-line"} aria-hidden={"true"} />
+            <span className={"d14-engagement-day"}>
+              {"4"}
+            </span>
+            <span className={"d14-event-date-line"} aria-hidden={"true"} />
+            <svg className={"d14-engagement-floret"} viewBox={"0 0 30 54"} fill={"none"} stroke={"currentColor"} strokeWidth={"1.2"} aria-hidden={"true"}>
+              <path d={"M15 2C5 15 5 20 15 27C25 20 25 15 15 2ZM15 52C5 39 5 34 15 27C25 34 25 39 15 52ZM15 27C3 14-4 24 15 27C3 40-4 30 15 27ZM15 27C27 14 34 24 15 27C27 40 34 30 15 27Z"} />
+              <circle cx={"15"} cy={"27"} r={"3"} fill={"#9D3041"} />
+            </svg>
+          </span>
+        </time>
+        <p className={"d14-engagement-time"}>
+          {"Evening"}
+        </p>
+        <div className={"d14-engagement-rule"} aria-hidden={"true"}>
+          <svg className={"d14-engagement-lotus"} viewBox={"0 0 60 44"} fill={"none"} stroke={"currentColor"} strokeWidth={"1.5"} aria-hidden={"true"}>
+            <path d={"M30 3C20 14 20 25 30 35C40 25 40 14 30 3ZM30 35C12 34 7 24 6 14C19 15 27 23 30 35ZM30 35C48 34 53 24 54 14C41 15 33 23 30 35ZM30 35C15 43 5 34 2 27C14 25 23 29 30 35ZM30 35C45 43 55 34 58 27C46 25 37 29 30 35Z"} />
+            <path d={"M20 40h20"} />
+          </svg>
+        </div>
+        <div className={"d14-engagement-venue"}>
+          <p className={"d14-engagement-venue-name"}>
+            {"Ocean Pearl Times Square"}
+          </p>
+          <p className={"d14-engagement-venue-city"}>
+            {"Udupi"}
+          </p>
+        </div>
+        <svg className={"d14-engagement-footer-ornament"} viewBox={"0 0 180 50"} fill={"none"} stroke={"currentColor"} strokeWidth={"1.4"} strokeLinecap={"round"} aria-hidden={"true"}>
+          <path d={"M90 4C77 16 79 26 90 32C101 26 103 16 90 4ZM90 32C69 31 64 22 63 14C77 16 84 22 90 32ZM90 32C111 31 116 22 117 14C103 16 96 22 90 32ZM88 37C64 48 47 19 26 23C12 26 17 38 24 33M92 37C116 48 133 19 154 23C168 26 163 38 156 33M65 35C49 34 51 9 38 13C29 17 37 24 42 18M115 35C131 34 129 9 142 13C151 17 143 24 138 18M90 37v9"} />
+          <path d={"m90 41 3 4-3 4-3-4Z"} fill={"currentColor"} />
+        </svg>
+      </article>
+    </section>
+  )
+}
+
 export function Celebrations({ opened }: { opened: boolean }) {
   const { galleryRef, selected, goTo } = useDesign14Carousel(opened)
   return (
     <div className={"d14-event-gallery"} role={"region"} aria-label={"Wedding celebrations"} aria-roledescription={"carousel"} ref={galleryRef}>
-      <div className={"d14-event-gallery-nav"} role={"group"} aria-label={"Choose an event"}>
+      <div className={"d14-event-gallery-nav"} style={{ "--d14-selected-event": selected } as CSSProperties} role={"group"} aria-label={"Choose an event"}>
+        <span className="d14-event-gallery-indicator" aria-hidden="true" />
         <button type={"button"} data-event-index={"0"} aria-controls={"d14-engagement-slide"} aria-pressed={selected === 0} onClick={() => goTo(0)}>
           {"Engagement"}
         </button>
@@ -210,214 +439,12 @@ export function Celebrations({ opened }: { opened: boolean }) {
         </button>
       </div>
       <div className={"d14-event-gallery-track"} tabIndex={0} aria-label={"Event invitations. Swipe horizontally or use the left and right arrow keys."}>
-        <section className={"d14-engagement-section"} data-d14-name={"Engagement Ceremony"} id={"d14-engagement-slide"} aria-labelledby={"d14-engagement-title"} aria-roledescription={"slide"}>
-          <img className={"d14-engagement-art"} src={"/design14/assets/engagement.png"} width={"962"} height={"1634"} alt={""} loading={"lazy"} decoding={"async"} />
-          <article className={"d14-engagement-content"}>
-            <h2 className={"d14-engagement-heading"} id={"d14-engagement-title"}>
-              <span className={"d14-engagement-sr-only"}>
-                {"Engagement "}
-              </span>
-              {"Ceremony"}
-            </h2>
-            <time className={"d14-engagement-date"} dateTime={"12-11"}>
-              <span className={"d14-event-month"}>
-                {"December"}
-              </span>
-              <span className={"d14-engagement-date-row"}>
-                <svg className={"d14-engagement-floret"} viewBox={"0 0 30 54"} fill={"none"} stroke={"currentColor"} strokeWidth={"1.2"} aria-hidden={"true"}>
-                  <path d={"M15 2C5 15 5 20 15 27C25 20 25 15 15 2ZM15 52C5 39 5 34 15 27C25 34 25 39 15 52ZM15 27C3 14-4 24 15 27C3 40-4 30 15 27ZM15 27C27 14 34 24 15 27C27 40 34 30 15 27Z"} />
-                  <circle cx={"15"} cy={"27"} r={"3"} fill={"#9D3041"} />
-                </svg>
-                <span className={"d14-event-date-line"} aria-hidden={"true"} />
-                <span className={"d14-engagement-day"}>
-                  {"11"}
-                </span>
-                <span className={"d14-event-date-line"} aria-hidden={"true"} />
-                <svg className={"d14-engagement-floret"} viewBox={"0 0 30 54"} fill={"none"} stroke={"currentColor"} strokeWidth={"1.2"} aria-hidden={"true"}>
-                  <path d={"M15 2C5 15 5 20 15 27C25 20 25 15 15 2ZM15 52C5 39 5 34 15 27C25 34 25 39 15 52ZM15 27C3 14-4 24 15 27C3 40-4 30 15 27ZM15 27C27 14 34 24 15 27C27 40 34 30 15 27Z"} />
-                  <circle cx={"15"} cy={"27"} r={"3"} fill={"#9D3041"} />
-                </svg>
-              </span>
-            </time>
-            <p className={"d14-engagement-time"}>
-              {"Evening"}
-            </p>
-            <div className={"d14-engagement-rule"} aria-hidden={"true"}>
-              <svg className={"d14-engagement-lotus"} viewBox={"0 0 60 44"} fill={"none"} stroke={"currentColor"} strokeWidth={"1.5"} aria-hidden={"true"}>
-                <path d={"M30 3C20 14 20 25 30 35C40 25 40 14 30 3ZM30 35C12 34 7 24 6 14C19 15 27 23 30 35ZM30 35C48 34 53 24 54 14C41 15 33 23 30 35ZM30 35C15 43 5 34 2 27C14 25 23 29 30 35ZM30 35C45 43 55 34 58 27C46 25 37 29 30 35Z"} />
-                <path d={"M20 40h20"} />
-              </svg>
-            </div>
-            <div className={"d14-engagement-venue"}>
-              <p className={"d14-engagement-venue-name"}>
-                {"Kshana by the Sea"}
-              </p>
-              <p className={"d14-engagement-venue-city"}>
-                {"Kaup"}
-              </p>
-            </div>
-            <svg className={"d14-engagement-footer-ornament"} viewBox={"0 0 180 50"} fill={"none"} stroke={"currentColor"} strokeWidth={"1.4"} strokeLinecap={"round"} aria-hidden={"true"}>
-              <path d={"M90 4C77 16 79 26 90 32C101 26 103 16 90 4ZM90 32C69 31 64 22 63 14C77 16 84 22 90 32ZM90 32C111 31 116 22 117 14C103 16 96 22 90 32ZM88 37C64 48 47 19 26 23C12 26 17 38 24 33M92 37C116 48 133 19 154 23C168 26 163 38 156 33M65 35C49 34 51 9 38 13C29 17 37 24 42 18M115 35C131 34 129 9 142 13C151 17 143 24 138 18M90 37v9"} />
-              <path d={"m90 41 3 4-3 4-3-4Z"} fill={"currentColor"} />
-            </svg>
-          </article>
-        </section>
-        <section className={"d14-engagement-section d14-sangeet-section"} data-d14-name={"Sangeeth Celebration"} id={"d14-sangeet-slide"} aria-labelledby={"d14-sangeet-title"} aria-roledescription={"slide"}>
-          <img className={"d14-engagement-art"} src={"/design14/assets/sangeet.png"} width={"962"} height={"1635"} alt={""} loading={"lazy"} decoding={"async"} />
-          <article className={"d14-engagement-content"}>
-            <h2 className={"d14-engagement-heading"} id={"d14-sangeet-title"}>
-              <span className={"d14-engagement-sr-only"}>
-                {"Sangeeth "}
-              </span>
-              {"Celebration"}
-            </h2>
-            <time className={"d14-engagement-date"} dateTime={"01-31"}>
-              <span className={"d14-event-month"}>
-                {"January"}
-              </span>
-              <span className={"d14-engagement-date-row"}>
-                <svg className={"d14-engagement-floret"} viewBox={"0 0 30 54"} fill={"none"} stroke={"currentColor"} strokeWidth={"1.2"} aria-hidden={"true"}>
-                  <path d={"M15 2C5 15 5 20 15 27C25 20 25 15 15 2ZM15 52C5 39 5 34 15 27C25 34 25 39 15 52ZM15 27C3 14-4 24 15 27C3 40-4 30 15 27ZM15 27C27 14 34 24 15 27C27 40 34 30 15 27Z"} />
-                  <circle cx={"15"} cy={"27"} r={"3"} fill={"#9D3041"} />
-                </svg>
-                <span className={"d14-event-date-line"} aria-hidden={"true"} />
-                <span className={"d14-engagement-day"}>
-                  {"31"}
-                </span>
-                <span className={"d14-event-date-line"} aria-hidden={"true"} />
-                <svg className={"d14-engagement-floret"} viewBox={"0 0 30 54"} fill={"none"} stroke={"currentColor"} strokeWidth={"1.2"} aria-hidden={"true"}>
-                  <path d={"M15 2C5 15 5 20 15 27C25 20 25 15 15 2ZM15 52C5 39 5 34 15 27C25 34 25 39 15 52ZM15 27C3 14-4 24 15 27C3 40-4 30 15 27ZM15 27C27 14 34 24 15 27C27 40 34 30 15 27Z"} />
-                  <circle cx={"15"} cy={"27"} r={"3"} fill={"#9D3041"} />
-                </svg>
-              </span>
-            </time>
-            <p className={"d14-engagement-time"}>
-              {"Evening"}
-            </p>
-            <div className={"d14-engagement-rule"} aria-hidden={"true"}>
-              <svg className={"d14-engagement-lotus"} viewBox={"0 0 60 44"} fill={"none"} stroke={"currentColor"} strokeWidth={"1.5"} aria-hidden={"true"}>
-                <path d={"M30 3C20 14 20 25 30 35C40 25 40 14 30 3ZM30 35C12 34 7 24 6 14C19 15 27 23 30 35ZM30 35C48 34 53 24 54 14C41 15 33 23 30 35ZM30 35C15 43 5 34 2 27C14 25 23 29 30 35ZM30 35C45 43 55 34 58 27C46 25 37 29 30 35Z"} />
-                <path d={"M20 40h20"} />
-              </svg>
-            </div>
-            <div className={"d14-engagement-venue"}>
-              <p className={"d14-engagement-venue-name"}>
-                {"Shamili Beach Resort"}
-              </p>
-              <p className={"d14-engagement-venue-city"}>
-                {"Padukere"}
-              </p>
-            </div>
-            <svg className={"d14-engagement-footer-ornament"} viewBox={"0 0 180 50"} fill={"none"} stroke={"currentColor"} strokeWidth={"1.4"} strokeLinecap={"round"} aria-hidden={"true"}>
-              <path d={"M90 4C77 16 79 26 90 32C101 26 103 16 90 4ZM90 32C69 31 64 22 63 14C77 16 84 22 90 32ZM90 32C111 31 116 22 117 14C103 16 96 22 90 32ZM88 37C64 48 47 19 26 23C12 26 17 38 24 33M92 37C116 48 133 19 154 23C168 26 163 38 156 33M65 35C49 34 51 9 38 13C29 17 37 24 42 18M115 35C131 34 129 9 142 13C151 17 143 24 138 18M90 37v9"} />
-              <path d={"m90 41 3 4-3 4-3-4Z"} fill={"currentColor"} />
-            </svg>
-          </article>
-        </section>
-        <section className={"d14-engagement-section d14-wedding-section"} data-d14-name={"Marriage Ceremony"} id={"d14-wedding-slide"} aria-labelledby={"d14-wedding-title"} aria-roledescription={"slide"}>
-          <img className={"d14-engagement-art"} src={"/design14/assets/wedding.png"} width={"962"} height={"1635"} alt={""} loading={"lazy"} decoding={"async"} />
-          <article className={"d14-engagement-content"}>
-            <h2 className={"d14-engagement-heading"} id={"d14-wedding-title"}>
-              <span className={"d14-engagement-sr-only"}>
-                {"Marriage "}
-              </span>
-              {"Ceremony"}
-            </h2>
-            <time className={"d14-engagement-date"} dateTime={"02-03"}>
-              <span className={"d14-event-month"}>
-                {"February"}
-              </span>
-              <span className={"d14-engagement-date-row"}>
-                <svg className={"d14-engagement-floret"} viewBox={"0 0 30 54"} fill={"none"} stroke={"currentColor"} strokeWidth={"1.2"} aria-hidden={"true"}>
-                  <path d={"M15 2C5 15 5 20 15 27C25 20 25 15 15 2ZM15 52C5 39 5 34 15 27C25 34 25 39 15 52ZM15 27C3 14-4 24 15 27C3 40-4 30 15 27ZM15 27C27 14 34 24 15 27C27 40 34 30 15 27Z"} />
-                  <circle cx={"15"} cy={"27"} r={"3"} fill={"#9D3041"} />
-                </svg>
-                <span className={"d14-event-date-line"} aria-hidden={"true"} />
-                <span className={"d14-engagement-day"}>
-                  {"3"}
-                </span>
-                <span className={"d14-event-date-line"} aria-hidden={"true"} />
-                <svg className={"d14-engagement-floret"} viewBox={"0 0 30 54"} fill={"none"} stroke={"currentColor"} strokeWidth={"1.2"} aria-hidden={"true"}>
-                  <path d={"M15 2C5 15 5 20 15 27C25 20 25 15 15 2ZM15 52C5 39 5 34 15 27C25 34 25 39 15 52ZM15 27C3 14-4 24 15 27C3 40-4 30 15 27ZM15 27C27 14 34 24 15 27C27 40 34 30 15 27Z"} />
-                  <circle cx={"15"} cy={"27"} r={"3"} fill={"#9D3041"} />
-                </svg>
-              </span>
-            </time>
-            <p className={"d14-engagement-time"}>
-              {"Morning"}
-            </p>
-            <div className={"d14-engagement-rule"} aria-hidden={"true"}>
-              <svg className={"d14-engagement-lotus"} viewBox={"0 0 60 44"} fill={"none"} stroke={"currentColor"} strokeWidth={"1.5"} aria-hidden={"true"}>
-                <path d={"M30 3C20 14 20 25 30 35C40 25 40 14 30 3ZM30 35C12 34 7 24 6 14C19 15 27 23 30 35ZM30 35C48 34 53 24 54 14C41 15 33 23 30 35ZM30 35C15 43 5 34 2 27C14 25 23 29 30 35ZM30 35C45 43 55 34 58 27C46 25 37 29 30 35Z"} />
-                <path d={"M20 40h20"} />
-              </svg>
-            </div>
-            <div className={"d14-engagement-venue"}>
-              <p className={"d14-engagement-venue-name"}>
-                {"Amrith Garden"}
-              </p>
-              <p className={"d14-engagement-venue-city"}>
-                {"Udupi"}
-              </p>
-            </div>
-            <svg className={"d14-engagement-footer-ornament"} viewBox={"0 0 180 50"} fill={"none"} stroke={"currentColor"} strokeWidth={"1.4"} strokeLinecap={"round"} aria-hidden={"true"}>
-              <path d={"M90 4C77 16 79 26 90 32C101 26 103 16 90 4ZM90 32C69 31 64 22 63 14C77 16 84 22 90 32ZM90 32C111 31 116 22 117 14C103 16 96 22 90 32ZM88 37C64 48 47 19 26 23C12 26 17 38 24 33M92 37C116 48 133 19 154 23C168 26 163 38 156 33M65 35C49 34 51 9 38 13C29 17 37 24 42 18M115 35C131 34 129 9 142 13C151 17 143 24 138 18M90 37v9"} />
-              <path d={"m90 41 3 4-3 4-3-4Z"} fill={"currentColor"} />
-            </svg>
-          </article>
-        </section>
-        <section className={"d14-engagement-section d14-reception-section"} data-d14-name={"Reception Celebration"} id={"d14-reception-slide"} aria-labelledby={"d14-reception-title"} aria-roledescription={"slide"}>
-          <img className={"d14-engagement-art"} src={"/design14/assets/reception.png"} width={"962"} height={"1635"} alt={""} loading={"lazy"} decoding={"async"} />
-          <article className={"d14-engagement-content"}>
-            <h2 className={"d14-engagement-heading"} id={"d14-reception-title"}>
-              <span className={"d14-engagement-sr-only"}>
-                {"Reception "}
-              </span>
-              {"Celebration"}
-            </h2>
-            <time className={"d14-engagement-date"} dateTime={"02-04"}>
-              <span className={"d14-event-month"}>
-                {"February"}
-              </span>
-              <span className={"d14-engagement-date-row"}>
-                <svg className={"d14-engagement-floret"} viewBox={"0 0 30 54"} fill={"none"} stroke={"currentColor"} strokeWidth={"1.2"} aria-hidden={"true"}>
-                  <path d={"M15 2C5 15 5 20 15 27C25 20 25 15 15 2ZM15 52C5 39 5 34 15 27C25 34 25 39 15 52ZM15 27C3 14-4 24 15 27C3 40-4 30 15 27ZM15 27C27 14 34 24 15 27C27 40 34 30 15 27Z"} />
-                  <circle cx={"15"} cy={"27"} r={"3"} fill={"#9D3041"} />
-                </svg>
-                <span className={"d14-event-date-line"} aria-hidden={"true"} />
-                <span className={"d14-engagement-day"}>
-                  {"4"}
-                </span>
-                <span className={"d14-event-date-line"} aria-hidden={"true"} />
-                <svg className={"d14-engagement-floret"} viewBox={"0 0 30 54"} fill={"none"} stroke={"currentColor"} strokeWidth={"1.2"} aria-hidden={"true"}>
-                  <path d={"M15 2C5 15 5 20 15 27C25 20 25 15 15 2ZM15 52C5 39 5 34 15 27C25 34 25 39 15 52ZM15 27C3 14-4 24 15 27C3 40-4 30 15 27ZM15 27C27 14 34 24 15 27C27 40 34 30 15 27Z"} />
-                  <circle cx={"15"} cy={"27"} r={"3"} fill={"#9D3041"} />
-                </svg>
-              </span>
-            </time>
-            <p className={"d14-engagement-time"}>
-              {"Evening"}
-            </p>
-            <div className={"d14-engagement-rule"} aria-hidden={"true"}>
-              <svg className={"d14-engagement-lotus"} viewBox={"0 0 60 44"} fill={"none"} stroke={"currentColor"} strokeWidth={"1.5"} aria-hidden={"true"}>
-                <path d={"M30 3C20 14 20 25 30 35C40 25 40 14 30 3ZM30 35C12 34 7 24 6 14C19 15 27 23 30 35ZM30 35C48 34 53 24 54 14C41 15 33 23 30 35ZM30 35C15 43 5 34 2 27C14 25 23 29 30 35ZM30 35C45 43 55 34 58 27C46 25 37 29 30 35Z"} />
-                <path d={"M20 40h20"} />
-              </svg>
-            </div>
-            <div className={"d14-engagement-venue"}>
-              <p className={"d14-engagement-venue-name"}>
-                {"Ocean Pearl Times Square"}
-              </p>
-              <p className={"d14-engagement-venue-city"}>
-                {"Udupi"}
-              </p>
-            </div>
-            <svg className={"d14-engagement-footer-ornament"} viewBox={"0 0 180 50"} fill={"none"} stroke={"currentColor"} strokeWidth={"1.4"} strokeLinecap={"round"} aria-hidden={"true"}>
-              <path d={"M90 4C77 16 79 26 90 32C101 26 103 16 90 4ZM90 32C69 31 64 22 63 14C77 16 84 22 90 32ZM90 32C111 31 116 22 117 14C103 16 96 22 90 32ZM88 37C64 48 47 19 26 23C12 26 17 38 24 33M92 37C116 48 133 19 154 23C168 26 163 38 156 33M65 35C49 34 51 9 38 13C29 17 37 24 42 18M115 35C131 34 129 9 142 13C151 17 143 24 138 18M90 37v9"} />
-              <path d={"m90 41 3 4-3 4-3-4Z"} fill={"currentColor"} />
-            </svg>
-          </article>
-        </section>
+        <ReceptionCard duplicate />
+        <EngagementCard />
+        <SangeethCard />
+        <MarriageCard />
+        <ReceptionCard />
+        <EngagementCard duplicate />
       </div>
     </div>
   )

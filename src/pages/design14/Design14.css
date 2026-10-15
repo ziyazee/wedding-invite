@@ -1551,3 +1551,46 @@ html:where(.d14-document).d14-started #main .d14-entry-name {
   min-height: calc(100vw / .718993);
   aspect-ratio: auto;
 }
+
+/* Smooth looping cards and a single sliding selection pill. */
+:where(html.d14-document) .d14-event-gallery-track.is-animating,
+:where(html.d14-document) .d14-event-gallery-track.is-repositioning {
+  scroll-snap-type: none;
+  scroll-behavior: auto;
+}
+
+:where(html.d14-document) .d14-event-gallery-nav {
+  position: relative;
+  isolation: isolate;
+}
+
+:where(html.d14-document) .d14-event-gallery-indicator {
+  position: absolute;
+  z-index: -1;
+  top: 12px;
+  bottom: 12px;
+  left: 8px;
+  width: calc((100% - 34px) / 4);
+  border: 1px solid #9d3041;
+  border-radius: 999px;
+  background: #9d3041;
+  pointer-events: none;
+  transform: translateX(calc(var(--d14-selected-event, 0) * (100% + 6px)));
+  transition: transform 680ms cubic-bezier(.65, 0, .35, 1);
+}
+
+:where(html.d14-document) .d14-event-gallery-nav button {
+  transition: color 350ms ease, border-color 350ms ease;
+}
+
+:where(html.d14-document) .d14-event-gallery-nav button[aria-pressed="true"] {
+  background: transparent;
+  border-color: transparent;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  :where(html.d14-document) .d14-event-gallery-indicator,
+  :where(html.d14-document) .d14-event-gallery-nav button {
+    transition: none;
+  }
+}
