@@ -27,7 +27,7 @@
   const shortDate = formatDate(date, { day: '2-digit', month: '2-digit', year: '2-digit' })
   const timeLabel = time ? new Date(`2000-01-01T${time}:00Z`).toLocaleTimeString('en-US', { hour: 'numeric', minute: '2-digit', timeZone: 'UTC' }) : ''
   const initial = `${groom.charAt(0)}&${bride.charAt(0)}`
-  const names = { KIRAN: groom, RAHUL: bride, KRISHNA: groom, RADHA: bride }
+  const names = { KIRAN: groom, RAHUL: bride, KRISHNA: groom, RADHA: bride, ...(template === 14 ? { ARJUN: groom, BHAVANA: bride } : {}) }
   const familyRows = new Map([
     ["Mr. [Bride's Grandfather Name] & Mrs. [Bride's Grandmother Name]", brideFamily],
     ["Mr. [Bride's Father Name] & Mrs. [Bride's Mother Name]", brideFamily],
@@ -49,7 +49,7 @@
     } else if ((!brideFamily && trimmed === 'and beloved daughter of') || (!groomFamily && trimmed === 'together with')) {
       next = value.replace(trimmed, '')
     } else {
-      next = value.replace(/\b(KIRAN|RAHUL|KRISHNA|RADHA)\b/gi, (match) => {
+      next = value.replace(/\b(KIRAN|RAHUL|KRISHNA|RADHA|ARJUN|BHAVANA)\b/gi, (match) => {
         const person = names[match.toUpperCase()]
         if (!person) return match
         if (match === match.toUpperCase()) return person.toUpperCase()
@@ -64,7 +64,7 @@
       if (template === 14 && trimmed === 'MEHANDI') next = next.replace(trimmed, event.toUpperCase())
       if (template === 13 && trimmed === 'Mehendi Night') next = next.replace(trimmed, event)
       if (/^TAJ HOTEL(?: MUMBAI)?$/i.test(trimmed) && venue) next = next.replace(trimmed, venue.toUpperCase())
-      if (trimmed === 'K&R' && groom && bride) next = next.replace(trimmed, initial.toUpperCase())
+      if ((trimmed === 'K&R' || (template === 14 && trimmed === 'A&B')) && groom && bride) next = next.replace(trimmed, initial.toUpperCase())
       if (trimmed === '#Rahulkikiran' && groom && bride) next = next.replace(trimmed, `#${groom}${bride}`)
     }
 

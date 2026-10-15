@@ -29,15 +29,22 @@
   }
 
   function connectCelebrationCards() {
-    // The exported markup contains only the first slide; restore the original event set.
-    const events = [
-      ['MEHANDI', 'F2ADq8uKnJWgYF9TX50Ef0rL0U.webp'],
-      ['HALDI', 'AiodKv9zJ0BlEmWhyX3vawMBKn4.webp'],
-      ['SANGEET', 'zjqtpqy1i6UVkVV7j0yqT92xg.webp'],
-      ['ENGAGEMENT', 'Dnhs3xqWl66pAa5cQMqyiJLm6xU.webp'],
-      ['VARMALA', '89YF55J2ugFQJf4BGdUezGe9VYo.webp'],
-      ['RECEPTION', '3jA5p30m5FlsyntlYoqOaNJk3WM.webp'],
+    // Both carousels share the details written in the invitation cards.
+    const eventImages = [
+      'Dnhs3xqWl66pAa5cQMqyiJLm6xU.webp',
+      'zjqtpqy1i6UVkVV7j0yqT92xg.webp',
+      '89YF55J2ugFQJf4BGdUezGe9VYo.webp',
+      '3jA5p30m5FlsyntlYoqOaNJk3WM.webp',
     ]
+    const events = [...document.querySelectorAll('.d14-event-gallery-track > section')].map((slide, index) => {
+      const text = selector => slide.querySelector(selector)?.textContent.trim() || ''
+      return {
+        title: slide.dataset.d14Name.replace(/ (Ceremony|Celebration)$/, '').toUpperCase(),
+        image: eventImages[index],
+        content: `${text('.d14-engagement-day')} ${text('.d14-event-month')} · ${text('.d14-engagement-time')} — 📍 ${text('.d14-engagement-venue-name')}, ${text('.d14-engagement-venue-city')}`,
+      }
+    })
+    if (!events.length) return
     const motion = matchMedia('(prefers-reduced-motion: reduce)')
     const cards = [...document.querySelectorAll('.d14-events-section .ssr-variant > div')]
     const images = new Map()
@@ -53,6 +60,7 @@
     let revision = 0
     const views = cards.map(card => {
       const title = card.querySelector('h2')
+      const description = card.querySelector('p')
       const image = card.querySelector('img')
       const dots = [...card.querySelectorAll('[aria-label^="Go to slide"]')]
       card.classList.add('d14-celebration-card')
@@ -61,18 +69,19 @@
       card.setAttribute('aria-label', 'Celebration events')
       title.parentElement.setAttribute('aria-live', 'polite')
       image.draggable = false
-      return { card, title, image, dots, firstImage: image.getAttribute('src') }
+      return { card, title, description, image, dots }
     })
     const show = async (index, direction = 1) => {
       selected = (index + events.length) % events.length
       const current = selected
       const request = ++revision
-      await Promise.all(views.map(view => preload(current === 0 ? view.firstImage : `/design14/assets/${events[current][1]}`)))
+      await preload(`/design14/assets/${events[current].image}`)
       if (request !== revision) return
-      views.forEach(({ card, title, image, dots, firstImage }) => {
-        title.textContent = events[current][0]
-        image.src = current === 0 ? firstImage : `/design14/assets/${events[current][1]}`
-        image.alt = `${events[current][0]} celebration`
+      views.forEach(({ card, title, description, image, dots }) => {
+        title.textContent = events[current].title
+        description.textContent = events[current].content
+        image.src = `/design14/assets/${events[current].image}`
+        image.alt = `${events[current].title} celebration`
         card.setAttribute('aria-label', `Celebration events, ${current + 1} of ${events.length}`)
         dots.forEach((dot, i) => {
           dot.setAttribute('aria-current', String(i === current))
@@ -142,7 +151,7 @@
       }, { passive: false })
     })
     // Load the other event images when this section approaches the viewport.
-    const loadImages = () => events.slice(1).forEach(([, file]) => void preload(`/design14/assets/${file}`))
+    const loadImages = () => events.slice(1).forEach(event => void preload(`/design14/assets/${event.image}`))
     if ('IntersectionObserver' in window && cards.length) {
       const observer = new IntersectionObserver(entries => {
         if (!entries.some(entry => entry.isIntersecting)) return
@@ -151,6 +160,74 @@
       }, { rootMargin: '400px' })
       observer.observe(cards[0].closest('.d14-events-section'))
     } else if (cards.length) loadImages()
+  }
+
+  function connectEventGallery() {
+    const gallery = document.querySelector('.d14-event-gallery')
+    const track = gallery?.querySelector('.d14-event-gallery-track')
+    if (!track) return
+    const slides = [...track.children]
+    const buttons = [...gallery.querySelectorAll('[data-event-index]')]
+    const motion = matchMedia('(prefers-reduced-motion: reduce)')
+    let selected = 0
+    let width = track.clientWidth
+    const update = () => {
+      if (!track.clientWidth) return
+      selected = Math.max(0, Math.min(slides.length - 1, Math.round(track.scrollLeft / track.clientWidth)))
+      buttons.forEach((button, index) => button.setAttribute('aria-pressed', String(index === selected)))
+    }
+    const goTo = (index, animate = true) => {
+      selected = Math.max(0, Math.min(slides.length - 1, index))
+      track.scrollTo({ left: selected * track.clientWidth, behavior: animate && !motion.matches ? 'smooth' : 'instant' })
+    }
+    buttons.forEach(button => button.addEventListener('click', () => goTo(Number(button.dataset.eventIndex))))
+    track.addEventListener('scroll', update, { passive: true })
+    track.addEventListener('keydown', event => {
+      if (!['ArrowLeft', 'ArrowRight', 'Home', 'End'].includes(event.key)) return
+      event.preventDefault()
+      goTo(event.key === 'Home' ? 0 : event.key === 'End' ? slides.length - 1 : selected + (event.key === 'ArrowRight' ? 1 : -1))
+    })
+    // Touch and trackpads use native scrolling; mouse users can also drag the cards.
+    let drag = null
+    track.querySelectorAll('img').forEach(image => { image.draggable = false })
+    track.addEventListener('pointerdown', event => {
+      if (event.pointerType !== 'mouse' || event.button !== 0) return
+      drag = { id: event.pointerId, x: event.clientX, left: track.scrollLeft, active: false }
+    })
+    track.addEventListener('pointermove', event => {
+      if (!drag || drag.id !== event.pointerId) return
+      const distance = event.clientX - drag.x
+      if (!drag.active && Math.abs(distance) < 6) return
+      if (!drag.active) {
+        drag.active = true
+        track.classList.add('is-dragging')
+        track.setPointerCapture(event.pointerId)
+      }
+      event.preventDefault()
+      track.scrollLeft = drag.left - distance
+    })
+    const finishDrag = () => {
+      if (!drag) return
+      const active = drag.active
+      const id = drag.id
+      drag = null
+      const nearest = Math.round(track.scrollLeft / track.clientWidth)
+      track.classList.remove('is-dragging')
+      if (track.hasPointerCapture(id)) track.releasePointerCapture(id)
+      if (active) goTo(nearest)
+    }
+    track.addEventListener('pointerup', finishDrag)
+    track.addEventListener('pointercancel', finishDrag)
+    track.addEventListener('lostpointercapture', finishDrag)
+    track.addEventListener('pointerleave', () => { if (drag && !drag.active) drag = null })
+    const resize = () => {
+      if (width === track.clientWidth) return
+      width = track.clientWidth
+      goTo(selected, false)
+    }
+    if ('ResizeObserver' in window) new ResizeObserver(resize).observe(track)
+    else window.addEventListener('resize', resize, { passive: true })
+    update()
   }
 
   function connectAudio() {
@@ -258,4 +335,5 @@
   prepareReveals()
   connectAudio()
   connectCelebrationCards()
+  connectEventGallery()
 })()
