@@ -24,6 +24,11 @@
       "source": "/design14/",
       "destination": "/arjunbhavana",
       "permanent": true
+    },
+    {
+      "source": "/design14/index.html",
+      "destination": "/arjunbhavana",
+      "permanent": true
     }
   ]
 }

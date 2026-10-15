@@ -201,3 +201,29 @@ where id = 'ADMIN-AUTH-USER-UUID'::uuid;
 Assign `ADMIN` only through the trusted Supabase SQL editor or a trusted server process. After changing `app_metadata`, have the user sign out and back in so their JWT receives the updated claim. The app does not provide self-service role changes. Published dashboard orders use `/{orderNumber}/{groombrideName}` and are looked up through `get_published_invitation`; only rows with `READY` status are returned to public visitors. Existing D1/local invitations continue to use their existing storage routes.
 
 The new dashboards require the Supabase migration and Auth accounts to be configured before use. No Supabase schema changes or deployment are applied automatically by the frontend.
+
+
+### Design 14 — Arjun & Bhavana
+
+`/arjunbhavana` is a native React invitation. The earlier `/design14` and
+`/design14/index.html` URLs redirect to it. Artwork and music remain under
+`public/design14/assets/`.
+
+- `src/pages/Design14.tsx`: invitation entry, music, names, and page lifecycle.
+- `src/pages/design14/Design14Scenes.tsx`: original scene markup converted to JSX,
+  including the four celebration cards and closing message.
+- `src/pages/design14/Design14.css`: preserved layout, typography, and animation
+  styles, scoped to the mounted invitation.
+- `src/pages/design14/useDesign14Motion.ts`: scene motion and reveal effects.
+- `src/pages/design14/useDesign14Carousel.ts`: carousel autoplay, dragging,
+  keyboard controls, and lifecycle cleanup.
+- `arjunbhavana.html` and `src/arjunbhavana.tsx`: dedicated React entry with static
+  social metadata, built alongside the main application by Vite.
+
+The public page renders the invitation directly, without an iframe. The landing
+page still uses its existing phone preview frame. The invitation retains the
+opening music gesture, paused clouds and locked scrolling before opening, slow
+name reveal, original artwork, event details, and responsive dimensions. Shared
+invitation context still supplies custom names/music; legacy name/music query
+parameters are also accepted. Timers, listeners, observers, and music are cleaned
+up when the component unmounts.
