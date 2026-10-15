@@ -273,7 +273,7 @@
   }
 
 
-  // This scene is fourth in the invitation, following the standalone events card.
+  // Couple scene following the opening invitation pages.
   function connectCoupleScene() {
     const scene = document.querySelector('[data-d14-name="PAGE 3"]')
     const couple = scene?.querySelector('[data-d14-name="COUPLE"]')
