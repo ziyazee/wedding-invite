@@ -1,6 +1,29 @@
 {
   "$schema": "https://openapi.vercel.sh/vercel.json",
   "rewrites": [
-    { "source": "/(.*)", "destination": "/index.html" }
+    {
+      "source": "/arjunbhavana",
+      "destination": "/arjunbhavana.html"
+    },
+    {
+      "source": "/arjunbhavana/",
+      "destination": "/arjunbhavana.html"
+    },
+    {
+      "source": "/(.*)",
+      "destination": "/index.html"
+    }
+  ],
+  "redirects": [
+    {
+      "source": "/design14",
+      "destination": "/arjunbhavana",
+      "permanent": true
+    },
+    {
+      "source": "/design14/",
+      "destination": "/arjunbhavana",
+      "permanent": true
+    }
   ]
 }

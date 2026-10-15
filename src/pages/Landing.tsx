@@ -8,7 +8,7 @@ const templates: Template[] = [
   { id: 6, name: 'Majestic', mood: 'Pearl · Chandeliers · Garden', image: '/design6/assets/hero-poster-DkA1j00-.jpg', path: '/design6' },
   { id: 3, name: 'Embroidered Garden', mood: 'Wisteria · Swans · Romance', image: '/design3/assets/embroidered-swans-hero-v2.png' },
   { id: 7, name: 'Bloom', mood: 'Garden · Ivory · Romantic', image: '/design7/assets/hero-bg-RvVOmFvi.png' },
-  { id: 14, name: 'Arjun & Bhavana · A Timeless Union', mood: 'Traditional · Hindu · Floral', image: '/design14/assets/704nAPXndZuu4f9Y58HGiZKFCM.jpeg' },
+  { id: 14, name: 'Arjun & Bhavana · A Timeless Union', mood: 'Traditional · Hindu · Floral', image: '/design14/assets/704nAPXndZuu4f9Y58HGiZKFCM.jpeg', path: '/arjunbhavana' },
   { id: 13, name: 'The Artful Love Story', mood: 'Ornate · Indian · Romantic', image: '/design13/assets/zBRd2fZShor1nxxKvdVKhKU.png' },
   { id: 15, name: 'Ivory Arch', mood: 'Ivory · Champagne · Elegant', image: '/design15/preview.jpg' },
   { id: 17, name: 'Gulabi Mandap', mood: 'Rose · Champagne · Romance', image: '/design17/preview.jpg' },

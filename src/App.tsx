@@ -51,7 +51,8 @@ export default function App() {
       <Route path="/design11" element={<Design11 />} />
       <Route path="/design12" element={<Design12 />} />
       <Route path="/design13" element={<Design13 />} />
-      <Route path="/design14" element={<Design14 />} />
+      <Route path="/design14" element={<Navigate to="/arjunbhavana" replace />} />
+      <Route path="/arjunbhavana" element={<Design14 />} />
       <Route path="/design15" element={<Design15 />} />
       <Route path="/design16" element={<Design16 />} />
       <Route path="/design17" element={<Design17 />} />
