@@ -1543,3 +1543,11 @@ html:where(.d14-document).d14-started #main .d14-entry-name {
 @media (max-width: 809.98px) {
   :where(html.d14-document) .d14-JfqWY .d14-entry-date { top: 16.3%; width: 18%; }
 }
+
+/* Fill the opening frame beneath the temple at every viewport width. */
+:where(html.d14-document) [data-d14-name="PAGE 1"] [data-d14-name="TEMPLE"] {
+  bottom: 0;
+  height: auto;
+  min-height: calc(100vw / .718993);
+  aspect-ratio: auto;
+}
