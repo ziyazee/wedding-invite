@@ -1,9 +1,20 @@
-/*
- * The Framer export initially hides these two scene layers while its remote
- * runtime prepares the entrance animation. Keep the artwork visible when that
- * third-party runtime is delayed or unavailable on a deployed site.
- */
-#main .framer-29qdai[data-framer-appear-id],
-#main .framer-g6t4xr[data-framer-appear-id] {
+html, body {
+  margin: 0;
+  min-height: 100%;
+  overflow-x: hidden;
+}
+
+#main [data-framer-appear-id="29qdai"],
+#main [data-framer-appear-id="g6t4xr"] {
   opacity: 1 !important;
+}
+
+#__framer-badge-container {
+  display: none !important;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  #main [style*="opacity:0"] {
+    opacity: 1 !important;
+  }
 }
