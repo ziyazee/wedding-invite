@@ -1,11 +1,11 @@
 (() => {
-  const root = document.querySelector('[data-framer-root]')
+  const root = document.querySelector('[data-d14-root]')
 
   function selectBreakpoint() {
     if (!root) return
     const width = window.innerWidth
-    const variant = width >= 1440 ? 'framer-1cng0pt' : width >= 1201 ? 'framer-72rtr7' : width >= 810 ? 'framer-x93lnp' : 'framer-xjl96b'
-    root.classList.remove('framer-1cng0pt', 'framer-72rtr7', 'framer-x93lnp', 'framer-xjl96b')
+    const variant = width >= 1440 ? 'd14-1cng0pt' : width >= 1201 ? 'd14-72rtr7' : width >= 810 ? 'd14-x93lnp' : 'd14-xjl96b'
+    root.classList.remove('d14-1cng0pt', 'd14-72rtr7', 'd14-x93lnp', 'd14-xjl96b')
     root.classList.add(variant)
   }
 
@@ -21,7 +21,7 @@
   function prepareReveals() {
     const elements = [...document.querySelectorAll('#main [style*="opacity:0"]')].filter(element => {
       const opacity = element.style.opacity
-      return (opacity === '0' || opacity === '0.001') && element.dataset.framerName !== 'Insta Gradient BG'
+      return (opacity === '0' || opacity === '0.001') && element.dataset.d14Name !== 'Insta Gradient BG'
     })
     if (!('IntersectionObserver' in window) || matchMedia('(prefers-reduced-motion: reduce)').matches) {
       elements.forEach(reveal)
@@ -47,19 +47,19 @@
   }
 
   function createCloudLayer() {
-    const sky = document.querySelector('[data-framer-name="PAGE 1"] [data-framer-name="SKY"]')
+    const sky = document.querySelector('[data-d14-name="PAGE 1"] [data-d14-name="SKY"]')
     if (!sky || sky.querySelector('.d14-local-cloud')) return
     const cloud = document.createElement('img')
     cloud.className = 'd14-local-cloud'
-    cloud.src = './assets/UeasMBu07jHUk5ch5onj5OD9f4.webp'
+    cloud.src = '/design14/assets/UeasMBu07jHUk5ch5onj5OD9f4.webp'
     cloud.alt = ''
     cloud.setAttribute('aria-hidden', 'true')
     sky.appendChild(cloud)
   }
 
   function connectTempleParallax() {
-    const temple = document.querySelector('[data-framer-name="PAGE 1"] [data-framer-name="TEMPLE"]')
-    const firstPage = document.querySelector('[data-framer-name="PAGE 1"]')
+    const temple = document.querySelector('[data-d14-name="PAGE 1"] [data-d14-name="TEMPLE"]')
+    const firstPage = document.querySelector('[data-d14-name="PAGE 1"]')
     if (!temple || !firstPage || matchMedia('(prefers-reduced-motion: reduce)').matches) return
     let scheduled = false
     const update = () => {
@@ -78,8 +78,8 @@
   }
 
   function connectSecondGateParallax() {
-    const gate = document.querySelector('[data-framer-name="GATE 2"]')
-    const page = gate?.closest('[data-framer-name^="PAGE"]')
+    const gate = document.querySelector('[data-d14-name="GATE 2"]')
+    const page = gate?.closest('[data-d14-name^="PAGE"]')
     if (!gate || !page || matchMedia('(prefers-reduced-motion: reduce)').matches) return
     let scheduled = false
     const update = () => {
@@ -98,7 +98,7 @@
     window.addEventListener('resize', schedule, { passive: true })
   }
 
-  document.querySelector('#__framer-badge-container')?.remove()
+  document.querySelector('#__d14-badge-container')?.remove()
   createCloudLayer()
   connectTempleParallax()
   connectSecondGateParallax()
