@@ -3,6 +3,7 @@ import { useInvitationDetails } from '../invitations/context'
 import { OpeningScene, WelcomeScene, CoupleScene, Celebrations, ClosingScene, SvgDefinitions } from './design14/Design14Scenes'
 import { useDesign14Motion } from './design14/useDesign14Motion'
 import styles from './design14/Design14.css?inline'
+import { useDesign14TextMotion } from './design14/useDesign14TextMotion'
 
 export default function Design14() {
   const details = useInvitationDetails()
@@ -20,6 +21,7 @@ export default function Design14() {
   const [entryVisible, setEntryVisible] = useState(true)
   const [pending, setPending] = useState(false)
   const [playbackFailed, setPlaybackFailed] = useState(false)
+  useDesign14TextMotion(host, opened)
   useDesign14Motion(host, opened)
 
   useLayoutEffect(() => {

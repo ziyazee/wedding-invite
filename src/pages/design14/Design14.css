@@ -1594,3 +1594,55 @@ html:where(.d14-document).d14-started #main .d14-entry-name {
     transition: none;
   }
 }
+
+/* Text enters gently without changing its layout or existing artwork transforms. */
+:where(html.d14-document) [data-d14-text-motion] {
+  opacity: 0 !important;
+  translate: 0 14px;
+  transition: none !important;
+}
+
+:where(html.d14-document) [data-d14-text-motion].d14-text-visible {
+  opacity: 1 !important;
+  translate: 0 0;
+  transition: opacity 1100ms cubic-bezier(.22, .61, .36, 1) var(--d14-text-delay, 0ms),
+    translate 1100ms cubic-bezier(.22, .61, .36, 1) var(--d14-text-delay, 0ms) !important;
+}
+
+:where(html.d14-document) .d14-event-label {
+  display: block;
+}
+
+html:where(.d14-document) #main .d14-entry-name {
+  translate: 0 12px;
+  transition: opacity 2800ms cubic-bezier(.22, .61, .36, 1) var(--d14-entry-delay, 250ms),
+    translate 2800ms cubic-bezier(.22, .61, .36, 1) var(--d14-entry-delay, 250ms) !important;
+}
+
+html:where(.d14-document) #main .d14-1sy4tjt { --d14-entry-delay: 430ms; }
+html:where(.d14-document) #main .d14-1xwenpz { --d14-entry-delay: 610ms; }
+html:where(.d14-document) #main .d14-entry-date { --d14-entry-delay: 790ms; }
+html:where(.d14-document).d14-started #main .d14-entry-name { translate: 0 0; }
+
+:where(html.d14-document) .d14-entry-label {
+  animation: d14-entry-label-reveal 1000ms ease both;
+}
+
+@keyframes d14-entry-label-reveal {
+  from { opacity: 0; translate: 0 4px; }
+  to { opacity: 1; translate: 0 0; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  :where(html.d14-document) [data-d14-text-motion],
+  :where(html.d14-document) [data-d14-text-motion].d14-text-visible {
+    opacity: 1 !important;
+    translate: none;
+    transition: none !important;
+  }
+  html:where(.d14-document) #main .d14-entry-name {
+    translate: none;
+    transition: opacity 150ms ease !important;
+  }
+  :where(html.d14-document) .d14-entry-label { animation: none; }
+}

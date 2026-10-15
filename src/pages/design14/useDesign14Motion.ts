@@ -74,7 +74,7 @@ export function useDesign14Motion(host: RefObject<HTMLDivElement | null>, opened
       frames.add(frame)
     }
     const elements = Array.from(host.current.querySelectorAll<HTMLElement | SVGElement>('#main [style]')).filter(element => {
-      return ['0', '0.001'].includes(element.style.opacity) && element.dataset.d14Name !== 'Insta Gradient BG' && !element.classList.contains('d14-entry-name')
+      return ['0', '0.001'].includes(element.style.opacity) && element.dataset.d14Name !== 'Insta Gradient BG' && !element.classList.contains('d14-entry-name') && !element.hasAttribute('data-d14-text-motion')
     })
     const motion = matchMedia('(prefers-reduced-motion: reduce)')
     const observer = typeof IntersectionObserver !== 'undefined' && !motion.matches

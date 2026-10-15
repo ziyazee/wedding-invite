@@ -426,16 +426,16 @@ export function Celebrations({ opened }: { opened: boolean }) {
       <div className={"d14-event-gallery-nav"} style={{ "--d14-selected-event": selected } as CSSProperties} role={"group"} aria-label={"Choose an event"}>
         <span className="d14-event-gallery-indicator" aria-hidden="true" />
         <button type={"button"} data-event-index={"0"} aria-controls={"d14-engagement-slide"} aria-pressed={selected === 0} onClick={() => goTo(0)}>
-          {"Engagement"}
+          <span className="d14-event-label">Engagement</span>
         </button>
         <button type={"button"} data-event-index={"1"} aria-controls={"d14-sangeet-slide"} aria-pressed={selected === 1} onClick={() => goTo(1)}>
-          {"Sangeeth"}
+          <span className="d14-event-label">Sangeeth</span>
         </button>
         <button type={"button"} data-event-index={"2"} aria-controls={"d14-wedding-slide"} aria-pressed={selected === 2} onClick={() => goTo(2)}>
-          {"Marriage"}
+          <span className="d14-event-label">Marriage</span>
         </button>
         <button type={"button"} data-event-index={"3"} aria-controls={"d14-reception-slide"} aria-pressed={selected === 3} onClick={() => goTo(3)}>
-          {"Reception"}
+          <span className="d14-event-label">Reception</span>
         </button>
       </div>
       <div className={"d14-event-gallery-track"} tabIndex={0} aria-label={"Event invitations. Swipe horizontally or use the left and right arrow keys."}>
