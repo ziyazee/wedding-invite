@@ -1,5 +1,4 @@
 import { useLayoutEffect, useRef, useState } from 'react'
-import { Link } from 'react-router-dom'
 import './Landing.css'
 
 type Template = { id: number | string; name: string; mood: string; image: string; path?: string }
@@ -12,14 +11,13 @@ const templates: Template[] = [
   { id: 14, name: 'Radha · A Timeless Union', mood: 'Traditional · Hindu · Floral', image: '/design14/assets/704nAPXndZuu4f9Y58HGiZKFCM.jpeg' },
   { id: 13, name: 'The Artful Love Story', mood: 'Ornate · Indian · Romantic', image: '/design13/assets/zBRd2fZShor1nxxKvdVKhKU.webp' },
   { id: 15, name: 'Ivory Arch', mood: 'Ivory · Champagne · Elegant', image: '/design15/preview.jpg' },
-  { id: 16, name: 'Sacred Mandap', mood: 'Burgundy · Gold · Ceremony', image: '/design16/preview.jpg' },
   { id: 17, name: 'Gulabi Mandap', mood: 'Rose · Champagne · Romance', image: '/design17/preview.jpg' },
   { id: 18, name: 'Mandap at Dusk', mood: 'Sunset · Rose · Regal', image: '/design18/preview.jpg' },
   { id: 'mohadrahma', name: 'Mohad & Rahma', mood: 'Royal Grace · Nikah · Celebration', image: '/images/royal-grace/opening-poster.jpg', path: '/mohadrahma' },
 ]
 
 export default function Landing() {
-  const [selected, setSelected] = useState<number | string>(16)
+  const [selected, setSelected] = useState<number | string>(5)
   const phoneScreen = useRef<HTMLDivElement>(null)
   const [screenScale, setScreenScale] = useState(0.42)
   const [previewKey, setPreviewKey] = useState(0)
@@ -56,12 +54,6 @@ export default function Landing() {
         <span className="showcase-star showcase-star-three">✧</span>
       </div>
 
-      <header className="showcase-header">
-        <Link to="/" className="showcase-brand" aria-label="Shaadi Invites home">
-          <img src="/logo.png" alt="Shaadi Invites" />
-        </Link>
-      </header>
-
       <main className="showcase-content">
         <section className="showcase-preview" aria-label="Interactive invitation preview">
           <div className="phone-stage">
@@ -85,12 +77,6 @@ export default function Landing() {
             <div className="phone-caption"><span /> iPhone 17 Pro <span /></div>
           </div>
 
-          <div className="preview-heading">
-            <span className="preview-selected">{currentTemplate.name} <b>·</b> {typeof selected === 'number' ? `Design ${selected}` : 'Wedding invitation'}</span>
-            <button type="button" className="replay-button" onClick={() => { setPreviewLoaded(false); setPreviewKey(key => key + 1) }}>
-              <span aria-hidden="true">↻</span> Replay
-            </button>
-          </div>
         </section>
 
         <div className="showcase-copy">
@@ -100,7 +86,7 @@ export default function Landing() {
               <p className="showcase-eyebrow">THE COLLECTION</p>
               <h2 id="template-title">Choose your <em>beginning</em></h2>
             </div>
-            <span className="template-count">11 <i>designs</i></span>
+            <span className="template-count">10 <i>designs</i></span>
           </div>
           <div className="template-list" role="group" aria-label="Choose an invitation template">
             {templates.map(template => {

@@ -104,10 +104,10 @@ export default function Design15() {
     <section className="d15-entry" aria-label="Wedding invitation entry">
       <video ref={video} className="d15-entry-video" src="/design15/entry.mp4" poster="/design15/entry-poster.jpg" muted playsInline preload="auto" onEnded={finish} onError={() => { if (phase === 'playing') finish() }} />
       <div className="d15-entry-shade" />
-      {phase === 'closed' && <button className="d15-enter" onClick={openInvitation}>
-        <span className="d15-enter-ornament" aria-hidden="true">❧</span>
-        <span className="d15-enter-label"><small>AN INVITATION TO CELEBRATE</small><strong>Open invitation</strong><i>Tap to begin</i></span>
-        <span className="d15-enter-ornament" aria-hidden="true">❧</span>
+      {phase === 'closed' && <button className="d15-enter" aria-label="Open invitation" onClick={openInvitation}>
+        <span className="d15-enter-ornament d15-enter-ornament-top" aria-hidden="true">❧</span>
+        <span className="d15-enter-label"><strong>OPEN</strong></span>
+        <span className="d15-enter-ornament d15-enter-ornament-bottom" aria-hidden="true">❧</span>
       </button>}
       <button className="d15-music" aria-label={music ? 'Pause music' : 'Play music'} onClick={() => music ? audio.current?.pause() : void audio.current?.play().catch(() => {})}>{music ? 'Ⅱ' : '♫'}</button>
       {phase === 'open' && <div className="d15-ending-copy" aria-live="polite">

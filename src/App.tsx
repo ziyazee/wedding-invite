@@ -23,11 +23,17 @@ import Design18 from './pages/Design18'
 import MohadRahma from './pages/MohadRahma'
 import Dashboard from './pages/Dashboard'
 import GeneratedInvitation from './pages/GeneratedInvitation'
+import Login from './pages/Login'
+import ClientDashboard from './pages/ClientDashboard'
+import AdminDashboard from './pages/AdminDashboard'
 
 export default function App() {
   return (
     <Routes>
       <Route path="/" element={<Landing />} />
+      <Route path="/login" element={<Login />} />
+      <Route path="/client/dashboard" element={<ClientDashboard />} />
+      <Route path="/admin/dashboard" element={<AdminDashboard />} />
       <Route path="/dashboard" element={<Dashboard />} />
       <Route path="/create" element={<Create />} />
       <Route path="/preview/:id" element={<Preview />} />
@@ -52,6 +58,7 @@ export default function App() {
       <Route path="/design18" element={<Design18 />} />
       <Route path="/mohadrahm" element={<Navigate to="/mohadrahma" replace />} />
       <Route path="/mohadrahma" element={<MohadRahma />} />
+      <Route path="/:orderNumber/:slug" element={<GeneratedInvitation />} />
       <Route path="/:slug" element={<GeneratedInvitation />} />
     </Routes>
   )

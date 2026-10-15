@@ -127,7 +127,7 @@ The SPA fallback is in `public/_redirects`; API Functions are scoped using `publ
 - External music/gallery/map links must use HTTP(S). Music starts after a guest gesture when the browser allows it.
 - Names or initials baked into videos and images are artwork; changing text fields cannot rewrite those media pixels.
 - Generated invitations do not offer the demos' local-only RSVP forms. There is no guest-response collection endpoint in this dashboard.
-- Storage endpoints support creation and lookup, not editing/deletion. The dashboard has no account/login system.
+- The original invitation builder at `/dashboard` remains a direct invitation creation flow and has no account system. Partner order accounts are separate at `/login` and use the client/admin dashboards below.
 
 ### Design 9 — Sunehri · The Golden Veil
 
@@ -162,7 +162,7 @@ FROM applications
 ORDER BY created_at DESC;
 ```
 
-Locally, Vite stores submissions as individual JSON files in `.invitation-data/applications/` (gitignored). Local applications are not automatically copied to D1. No Cloudflare database setup or deployment was performed by this code change. There is currently no application admin screen or notification delivery. The public submission endpoint validates data but has no CAPTCHA or submission rate limiter yet.
+Locally, Vite stores submissions as individual JSON files in `.invitation-data/applications/` (gitignored). Local applications are not automatically copied to D1. The separate Royal Grace applications queue still has no review screen or notification delivery. The public submission endpoint validates data but has no CAPTCHA or submission rate limiter yet.
 
 ### Design 10 — Yasmin · An Ivory Beginning
 
@@ -176,3 +176,28 @@ Five source-backed invitation examples are available without API/database setup.
 - Christian: `/aarongrace` (Majestic), `/danielsarah` (Bloom).
 
 Sample details are maintained in `src/invitations/showcase.ts`. These routes are reserved so invitation creation cannot overwrite them.
+
+## Client and admin order dashboards
+
+The partner sign-in is `/login`. Enter the account email as the username. Supabase Auth verifies the password. The app matches client accounts to `companies.email` and sends them to `/client/dashboard`; trusted Auth `app_metadata.role = 'ADMIN'` sends studio administrators to `/admin/dashboard`. Both dashboards check access, and database RLS policies enforce company and admin access for order queries and updates.
+
+### Supabase setup
+
+Apply `supabase/migrations/202610150001_dashboard_orders.sql` to the Supabase project. It creates companies, the registry for the existing invitation designs, orders, role checks, RLS policies, and the public published-invitation lookup function. The template rows reference the existing design routes and thumbnails; they do not duplicate invitation artwork or components.
+
+Configure the existing public client environment variables `VITE_SUPABASE_URL` and `VITE_SUPABASE_ANON_KEY` (the latter accepts a Supabase publishable key). Do not put a service-role key in browser configuration. Create user accounts in Supabase Auth. For a client, use the same email on the Auth user and company row; the company email is unique and determines which orders the user can see. For an admin, assign the role only through trusted SQL or a server process because browser users must not be allowed to edit Auth `app_metadata`.
+
+```sql
+-- Create a company whose email matches the client's Supabase Auth email.
+insert into public.companies (company_name, email)
+values ('Client company name', 'client@example.com');
+
+-- For an admin, set only the role (replace with the Auth user's UUID).
+update auth.users
+set raw_app_meta_data = coalesce(raw_app_meta_data, '{}'::jsonb) || '{"role":"ADMIN"}'::jsonb
+where id = 'ADMIN-AUTH-USER-UUID'::uuid;
+```
+
+Assign `ADMIN` only through the trusted Supabase SQL editor or a trusted server process. After changing `app_metadata`, have the user sign out and back in so their JWT receives the updated claim. The app does not provide self-service role changes. Published dashboard orders use `/{orderNumber}/{groombrideName}` and are looked up through `get_published_invitation`; only rows with `READY` status are returned to public visitors. Existing D1/local invitations continue to use their existing storage routes.
+
+The new dashboards require the Supabase migration and Auth accounts to be configured before use. No Supabase schema changes or deployment are applied automatically by the frontend.

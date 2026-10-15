@@ -1,0 +1,19 @@
+.login-page{min-height:100svh;display:grid;place-items:center;position:relative;overflow:hidden;padding:36px 20px;background:radial-gradient(ellipse at 50% 44%,#fffdf8 0,#f6f1e6 55%,#ece4d4 100%);color:#27382e;font-family:Inter,Arial,sans-serif}
+.login-page:before,.login-page:after{content:"";position:absolute;width:min(54vw,620px);aspect-ratio:1;border:1px solid #b3975a2c;border-radius:50%;pointer-events:none}
+.login-page:before{top:-39%;left:-23%}.login-page:after{bottom:-45%;right:-25%;width:min(66vw,750px)}
+.login-ornament{position:absolute;top:8%;left:50%;transform:translateX(-50%);color:#af9258;font:34px Georgia,serif}
+.login-card{position:relative;z-index:1;width:min(100%,440px);padding:44px 48px 34px;border:1px solid #d9cfb9;background:#fffdf9ed;box-shadow:0 24px 70px #51452b14,0 3px 12px #51452b08;text-align:center}
+.login-brand{display:block;width:180px;height:80px;margin:0 auto 14px}.login-brand img{width:100%;height:100%;object-fit:contain}
+.login-kicker{color:#927644;font-size:10px;font-weight:600;letter-spacing:.23em}
+.login-card h1{margin:15px 0 10px;font:400 42px/1.12 'Playfair Display',Georgia,serif;letter-spacing:-.04em}.login-card h1 em{color:#8b784e;font-weight:400}
+.login-intro{margin:0 auto 30px;max-width:300px;color:#73756b;font-size:13px;line-height:1.7}
+.login-card form{text-align:left}.login-card label{display:block;margin:17px 0 7px;color:#3b473c;font-size:12px;font-weight:600}
+.login-card input{display:block;width:100%;height:47px;padding:0 13px;border:1px solid #d7d4ca;border-radius:4px;background:#fffefa;color:#28382f;font:14px Inter,Arial,sans-serif;transition:border-color .2s,box-shadow .2s}
+.login-card input::placeholder{color:#aaa99f}.login-card input:focus{outline:none;border-color:#9e8751;box-shadow:0 0 0 3px #ad94521c}
+.login-card button{width:100%;display:flex;align-items:center;justify-content:center;gap:12px;height:49px;margin-top:25px;border:1px solid #344a38;border-radius:4px;background:#344a38;color:#fffaf0;font:500 13px Inter,Arial,sans-serif;letter-spacing:.04em;cursor:pointer;transition:background .2s,transform .2s}
+.login-card button:hover:not(:disabled){background:#263c2d;transform:translateY(-1px)}.login-card button:disabled{opacity:.65;cursor:not-allowed}.login-card button span{font-size:17px}
+.login-error{padding:11px 12px;border:1px solid #e7c3b8;border-radius:4px;background:#fff1ec;color:#8b3d2d;font-size:12px;line-height:1.5}.login-config-note{margin:12px 0 0;color:#8b3d2d;font-size:11px;line-height:1.5;text-align:center}
+.login-footnote{margin:26px 0 0;color:#929084;font:italic 12px Georgia,serif}.login-bottom-mark{position:absolute;bottom:7%;color:#b39c69;font-size:13px}
+.login-card :focus-visible{outline:2px solid #90794b;outline-offset:3px}
+@media(max-width:520px){.login-page{padding:24px 18px}.login-card{padding:36px 25px 28px}.login-card h1{font-size:37px}.login-brand{height:67px}.login-ornament{top:4%}}
+@media(prefers-reduced-motion:reduce){.login-card button{transition:none}}
