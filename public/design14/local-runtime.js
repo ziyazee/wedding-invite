@@ -14,7 +14,7 @@
   function prepareReveals() {
     const elements = [...document.querySelectorAll('#main [style*="opacity:0"]')].filter(element => {
       const opacity = element.style.opacity
-      return (opacity === '0' || opacity === '0.001') && element.dataset.d14Name !== 'Insta Gradient BG'
+      return (opacity === '0' || opacity === '0.001') && element.dataset.d14Name !== 'Insta Gradient BG' && !element.classList.contains('d14-entry-name')
     })
     if (!('IntersectionObserver' in window) || matchMedia('(prefers-reduced-motion: reduce)').matches) {
       elements.forEach(reveal)
@@ -94,16 +94,116 @@
     if ('ResizeObserver' in window) new ResizeObserver(resize).observe(track)
     else window.addEventListener('resize', resize, { passive: true })
     update()
+    // Advance only while the invitation is open and the carousel is visible.
+    const interval = 2000
+    let autoTimer = null
+    let visible = !('IntersectionObserver' in window)
+    let hovering = false
+    const pointers = new Set()
+    const stopAutoScroll = () => {
+      window.clearTimeout(autoTimer)
+      autoTimer = null
+    }
+    const scheduleAutoScroll = () => {
+      stopAutoScroll()
+      if (slides.length < 2 || !visible || document.hidden || motion.matches || hovering || pointers.size ||
+          !document.documentElement.classList.contains('d14-started') || gallery.querySelector(':focus-visible')) return
+      autoTimer = window.setTimeout(() => {
+        const next = (selected + 1) % slides.length
+        // Reset at the end without sweeping back through all the previous cards.
+        goTo(next, next !== 0)
+        scheduleAutoScroll()
+      }, interval)
+    }
+    if ('IntersectionObserver' in window) {
+      const observer = new IntersectionObserver(entries => {
+        visible = entries[0].isIntersecting && entries[0].intersectionRatio >= 0.15
+        scheduleAutoScroll()
+      }, { threshold: [0, 0.15] })
+      observer.observe(track)
+    }
+    gallery.addEventListener('pointerenter', event => {
+      if (event.pointerType !== 'mouse') return
+      hovering = true
+      stopAutoScroll()
+    })
+    gallery.addEventListener('pointerleave', event => {
+      if (event.pointerType !== 'mouse') return
+      hovering = false
+      scheduleAutoScroll()
+    })
+    gallery.addEventListener('pointerdown', event => {
+      pointers.add(event.pointerId)
+      stopAutoScroll()
+    }, { passive: true })
+    const releasePointer = event => {
+      if (!pointers.delete(event.pointerId)) return
+      scheduleAutoScroll()
+    }
+    window.addEventListener('pointerup', releasePointer, { passive: true })
+    window.addEventListener('pointercancel', releasePointer, { passive: true })
+    track.addEventListener('scroll', scheduleAutoScroll, { passive: true })
+    track.addEventListener('wheel', scheduleAutoScroll, { passive: true })
+    gallery.addEventListener('click', scheduleAutoScroll)
+    gallery.addEventListener('focusin', scheduleAutoScroll)
+    gallery.addEventListener('focusout', () => window.setTimeout(scheduleAutoScroll, 0))
+    document.addEventListener('visibilitychange', () => {
+      if (document.hidden) pointers.clear()
+      scheduleAutoScroll()
+    })
+    document.addEventListener('d14:opened', scheduleAutoScroll)
+    motion.addEventListener('change', scheduleAutoScroll)
+    window.addEventListener('pagehide', stopAutoScroll)
+    window.addEventListener('pageshow', scheduleAutoScroll)
+    scheduleAutoScroll()
   }
 
-  function connectAudio() {
-    const audio = document.querySelector('audio')
-    const play = document.querySelector('button[aria-label="Play"]')
-    if (!audio || !play) return
-    play.addEventListener('click', () => {
-      if (audio.paused) void audio.play().catch(() => {})
-      else audio.pause()
-      play.setAttribute('aria-label', audio.paused ? 'Play' : 'Pause')
+  function connectInvitationEntry() {
+    const audio = document.querySelector('#d14-background-music')
+    const entry = document.querySelector('.d14-entry')
+    const play = entry?.querySelector('button')
+    const main = document.querySelector('#main')
+    if (!audio || !play || !main) return
+    let starting = false
+    let started = false
+    const openInvitation = () => {
+      if (started) return
+      started = true
+      // Discard the exported entrance animations; the names now fade in on this tap.
+      document.querySelectorAll('.d14-entry-name').forEach(element => {
+        element.getAnimations().forEach(animation => animation.cancel())
+      })
+      document.documentElement.classList.add('d14-started')
+      document.documentElement.classList.remove('d14-awaiting-play')
+      main.inert = false
+      document.dispatchEvent(new Event('d14:opened'))
+      window.scrollTo({ top: 0, left: 0, behavior: 'instant' })
+      entry.classList.add('is-opening')
+      prepareReveals()
+      // Move focus off the disappearing control without moving the page.
+      main.setAttribute('tabindex', '-1')
+      main.focus({ preventScroll: true })
+      const removeEntry = () => entry.remove()
+      entry.addEventListener('transitionend', event => {
+        if (event.target === entry && event.propertyName === 'opacity') removeEntry()
+      })
+      window.setTimeout(removeEntry, 600)
+    }
+    play.addEventListener('click', async () => {
+      if (starting || started) return
+      starting = true
+      play.disabled = true
+      try {
+        // Call play inside the click handler so mobile browsers allow audible playback.
+        audio.muted = false
+        await audio.play()
+        openInvitation()
+      } catch {
+        // Leave the single control available if playback needs to be retried.
+        starting = false
+        play.disabled = false
+        play.setAttribute('aria-label', 'Retry music and open invitation')
+      }
     })
   }
 
@@ -198,7 +298,6 @@
   createCloudLayer()
   connectTempleParallax()
   connectCoupleScene()
-  prepareReveals()
-  connectAudio()
+  connectInvitationEntry()
   connectEventGallery()
 })()

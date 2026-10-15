@@ -1,0 +1,44 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="480" height="180" viewBox="0 0 480 180" fill="none">
+  <defs>
+    <linearGradient id="gold" x1="0" y1="0" x2="0" y2="1">
+      <stop stop-color="#ffe4a4"/><stop offset=".23" stop-color="#c28b42"/><stop offset=".48" stop-color="#f4ce84"/><stop offset=".72" stop-color="#8c5224"/><stop offset="1" stop-color="#edc57f"/>
+    </linearGradient>
+    <linearGradient id="ivory" x1="0" y1="0" x2="1" y2="1">
+      <stop stop-color="#f3d29d"/><stop offset=".38" stop-color="#fff0d0"/><stop offset=".7" stop-color="#f8e3bd"/><stop offset="1" stop-color="#e8bd80"/>
+    </linearGradient>
+    <radialGradient id="glow"><stop stop-color="#fff5df" stop-opacity=".8"/><stop offset="1" stop-color="#fff5df" stop-opacity="0"/></radialGradient>
+    <filter id="paper" x="0" y="0" width="100%" height="100%">
+      <feTurbulence type="fractalNoise" baseFrequency=".065" numOctaves="3" seed="8" result="noise"/>
+      <feColorMatrix in="noise" type="saturate" values="0"/>
+      <feComponentTransfer><feFuncA type="linear" slope=".09"/></feComponentTransfer>
+      <feBlend in="SourceGraphic" mode="multiply"/>
+    </filter>
+    <path id="petal" d="M0 0C-12-10-10-23 0-33C10-23 12-10 0 0Z"/>
+    <g id="lotus" stroke="#a46b32" stroke-width="1.5" stroke-linejoin="round">
+      <path d="M0 4C-26-5-25-19-25-24C-10-22-4-10 0 4ZM0 4C26-5 25-19 25-24C10-22 4-10 0 4Z" fill="url(#gold)"/>
+      <use href="#petal" transform="rotate(-30)" fill="#e8bb76"/>
+      <use href="#petal" transform="rotate(30)" fill="#e8bb76"/>
+      <use href="#petal" fill="#ffdf9c"/>
+      <path d="M0-26V0M-18-19L-4 0M18-19L4 0" stroke="#ba8342"/>
+      <path d="M-14 2Q0 12 14 2L0 13Z" fill="url(#gold)"/>
+    </g>
+    <g id="scroll" stroke="#a56b30" stroke-width="1.7" fill="url(#gold)">
+      <path d="M0 0C-12-13-27 9-39 2C-49-3-39-15-33-9C-29-5-35 0-38-4C-36 5-25-4-18-5C-9-8-3-4 0 0Z"/>
+      <path d="M-15-4C-25-17-30-8-26-5M-43 1Q-49 5-53 0" fill="none" stroke="#f8d99a"/>
+    </g>
+    <g id="corner" stroke="#ac773b" stroke-width="1.3" fill="none">
+      <path d="M0 0C15 4 3 15 15 16C23 17 19 8 16 11M8 2C23-1 23 21 35 17C44 14 35 9 33 14M22 9Q36 7 41 18"/>
+      <path d="M2 1Q10 9 13 5M20 5Q23 18 31 18" stroke="#fff0c9"/>
+    </g>
+  </defs>
+  <rect x="37" y="38" width="406" height="104" rx="50" fill="url(#gold)" stroke="#9b5e2d" stroke-width="2"/>
+  <rect x="40" y="41" width="400" height="98" rx="47" stroke="#ffe7ac" stroke-width="2"/>
+  <rect x="44" y="45" width="392" height="90" rx="43" fill="url(#ivory)" stroke="#9d622d" stroke-width="2.2" filter="url(#paper)"/>
+  <rect x="48" y="49" width="384" height="82" rx="39" stroke="#d4a363" stroke-width="1"/>
+  <rect x="51" y="52" width="378" height="76" rx="36" fill="url(#glow)" stroke="#fff2d5" stroke-opacity=".7"/>
+  <use href="#corner" transform="translate(88 48)"/>
+  <use href="#corner" transform="translate(392 48) scale(-1 1)"/>
+  <use href="#corner" transform="translate(88 132) scale(1 -1)"/>
+  <use href="#corner" transform="translate(392 132) scale(-1 -1)"/>
+  <path d="M57 66C61 55 67 51 77 49M57 114C61 125 67 129 77 131M423 66C419 55 413 51 403 49M423 114C419 125 413 129 403 131" stroke="#fff0c4" stroke-width="1.4"/>
+</svg>
