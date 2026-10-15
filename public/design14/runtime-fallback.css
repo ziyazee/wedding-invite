@@ -14,6 +14,11 @@ html, body {
   will-change: transform;
 }
 
+[data-framer-name="GATE 2"] {
+  transform: translate3d(0, var(--d14-gate-two-shift, 0), 0) !important;
+  will-change: transform;
+}
+
 #__framer-badge-container {
   display: none !important;
 }
@@ -80,6 +85,10 @@ html, body {
   }
 
   [data-framer-name="PAGE 1"] [data-framer-name="TEMPLE"] {
+    transform: none !important;
+  }
+
+  [data-framer-name="GATE 2"] {
     transform: none !important;
   }
 }

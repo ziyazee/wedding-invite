@@ -77,9 +77,31 @@
     window.addEventListener('resize', schedule, { passive: true })
   }
 
+  function connectSecondGateParallax() {
+    const gate = document.querySelector('[data-framer-name="GATE 2"]')
+    const page = gate?.closest('[data-framer-name^="PAGE"]')
+    if (!gate || !page || matchMedia('(prefers-reduced-motion: reduce)').matches) return
+    let scheduled = false
+    const update = () => {
+      const pageTop = window.scrollY + page.getBoundingClientRect().top
+      const distance = Math.max(0, Math.min(window.scrollY - pageTop, page.getBoundingClientRect().height))
+      gate.style.setProperty('--d14-gate-two-shift', `${Math.round(distance * 0.28)}px`)
+      scheduled = false
+    }
+    const schedule = () => {
+      if (scheduled) return
+      scheduled = true
+      requestAnimationFrame(update)
+    }
+    update()
+    window.addEventListener('scroll', schedule, { passive: true })
+    window.addEventListener('resize', schedule, { passive: true })
+  }
+
   document.querySelector('#__framer-badge-container')?.remove()
   createCloudLayer()
   connectTempleParallax()
+  connectSecondGateParallax()
   selectBreakpoint()
   prepareReveals()
   connectAudio()
