@@ -9,12 +9,77 @@ html, body {
   opacity: 1 !important;
 }
 
+[data-framer-name="PAGE 1"] [data-framer-name="TEMPLE"] {
+  transform: translate3d(0, var(--d14-temple-shift, 0), 0) !important;
+  will-change: transform;
+}
+
 #__framer-badge-container {
   display: none !important;
+}
+
+/* First-page cloud drift, rebuilt locally from the original assets. */
+[data-framer-name="PAGE 1"] .framer-1edylky {
+  animation: d14-cloud-drift-high 88s linear -63s infinite;
+}
+
+[data-framer-name="PAGE 1"] .framer-1l515fq {
+  animation: d14-cloud-drift-near 54s linear -18s infinite;
+}
+
+[data-framer-name="PAGE 1"] .framer-lm7ks0 {
+  animation: d14-cloud-drift-far 72s linear -51s infinite;
+}
+
+.d14-local-cloud {
+  position: absolute;
+  z-index: 2;
+  top: 27%;
+  left: 0;
+  width: min(58vw, 900px);
+  height: auto;
+  pointer-events: none;
+  will-change: transform;
+  animation: d14-cloud-drift-ivory 82s linear -29s infinite;
+}
+
+@keyframes d14-cloud-drift-near {
+  from { transform: translate(95vw, -50%); }
+  to { transform: translate(-135vw, -50%); }
+}
+
+@keyframes d14-cloud-drift-high {
+  from { transform: translate(100vw, -50%) scale(.9); }
+  to { transform: translate(-140vw, -50%) scale(.9); }
+}
+
+@keyframes d14-cloud-drift-far {
+  from { transform: translate(125vw, -50%) scale(.82); }
+  to { transform: translate(-120vw, -50%) scale(.82); }
+}
+
+@keyframes d14-cloud-drift-ivory {
+  from { transform: translate3d(110vw, 0, 0) scale(.72); }
+  to { transform: translate3d(-75vw, 0, 0) scale(.72); }
 }
 
 @media (prefers-reduced-motion: reduce) {
   #main [style*="opacity:0"] {
     opacity: 1 !important;
+  }
+
+  [data-framer-name="PAGE 1"] .framer-1l515fq,
+  [data-framer-name="PAGE 1"] .framer-lm7ks0,
+  [data-framer-name="PAGE 1"] .framer-1edylky,
+  .d14-local-cloud {
+    animation: none !important;
+  }
+
+  .d14-local-cloud {
+    transform: translate3d(25vw, 0, 0) scale(.72);
+  }
+
+  [data-framer-name="PAGE 1"] [data-framer-name="TEMPLE"] {
+    transform: none !important;
   }
 }

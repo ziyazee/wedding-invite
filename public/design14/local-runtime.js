@@ -46,7 +46,40 @@
     })
   }
 
+  function createCloudLayer() {
+    const sky = document.querySelector('[data-framer-name="PAGE 1"] [data-framer-name="SKY"]')
+    if (!sky || sky.querySelector('.d14-local-cloud')) return
+    const cloud = document.createElement('img')
+    cloud.className = 'd14-local-cloud'
+    cloud.src = './assets/UeasMBu07jHUk5ch5onj5OD9f4.webp'
+    cloud.alt = ''
+    cloud.setAttribute('aria-hidden', 'true')
+    sky.appendChild(cloud)
+  }
+
+  function connectTempleParallax() {
+    const temple = document.querySelector('[data-framer-name="PAGE 1"] [data-framer-name="TEMPLE"]')
+    const firstPage = document.querySelector('[data-framer-name="PAGE 1"]')
+    if (!temple || !firstPage || matchMedia('(prefers-reduced-motion: reduce)').matches) return
+    let scheduled = false
+    const update = () => {
+      const distance = Math.min(window.scrollY, firstPage.getBoundingClientRect().height)
+      temple.style.setProperty('--d14-temple-shift', `${Math.round(distance * 0.28)}px`)
+      scheduled = false
+    }
+    const schedule = () => {
+      if (scheduled) return
+      scheduled = true
+      requestAnimationFrame(update)
+    }
+    update()
+    window.addEventListener('scroll', schedule, { passive: true })
+    window.addEventListener('resize', schedule, { passive: true })
+  }
+
   document.querySelector('#__framer-badge-container')?.remove()
+  createCloudLayer()
+  connectTempleParallax()
   selectBreakpoint()
   prepareReveals()
   connectAudio()
