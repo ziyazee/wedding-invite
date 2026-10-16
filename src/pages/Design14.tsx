@@ -1,6 +1,6 @@
 import { useEffect, useLayoutEffect, useRef, useState } from 'react'
 import { useInvitationDetails } from '../invitations/context'
-import { OpeningScene, WelcomeScene, CoupleScene, Celebrations, ClosingScene, SvgDefinitions } from './design14/Design14Scenes'
+import { OpeningScene, WelcomeScene, CoupleScene, Celebrations, ClosingScene, InvitationContact, SvgDefinitions } from './design14/Design14Scenes'
 import { useDesign14Motion } from './design14/useDesign14Motion'
 import styles from './design14/Design14.css?inline'
 import { useDesign14TextMotion } from './design14/useDesign14TextMotion'
@@ -104,6 +104,7 @@ export default function Design14() {
             <CoupleScene />
             <Celebrations opened={opened} />
             <ClosingScene />
+            <InvitationContact />
           </div>
         </div>
         <div id="overlay" />

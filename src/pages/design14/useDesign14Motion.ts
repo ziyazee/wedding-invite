@@ -54,7 +54,9 @@ export function useDesign14Motion(host: RefObject<HTMLDivElement | null>, opened
       const m = metrics
       // Clamp elastic overscroll on mobile so reversing direction cannot jump layers.
       const y = Math.max(0, Math.min(window.scrollY, m.maxScroll))
-      const progress = 1 - Math.min(1, (m.maxScroll - y) / Math.max(1, m.endHeight))
+      // The contact footer follows the artwork; finish the descent at the scene edge.
+      const endScroll = Math.max(0, m.endTop + m.endHeight - m.viewport)
+      const progress = 1 - Math.min(1, Math.max(0, endScroll - y) / Math.max(1, m.endHeight))
       const targets = [
         motion.matches ? 0 : Math.min(y, m.firstHeight) * 0.28,
         motion.matches ? 0 : Math.max(0, m.referenceOffset + Math.max(-m.viewport, Math.min(y - m.sceneTop, m.sceneHeight))) * 0.38,
@@ -71,7 +73,7 @@ export function useDesign14Motion(host: RefObject<HTMLDivElement | null>, opened
         const [top, height] = positions[index]
         const visible = y + m.viewport > top - 100 && y < top + height + 100
         const target = targets[index]
-        const atEndpoint = (index === 0 && y === 0) || (index === 2 && y >= m.maxScroll - 0.5)
+        const atEndpoint = (index === 0 && y === 0) || (index === 2 && y >= endScroll - 0.5)
         if (!Number.isFinite(layer.current) || motion.matches || !visible || atEndpoint) layer.current = target
         else layer.current += (target - layer.current) * blend
         if (Math.abs(target - layer.current) < 0.05) layer.current = target
