@@ -76,7 +76,6 @@
 
   const events = {
     'wedding-events': { title: 'Camille & Antoine – Wedding', location: 'Château de Belvent, 12 Route des Vignes, 21220 Gevrey-Chambertin, France', start: '20270612T150000Z', end: '20270612T210000Z' },
-    'recovery-day': { title: 'Camille & Antoine – Recovery Day', location: 'Le Comptoir des Halles, 4 Rue Monge, Beaune, Bourgogne, France', start: '20270613T100000Z', end: '20270613T150000Z' },
   };
   document.querySelectorAll('[data-maps]').forEach(button => button.addEventListener('click', () => {
     window.open(`https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(events[button.dataset.maps].location)}`, '_blank', 'noopener,noreferrer');
@@ -118,34 +117,4 @@
   document.addEventListener('click', closeMenu);
   document.addEventListener('keydown', e => { if (e.key === 'Escape' && activeMenu) { const button = activeMenu.button; closeMenu(); button.focus(); } });
 
-  const form = document.getElementById('rsvp-form');
-  function updateAttendance() {
-    const attending = form.elements.attendance.value === 'yes';
-    form.querySelectorAll('[data-attending-only]').forEach(el => {
-      el.hidden = !attending;
-      el.querySelectorAll('input,textarea').forEach(input => { input.disabled = !attending; });
-    });
-  }
-  form.querySelectorAll('[name="attendance"]').forEach(input => input.addEventListener('change', updateAttendance));
-  updateAttendance();
-  form.addEventListener('submit', e => {
-    e.preventDefault();
-    const data = Object.fromEntries(new FormData(form));
-    if (data.website) return;
-    const name = String(data.fullName || '').trim();
-    if (!name) { form.elements.fullName.setCustomValidity('Please enter your name.'); form.elements.fullName.reportValidity(); return; }
-    try { localStorage.setItem('embroidered-garden-rsvp', JSON.stringify({ ...data, fullName: name })); }
-    catch {
-      let error = form.querySelector('[role="alert"]');
-      if (!error) { error = document.createElement('p'); error.setAttribute('role', 'alert'); form.append(error); }
-      error.textContent = 'Your browser could not save this demo reply. Please enable local storage and try again.'; return;
-    }
-    const confirmation = document.createElement('section'); confirmation.id = 'rsvp-confirmation'; confirmation.className = 'local-confirmation';
-    const title = document.createElement('h2'); title.className = 'section-heading'; title.textContent = 'Thank You';
-    const message = document.createElement('p'); message.textContent = data.attendance === 'yes' ? 'We are so excited to celebrate with you!' : 'We’re sorry you can’t make it. We’ll be thinking of you on our special day.';
-    const status = document.createElement('p'); status.className = 'demo-response-note'; status.textContent = 'Your demo reply has been saved on this device.';
-    confirmation.append(title, message, status); document.getElementById('rsvp').replaceWith(confirmation);
-    confirmation.setAttribute('role', 'status'); confirmation.scrollIntoView({ behavior: reducedMotion.matches ? 'instant' : 'smooth', block: 'start' });
-  });
-  form.elements.fullName.addEventListener('input', () => form.elements.fullName.setCustomValidity(''));
 })();
