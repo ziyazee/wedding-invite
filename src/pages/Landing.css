@@ -70,3 +70,68 @@
 .hero-note{font-weight:400}
 .preview-option{padding-block:8px}
 .template-name{display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden}
+
+/* The preview is a single ivory display plinth, with the controls below the phone. */
+.showcase-page .showcase-preview {
+  padding: 28px 22px 42px;
+  border-radius: 66px 0 0 0;
+  border-left: 1px solid #e6dcca;
+  background: linear-gradient(100deg, #fffdf9, #fcf9f3 70%, #faf6ef);
+  box-shadow: -9px 0 28px #6f533b08;
+  scroll-margin-top: 18px;
+}
+.showcase-page .phone-stage { width: 100%; max-width: 308px; margin: 0 auto 12px; }
+.showcase-page .iphone-frame {
+  position: relative;
+  padding: 9px;
+  border: 1px solid #9b815e;
+  border-radius: 47px;
+  background: linear-gradient(100deg, #8c795d 0%, #252017 1%, #080806 4%, #17150f 96%, #bfa57b 99%, #66543a);
+  box-shadow: inset 0 0 0 2px #15130e, 0 0 0 1px #b59c7240, 0 6px 14px #5a3f2629;
+}
+.showcase-page .iphone-screen { border-radius: 37px; }
+.showcase-page .dynamic-island {
+  top: -1px;
+  width: 36%;
+  height: 24px;
+  border-radius: 0 0 16px 16px;
+  background: #070706;
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  padding-right: 14px;
+}
+.showcase-page .dynamic-island::before { content: ''; position: absolute; width: 32%; height: 4px; border-radius: 5px; background: #171818; left: 25%; top: 8px; }
+.showcase-page .dynamic-island span { width: 6px; height: 6px; border-radius: 50%; background: radial-gradient(circle at 40% 40%, #203d50, #07111b 60%); }
+.showcase-page .preview-details { width: 100%; max-width: 330px; margin: 0 auto; padding: 13px 20px 18px; border: 1px solid #e7dece; border-radius: 18px; background: #fdfaf580; }
+.showcase-page .preview-title { gap: 10px; margin: 0 0 12px; }
+.showcase-page .preview-title h2 { font-family: Georgia, 'Times New Roman', serif; font-size: 19px; line-height: 1.25; font-weight: 400; color: #784b27; }
+.showcase-page .preview-title button { display: grid; place-items: center; width: 34px; height: 34px; flex: none; padding: 7px; border: 1px solid #e5dac9; border-radius: 10px; background: #fffdf74d; color: #8e6741; }
+.showcase-page .preview-title button svg { width: 18px; height: 18px; }
+.showcase-page .preview-details .gold-button { min-height: 46px; padding: 12px 8px; border-radius: 9px; font-size: 15px; background: linear-gradient(105deg, #ac7b3f, #a1743c); }
+.showcase-page .preview-full { display: flex; align-items: center; justify-content: center; gap: 10px; min-height: 42px; padding: 10px 5px; margin: 10px 0 13px; border: 1px solid #b78a56; border-radius: 9px; color: #6b4528!important; font-size: 13px; }
+.showcase-page .preview-full svg { width: 18px; height: 18px; stroke-width: 1.4; }
+.showcase-page .preview-option { min-height: 39px; padding: 10px 4px; border-top: 1px solid #eee5d8; gap: 13px; font-size: 13px; color: #756c61!important; }
+.showcase-page .preview-option:last-child { border-bottom: 1px solid #eee5d8; }
+.showcase-page .preview-option svg { width: 17px; height: 17px; }
+.showcase-page .preview-option b { font-size: 19px; color: #a79b8e; }
+.showcase-page .preview-title button:hover,.showcase-page .preview-full:hover,.showcase-page .preview-option:hover { background: #f3eadc; }
+@media(min-width:1391px) { .showcase-content { grid-template-columns: minmax(0, 1fr) 366px; } }
+@media(min-width:761px) and (max-width:1390px) {
+  .showcase-page .showcase-preview { padding: 26px 14px 30px; }
+  .showcase-page .iphone-frame { padding: 7px; border-radius: 37px; }
+  .showcase-page .iphone-screen { border-radius: 29px; }
+  .showcase-page .preview-details { padding: 12px; }
+  .showcase-page .preview-title { gap: 6px; }
+  .showcase-page .preview-title h2 { font-size: 16px; }
+  .showcase-page .preview-title button { width: 28px; height: 30px; padding: 5px; }
+  .showcase-page .preview-option,.showcase-page .preview-full { font-size: 11px; }
+  .showcase-page .preview-details .gold-button { font-size: 13px; }
+}
+@media(max-width:760px) {
+  .showcase-page .showcase-preview { display: flex; flex-direction: column; gap: 0; padding: 30px 22px; border-radius: 44px 44px 0 0; }
+  .showcase-page .phone-stage { max-width: 286px; }
+  .showcase-page .preview-details { max-width: 310px; }
+  .showcase-page .preview-title { flex-wrap: nowrap; }
+  .showcase-page .preview-title h2 { flex-basis: auto; }
+}

@@ -40,6 +40,9 @@ function LineIcon({ name }: { name: string }) {
     heart: 'M12 21 3 12C-3 4 7-1 12 6 17-1 27 4 21 12Z',
     edit: 'm4 16-1 5 5-1L21 7l-5-5ZM14 4l5 5M12 22h10',
     photo: 'M3 3h18v18H3ZM3 17l6-6 5 5 3-3 4 4M16 7h.01',
+    play: 'm7 3 14 9-14 9Z',
+    previous: 'm15 5-7 7 7 7',
+    next: 'm9 5 7 7-7 7',
   }
   return <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.25" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true"><path d={paths[name] || paths.flower}/></svg>
 }
@@ -107,11 +110,11 @@ export default function Landing() {
         <div className="phone-stage"><div className="iphone-frame"><div className="iphone-screen" ref={phoneScreen}>
           {!previewLoaded && <img className="phone-placeholder" src={currentTemplate.image} alt="Loading invitation preview"/>}
           <iframe key={selected} src={path} title={`${currentTemplate.name}: interactive wedding invitation`} allow="autoplay; fullscreen" style={{ transform: `scale(${screenScale})`, opacity: previewLoaded ? 1 : 0 }} onLoad={() => setPreviewLoaded(true)} allowFullScreen/>
-          <div className="dynamic-island" aria-hidden="true"/>
+          <div className="dynamic-island" aria-hidden="true"><span/></div>
         </div></div></div>
-        <div className="preview-details"><div className="preview-title"><h2>{currentTemplate.name}</h2><button aria-label="Previous template" onClick={() => next(-1)}>‹</button><button aria-label="Next template" onClick={() => next(1)}>›</button></div>
+        <div className="preview-details"><div className="preview-title"><h2>{currentTemplate.name}</h2><button aria-label="Previous template" onClick={() => next(-1)}><LineIcon name="previous"/></button><button aria-label="Next template" onClick={() => next(1)}><LineIcon name="next"/></button></div>
           <a className="gold-button" href={`https://wa.me/917975948093?text=${encodeURIComponent(`Hey I need an invitation! I like ${currentTemplate.name}.`)}`} target="_blank" rel="noreferrer">Use This Template <span>⟶</span></a>
-          <a className="preview-full" href={path} target="_blank" rel="noreferrer">▷ &nbsp; Preview Full Invitation</a>
+          <a className="preview-full" href={path} target="_blank" rel="noreferrer"><LineIcon name="play"/> Preview Full Invitation</a>
           {['Customise Content', 'Choose Colours', 'Add Photos & Videos'].map((label, i) => <a className="preview-option" key={label} href={`https://wa.me/917975948093?text=${encodeURIComponent(`Hey I need an invitation! Can you help me ${label.toLowerCase()} for ${currentTemplate.name}?`)}`} target="_blank" rel="noreferrer"><span><LineIcon name={['edit','flower','photo'][i]}/></span>{label}<b>›</b></a>)}
         </div>
       </aside>
