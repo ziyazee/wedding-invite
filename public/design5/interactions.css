@@ -33,9 +33,6 @@ button:focus-visible, a:focus-visible { outline: 2px solid #5a6340; outline-offs
 .sg-venue-city { font-size: clamp(13px, 3.5vw, 16px); line-height: 1.4; }
 .sg-venue-time { display: flex; align-items: center; justify-content: center; gap: 6px; font-size: clamp(13px, 3.5vw, 16px); line-height: 1.4; }
 .sg-venue-time svg { flex: none; }
-.sg-venue-actions { display: flex; flex-wrap: wrap; justify-content: center; gap: 8px; margin-top: 8px; width: 100%; }
-.sg-venue-actions a, .sg-venue-actions button { min-height: 44px; height: auto; font-size: 12px; padding: 8px 10px; }
-@media (max-width: 420px) {
-  .sg-venue-actions { flex-direction: column; align-items: center; }
-  .sg-venue-actions a, .sg-venue-actions button { width: 156px; max-width: 100%; }
-}
+.sg-venue-actions { display: flex; flex-wrap: nowrap; justify-content: center; align-items: center; gap: clamp(10px, 3.8vw, 18px); margin: 36px auto 0; width: min(100%, 460px); }
+.sg-venue-actions a, .sg-venue-actions button { min-height: 48px; height: auto; font-family: Georgia, 'Times New Roman', serif; font-size: clamp(15px, 4.5vw, 22px); font-weight: 400; padding: 12px clamp(12px, 4vw, 20px); border-radius: 8px; }
+.sg-venue-actions svg { width: 20px; height: 20px; }

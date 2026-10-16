@@ -97,7 +97,7 @@ export function WelcomeScene({ groom, bride }: Names) {
           <p className="d14-page-two-family-amp">&amp;</p>
           <h2 className="d14-page-two-names">{bride.toUpperCase()}</h2>
           <p className="d14-page-two-family">
-            Daughter of Sri Sadashiva Shetty &amp; Smt. Rekha s shetty,
+            Daughter of Sri Sadashiva Shetty &amp; Smt. Rekha S. Shetty.<br />
             Granddaughter of Haradi Marbinamane Late Krishnayya Shetty, Chantharu Guddemane
             Late Hiriyanna Shetty.<br />
             Sister of Suhas Shetty &amp; Chinraj Shetty.
