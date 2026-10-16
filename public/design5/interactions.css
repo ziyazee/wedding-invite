@@ -20,3 +20,22 @@ button:focus-visible, a:focus-visible { outline: 2px solid #5a6340; outline-offs
 .sg-invitation-contact a { display: inline-flex; align-items: center; justify-content: center; flex: none; width: 44px; height: 44px; border-radius: 50%; color: #197548; }
 .sg-invitation-contact a:hover { background: #1975480d; }
 .sg-invitation-contact svg { display: block; }
+
+/* Majestic's ivory frame, enlarged around Secret Garden's live venue details. */
+.sg-details { padding: 8px 12px 32px; }
+.sg-details-heading { text-align: center; margin: 0 0 8px; }
+.sg-venue-card { position: relative; isolation: isolate; width: min(100%, 560px); aspect-ratio: 1 / 1.32; margin-inline: auto; display: flex; align-items: center; justify-content: center; }
+.sg-venue-frame { position: absolute; z-index: -1; top: 0; left: -16%; width: 132%; max-width: none; height: 100%; object-fit: contain; pointer-events: none; }
+.sg-venue-content { width: 68%; display: flex; flex-direction: column; align-items: center; gap: 8px; text-align: center; color: #5a6340; }
+.sg-venue-content p, .sg-venue-content h3 { margin: 0; }
+.sg-venue-heading { font-size: clamp(34px, 8vw, 50px); line-height: 1.15; }
+.sg-venue-name { max-width: 100%; font-size: clamp(15px, 4vw, 21px); line-height: 1.4; letter-spacing: .1em; text-transform: uppercase; text-wrap: balance; }
+.sg-venue-city { font-size: clamp(13px, 3.5vw, 16px); line-height: 1.4; }
+.sg-venue-time { display: flex; align-items: center; justify-content: center; gap: 6px; font-size: clamp(13px, 3.5vw, 16px); line-height: 1.4; }
+.sg-venue-time svg { flex: none; }
+.sg-venue-actions { display: flex; flex-wrap: wrap; justify-content: center; gap: 8px; margin-top: 8px; width: 100%; }
+.sg-venue-actions a, .sg-venue-actions button { min-height: 44px; height: auto; font-size: 12px; padding: 8px 10px; }
+@media (max-width: 420px) {
+  .sg-venue-actions { flex-direction: column; align-items: center; }
+  .sg-venue-actions a, .sg-venue-actions button { width: 156px; max-width: 100%; }
+}
