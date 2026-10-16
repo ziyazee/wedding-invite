@@ -78,7 +78,7 @@
       }
       const distance = Math.max(0, Math.min(window.scrollY - pageTop, pageHeight))
       // A stronger downward offset than the opening scene's normal scroll motion.
-      const target = motion.matches ? 0 : distance * 0.65
+      const target = motion.matches ? 0 : distance * 0.5
       const elapsed = previousTime ? Math.min(64, time - previousTime) : 16.67
       const atEdge = distance === 0 || distance === pageHeight
       if (!Number.isFinite(current) || motion.matches || atEdge) current = target
