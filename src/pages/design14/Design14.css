@@ -1646,3 +1646,28 @@ html:where(.d14-document).d14-started #main .d14-entry-name { translate: 0 0; }
   }
   :where(html.d14-document) .d14-entry-label { animation: none; }
 }
+
+/* Foreground couple settles onto the closing scene's bottom edge on scroll. */
+:where(html.d14-document) .d14-end-couple {
+  position: absolute;
+  right: 7%;
+  bottom: 0;
+  z-index: 2;
+  display: block;
+  width: min(58%, 40svh);
+  height: auto;
+  pointer-events: none;
+  transform: translate3d(0, var(--d14-end-couple-shift, 0px), 0);
+  will-change: transform;
+}
+
+:where(html.d14-document) .d14-end-gratitude {
+  z-index: 3;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  :where(html.d14-document) .d14-end-couple {
+    transform: none;
+    will-change: auto;
+  }
+}

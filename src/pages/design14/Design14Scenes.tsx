@@ -459,6 +459,7 @@ export function ClosingScene() {
         <img className={"d14-end-cloud d14-end-cloud--low"} src={"/design14/assets/UeasMBu07jHUk5ch5onj5OD9f4.webp"} alt={""} loading={"lazy"} decoding={"async"} />
       </div>
       <img className={"d14-end-scene-art"} src={"/design14/assets/end-scene.png"} width={"1024"} height={"1536"} alt={"An ornate temple decorated with flowers and saffron flags"} loading={"lazy"} decoding={"async"} />
+      <img className="d14-end-couple" src="/design14/assets/brideandgrrom.png" width="1024" height="1536" alt="Bride and groom exchanging wedding garlands" loading="lazy" decoding="async" />
       <div className={"d14-end-gratitude"}>
         <p className={"d14-end-gratitude-intro"}>
           {"With hearts full of gratitude"}

@@ -13,6 +13,8 @@ export function useDesign14Motion(host: RefObject<HTMLDivElement | null>, opened
     const couple = scene?.querySelector<HTMLElement>('[data-d14-name="COUPLE"]')
     const frame = scene?.querySelector<HTMLElement>('[data-d14-name="GATE 2"]')
     const crop = scene?.querySelector<HTMLElement>('.d14-couple-window')
+    const ending = container.querySelector<HTMLElement>('.d14-end-scene')
+    const endingCouple = ending?.querySelector<HTMLElement>('.d14-end-couple')
     let referenceOffset = 0
     let animationFrame = 0
     const update = () => {
@@ -26,6 +28,16 @@ export function useDesign14Motion(host: RefObject<HTMLDivElement | null>, opened
         const progress = Math.max(-innerHeight, Math.min(-bounds.top, bounds.height))
         const shift = motion.matches ? 0 : Math.max(0, referenceOffset + progress) * 0.38
         couple.style.setProperty('--d14-couple-shift', `${shift.toFixed(2)}px`)
+      }
+      if (ending && endingCouple) {
+        const bounds = ending.getBoundingClientRect()
+        const viewportHeight = window.innerHeight
+        const maxScroll = Math.max(0, document.documentElement.scrollHeight - viewportHeight)
+        // Start raised when the final scene enters; land exactly at the page end.
+        const remaining = Math.max(0, maxScroll - window.scrollY)
+        const progress = 1 - Math.min(1, remaining / Math.max(1, bounds.height))
+        const lift = motion.matches ? 0 : Math.min(bounds.height * 0.1, viewportHeight * 0.12) * (1 - progress)
+        endingCouple.style.setProperty('--d14-end-couple-shift', `${-lift.toFixed(2)}px`)
       }
     }
     const schedule = () => {
@@ -53,6 +65,7 @@ export function useDesign14Motion(host: RefObject<HTMLDivElement | null>, opened
       observer?.observe(frame)
       observer?.observe(scene.parentElement)
     }
+    if (ending) observer?.observe(ending)
     return () => {
       abort.abort()
       observer?.disconnect()
