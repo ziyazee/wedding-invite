@@ -157,3 +157,43 @@
 @media (min-width: 761px) and (max-width: 1100px) {
   .hero-copy { width: calc(100% - var(--preview-column)); }
 }
+
+/* Warm paper, fine gilded edging and quiet botanical engraving around the phone. */
+.showcase-page .showcase-preview {
+  isolation: isolate;
+  border-left-color: #c4a57070;
+  background:
+    radial-gradient(ellipse at 12% 12%, #d9bb8266, transparent 43%),
+    radial-gradient(ellipse at 95% 65%, #d8bd8c40, transparent 48%),
+    repeating-linear-gradient(20deg, #96774705 0 1px, transparent 1px 4px),
+    linear-gradient(135deg, #fffaf0, #f4e9d7 48%, #fcf6eb);
+  box-shadow: -10px 0 32px #73502710, inset 1px 0 #fffdf5;
+}
+.showcase-page .showcase-preview::before {
+  content: '';
+  position: absolute;
+  inset: 9px;
+  z-index: -1;
+  border: 1px solid #b38c4c38;
+  border-radius: 55px 0 0 0;
+  pointer-events: none;
+}
+.showcase-page .showcase-preview::after {
+  content: '';
+  position: absolute;
+  inset: 12px 4px;
+  z-index: -1;
+  border-radius: inherit;
+  background: url('/landing/preview-botanical.svg') left top / 100px 168px no-repeat,
+    url('/landing/preview-botanical.svg') right bottom / 105px 175px no-repeat;
+  opacity: .38;
+  pointer-events: none;
+}
+.showcase-page .preview-details {
+  background: linear-gradient(135deg, #fffdf5d9, #faf2e5de);
+  border-color: #c5a37550;
+  box-shadow: 0 8px 24px #75512609, inset 0 1px #fffef8;
+}
+@media(max-width:760px) {
+  .showcase-page .showcase-preview::before { border-radius: 35px 35px 0 0; }
+}
