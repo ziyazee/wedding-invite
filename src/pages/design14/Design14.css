@@ -1684,12 +1684,12 @@ html:where(.d14-document).d14-started #main .d14-entry-name { translate: 0 0; }
   box-sizing: border-box;
   flex: none;
   width: 100%;
-  padding: 10px 16px calc(10px + env(safe-area-inset-bottom, 0px));
+  padding: 3px 12px;
   display: flex;
   flex-direction: row;
   justify-content: center;
   align-items: center;
-  gap: 8px;
+  gap: 4px;
   text-align: center;
   background: #fff8eb;
   border-top: 1px solid #a8793233;
@@ -1706,8 +1706,8 @@ html:where(.d14-document).d14-started #main .d14-entry-name { translate: 0 0; }
   align-items: center;
   justify-content: center;
   gap: 10px;
-  min-height: 44px;
-  padding: 0 10px;
+  min-height: 24px;
+  padding: 0 4px;
   flex: none;
   border-radius: 8px;
   color: #197548;
@@ -1717,8 +1717,8 @@ html:where(.d14-document).d14-started #main .d14-entry-name { translate: 0 0; }
 }
 
 :where(html.d14-document) .d14-invitation-contact svg {
-  width: 21px;
-  height: 21px;
+  width: 18px;
+  height: 18px;
   flex: none;
 }
 
