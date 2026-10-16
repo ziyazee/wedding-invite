@@ -33,11 +33,12 @@ export function useDesign14Motion(host: RefObject<HTMLDivElement | null>, opened
         const bounds = ending.getBoundingClientRect()
         const viewportHeight = window.innerHeight
         const maxScroll = Math.max(0, document.documentElement.scrollHeight - viewportHeight)
-        // Start raised when the final scene enters; land exactly at the page end.
+        // Stay raised longer, then descend faster toward the same bottom position.
         const remaining = Math.max(0, maxScroll - window.scrollY)
         const progress = 1 - Math.min(1, remaining / Math.max(1, bounds.height))
-        const lift = motion.matches ? 0 : Math.min(bounds.height * 0.1, viewportHeight * 0.12) * (1 - progress)
-        endingCouple.style.setProperty('--d14-end-couple-shift', `${-lift.toFixed(2)}px`)
+        const descent = Math.pow(progress, 1.8)
+        const lift = motion.matches ? 0 : Math.min(bounds.height * 0.13, viewportHeight * 0.15) * (1 - descent)
+        endingCouple.style.setProperty('--d14-end-couple-shift', `${(-lift).toFixed(2)}px`)
       }
     }
     const schedule = () => {

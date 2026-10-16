@@ -1650,11 +1650,11 @@ html:where(.d14-document).d14-started #main .d14-entry-name { translate: 0 0; }
 /* Foreground couple settles onto the closing scene's bottom edge on scroll. */
 :where(html.d14-document) .d14-end-couple {
   position: absolute;
-  right: 7%;
+  right: 10%;
   bottom: 0;
   z-index: 2;
   display: block;
-  width: min(58%, 40svh);
+  width: min(61%, 42svh);
   height: auto;
   pointer-events: none;
   transform: translate3d(0, var(--d14-end-couple-shift, 0px), 0);
