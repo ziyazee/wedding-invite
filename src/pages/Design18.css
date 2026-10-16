@@ -142,3 +142,7 @@
   pointer-events: none;
   transition: opacity .65s ease, visibility 0s linear .65s;
 }
+
+/* Swipes over the decorative intro belong to the page, not the video player. */
+.d18-entry { touch-action: pan-y pinch-zoom; }
+.d18-entry-video { pointer-events: none; }
