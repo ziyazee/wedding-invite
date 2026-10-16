@@ -1744,9 +1744,10 @@ html:where(.d14-document).d14-started #main .d14-entry-name { translate: 0 0; }
   margin: 0;
 }
 :where(html.d14-document) .d14-page-two-families .d14-page-two-family {
-  font-size: calc(2.85 * var(--d14-page-two-unit));
-  line-height: 1.3;
-  text-shadow: 0 1px 3px #ffffff80;
+  font-size: calc(2.6 * var(--d14-page-two-unit));
+  line-height: 1.4;
+  color: #fff;
+  text-shadow: 0 1px 3px #17283a66;
   overflow-wrap: normal;
 }
 :where(html.d14-document) .d14-page-two-family-amp {

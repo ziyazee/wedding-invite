@@ -93,15 +93,14 @@ export function WelcomeScene({ groom, bride }: Names) {
             Son of Sri Bhaskar Shetty P (Advocate &amp; Notary) &amp; Smt. Shilpashri B. Shetty,
             LIC Colony Brahmagiri, Udupi.<br />
             Grandson of Late Puttanna Shetty Pandubettu and Late Bhoja S. Shetty Shanarabettu.<br />
-            Nephew of Sri Shishir B. Shetty &amp; brother of Dr. Anmol B. Shetty.
+            Brother of Dr. Anmol B. Shetty.
           </p>
           <p className="d14-page-two-family-amp">&amp;</p>
           <h2 className="d14-page-two-names">{bride.toUpperCase()}</h2>
           <p className="d14-page-two-family">
             Granddaughter of Haradi Marbinamane Late Krishnayya Shetty, Chantharu Guddemane
             Late Hiriyanna Shetty.<br />
-            Niece of Heggunje Kambalagaddemane Jyothikumar Shetty &amp; sister of
-            Suhas Shetty &amp; Chinraj Shetty.
+            Sister of Suhas Shetty &amp; Chinraj Shetty.
           </p>
         </div>
         <div className={"d14-page-two-celebrate"}>
