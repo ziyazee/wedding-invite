@@ -197,3 +197,8 @@
 @media(max-width:760px) {
   .showcase-page .showcase-preview::before { border-radius: 35px 35px 0 0; }
 }
+
+/* Lift the banner composition slightly inside its existing frame. */
+@media(min-width:761px) {
+  .studio-hero .hero-art { object-position: center 60%; }
+}
