@@ -18,3 +18,10 @@ main > section:first-child { min-height: 100svh; }
 main .aspect-\[5\/6\] { max-width: 100%; }
 @keyframes pulse { 0%,100% { opacity: .5; } 50% { opacity: 1; } }
 @media (prefers-reduced-motion: reduce) { html { scroll-behavior: auto; } *, *::before, *::after { animation: none !important; transition: none !important; } .js main [data-reveal] { translate: none; } }
+
+.majestic-invitation-contact { display: flex; align-items: center; justify-content: center; gap: 10px; padding: 16px 60px calc(16px + env(safe-area-inset-bottom, 0px)); }
+.majestic-invitation-contact p { margin: 0; color: #626948; font-family: inherit; font-size: 14px; letter-spacing: .08em; }
+.majestic-invitation-contact a { display: inline-flex; align-items: center; justify-content: center; flex: none; width: 44px; height: 44px; border-radius: 50%; color: #197548; }
+.majestic-invitation-contact a:hover { background: #1975480d; }
+.majestic-invitation-contact svg { display: block; }
+.majestic-invitation-contact { background-color: rgb(240, 233, 225); border-top: 1px solid #6269481a; }
