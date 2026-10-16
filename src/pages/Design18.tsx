@@ -1,30 +1,31 @@
-import { useEffect, useLayoutEffect, useRef, useState } from 'react'
+import { useEffect, useRef, useState } from 'react'
 import { downloadCalendar } from '../invitations/calendar'
 import { useInvitationDetails } from '../invitations/context'
 import { formatDate, formatTime, mapURL, weddingISO, type InvitationData } from '../invitations/model'
+import HeartDateReveal from './HeartDateReveal'
 import './Design18.css'
 
 const demo: InvitationData = {
   template: 18,
-  groom: 'Rahul',
-  bride: 'Naina',
-  date: '2027-02-28',
-  time: '17:30',
+  groom: 'Arjun',
+  bride: 'Meera',
+  date: '2027-02-21',
+  time: '18:30',
   offset: '+05:30',
-  venue: 'Jai Mahal Palace',
+  venue: 'The Garden Pavilion',
   address: 'Jaipur, Rajasthan, India',
   map: '',
-  message: 'With the blessings of Lord Ganesha and the love of our families, we invite you to join us as we exchange our vows and begin a life together.',
-  groomFamily: 'With love from the Mehta family',
-  brideFamily: 'With love from the Kapoor family',
-  dressCode: 'Traditional Indian attire in rose, gold, or festive jewel tones is welcome.',
+  message: 'With the blessings of Lord Ganesha and our beloved families, we invite you to join us as we celebrate our wedding and begin a beautiful life together.',
+  groomFamily: 'With love from the Sharma family',
+  brideFamily: 'With love from the Iyer family',
+  dressCode: 'Traditional Indian attire in warm jewel tones is welcome.',
   giftNote: 'Your blessings and presence are the greatest gifts.',
   music: '/bisara.mp3',
   gallery: '',
   events: [
-    { title: 'Haldi & Mehendi', date: '2027-02-27', time: '11:00', venue: 'Jai Mahal Palace', address: 'Jaipur, Rajasthan, India', map: '' },
-    { title: 'Wedding Ceremony & Saat Phere', date: '2027-02-28', time: '17:30', venue: 'Jai Mahal Palace', address: 'Jaipur, Rajasthan, India', map: '' },
-    { title: 'Reception & Dinner', date: '2027-02-28', time: '20:00', venue: 'Jai Mahal Palace', address: 'Jaipur, Rajasthan, India', map: '' },
+    { title: 'Haldi & Mehendi', date: '2027-02-20', time: '11:00', venue: 'The Garden Pavilion', address: 'Jaipur, Rajasthan, India', map: '' },
+    { title: 'Wedding Ceremony & Saat Phere', date: '2027-02-21', time: '18:30', venue: 'The Garden Pavilion', address: 'Jaipur, Rajasthan, India', map: '' },
+    { title: 'Reception & Dinner', date: '2027-02-21', time: '20:30', venue: 'The Garden Pavilion', address: 'Jaipur, Rajasthan, India', map: '' },
   ],
 }
 
@@ -36,43 +37,17 @@ function Arrow() {
   return <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.4" aria-hidden="true"><path d="M5 19 19 5M5 5h14v14" /></svg>
 }
 
-function WrittenWord({ value, className = '' }: { value: string; className?: string }) {
-  const text = useRef<SVGTextElement>(null)
-  const [width, setWidth] = useState(Math.max(60, value.length * 55))
-  useLayoutEffect(() => {
-    let mounted = true
-    const measure = () => {
-      const measured = text.current?.getComputedTextLength()
-      if (mounted && measured && Number.isFinite(measured)) setWidth(measured + 4)
-    }
-    measure()
-    void document.fonts?.ready.then(measure)
-    return () => { mounted = false }
-  }, [value])
-
-  return <span className={`d18-written-word ${className}`} aria-hidden="true"><svg className="d18-script-word-svg" viewBox={`0 0 ${width} 120`} style={{ width: `${width / 100}em` }}><text ref={text} x="0" y="94" textAnchor="start">{Array.from(value).map((character, index) => <tspan key={`${character}-${index}`} style={{ animationDelay: `${index * 0.16}s, ${index * 0.16 + 0.58}s` }}>{character}</tspan>)}</text></svg></span>
-}
-
 export default function Design18() {
   const details = useInvitationDetails() || demo
   const video = useRef<HTMLVideoElement>(null)
   const audio = useRef<HTMLAudioElement>(null)
   const root = useRef<HTMLElement>(null)
-  const namesHeading = useRef<HTMLHeadingElement>(null)
-  const [phase, setPhase] = useState<'closed' | 'starting' | 'playing' | 'open'>('closed')
-  const [showNames, setShowNames] = useState(false)
-  const skipIntro = useRef(false)
+  const [phase, setPhase] = useState<'closed' | 'playing' | 'open'>('closed')
   const [music, setMusic] = useState(false)
   const [now, setNow] = useState(() => Date.now())
   const finish = () => {
     video.current?.pause()
-    setShowNames(true)
     setPhase('open')
-  }
-
-  function syncNameReveal() {
-    const clip = video.current
-    if (clip && clip.duration - clip.currentTime <= 2) setShowNames(true)
   }
 
   function openInvitation() {
@@ -82,41 +57,16 @@ export default function Design18() {
       void audio.current.play().catch(() => {})
     }
     if (matchMedia('(prefers-reduced-motion: reduce)').matches) {
-      setShowNames(true)
       setPhase('open')
       return
     }
-    setPhase('starting')
-    if (video.current?.readyState && video.current.readyState >= 1) video.current.currentTime = 1.95
-    else skipIntro.current = true
+    setPhase('playing')
     void video.current?.play().catch(finish)
   }
 
-  useLayoutEffect(() => {
-    if (!showNames) return
-    const heading = namesHeading.current
-    const container = heading?.parentElement
-    if (!heading || !container) return
-
-    const fitNames = () => {
-      heading.style.setProperty('--d18-name-scale', '1')
-      const availableWidth = container.clientWidth
-      const contentWidth = heading.scrollWidth
-      if (availableWidth > 0 && contentWidth > availableWidth) {
-        heading.style.setProperty('--d18-name-scale', String(availableWidth / contentWidth))
-      }
-    }
-
-    fitNames()
-    const observer = new ResizeObserver(fitNames)
-    observer.observe(container)
-    void document.fonts?.ready.then(fitNames)
-    return () => observer.disconnect()
-  }, [showNames, details.groom, details.bride])
-
   useEffect(() => {
     const previousTitle = document.title
-    document.title = `${details.groom} & ${details.bride} — Mandap at Dusk`
+    document.title = `${details.groom} & ${details.bride} — Sacred Mandap`
     return () => { document.title = previousTitle }
   }, [details.groom, details.bride])
 
@@ -132,7 +82,7 @@ export default function Design18() {
   }, [phase])
 
   useEffect(() => {
-    if (phase !== 'open' || matchMedia('(prefers-reduced-motion: reduce)').matches || !('IntersectionObserver' in window)) return
+    if (phase === 'closed' || matchMedia('(prefers-reduced-motion: reduce)').matches || !('IntersectionObserver' in window)) return
     const observer = new IntersectionObserver(entries => entries.forEach(entry => {
       if (!entry.isIntersecting) return
       entry.target.classList.add('d18-visible')
@@ -153,22 +103,22 @@ export default function Design18() {
   return <main ref={root} className={`d18-page d18-${phase}`}>
     <audio ref={audio} src={details.music || '/bisara.mp3'} loop preload="none" onPlay={() => setMusic(true)} onPause={() => setMusic(false)} />
     <section className="d18-entry" aria-label="Wedding invitation entry">
-      <video ref={video} className="d18-entry-video" src="/design18/entry.mp4" poster="/design18/entry-poster.jpg" muted playsInline preload="auto" onLoadedMetadata={() => { if (skipIntro.current && video.current) { video.current.currentTime = 1.95; skipIntro.current = false } }} onPlaying={() => setPhase('playing')} onTimeUpdate={syncNameReveal} onEnded={finish} onError={() => { if (phase === 'starting' || phase === 'playing') finish() }} />
+      <video ref={video} className="d18-entry-video" src="/design16/entry-trimmed.mp4" poster="/design16/entry-poster.jpg" muted playsInline preload="auto" onEnded={finish} onError={() => { if (phase === 'playing') finish() }} />
       <div className="d18-entry-shade" />
-      {(phase === 'closed' || phase === 'starting') && <button className="d18-enter" onClick={openInvitation}>
+      {phase === 'closed' && <button className="d18-enter" onClick={openInvitation}>
         <span aria-hidden="true">✧</span> Open invitation
       </button>}
       <button className="d18-music" aria-label={music ? 'Pause music' : 'Play music'} onClick={() => music ? audio.current?.pause() : void audio.current?.play().catch(() => {})}>{music ? 'Ⅱ' : '♫'}</button>
-      {showNames && <div className="d18-ending-names" aria-live="polite">
-        <h1 ref={namesHeading} aria-label={`${details.groom} weds ${details.bride}`}><WrittenWord value={details.groom} /><span className="d18-love-mark" aria-hidden="true"><svg viewBox="0 0 120 72"><path className="d18-heart" pathLength="1" d="M60 50 C49 39 31 27 31 14 C31 0 50 -1 60 12 C70 -1 89 0 89 14 C89 27 71 39 60 50Z"/></svg><WrittenWord value="Weds" className="d18-weds-word" /></span><WrittenWord value={details.bride} /><svg className="d18-name-swash" viewBox="0 0 600 70" preserveAspectRatio="none" aria-hidden="true"><path pathLength="1" d="M4 30 C93 8 184 8 255 35 C287 48 307 49 333 31 C398 -5 495 1 596 29" /></svg></h1>
+      {phase === 'open' && <div className="d18-ending-copy" aria-live="polite">
+        <h1><span>{details.groom}</span><i>&</i><span>{details.bride}</span></h1>
       </div>}
     </section>
 
-    {phase === 'open' && <>
-      <div className="d18-discover-wrap"><button className="d18-discover" onClick={() => document.getElementById('d18-invitation')?.scrollIntoView({ behavior: matchMedia('(prefers-reduced-motion: reduce)').matches ? 'auto' : 'smooth' })}>Discover the invitation <span aria-hidden="true">↓</span></button></div>
+    {phase !== 'closed' && <>
+      <div className="d18-seam-florals" aria-hidden="true" />
       <div id="d18-invitation" className="d18-paper">
       <section className="d18-intro d18-reveal">
-        <p className="d18-kicker">WITH THE BLESSINGS OF LORD GANESHA & OUR FAMILIES</p><Flourish />
+        <p className="d18-kicker">AN INVITATION FROM THE HEART</p><Flourish />
         <h2 className="d18-script">Two souls.<br />One beautiful journey.</h2>
         <p className="d18-message">{details.message}</p>
         <p>Your presence, prayers, and love will make our day complete.</p>
@@ -177,13 +127,11 @@ export default function Design18() {
           {details.brideFamily && <p><small>BRIDE’S FAMILY</small>{details.brideFamily}</p>}
         </div>}
         <Flourish /><span className="d18-signature d18-script">{details.groom} & {details.bride}</span>
+        <img className="d18-couple-art" src="/design16/couple-watercolor.png" alt="" aria-hidden="true" loading="lazy" />
       </section>
 
-      <section className="d18-save-date d18-reveal">
-        <p className="d18-kicker">PLEASE SAVE THE DATE</p>
-        <h2 className="d18-script">A day made for us</h2>
-        <div className="d18-date-stamp"><span>{formatDate(details.date, { month: 'long' })}</span><strong>{formatDate(details.date, { day: '2-digit' })}</strong><span>{formatDate(details.date, { year: 'numeric' })}</span></div>
-        <p>{formatDate(details.date, { weekday: 'long' })} · {formatTime(details.time)} · {details.offset === '+05:30' ? 'IST' : `UTC${details.offset}`}</p>
+      <section className="d18-heart-section d18-reveal" aria-label="Scratch to reveal the wedding date">
+        <HeartDateReveal date={formatDate(details.date, { day: 'numeric', month: 'long', year: 'numeric' })} day={formatDate(details.date, { weekday: 'long' })} time={formatTime(details.time)} tone="rose" />
       </section>
 
       <section className="d18-countdown d18-reveal">
