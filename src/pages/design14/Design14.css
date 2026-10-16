@@ -1684,9 +1684,10 @@ html:where(.d14-document).d14-started #main .d14-entry-name { translate: 0 0; }
   box-sizing: border-box;
   flex: none;
   width: 100%;
-  padding: 20px 16px calc(20px + env(safe-area-inset-bottom, 0px));
+  padding: 10px 16px calc(10px + env(safe-area-inset-bottom, 0px));
   display: flex;
-  flex-direction: column;
+  flex-direction: row;
+  justify-content: center;
   align-items: center;
   gap: 8px;
   text-align: center;
@@ -1697,7 +1698,7 @@ html:where(.d14-document).d14-started #main .d14-entry-name { translate: 0 0; }
 :where(html.d14-document) .d14-invitation-contact p {
   margin: 0;
   color: #795932;
-  font: 400 15px/1.4 'D14 Heading Serif', Georgia, serif;
+  font: 400 12px/1.4 'D14 Heading Serif', Georgia, serif;
 }
 
 :where(html.d14-document) .d14-invitation-contact a {
@@ -1706,7 +1707,8 @@ html:where(.d14-document).d14-started #main .d14-entry-name { translate: 0 0; }
   justify-content: center;
   gap: 10px;
   min-height: 44px;
-  padding: 0 12px;
+  padding: 0 10px;
+  flex: none;
   border-radius: 8px;
   color: #197548;
   font: 600 18px/1.4 system-ui, sans-serif;
@@ -1715,8 +1717,8 @@ html:where(.d14-document).d14-started #main .d14-entry-name { translate: 0 0; }
 }
 
 :where(html.d14-document) .d14-invitation-contact svg {
-  width: 25px;
-  height: 25px;
+  width: 21px;
+  height: 21px;
   flex: none;
 }
 
