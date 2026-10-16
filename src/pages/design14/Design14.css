@@ -1671,3 +1671,10 @@ html:where(.d14-document).d14-started #main .d14-entry-name { translate: 0 0; }
     will-change: auto;
   }
 }
+
+/* Scroll transforms are driven by one frame loop, never a competing CSS tween. */
+:where(html.d14-document) [data-d14-name="PAGE 1"] [data-d14-name="TEMPLE"],
+:where(html.d14-document) [data-d14-name="PAGE 3"] [data-d14-name="COUPLE"],
+:where(html.d14-document) .d14-end-couple {
+  transition: opacity 900ms ease !important;
+}
