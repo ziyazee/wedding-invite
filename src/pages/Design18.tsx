@@ -40,6 +40,7 @@ function Arrow() {
 export default function Design18() {
   const details = useInvitationDetails() || demo
   const video = useRef<HTMLVideoElement>(null)
+  const skipIntro = useRef(false)
   const audio = useRef<HTMLAudioElement>(null)
   const root = useRef<HTMLElement>(null)
   const [phase, setPhase] = useState<'closed' | 'playing' | 'open'>('closed')
@@ -61,6 +62,8 @@ export default function Design18() {
       return
     }
     setPhase('playing')
+    if (video.current && video.current.readyState >= 1) video.current.currentTime = 1.95
+    else skipIntro.current = true
     void video.current?.play().catch(finish)
   }
 
@@ -103,7 +106,7 @@ export default function Design18() {
   return <main ref={root} className={`d18-page d18-${phase}`}>
     <audio ref={audio} src={details.music || '/bisara.mp3'} loop preload="none" onPlay={() => setMusic(true)} onPause={() => setMusic(false)} />
     <section className="d18-entry" aria-label="Wedding invitation entry">
-      <video ref={video} className="d18-entry-video" src="/design16/entry-trimmed.mp4" poster="/design16/entry-poster.jpg" muted playsInline preload="auto" onEnded={finish} onError={() => { if (phase === 'playing') finish() }} />
+      <video ref={video} className="d18-entry-video" src="/design18/entry.mp4" poster="/design18/entry-poster.jpg" muted playsInline preload="auto" onLoadedMetadata={() => { if (skipIntro.current && video.current) { video.current.currentTime = 1.95; skipIntro.current = false } }} onEnded={finish} onError={() => { if (phase === 'playing') finish() }} />
       <div className="d18-entry-shade" />
       <button className={`d18-enter${phase !== 'closed' ? ' d18-enter-dismissed' : ''}`} onClick={openInvitation} disabled={phase !== 'closed'} aria-hidden={phase !== 'closed'} tabIndex={phase === 'closed' ? 0 : -1}>
         Open invitation
