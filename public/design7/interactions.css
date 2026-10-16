@@ -46,3 +46,14 @@ button:focus-visible, a:focus-visible { outline: 2px solid #6b7b43; outline-offs
 .story-butterfly.right { right: 0; bottom: 0; transform: scaleX(-1); }
 @media(min-width:768px) { .story-butterfly { width: 80px; top: 50% !important; bottom: auto !important; } }
 #hero h1:focus { outline: none; }
+
+/* Once opened, the intro scrolls away naturally while its video keeps playing. */
+#opening.started {
+  position: absolute;
+  top: 0;
+  bottom: auto;
+  height: 100vh;
+  height: 100dvh;
+  pointer-events: none !important;
+  cursor: default;
+}

@@ -28,12 +28,20 @@
     opening.classList.add('finished');
     setTimeout(() => {
       first.pause(); opening.hidden = true;
-      const heading = document.querySelector('h1'); heading.tabIndex = -1; heading.focus({ preventScroll: true });
+      // Do not move focus back to the opening after the guest has scrolled away.
+      if (window.scrollY < 1 && (document.activeElement === document.body || document.activeElement === document.querySelector('#open-invitation'))) {
+        const heading = document.querySelector('h1'); heading.tabIndex = -1; heading.focus({ preventScroll: true });
+      }
     }, reduced ? 0 : 850);
   }
   opening.addEventListener('click', () => {
     if (started) return;
     started = true; musicButton.hidden = false;
+    document.body.style.overflow = '';
+    opening.classList.add('started');
+    const openButton = document.querySelector('#open-invitation');
+    openButton.hidden = true;
+    openButton.tabIndex = -1;
     music.play().catch(syncMusic);
     if (reduced) { finish(); return; }
     document.querySelector('#open-invitation').textContent = 'Opening…';
