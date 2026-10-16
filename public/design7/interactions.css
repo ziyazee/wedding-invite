@@ -57,3 +57,9 @@ button:focus-visible, a:focus-visible { outline: 2px solid #6b7b43; outline-offs
   pointer-events: none !important;
   cursor: default;
 }
+
+.bloom-invitation-contact { display: flex; align-items: center; justify-content: center; gap: 4px; padding: 3px 12px; }
+.bloom-invitation-contact p { margin: 0; color: #5e6d3d; font-weight: 400; font-family: inherit; font-size: 12px; line-height: 1.4; }
+.bloom-invitation-contact a { display: inline-flex; align-items: center; justify-content: center; flex: none; min-height: 24px; padding: 0 4px; border-radius: 4px; color: #197548; }
+.bloom-invitation-contact svg { display: block; width: 18px; height: 18px; }
+.bloom-invitation-contact a:hover { background: #1975480d; }
