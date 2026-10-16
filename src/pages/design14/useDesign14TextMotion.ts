@@ -14,7 +14,7 @@ export function useDesign14TextMotion(host: RefObject<HTMLDivElement | null>, op
       if (nodes.length) groups.push({ key, anchor, nodes, repeat })
     }
     addGroup('welcome', container.querySelector('.d14-page-two-content'),
-      '.d14-page-two-invocation, .d14-page-two-intro, .d14-page-two-names > span, .d14-page-two-celebrate > p')
+      '.d14-page-two-invocation, .d14-page-two-intro, .d14-page-two-names, .d14-page-two-family, .d14-page-two-family-amp, .d14-page-two-celebrate > p')
     const coupleText = Array.from(container.querySelectorAll<TextNode>('[data-d14-name="PAGE 3"] svg[data-d14-component-type="RichTextContainer"]'))
     coupleText.forEach((node, index) => groups.push({ key: `couple-${index}`, anchor: node, nodes: [node], repeat: false }))
     addGroup('event-navigation', container.querySelector('.d14-event-gallery-nav'), '.d14-event-label')
