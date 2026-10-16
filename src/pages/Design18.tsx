@@ -105,9 +105,9 @@ export default function Design18() {
     <section className="d18-entry" aria-label="Wedding invitation entry">
       <video ref={video} className="d18-entry-video" src="/design16/entry-trimmed.mp4" poster="/design16/entry-poster.jpg" muted playsInline preload="auto" onEnded={finish} onError={() => { if (phase === 'playing') finish() }} />
       <div className="d18-entry-shade" />
-      {phase === 'closed' && <button className="d18-enter" onClick={openInvitation}>
-        <span aria-hidden="true">✧</span> Open invitation
-      </button>}
+      <button className={`d18-enter${phase !== 'closed' ? ' d18-enter-dismissed' : ''}`} onClick={openInvitation} disabled={phase !== 'closed'} aria-hidden={phase !== 'closed'} tabIndex={phase === 'closed' ? 0 : -1}>
+        Open invitation
+      </button>
       <button className="d18-music" aria-label={music ? 'Pause music' : 'Play music'} onClick={() => music ? audio.current?.pause() : void audio.current?.play().catch(() => {})}>{music ? 'Ⅱ' : '♫'}</button>
       {phase === 'open' && <div className="d18-ending-copy" aria-live="polite">
         <h1><span>{details.groom}</span><i>&</i><span>{details.bride}</span></h1>

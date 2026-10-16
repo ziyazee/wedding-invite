@@ -6,9 +6,7 @@
 .d18-entry{position:relative;width:100%;max-width:720px;height:100svh;min-height:560px;max-height:1280px;margin:0 auto;overflow:hidden;background:var(--d18-paper)}
 .d18-entry-video{position:absolute;inset:0;z-index:1;width:100%;height:100%;object-fit:cover}
 .d18-entry-shade{position:absolute;inset:0;z-index:2;background:linear-gradient(180deg,#fff0 40%,#32151138 100%);pointer-events:none}
-.d18-enter{position:absolute;z-index:3;top:50%;left:50%;transform:translate(-50%,-50%);width:auto;height:auto;border:1px solid #c59b61;border-radius:28px;background:#fff8f0ed;color:#773043;display:flex;align-items:center;justify-content:center;gap:9px;padding:11px 19px;box-shadow:0 5px 22px #39181625;font:10px Georgia,serif;letter-spacing:1.2px;white-space:nowrap;cursor:pointer}
 .d18-kicker{font:9px/1.8 Georgia,serif;letter-spacing:2.5px;text-transform:uppercase;color:var(--d18-sage)}
-.d18-enter>span{font-size:16px;color:#c69b5d}
 .d18-music{position:absolute;z-index:4;right:calc(3% + 24px);bottom:calc(7.2% - 5px);width:46px;height:46px;border:1px solid #b58a4377;border-radius:50%;background:#fff6e7ed;color:#722e25;cursor:pointer;font:18px Georgia,serif}
 .d18-ending-copy{position:absolute;z-index:3;top:22%;left:50%;width:min(90%,600px);transform:translateX(-50%);text-align:center;color:#713229;text-shadow:0 2px 16px #fff,0 1px 3px #fff;animation:d18-end-fade 1.6s ease both;pointer-events:none}
 .d18-ending-kicker,.d18-ending-date{font:9px/1.8 Georgia,serif;letter-spacing:2.4px;text-transform:uppercase;margin:0;color:#865039}
@@ -102,3 +100,43 @@
 @media(max-width:600px){.d18-event{padding:74px 14% 64px}}
 @media(max-width:430px){.d18-intro,.d18-countdown,.d18-notes,.d18-footer{padding-inline:19%}.d18-events{padding-inline:6%}.d18-event{padding-inline:9%}.d18-event-date{gap:11px}.d18-event-date span{font-size:12px}.d18-counts{gap:4px}.d18-counts strong{font-size:30px}.d18-counts span{letter-spacing:1px;font-size:7px}.d18-message,.d18-intro>p:not(.d18-kicker),.d18-notes>p:not(.d18-kicker){font-size:17px}}
 @media(prefers-reduced-motion:reduce){.d18-page *{animation:none!important;transition:none!important;scroll-behavior:auto!important}.d18-reveal{opacity:1;transform:none}}
+
+/* Cream enamel and layered gold edging, matching the invitation reference. */
+.d18-enter {
+  position: absolute;
+  z-index: 3;
+  top: 48%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  width: clamp(190px, 40%, 285px);
+  min-height: 48px;
+  padding: 12px 22px;
+  border: 2px solid #bd8b3d;
+  border-radius: 999px;
+  background: radial-gradient(ellipse at 50% 25%, #fffaf0 0%, #f1e4cd 60%, #d5bb91 100%);
+  color: #681c29;
+  box-shadow: 0 0 0 1px #64380e, 0 0 0 3px #d5a452,
+    inset 0 2px 2px #fffdf6, inset 0 -3px 5px #98703d66,
+    0 5px 15px #2e10074d;
+  font: 500 clamp(13px, 2.8vw, 20px)/1.35 Georgia, 'Times New Roman', serif;
+  letter-spacing: .12em;
+  white-space: nowrap;
+  cursor: pointer;
+  opacity: 1;
+  visibility: visible;
+  transition: opacity .65s ease, visibility 0s linear;
+}
+.d18-enter::before {
+  content: '';
+  position: absolute;
+  inset: 3px;
+  border: 1px solid #ae813c80;
+  border-radius: inherit;
+  pointer-events: none;
+}
+.d18-enter-dismissed {
+  opacity: 0;
+  visibility: hidden;
+  pointer-events: none;
+  transition: opacity .65s ease, visibility 0s linear .65s;
+}
