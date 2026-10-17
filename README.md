@@ -183,7 +183,7 @@ The partner sign-in is `/login`. Enter the account email as the username. Supaba
 
 ### Supabase setup
 
-Apply `supabase/migrations/202610150001_dashboard_orders.sql` to the Supabase project. It creates companies, the registry for the existing invitation designs, orders, role checks, RLS policies, and the public published-invitation lookup function. The template rows reference the existing design routes and thumbnails; they do not duplicate invitation artwork or components.
+Apply `supabase/migrations/202610150001_dashboard_orders.sql` and `supabase/migrations/202610170001_selected_order_templates.sql` to the Supabase project. They create companies, the selected eight-design order catalog, orders, role checks, RLS policies, and the public published-invitation lookup function. The order form starts with Mohad & Rahma's couple and event details as editable defaults; submitted details are saved with each order.
 
 Configure the existing public client environment variables `VITE_SUPABASE_URL` and `VITE_SUPABASE_ANON_KEY` (the latter accepts a Supabase publishable key). Do not put a service-role key in browser configuration. Create user accounts in Supabase Auth. For a client, use the same email on the Auth user and company row; the company email is unique and determines which orders the user can see. For an admin, assign the role only through trusted SQL or a server process because browser users must not be allowed to edit Auth `app_metadata`.
 

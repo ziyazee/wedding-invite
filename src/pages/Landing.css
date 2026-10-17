@@ -198,7 +198,146 @@
   .showcase-page .showcase-preview::before { border-radius: 35px 35px 0 0; }
 }
 
-/* Lift the banner composition slightly inside its existing frame. */
+/* Bring the phone preview a little closer to the top of the banner. */
 @media(min-width:761px) {
-  .studio-hero .hero-art { object-position: center 60%; }
+  .showcase-page .showcase-preview { margin-top: 22px; }
+}
+
+/* Preserve the phone design while keeping its panel visible during scrolling. */
+@media(min-width:761px) {
+  .showcase-page .showcase-preview {
+    position: sticky;
+    top: 20px;
+    align-self: start;
+  }
+}
+
+/* Fit the entire phone display into the initial viewport, with no empty tail. */
+.showcase-page .showcase-preview {
+  height: auto;
+  min-height: 0;
+  padding-top: 16px;
+  padding-bottom: 16px;
+  gap: 0;
+}
+.showcase-page .phone-stage {
+  width: 100%;
+  max-width: min(308px, calc((100svh - 140px) * .46));
+  margin: 0 auto;
+}
+@media(min-width:761px) {
+  .showcase-page .showcase-preview {
+    position: sticky;
+    top: 20px;
+    align-self: start;
+  }
+}
+@media(max-width:760px) {
+  .showcase-page .phone-stage {
+    max-width: min(286px, calc((100svh - 110px) * .46));
+  }
+}
+
+/* Desktop sizing budget:
+   60px header + 34px drop + 20px bottom clearance + 32px panel padding
+   + 20px phone bezel. The remaining height belongs to the 402:874 screen.
+   Add 20px bezel and 45px panel padding/border back to get the column width. */
+@media(min-width:1101px) {
+  .showcase-content {
+    --preview-column: min(34vw, calc((100svh - 166px) * 402 / 874 + 65px));
+  }
+  .showcase-page .showcase-preview {
+    margin-top: 34px;
+    padding: 16px 22px;
+    border-right: 0;
+  }
+  .showcase-page .phone-stage {
+    max-width: none;
+    width: 100%;
+    margin: 0;
+  }
+  .showcase-page .iphone-frame {
+    padding: 9px;
+    border-width: 1px;
+  }
+}
+
+/* Align the preview's actual bottom edge with the viewport, including width caps. */
+@media(min-width:1101px) {
+  .showcase-content {
+    --preview-height: calc((var(--preview-column) - 65px) * 874 / 402 + 52px);
+  }
+  .showcase-page .showcase-preview {
+    margin-top: max(0px, calc(100svh - 60px - var(--preview-height)));
+    top: max(0px, calc(100svh - var(--preview-height)));
+  }
+}
+
+/* Soft woven-paper backdrop and polished invitation covers. */
+.showcase-page {
+  background-color: #f1e6d3;
+  background-image: linear-gradient(120deg, #fffaf580, #f0dfc32e 58%, #fffaf54d), url('/landing/ivory-paper-texture.svg');
+  background-size: auto, 180px 180px;
+}
+.showcase-page .studio-header {
+  background: linear-gradient(#fffaf2c9, #f8efdfc9), url('/landing/ivory-paper-texture.svg');
+  border-bottom-color: #b38c4c38;
+}
+.showcase-page .template-filters {
+  background: linear-gradient(135deg, #fffaf1b3, #f7eddd80);
+  border-color: #ba945a40;
+  box-shadow: inset 0 1px #fffdf2b3, 0 3px 14px #69482605;
+}
+.showcase-page .template-heading select { background: #fffaf18c; }
+.showcase-page .template-image-wrap {
+  border: 1px solid #fff8e9b3;
+  box-shadow: 0 5px 12px #593a2429, 0 1px 2px #67472233, inset 0 1px #fff;
+  transition: transform .3s ease, box-shadow .3s ease;
+}
+.showcase-page .template-image-wrap::before,
+.showcase-page .template-image-wrap::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  border-radius: inherit;
+  z-index: 1;
+}
+.showcase-page .template-image-wrap::before {
+  background: linear-gradient(140deg, #ffffff50 0%, #ffffff14 25%, #ffffff00 45%, #ffffff00 69%, #f9e8c614 100%);
+  box-shadow: inset 0 1px 1px #ffffffbf, inset 1px 0 1px #ffffff70, inset 0 -1px 2px #6e471c26;
+}
+.showcase-page .template-image-wrap::after {
+  inset: -35% -70%;
+  background: linear-gradient(115deg, transparent 39%, #ffffff05 43%, #ffffff52 49%, #ffffff12 53%, transparent 58%);
+  transform: translateX(-30%);
+  transition: transform .75s cubic-bezier(.2,.65,.3,1);
+}
+.showcase-page .card-favorite { z-index: 2; }
+.showcase-page .card-play { z-index: 2; }
+.showcase-page .template-card.is-selected .template-image-wrap {
+  box-shadow: 0 0 0 2px #a5753c, 0 7px 18px #80532330, inset 0 1px #fff;
+}
+@media(hover:hover) {
+  .showcase-page .template-card:hover .template-image-wrap {
+    transform: translateY(-3px);
+    box-shadow: 0 10px 22px #593a2438, 0 0 0 1px #c5a574;
+  }
+  .showcase-page .template-card:hover .template-image-wrap::after { transform: translateX(30%); }
+}
+@media(prefers-reduced-motion:reduce) {
+  .showcase-page .template-image-wrap::after { transition: none; }
+  .showcase-page .template-card:hover .template-image-wrap { transform: none; }
+}
+
+/* Keep the sort chevron anchored on the right across browsers and labels. */
+.showcase-page .template-heading select {
+  appearance: none;
+  -webkit-appearance: none;
+  padding-right: 40px;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='16' height='16' viewBox='0 0 24 24' fill='none' stroke='%23392d25' stroke-width='1.6' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='m5 9 7 7 7-7'/%3E%3C/svg%3E");
+  background-repeat: no-repeat;
+  background-position: right 12px center;
+  background-size: 16px 16px;
+  cursor: pointer;
 }

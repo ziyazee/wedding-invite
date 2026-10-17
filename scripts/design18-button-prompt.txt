@@ -1,0 +1,4 @@
+Tool: built-in image_gen (edit, transparent background)
+Input: user-provided Open invitation button artwork.
+Output: public/design18/open-invitation-button.png
+Prompt: Edit the attached Open invitation button image into a web-ready transparent PNG asset. Preserve the original button design faithfully: very wide horizontal capsule, rounded ends, rich reflective double gold rim, ivory softly textured silk/parchment center, dark burgundy serif text exactly 'Open invitation'. Remove only the surrounding background and tiny stray colored fringe pixels. Tightly frame the complete button with minimal transparent margin, no clipping. No additional ornaments, no new wording, no extra shadows outside the button, no scene. Keep the width-to-height ratio of the actual button about 4:1. The image is the button itself, ready to overlay on red curtains.

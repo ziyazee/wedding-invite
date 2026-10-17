@@ -22,7 +22,7 @@ const defaultEvents = [
   { id: 'brides-reception-chikmagaluru', title: 'Bride’s Reception — Chikmagaluru', date: 'Thursday, December 24', iso: '2026-12-24T11:00:00+05:30', time: '11:00 AM', venue: 'Heritage Convention Hall', address: 'Chikmagaluru', map: 'https://maps.app.goo.gl/NbvAqoYtcacD5Xas6' },
 ]
 
-function Divider() { return <div className="rg-divider" aria-hidden="true"><span />✧<span /></div> }
+function Divider({ symbol = '✧' }: { symbol?: string }) { return <div className="rg-divider" aria-hidden="true"><span />{symbol}<span /></div> }
 
 function CelebrationBotanical({ className = '' }: { className?: string }) {
   return <img className={className} src={`${ASSETS}celebration-roses.png`} alt="" aria-hidden="true" loading="lazy" />
@@ -118,7 +118,7 @@ export default function MohadRahma() {
       <div className="rg-hero-shade" />
       {!opened && <button className="rg-open" onClick={openInvitation} aria-label="Open your invitation" />}
       <div className="rg-names" aria-hidden={!namesVisible}>
-        <span className="rg-heart">♥</span><p className="rg-script">We’re getting married</p><Divider />
+        <span className="rg-heart">♥</span><p className="rg-script">We’re getting married</p><Divider symbol="♥" />
         <h1><span>{groom}</span><i>&</i><span>{bride}</span></h1>
         <p className="rg-eyebrow">Together, with our families</p>
       </div>
@@ -134,7 +134,7 @@ export default function MohadRahma() {
     {opened && <div className="rg-paper" id="rg-welcome">
       <section className="rg-section rg-welcome">
         <p className="rg-eyebrow">An invitation from the heart</p>
-        <Divider />
+        <Divider symbol="♥" />
         <h2 className="rg-script">Two souls. One beautiful journey.</h2>
         <p>{details?.message || "With the blessings of Allah and the love of our families, we invite you to celebrate the beginning of our forever."}</p>
         <p>Your presence, your prayers, and your love will make our day complete.</p>
@@ -144,7 +144,7 @@ export default function MohadRahma() {
       <section className="rg-section"><h2 className="rg-script">Save our date</h2><HeartDateReveal date={details ? formatDate(details.date) : "20 December 2026"} day={details ? formatDate(details.date,{weekday:"long"}) : "Sunday"} time={details ? formatTime(details.time) : "11:00 in the morning"} /></section>
       <section className="rg-section"><Divider /><p className="rg-eyebrow">Counting down to Nikah & Wedding</p><h2 className="rg-script">Until our forever</h2><Countdown /><Divider /></section>
       <section className="rg-section mr-celebrations" aria-labelledby="mr-celebrations-title">
-        <div className="mr-celebration-heading"><CelebrationBotanical className="mr-heading-flower"/><p className="rg-eyebrow">Together, in celebration</p><h2 id="mr-celebrations-title" className="rg-script">Moments that<br/>become memories</h2><p className="mr-intro">{details ? `${events.length} celebrations. One beautiful beginning.` : "Five gatherings. One beautiful beginning."}</p><Divider /><p className="mr-year">{details ? formatDate(details.date,{month:"long",year:"numeric"}) : "December 2026"} <span>✧</span> All times in {details ? `UTC${details.offset}` : "IST"}</p></div>
+        <div className="mr-celebration-heading"><CelebrationBotanical className="mr-heading-flower"/><p className="rg-eyebrow">Together, in celebration</p><h2 id="mr-celebrations-title" className="rg-script">Moments that<br/>become memories</h2><p className="mr-intro">{details ? `${events.length} celebrations. One beautiful beginning.` : "Five gatherings. One beautiful beginning."}</p><Divider /><p className="mr-year">{details ? formatDate(details.date,{month:"long",year:"numeric"}) : "December 2026"} <span>✧</span> All times in IST</p></div>
         <div className="mr-celebration-body">
         <InvitationLayoutEditor><div className="mr-events">{events.map(event => <article className={`mr-event ${event.id === 'nikah' ? 'mr-main-event' : ''}`} key={event.id} aria-labelledby={`mr-title-${event.id}`}>
           <div className="mr-event-paper">
@@ -153,7 +153,7 @@ export default function MohadRahma() {
             <div className="mr-title-column"><h3 data-layout-id={`${event.id}:title`} id={`mr-title-${event.id}`} className="rg-script">{event.title.split(' — ')[0]}</h3></div>
             <time data-layout-id={`${event.id}:date`} dateTime={event.iso} className="mr-event-date"><strong>{event.iso.slice(8,10)}</strong><span>{formatDate(event.iso.slice(0,10),{month:"long"})}<small>{event.iso.slice(0,4)}</small></span></time>
             <p data-layout-id={`${event.id}:weekday`} className="mr-weekday">{event.date.split(',')[0]}</p>
-            <p data-layout-id={`${event.id}:time`} className="mr-time">{event.time}<span>{details ? `UTC${details.offset}` : "IST"}</span></p>
+            <p data-layout-id={`${event.id}:time`} className="mr-time">{event.time}</p>
           </div>
           <div className="mr-venue-row"><h4 data-layout-id={`${event.id}:venue`}>{event.venue}</h4>{event.address!==event.venue&&<p data-layout-id={`${event.id}:address`} className="mr-address">{event.address}</p>}</div>
           <div className="mr-actions"><a data-layout-id={`${event.id}:directions`} className="mr-directions" href={event.map} target="_blank" rel="noreferrer" aria-label={`Directions to ${event.venue}`}>Directions <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true" style={{ flexShrink: 0 }}><path d="M6 18 18 6M6 6h12v12" /></svg></a><a data-layout-id={`${event.id}:calendar`} className="mr-calendar" onClick={e=>{if(details){e.preventDefault();downloadCalendar({title:event.title,date:event.iso.slice(0,10),time:event.iso.slice(11,16),venue:event.venue,address:event.address,map:event.map},details.offset,couple)}}} href={`${SOURCE}/events/${event.id}/calendar`} target="_blank" rel="noreferrer" aria-label={`Add ${event.title} to calendar`}>Save the date <span>+</span></a></div>

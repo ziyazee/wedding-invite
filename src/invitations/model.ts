@@ -1,5 +1,5 @@
 export const designs = [
-  { id: 2, name: 'Royal Grace', description: 'Sage and ivory stationery with pearls and delicate botanical relief.', route: '/design2', image: '/images/royal-grace/welcome.jpg', color: '#8b9274' },
+  { id: 2, name: 'Mohad & Rahma', description: 'Sage and ivory stationery with pearls and delicate botanical relief.', route: '/mohadrahma', image: '/images/royal-grace/opening-poster.jpg', color: '#8b9274' },
   { id: 3, name: 'Embroidered Garden', description: 'Garden illustrations and soft embroidered textures.', route: '/design3', image: '/design3/assets/footer-chateau.png', color: '#dce2cd' },
   { id: 4, name: 'Blossom & Oud', description: 'A warm, ornate celebration with Moroccan-inspired details.', route: '/design4', image: '/design4/assets/flowers.png', color: '#ead3c0' },
   { id: 5, name: 'Secret Garden', description: 'Romantic garden scenery and delicate floral details.', route: '/design5', image: '/design5/assets/opened.jpg', color: '#d6d8c3' },
@@ -11,11 +11,11 @@ export const designs = [
   { id: 11, name: 'Maitri · A Jewel-Tone Evening', description: 'Deep noir and antique gold with mandala filigree — a cinematic Hindu wedding invitation.', route: '/design11', image: '/design11/preview.jpg', color: '#1a1520' },
   { id: 12, name: 'Kiran · Temple of Love', description: 'A sacred temple scene with maroon and gold — a grand Hindu wedding invitation with clouds and countdown.', route: '/design12', image: '/design12/preview.webp', color: '#580b1a' },
   { id: 13, name: 'The Artful Love Story', description: 'An ornate Indian wedding invitation with a photo story, celebration details, and a countdown.', route: '/design13', image: '/design13/assets/zBRd2fZShor1nxxKvdVKhKU.png', color: '#fbf5ed' },
-  { id: 14, name: 'Radha · A Timeless Union', description: 'A traditional Hindu wedding invitation with family blessings, a mehendi celebration, and a photo story.', route: '/arjunbhavana', image: '/design14/assets/704nAPXndZuu4f9Y58HGiZKFCM.jpeg', color: '#f8f2e9' },
+  { id: 14, name: 'A Timeless Union', description: 'A traditional Hindu wedding invitation with family blessings, a mehendi celebration, and a photo story.', route: '/arjunbhavana', image: '/landing/timeless-union-opening.jpg', color: '#f8f2e9' },
   { id: 15, name: 'Ivory Arch · A Blessed Beginning', description: 'A cinematic ivory arch reveal with gold calligraphy, a live countdown, and elegant celebration cards.', route: '/design15', image: '/design15/preview.jpg', color: '#e9e2d4' },
   { id: 16, name: 'Sacred Mandap · A Vow at Dusk', description: 'A cinematic maroon curtain reveal opens onto a glowing mandap, with a Hindu wedding story in vermilion, ivory, and gold.', route: '/design16', image: '/design16/preview.jpg', color: '#6f201e' },
   { id: 17, name: 'Gulabi Mandap · A Celebration in Bloom', description: 'A rose-filled mandap with falling petals and a romantic Hindu wedding story in blush, ruby, and antique gold.', route: '/design17', image: '/design17/preview.jpg', color: '#a65364' },
-  { id: 18, name: 'Mandap at Dusk · Rahul & Naina', description: 'A sunset mandap reveal with a cinematic curtain opening and a personal name reveal.', route: '/design18', image: '/design18/preview.jpg', color: '#d19b72' },
+  { id: 18, name: 'Mandap at Dusk', description: 'A sunset mandap reveal with a cinematic curtain opening and a personal name reveal.', route: '/design18', image: '/design18/preview.jpg', color: '#d19b72' },
 ] as const
 export interface Celebration { title: string; date: string; time: string; venue: string; address: string; map: string }
 export interface InvitationData {

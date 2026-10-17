@@ -108,8 +108,8 @@ export default function Design18() {
     <section className="d18-entry" aria-label="Wedding invitation entry">
       <video ref={video} className="d18-entry-video" src="/design18/entry.mp4" poster="/design18/entry-poster.jpg" muted playsInline disablePictureInPicture preload="auto" onLoadedMetadata={() => { if (skipIntro.current && video.current) { video.current.currentTime = 1.95; skipIntro.current = false } }} onEnded={finish} onError={() => { if (phase === 'playing') finish() }} />
       <div className="d18-entry-shade" />
-      <button className={`d18-enter${phase !== 'closed' ? ' d18-enter-dismissed' : ''}`} onClick={openInvitation} disabled={phase !== 'closed'} aria-hidden={phase !== 'closed'} tabIndex={phase === 'closed' ? 0 : -1}>
-        Open invitation
+      <button className={`d18-enter${phase !== 'closed' ? ' d18-enter-dismissed' : ''}`} aria-label="Open invitation" onClick={openInvitation} disabled={phase !== 'closed'} aria-hidden={phase !== 'closed'} tabIndex={phase === 'closed' ? 0 : -1}>
+        <img src="/design18/open-invitation-button.png" alt="" width="1080" height="360" draggable={false} />
       </button>
       <button className="d18-music" aria-label={music ? 'Pause music' : 'Play music'} onClick={() => music ? audio.current?.pause() : void audio.current?.play().catch(() => {})}>{music ? 'Ⅱ' : '♫'}</button>
       {phase === 'open' && <div className="d18-ending-copy" aria-live="polite">
@@ -147,7 +147,7 @@ export default function Design18() {
         {[...details.events].sort((a, b) => `${a.date}${a.time}`.localeCompare(`${b.date}${b.time}`)).map((event, index) => <article className={`d18-event d18-reveal ${/nikah|wedding/i.test(event.title) ? 'd18-main-event' : ''}`} key={`${event.title}-${event.date}`}>
           <p className="d18-event-index">{String(index + 1).padStart(2, '0')} <span>✧</span> THE CELEBRATION</p>
           <h3 className="d18-script">{event.title}</h3>
-          <div className="d18-event-date"><strong>{formatDate(event.date, { day: '2-digit' })}</strong><span>{formatDate(event.date, { weekday: 'long', month: 'long', year: 'numeric' })}<small>{formatTime(event.time)} · {details.offset === '+05:30' ? 'IST' : `UTC${details.offset}`}</small></span></div>
+          <div className="d18-event-date"><strong>{formatDate(event.date, { day: '2-digit' })}</strong><span>{formatDate(event.date, { weekday: 'long', month: 'long', year: 'numeric' })}<small>{formatTime(event.time)}</small></span></div>
           <Flourish /><h4>{event.venue}</h4>{event.address !== event.venue && <p className="d18-address">{event.address}</p>}
           <div className="d18-event-actions"><a href={mapURL(event.venue, event.address, event.map)} target="_blank" rel="noreferrer">Directions <Arrow /></a><button onClick={() => downloadCalendar(event, details.offset, `${details.groom} & ${details.bride}`)}>Save the date <span>＋</span></button></div>
         </article>)}

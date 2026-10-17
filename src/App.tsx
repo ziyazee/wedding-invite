@@ -25,6 +25,7 @@ import Dashboard from './pages/Dashboard'
 import GeneratedInvitation from './pages/GeneratedInvitation'
 import Login from './pages/Login'
 import ClientDashboard from './pages/ClientDashboard'
+import ClientLivePreview from './pages/ClientLivePreview'
 import AdminDashboard from './pages/AdminDashboard'
 
 export default function App() {
@@ -33,6 +34,7 @@ export default function App() {
       <Route path="/" element={<Landing />} />
       <Route path="/login" element={<Login />} />
       <Route path="/client/dashboard" element={<ClientDashboard />} />
+      <Route path="/client/live-preview" element={<ClientLivePreview />} />
       <Route path="/admin/dashboard" element={<AdminDashboard />} />
       <Route path="/dashboard" element={<Dashboard />} />
       <Route path="/create" element={<Create />} />

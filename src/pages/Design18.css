@@ -146,3 +146,21 @@
 /* Swipes over the decorative intro belong to the page, not the video player. */
 .d18-entry { touch-action: pan-y pinch-zoom; }
 .d18-entry-video { pointer-events: none; }
+
+/* Reference artwork sits directly over the curtain; the existing dismissal fades it out. */
+.d18-enter {
+  width: 52%;
+  max-width: 340px;
+  aspect-ratio: auto;
+  min-height: 44px;
+  padding: 0;
+  border: 0;
+  border-radius: 999px;
+  background: transparent;
+  box-shadow: none;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+.d18-enter::before { content: none; }
+.d18-enter img { display: block; width: 100%; height: auto; pointer-events: none; }
