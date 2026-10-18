@@ -89,7 +89,7 @@
   setInterval(updateCountdown, 1000);
 
   const buttons = [...document.querySelectorAll('main button')];
-  buttons.find(button => button.textContent.trim() === 'Calendar').addEventListener('click', () => {
+  buttons.find(button => button.textContent.trim() === 'Calendar' && !button.hasAttribute('data-wedding-calendar'))?.addEventListener('click', () => {
     const stamp = new Date().toISOString().replace(/[-:]/g, '').replace(/\.\d{3}/, '');
     const event = ['BEGIN:VCALENDAR','VERSION:2.0','PRODID:-//Wedding Invite//Majestic//EN','BEGIN:VEVENT','UID:elisa-jhon-20270918@wedding-invite',`DTSTAMP:${stamp}`,'DTSTART:20270918T150000Z','DTEND:20270919T000000Z','SUMMARY:Elisa & Jhon — Wedding','LOCATION:Villa Montalcino\\, Italy','END:VEVENT','END:VCALENDAR',''].join('\r\n');
     const url = URL.createObjectURL(new Blob([event], { type: 'text/calendar;charset=utf-8' }));

@@ -16,6 +16,7 @@ import Design11 from './pages/Design11'
 import Design12 from './pages/Design12'
 import Design13 from './pages/Design13'
 import Design14 from './pages/Design14'
+import CelebrationsEmbed from './pages/design14/CelebrationsEmbed'
 import Design15 from './pages/Design15'
 import Design16 from './pages/Design16'
 import Design17 from './pages/Design17'
@@ -53,6 +54,7 @@ export default function App() {
       <Route path="/design11" element={<Design11 />} />
       <Route path="/design12" element={<Design12 />} />
       <Route path="/design13" element={<Design13 />} />
+      <Route path="/design14/celebrations" element={<CelebrationsEmbed />} />
       <Route path="/design14" element={<Navigate to="/arjunbhavana" replace />} />
       <Route path="/arjunbhavana" element={<Design14 />} />
       <Route path="/design15" element={<Design15 />} />

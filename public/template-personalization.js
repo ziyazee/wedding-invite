@@ -32,7 +32,12 @@
     ["Mr. [Bride's Grandfather Name] & Mrs. [Bride's Grandmother Name]", brideFamily],
     ["Mr. [Bride's Father Name] & Mrs. [Bride's Mother Name]", brideFamily],
     ["Mr. [Grandfather's Name] & Mrs. [Grandmother's Name]", groomFamily],
-    ["Mr. [Father's Name] & Mrs. [Mother's Name]", brideFamily],
+    ["Mr. [Father's Name] & Mrs. [Mother's Name]", groomFamily],
+  ])
+  const artfulSectionText = new Map([
+    ['With the blessings of the Almighty and our beloved elders,', 'With the blessings of God and our beloved families,'],
+    ['cordially invite you to grace the auspicious wedding ceremony of their beloved son', 'we joyfully invite you to celebrate the wedding of'],
+    ['On the following events', 'Join us to celebrate'],
   ])
   const processed = new WeakMap()
 
@@ -42,7 +47,9 @@
     const trimmed = value.trim()
     let next = value
 
-    if (message && (trimmed.startsWith('Some souls are destined to find each other') || trimmed.startsWith('Some love stories are written by destiny'))) {
+    if (template === 13 && artfulSectionText.has(trimmed)) {
+      next = value.replace(trimmed, artfulSectionText.get(trimmed))
+    } else if (message && (trimmed.startsWith('Some souls are destined to find each other') || trimmed.startsWith('Some love stories are written by destiny'))) {
       next = value.replace(trimmed, message)
     } else if (familyRows.has(trimmed)) {
       next = value.replace(trimmed, familyRows.get(trimmed) || '')

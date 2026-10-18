@@ -60,6 +60,7 @@
     const motion = matchMedia('(prefers-reduced-motion: reduce)')
     let pageTop = 0
     let pageHeight = 0
+    let subjectStartBottom = 0
     let travelDistance = 0
     let dirty = true
     let frame = 0
@@ -70,7 +71,11 @@
 
     const updateSubjectPosition = () => {
       if (reachSectionBottom) {
-        subject.style.top = matchMedia('(max-width: 809.98px)').matches ? '10%' : ''
+        // Begin at the top of the section, with the couple fitting inside the viewport.
+        subject.style.top = '0'
+        subject.style.bottom = 'auto'
+        subject.style.maxWidth = 'calc(80vh * 0.666667)'
+        subject.style.transform = 'translateX(-50%)'
       }
     }
     updateSubjectPosition()
@@ -85,7 +90,8 @@
           svg.style.position = 'absolute'
           svg.style.width = '0'
           svg.style.height = '0'
-          svg.innerHTML = '<defs><filter id="d13-green-screen-key" color-interpolation-filters="sRGB"><feColorMatrix type="matrix" values="1 0 0 0 0 0 1 0 0 0 0 0 1 0 0 0.5 -1 0.5 0 1"/></filter></defs>'
+          // Preserve the source alpha so the key cannot make transparent areas black.
+          svg.innerHTML = '<defs><filter id="d13-green-screen-key" x="0%" y="0%" width="100%" height="100%" color-interpolation-filters="sRGB"><feColorMatrix in="SourceGraphic" type="matrix" values="1 0 0 0 0 0 1 0 0 0 0 0 1 0 0 0.5 -1 0.5 0 1" result="keyed"/><feComposite in="keyed" in2="SourceGraphic" operator="in"/></filter></defs>'
           document.body.prepend(svg)
         }
         image.style.filter = 'url(#d13-green-screen-key)'
@@ -102,26 +108,32 @@
         if (reachSectionBottom) {
           const subjectBounds = subject.getBoundingClientRect()
           const existingOffset = Number.isFinite(current) ? current : 0
-          const subjectBottom = subjectBounds.bottom + window.scrollY - existingOffset
-          travelDistance = Math.max(0, pageTop + pageHeight - subjectBottom)
+          // Measure the resting edge, excluding the current parallax translation.
+          subjectStartBottom = subjectBounds.bottom + window.scrollY - existingOffset
+          travelDistance = Math.max(0, pageTop + pageHeight - subjectStartBottom)
         }
         dirty = false
       }
-      const distance = Math.max(0, Math.min(window.scrollY - pageTop, pageHeight))
-      // A stronger downward offset than the opening scene's normal scroll motion.
+      const parallaxStart = reachSectionBottom
+        ? subjectStartBottom - window.innerHeight
+        : pageTop
+      const coupleSpeed = 0.5
+      const parallaxRange = reachSectionBottom ? travelDistance / coupleSpeed : pageHeight
+      const distance = Math.max(0, Math.min(window.scrollY - parallaxStart, parallaxRange))
+      // Move at 50% of scroll speed after the trigger; stop at the section bottom.
       const target = motion.matches
         ? 0
         : reachSectionBottom
-          ? travelDistance * (pageHeight ? distance / pageHeight : 0)
+          ? Math.min(travelDistance, distance * coupleSpeed)
           : distance * 0.5
       const elapsed = previousTime ? Math.min(64, time - previousTime) : 16.67
-      const atEdge = distance === 0 || distance === pageHeight
+      const atEdge = distance === 0 || distance === parallaxRange
       if (!Number.isFinite(current) || motion.matches || atEdge) current = target
       else current += (target - current) * (1 - Math.exp(-elapsed / 55))
       if (Math.abs(target - current) < 0.05) current = target
       const value = `0 ${current.toFixed(2)}px`
       if (value !== written) {
-        // Keep the original centering transform and responsive positioning intact.
+        // Apply vertical motion separately from horizontal centering.
         subject.style.translate = value
         written = value
       }
@@ -154,11 +166,61 @@
     schedule()
   }
 
+  const replaceCelebrations = (original) => {
+    if (!(original instanceof HTMLElement)) return
+    const section = document.createElement('section')
+    section.setAttribute('data-d13-name', 'PAGE 4')
+    section.setAttribute('aria-label', 'Wedding celebrations')
+    section.style.cssText = 'width:100%;flex:none;min-width:0;background:#f5e2bc;'
+
+    const frame = document.createElement('iframe')
+    frame.src = '/design14/celebrations'
+    frame.title = 'Wedding celebrations — Engagement, Sangeeth, Marriage and Reception'
+    frame.loading = 'lazy'
+    // Reserve the card's natural proportions until the shared component reports
+    // its exact height, including the event navigation.
+    frame.style.cssText = 'display:block;width:100%;height:calc(100vw * 1635 / 962 + 64px);border:0;background:#f5e2bc;'
+    section.append(frame)
+    const mainFrame = original.parentElement
+    original.replaceWith(section)
+    if (mainFrame) {
+      // The imported template used a fixed aspect ratio for the entire stack.
+      // Let the replacement's natural height determine the document length.
+      mainFrame.style.height = 'auto'
+      mainFrame.style.aspectRatio = 'auto'
+    }
+  }
+
   const initialize = () => {
+    const coupleScene = document.querySelector('.d13-6k3h5w')
+    const celebrationsScene = document.querySelector('.d13-1q8leab')
+    if (coupleScene && celebrationsScene && coupleScene.parentElement === celebrationsScene.parentElement) {
+      celebrationsScene.before(coupleScene)
+      coupleScene.setAttribute('data-d13-name', 'PAGE 3')
+      celebrationsScene.setAttribute('data-d13-name', 'PAGE 4')
+    }
+    replaceCelebrations(celebrationsScene)
+    document.querySelectorAll('[data-d13-name="PAGE 5"] [data-d13-name="GOLDEN FRAME PNG"], [data-d13-name="PAGE 5"] [data-d13-name="GOLDEN FRAME SKIDE"]')
+      .forEach((element) => element.remove())
+    const welcome = document.querySelector('[data-d13-name="PAGE 2"]')
+    welcome?.querySelectorAll('[data-d13-name="INVITE TAG LINE"], [data-d13-name="INVITE"]')
+      .forEach((element) => element.remove())
+    // Close the space left by the removed invitation heading and tagline.
+    const welcomePositions = [
+      ['.d13-qq17fj, .d13-o31tru', '31%'],
+      ['.d13-kjvwux', '41%'],
+      ['.d13-f0n6ls', '46%'],
+      ['.d13-wuej87', '52%'],
+      ['.d13-1jawtcx, .d13-19me4mh', '60%'],
+      ['.d13-1jsww7o', '67%'],
+    ]
+    welcomePositions.forEach(([selector, top]) => {
+      welcome?.querySelectorAll(selector).forEach((element) => { element.style.top = top })
+    })
     revealStaticContent()
     connectAudioControl()
     connectSectionParallax('PAGE 1', 'TEMPLE')
-    connectSectionParallax('PAGE 4', 'COUPLE CUT OUT', true)
+    connectSectionParallax('PAGE 3', 'COUPLE CUT OUT', true)
   }
 
   if (document.readyState === 'loading') {

@@ -72,8 +72,8 @@
   updateDays();
   window.setInterval(updateDays, 60000);
 
-  const calendarButton = [...document.querySelectorAll('button')].find(button => button.textContent.trim() === 'Calendar');
-  calendarButton.addEventListener('click', () => {
+  const calendarButton = [...document.querySelectorAll('button')].find(button => button.textContent.trim() === 'Calendar' && !button.hasAttribute('data-wedding-calendar'));
+  calendarButton?.addEventListener('click', () => {
     const stamp = new Date().toISOString().replace(/[-:]/g, '').replace(/\.\d{3}/, '');
     const content = ['BEGIN:VCALENDAR', 'VERSION:2.0', 'PRODID:-//Wedding Invite//Secret Garden//EN', 'BEGIN:VEVENT', 'UID:clara-nour-20261003@wedding-invite', `DTSTAMP:${stamp}`, 'DTSTART:20261003T131500Z', 'DTEND:20261003T210000Z', 'SUMMARY:Clara & Nour — Wedding', 'LOCATION:Mairie de Vauréal\\, Vauréal\\, France', 'END:VEVENT', 'END:VCALENDAR', ''].join('\r\n');
     const url = URL.createObjectURL(new Blob([content], { type: 'text/calendar;charset=utf-8' }));
