@@ -1,4 +1,5 @@
 import type { InvitationData } from './model'
+import type { RsvpTarget } from './rsvp'
 import { InvitationContext } from './context'
 import PersonalMusic from './PersonalMusic'
 import AnimatedInvitation from './AnimatedInvitation'
@@ -17,9 +18,9 @@ import Design16 from '../pages/Design16'
 import Design17 from '../pages/Design17'
 import Design18 from '../pages/Design18'
 
-export default function InvitationRenderer({ details }: { details: InvitationData }) {
+export default function InvitationRenderer({ details, rsvpTarget }: { details: InvitationData; rsvpTarget?: RsvpTarget }) {
   return <InvitationContext.Provider value={details}>
     {(details.template === 1 || details.template === 8) && details.music && <PersonalMusic src={details.music} />}
-    {details.template === 1 ? <NewDesign /> : details.template === 2 ? <MohadRahma /> : details.template === 4 ? <Design4 /> : details.template === 8 ? <Design8 /> : details.template === 9 ? <Design9 /> : details.template === 10 ? <Design10 /> : details.template === 11 ? <Design11 /> : details.template === 12 ? <Design12 /> : details.template === 13 ? <Design13 /> : details.template === 14 ? <Design14 /> : details.template === 15 ? <Design15 /> : details.template === 16 ? <Design16 /> : details.template === 17 ? <Design17 /> : details.template === 18 ? <Design18 /> : <AnimatedInvitation details={details} />}
+    {details.template === 1 ? <NewDesign /> : details.template === 2 ? <MohadRahma /> : details.template === 4 ? <Design4 /> : details.template === 8 ? <Design8 /> : details.template === 9 ? <Design9 /> : details.template === 10 ? <Design10 /> : details.template === 11 ? <Design11 /> : details.template === 12 ? <Design12 /> : details.template === 13 ? <Design13 /> : details.template === 14 ? <Design14 /> : details.template === 15 ? <Design15 /> : details.template === 16 ? <Design16 /> : details.template === 17 ? <Design17 /> : details.template === 18 ? <Design18 /> : <AnimatedInvitation details={details} rsvpTarget={rsvpTarget} />}
   </InvitationContext.Provider>
 }

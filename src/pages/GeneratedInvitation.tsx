@@ -13,5 +13,6 @@ export default function GeneratedInvitation(){
  useEffect(()=>{if(!record)return;const old=document.title;document.title=`${record.details.groom} & ${record.details.bride} — Wedding invitation`;return()=>{document.title=old}},[record])
  if(error)return <main className="studio studio-empty"><h1>Invitation unavailable</h1><p role="alert">{error}</p><Link to="/dashboard">Back to the dashboard</Link></main>
  if(!record)return <main className="studio studio-empty" role="status">Opening your invitation…</main>
- return <InvitationRenderer details={record.details}/>
+ const publishedOrderId=record.orderId||(orderNumber&&/^\d+$/.test(orderNumber)&&record.slug===`${orderNumber}/${slug||''}`?orderNumber:undefined)
+ return <InvitationRenderer details={record.details} rsvpTarget={publishedOrderId?{orderId:publishedOrderId,path:record.slug}:undefined}/>
 }

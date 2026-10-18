@@ -3,6 +3,18 @@
   const video = document.querySelector('#opening video');
   const cover = document.getElementById('intro-cover');
   const names = document.querySelectorAll('.opening-name');
+  const openingDate = names[1];
+  if (openingDate && !openingDate.hasAttribute('data-personalized-date')) {
+    openingDate.innerHTML = '<span>27</span><span>SEP</span><span>2026</span>';
+    openingDate.setAttribute('aria-label', '27 September 2026');
+    openingDate.style.cssText = 'display:flex;flex-direction:column;align-items:center;gap:.12em;margin-top:.75rem;color:#7c9658;font-family:var(--font-display);font-size:clamp(.85rem,2.4vw,1.05rem);font-weight:700;letter-spacing:.42em;line-height:1.15;padding-left:.42em';
+  }
+  const templateDate = [...document.querySelectorAll('#wedding-events p')].find(el => /12 June 2027/i.test(el.textContent || ''));
+  if (templateDate) {
+    templateDate.innerHTML = '<span>27</span><span>SEP</span><span>2026</span>';
+    templateDate.setAttribute('aria-label', '27 September 2026');
+    templateDate.style.cssText = 'display:flex;flex-direction:column;align-items:center;gap:.12em;color:#7c9658;font-family:var(--font-display);font-size:clamp(.85rem,2.4vw,1.05rem);font-weight:700;letter-spacing:.42em;line-height:1.15;padding-left:.42em';
+  }
   let opened = false;
   let completed = false;
   let openingTimeout;
@@ -77,6 +89,8 @@
   const events = {
     'wedding-events': { title: 'Camille & Antoine – Wedding', location: 'Château de Belvent, 12 Route des Vignes, 21220 Gevrey-Chambertin, France', start: '20270612T150000Z', end: '20270612T210000Z' },
   };
+  document.querySelector('.lucide-map-pin')?.closest('button')?.setAttribute('data-maps', 'wedding-events');
+  document.querySelector('.lucide-calendar')?.closest('button')?.setAttribute('data-calendar', 'wedding-events');
   document.querySelectorAll('[data-maps]').forEach(button => button.addEventListener('click', () => {
     window.open(`https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(events[button.dataset.maps].location)}`, '_blank', 'noopener,noreferrer');
   }));

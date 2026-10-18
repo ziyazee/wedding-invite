@@ -70,9 +70,12 @@ Standalone iframe designs commonly use `index.html`, `interactions.js`, `interac
 
 ## Order dashboard and Supabase
 
+- Client dashboard opens on Overview, with a wedding-art hero, order metrics and status breakdown, recent orders, and a popular templates strip. The catalogue, orders, and settings remain separate tabs.
 - The client order catalog is limited to the eight landing designs (Mohad & Rahma, Majestic, A Timeless Union, Mandap at Dusk, Secret Garden, Embroidered Garden, Bloom, The Artful Love Story).
 - Apply `supabase/migrations/202610170001_selected_order_templates.sql` after the dashboard schema migration to align existing Supabase projects. The base migration also seeds this catalog for fresh setups.
 - New orders start with Mohad & Rahma's couple and event details as editable defaults; clients still choose the design for each order.
+- Client Settings lets each company configure its own template price, sale type (none, percentage, or fixed), discount value, and premium flag. These values live in `company_template_settings`; apply `supabase/migrations/202610180001_company_template_settings.sql` after the dashboard schema migration.
+- After order submission, clients see the generated `/{order-id}/{groombride}` URL and can publish the order immediately. The public route uses the existing `get_published_invitation` lookup; apply `supabase/migrations/202610180002_client_order_publishing.sql` to enable company-scoped publishing through its security-definer function.
 
 ## Design 14
 
@@ -106,6 +109,10 @@ Standalone iframe designs commonly use `index.html`, `interactions.js`, `interac
 - Majestic: Gifts and RSVP removed. Hero video should autoplay; introductory envelope video is skipped.
 - Embroidered Garden: Recovery Day, Gifts, and RSVP removed.
 - Bloom: uses `/design7/assets/intro-video-2-a-H3NxSy.mp4`; first envelope video was removed from use. Scrolling unlocks immediately after tapping, without waiting for the video to finish.
+- Bloom dashboard and published order invitations are personalized in `src/invitations/AnimatedInvitation.tsx`. The welcome section reuses `public/design7/index.html`'s actual `#welcome` markup, fonts, spacing, and floral artwork, with the entered names/message/date and a pink `&`. Keep it outside `.atelier-personal` to avoid generic typography overrides; do not recreate it with separate approximate styles.
+- Bloom's main wedding celebration also reuses Design 7's native `#wedding-events` section outside `.atelier-personal`, directly after the welcome. Its heading comes from the entered wedding celebration name; venue, date/time, address, map link, and calendar use that event's details. Preserve the original frame and typography.
+- Bloom's first wedding celebration card retains its original image. Additional cards use `/design7/assets/hum.mov`, muted and looping, at its intrinsic aspect ratio (`width:100%; height:auto`) with event text overlaid in the same grid cell. Preserve the full video frame without cropping, stretching, or forcing a fixed card height.
+- Bloom ends with the original RSVP layout restored in `public/design7/rsvp.html`, followed by Design 7's checkered closing names/date card and WhatsApp contact. Both sit outside `.atelier-personal`. Published order RSVPs use `src/invitations/rsvp.ts` and the `submit_order_rsvp` RPC; browser storage remembers the form and a per-order submission token for updates. Dashboard/sample previews cannot submit. Apply `supabase/migrations/202610180003_order_rsvps.sql` to create `order_rsvps` and return `orderId` from `get_published_invitation`. Replies store name, attendance, guest count, additional names, message, and timestamps against the order; only the owning company and admins can read them. The Wedding Day Programme is hidden; entered dress code, gift, and gallery notes retain their existing presentation before RSVP.
 - Secret Garden, Majestic, and Bloom ending credits were replaced with invitation contact text and a WhatsApp icon.
 - Design 13: optimized responsive WebP assets in `public/design13/assets/optimized/`; opening temple parallax multiplier was reduced to 0.5. Preserve original source assets.
 

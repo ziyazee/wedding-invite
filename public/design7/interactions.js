@@ -3,6 +3,9 @@
   document.documentElement.classList.add('js');
   const reduced = matchMedia('(prefers-reduced-motion: reduce)').matches;
   const opening = document.querySelector('#opening');
+  const bloomFloralStyle = document.createElement('style');
+  bloomFloralStyle.textContent = '#welcome>img[src*="welcome-flowers-Dy0evJgO.png"]{width:132%!important;max-width:none!important}@media(min-width:768px){#welcome>img[src*="welcome-flowers-Dy0evJgO.png"]{width:min(76vw,760px)!important}}';
+  document.head.append(bloomFloralStyle);
   const [first] = opening.querySelectorAll('video');
   const music = document.querySelector('#music-track');
   const musicButton = document.querySelector('#music-toggle');
@@ -139,10 +142,14 @@
     if(attending){minus.disabled=count<=1;plus.disabled=count>=10;}
   }
   form.querySelectorAll('[name="attendance"]').forEach(input=>input.addEventListener('change',attendanceChanged));
-  const storageKey='bloom-rsvp-v1';
+  const storageKey=form.dataset.storageKey || 'bloom-rsvp-v1';
+  const submitButton=form.querySelector('[type="submit"]');
+  let hasSavedReply=false;
+  let submitting=false;
   try {
     const saved=JSON.parse(localStorage.getItem(storageKey)||'null');
     if(saved && typeof saved.name==='string') {
+      hasSavedReply=true;
       form.elements.name.value=saved.name.slice(0,120);
       form.elements.message.value=typeof saved.message==='string'?saved.message.slice(0,1000):'';
       form.elements.attendance.value=saved.attendance==='no'?'no':'yes';
@@ -151,20 +158,48 @@
       renderGuests(Array.isArray(saved.guests)?saved.guests:[]);
     } else renderGuests();
   } catch { renderGuests(); }
+  if(hasSavedReply && form.dataset.persistence!=='preview')submitButton.textContent='Update RSVP';
   attendanceChanged();
   form.addEventListener('input',event=>{if(event.target.setCustomValidity)event.target.setCustomValidity('');});
-  form.addEventListener('submit',event=>{
+  form.addEventListener('submit',async event=>{
     event.preventDefault();
+    if(submitting)return;
+    if(form.dataset.persistence==='preview'){
+      status.textContent='Please open the published invitation to send your RSVP.';
+      return;
+    }
     for(const input of form.querySelectorAll('input[required]:not([type="radio"]):not(:disabled)')) {
       if(!input.value.trim()){input.setCustomValidity('Please enter a name.');input.reportValidity();return;}
     }
     if(!form.reportValidity())return;
     const attending=form.elements.attendance.value==='yes';
     const response={name:form.elements.name.value.trim(),attendance:attending?'yes':'no',count:attending?count:0,guests:attending?[...names.querySelectorAll('input')].map(input=>input.value.trim()):[],transport:attending?form.elements.transport.value:'',message:form.elements.message.value.trim(),savedAt:new Date().toISOString()};
+    submitting=true;
+    submitButton.disabled=true;
+    submitButton.textContent='Sending…';
+    form.setAttribute('aria-busy','true');
+    status.textContent='';
     try {
-      localStorage.setItem(storageKey,JSON.stringify(response));
-      status.textContent='Thank you! Your reply is saved on this device. You can update it here anytime.';
-      form.querySelector('[type="submit"]').textContent='Update RSVP';
-    } catch {status.textContent='Your browser could not save your reply. Enable browser storage and try again.';}
+      if(form.dataset.persistence==='server'){
+        await new Promise((resolve,reject)=>{
+          const request=new CustomEvent('invitation:rsvp-submit',{bubbles:true,cancelable:true,detail:{response,resolve,reject}});
+          if(form.dispatchEvent(request))reject(new Error('RSVP is not ready. Please reload the invitation and try again.'));
+        });
+        // Browser storage remembers the form; only the server response confirms submission.
+        try {localStorage.setItem(storageKey,JSON.stringify(response));} catch {}
+        status.textContent='Thank you! Your RSVP has been received. You can update it here anytime.';
+      } else {
+        localStorage.setItem(storageKey,JSON.stringify(response));
+        status.textContent='Thank you! Your reply is saved on this device. You can update it here anytime.';
+      }
+      hasSavedReply=true;
+    } catch(error) {
+      status.textContent=typeof error?.message==='string'?error.message:'Your RSVP could not be saved. Please try again.';
+    } finally {
+      submitting=false;
+      submitButton.disabled=false;
+      submitButton.textContent=hasSavedReply?'Update RSVP':form.dataset.persistence==='server'?'Send RSVP':'Save RSVP';
+      form.removeAttribute('aria-busy');
+    }
   });
 })();

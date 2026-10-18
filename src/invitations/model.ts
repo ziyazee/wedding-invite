@@ -23,7 +23,7 @@ export interface InvitationData {
   venue: string; address: string; map: string; message: string; groomFamily: string; brideFamily: string;
   dressCode: string; giftNote: string; music: string; gallery: string; events: Celebration[];
 }
-export interface SavedInvitation { slug: string; details: InvitationData; createdAt: string }
+export interface SavedInvitation { slug: string; details: InvitationData; createdAt: string; orderId?: string }
 export const weddingISO = (d: InvitationData) => `${d.date}T${d.time}:00${d.offset}`
 export const formatDate = (date: string, options: Intl.DateTimeFormatOptions = { day: 'numeric', month: 'long', year: 'numeric' }) => new Date(`${date}T12:00:00Z`).toLocaleDateString('en-GB', { ...options, timeZone: 'UTC' })
 export const formatTime = (time: string) => new Date(`2000-01-01T${time}:00Z`).toLocaleTimeString('en-US', { hour: 'numeric', minute: '2-digit', timeZone: 'UTC' })
