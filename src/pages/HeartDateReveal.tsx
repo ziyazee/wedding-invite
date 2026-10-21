@@ -2,6 +2,8 @@ import { useEffect, useId, useRef, useState } from 'react'
 import type { CSSProperties, PointerEvent } from 'react'
 import { useInvitationDetails } from '../invitations/context'
 import { editableText } from '../invitations/textLayout'
+import { EditableText } from '../invitations/components/EditableText'
+import { InvitationSection } from '../invitations/components/InvitationSection'
 
 const HEART = 'M50 96 C50 96 6 70 6 36 C6 18 20 6 32 6 C42 6 48 14 50 24 C52 14 58 6 68 6 C80 6 94 18 94 36 C94 70 50 96 50 96 Z'
 const particles = Array.from({ length: 90 }, (_, i) => ({
@@ -19,7 +21,7 @@ const particles = Array.from({ length: 90 }, (_, i) => ({
 export default function HeartDateReveal({ date = '27 September 2026', day = 'Sunday', time = '5:00 in the evening', tone = 'sage', coatingImage, revealedImage }: { date?: string; day?: string; time?: string; tone?: 'sage' | 'rose'; coatingImage?: string; revealedImage?: string }) {
   const id = `heart-${useId().replace(/:/g, '')}`
   const details = useInvitationDetails()
-  const text = (field: string, label: string) => editableText(details?.template === 1 ? 1 : undefined, 'date-reveal', field, label)
+  const text = (field: string, label: string) => editableText(details?.template, 'date-reveal', field, label)
   const canvas = useRef<HTMLCanvasElement>(null)
   const previous = useRef<{ x: number; y: number } | null>(null)
   const samples = useRef<number[]>([])
@@ -114,21 +116,21 @@ export default function HeartDateReveal({ date = '27 September 2026', day = 'Sun
 
   const cardMask = revealed && revealedImage ? revealedImage : imageLoaded ? coatingImage : undefined
 
-  return <div data-invite-section="date-reveal-section" className={`rg-heart-reveal ${tone === 'rose' ? 'is-rose' : ''} ${revealed ? 'is-revealed' : ''}`}>
-    <p {...text(revealed ? 'revealedHeading' : 'scratchHeading',revealed ? 'Our forever begins' : 'Scratch to reveal')} className="rg-heart-title rg-script" aria-live="polite">{revealed ? 'Our forever begins' : 'Scratch to reveal'}</p>
+  return <InvitationSection as="div" data-invite-section="date-reveal-section" className={`rg-heart-reveal ${tone === 'rose' ? 'is-rose' : ''} ${revealed ? 'is-revealed' : ''}`}>
+    <EditableText as="p" {...text(revealed ? 'revealedHeading' : 'scratchHeading',revealed ? 'Our forever begins' : 'Scratch to reveal')} className="rg-heart-title rg-script" aria-live="polite">{revealed ? 'Our forever begins' : 'Scratch to reveal'}</EditableText>
     <svg width="0" height="0" aria-hidden="true" style={{ position: 'absolute' }}><defs><clipPath id={id} clipPathUnits="objectBoundingBox"><path d={HEART} transform="scale(.01)" /></clipPath></defs></svg>
-    <div data-invite-section="date-reveal" className="rg-heart-card">
+    <InvitationSection as="div" data-invite-section="date-reveal" className="rg-heart-card">
       <div className="rg-heart-inner" style={cardMask ? { maskImage: `url("${cardMask}")`, maskSize: 'contain', maskPosition: 'center', maskRepeat: 'no-repeat', WebkitMaskImage: `url("${cardMask}")`, WebkitMaskSize: 'contain', WebkitMaskPosition: 'center', WebkitMaskRepeat: 'no-repeat', ...(revealed && revealedImage ? { background: 'transparent' } : {}) } : { clipPath: `url(#${id})` }}>
-        <div className="rg-heart-date" style={revealedImage ? { backgroundImage: `url("${revealedImage}")`, backgroundSize: 'contain', backgroundPosition: 'center', backgroundRepeat: 'no-repeat' } : undefined}><span {...text('invited','You’re invited!')} className="rg-script">You’re invited!</span><strong {...text('date','Wedding date')}>{date}</strong><span {...text('weekday','Wedding date · weekday')}>{day}</span><small {...text('time','Wedding time')}>{time}</small></div>
+        <div className="rg-heart-date" style={revealedImage ? { backgroundImage: `url("${revealedImage}")`, backgroundSize: 'contain', backgroundPosition: 'center', backgroundRepeat: 'no-repeat' } : undefined}><EditableText {...text('invited','You’re invited!')} className="rg-script">You’re invited!</EditableText><EditableText as="strong" {...text('date','Wedding date')}>{date}</EditableText><EditableText {...text('weekday','Wedding date · weekday')}>{day}</EditableText><EditableText as="small" {...text('time','Wedding time')}>{time}</EditableText></div>
         <canvas ref={canvas} className="rg-heart-coating" aria-hidden="true"
           onPointerDown={e => { e.currentTarget.setPointerCapture(e.pointerId); previous.current = null; scratch(e) }}
           onPointerMove={scratch} onPointerUp={() => { previous.current = null }}
           onPointerCancel={() => { previous.current = null }} onLostPointerCapture={() => { previous.current = null }} />
       </div>
       {!cardMask && <svg className="rg-heart-outline" viewBox="0 0 100 100" preserveAspectRatio="none" aria-hidden="true"><path d={HEART} fill="none" stroke="#78825b" strokeWidth="1.2" vectorEffect="non-scaling-stroke" /></svg>}
-    </div>
-    {revealed && <p {...text('celebrate','Let the celebration begin!')} className="rg-reveal-message" role="status">Let the celebration begin! ♡</p>}
+    </InvitationSection>
+    {revealed && <EditableText as="p" {...text('celebrate','Let the celebration begin!')} className="rg-reveal-message" role="status">Let the celebration begin! ♡</EditableText>}
     {celebrating && <div className="rg-confetti" aria-hidden="true">{particles.map((style, i) => <span key={i} style={tone === 'rose' ? { ...style, background: ['#a44435', '#723229', '#ba8737', '#f1dfbd'][i % 4] } : style} />)}</div>}
-    {!revealed && <button {...text('tap','Or tap to reveal')} className="rg-text-button" onClick={reveal}>Or tap to reveal ♡</button>}
-  </div>
+    {!revealed && <EditableText as="button" {...text('tap','Or tap to reveal')} className="rg-text-button" onClick={reveal}>Or tap to reveal ♡</EditableText>}
+  </InvitationSection>
 }

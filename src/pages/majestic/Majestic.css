@@ -1,0 +1,102 @@
+@import url('/design6/fonts.css');
+@font-face{font-family:MajesticClosingCormorant;src:url('/design5/assets/cormorant-garamond-latin-300-italic-qkwBXYHn.woff2') format('woff2');font-weight:300;font-style:italic;font-display:swap}
+.majestic-native{background:#efe8da;color:#61533f;min-height:100svh;font-family:span,Georgia,serif;text-align:center;isolation:isolate;overflow-x:clip}
+.majestic-native *{box-sizing:border-box}
+.majestic-native :where(h1,h2,h3,p){margin:0;font-weight:400}
+.majestic-native :where(h2,h3){font-family:classic-script-mn,cursive}
+.majestic-native h2{font-size:clamp(48px,8vw,60px);line-height:1.1;margin-bottom:12px}
+.majestic-native p{white-space:pre-line;overflow-wrap:anywhere;line-height:1.6}
+.majestic-native [data-invite-text]{position:relative;white-space:pre-line}
+.majestic-native :where(span,small,strong)[data-invite-text]{display:inline-block}
+.majestic-native button,.majestic-native a{color:inherit;font:inherit;cursor:pointer}
+.majestic-native button{border:0}
+.majestic-native a{text-decoration:none}
+.majestic-native button:disabled{opacity:.55;cursor:default}
+.majestic-native button:focus-visible,.majestic-native a:focus-visible{outline:2px solid #61533f;outline-offset:5px}
+.majestic-native .mj-eyebrow{font-family:span,Georgia,serif;font-size:12px;letter-spacing:.2em;text-transform:uppercase}
+.majestic-native .mj-hero{position:relative;min-height:100svh;display:flex;align-items:flex-start;justify-content:center;padding-top:42svh;background:#efe8da}
+.majestic-native .mj-hero-video{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;object-position:center}
+.majestic-native .mj-hero-copy{position:relative;z-index:1;width:100%;padding:70px 24px 80px}
+.majestic-native .mj-hero-copy>.mj-eyebrow{font-size:14px;letter-spacing:.3em;color:#61533fcc}
+.majestic-native .mj-hero-copy>.mj-eyebrow:first-child{margin-bottom:16px}
+.majestic-native .mj-names{display:flex;align-items:center;justify-content:center;gap:.2em;width:100%;min-width:0;font-family:classic-script-mn,cursive;font-size:42px;line-height:1.2}
+.majestic-native .mj-names>div{flex:0 1 auto;min-width:0;max-width:100%}
+.majestic-native .mj-names [data-mj-name]{max-width:100%;font-size:var(--mj-name-size,1em);white-space:pre-line;overflow-wrap:var(--mj-name-wrap,normal)}
+.majestic-native .mj-names .mj-family{font:17px/1.6 span,Georgia,serif;margin-top:8px;max-width:520px}
+.majestic-native .mj-names.mj-stacked{flex-direction:column;gap:6px}
+.majestic-native .mj-ampersand{font-size:.75em;flex:none}
+.majestic-native .mj-stacked .mj-ampersand{top:-.3em}
+.majestic-native .mj-hero .mj-names{font-size:60px;margin-bottom:12px}
+.majestic-native .mj-countdown{padding:64px 16px;position:relative}
+.majestic-native .mj-countdown h2{font-size:clamp(36px,8vw,60px)}
+.majestic-native .mj-clock{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:8px;max-width:768px;margin:auto}
+.majestic-native .mj-clock>div{padding:8px}
+.majestic-native .mj-clock strong{display:block;font:200 clamp(36px,8vw,72px)/1.1 span,serif}
+.majestic-native .mj-clock small{display:block;font-size:10px;text-transform:uppercase;letter-spacing:.15em;margin-top:8px}
+.majestic-native .mj-intro-lights{display:block;width:100%;height:auto;position:relative;margin-top:-3cm;top:40px;pointer-events:none}
+.majestic-native .mj-welcome{max-width:680px;margin:auto;padding:55px 30px 12px}
+.majestic-native .mj-welcome>.mj-eyebrow{margin-bottom:28px}
+.majestic-native .mj-welcome>.mj-names+p{margin-top:48px;font-size:20px}
+.majestic-native .mj-details{padding:8px 12px 48px}
+.majestic-native .mj-venue-card{position:relative;isolation:isolate;width:min(100%,560px);min-height:0;aspect-ratio:1/1.32;margin:auto;display:grid;place-items:center}
+.majestic-native .mj-venue-frame{position:absolute;z-index:-1;top:0;left:-16%;width:132%;max-width:none;height:100%;object-fit:contain;pointer-events:none}
+.majestic-native .mj-venue-copy{width:58%;padding:24% 0;display:flex;flex-direction:column;align-items:center;gap:8px;min-width:0;overflow-wrap:anywhere}
+.majestic-native .mj-venue-copy>*{max-width:100%}
+.majestic-native .mj-venue-copy h3{font-size:clamp(34px,8vw,50px);line-height:1.15}
+.majestic-native .mj-venue-name{font-family:span,serif;font-size:clamp(15px,4vw,21px);letter-spacing:.1em;text-transform:uppercase;line-height:1.4}
+.majestic-native .mj-venue-copy p:not(.mj-venue-name){font-size:clamp(13px,3.5vw,16px);line-height:1.4}
+.majestic-native .mj-actions{display:flex;flex-wrap:wrap;gap:18px;justify-content:center;margin:36px auto 0}
+.majestic-native .mj-actions>*{padding:12px 20px;border-radius:8px;background:#716149;color:#fffdf6;min-height:48px;font-size:clamp(15px,4.5vw,22px)}
+.majestic-native .mj-programme{padding-bottom:8px}
+.majestic-native .mj-programme img{display:block;width:min(68vw,390px);height:auto;margin:auto}
+.majestic-native .mj-events{max-width:680px;margin:auto;padding:0 12px}
+.majestic-native .mj-event{position:relative;isolation:isolate;aspect-ratio:720/1032;max-width:620px;margin:30px auto}
+.majestic-native .mj-event:first-child{margin-top:12px}
+.majestic-native .mj-event-video{position:absolute;inset:0;z-index:0;width:100%;height:100%;object-fit:fill;pointer-events:none}
+.majestic-native .mj-event-copy{--mj-fit:1;position:absolute;z-index:1;top:34%;bottom:17%;left:18%;width:64%;display:flex;flex-direction:column;gap:calc(4px + 6px * var(--mj-fit));overflow-wrap:anywhere;text-wrap:balance}
+.majestic-native .mj-event-copy>*{flex:none;min-width:0;max-width:100%;margin:0}
+.majestic-native .mj-event-copy>.mj-event-date~*{margin-top:auto}
+.majestic-native .mj-event h2{font-size:calc(24px + 16px * var(--mj-fit));line-height:.82;white-space:pre-line}
+.majestic-native .mj-event h3{font-family:span,serif;font-size:calc(16px + 8px * var(--mj-fit));line-height:1.2}
+.majestic-native .mj-event p{font-size:calc(13px + 5px * var(--mj-fit));line-height:1.3}
+.majestic-native .mj-event .mj-eyebrow{font-size:calc(10px + 2px * var(--mj-fit));letter-spacing:.18em}
+.majestic-native .mj-event-date{display:flex;flex-direction:column;align-items:center;gap:.12em;color:#7c9658;font-size:calc(11px + 3px * var(--mj-fit));font-weight:700;letter-spacing:.42em;line-height:1.15;padding-left:.42em}
+.majestic-native .mj-links{display:flex;flex-wrap:wrap;justify-content:center;gap:4px 12px}
+.majestic-native .mj-links a,.majestic-native .mj-links button{font-size:calc(13px + 3px * var(--mj-fit));line-height:1.2;min-height:32px;padding:6px 0;border-bottom:1px solid currentColor;background:none;max-width:100%;white-space:normal}
+.majestic-native .mj-dress{max-width:624px;margin:auto;padding:48px 24px 64px}
+.majestic-native .mj-dress img{display:block;width:100%;height:auto}
+.majestic-native .mj-dress-card{background:#f7f2e8;border:1px solid #61533f26;border-radius:32px;padding:32px;margin-top:24px}
+.majestic-native .mj-dress-card h3{font:20px/1.5 span,serif;letter-spacing:.12em;white-space:pre-line}
+.majestic-native .mj-notes{max-width:680px;margin:auto;padding:55px 30px;font-size:20px}
+.majestic-native .mj-notes h2{font-size:42px}
+.majestic-native .mj-notes a{display:inline-block;margin-top:24px;border-bottom:1px solid currentColor}
+.majestic-native .invitation-rsvp{position:relative;isolation:isolate;max-width:680px;margin:72px auto 54px;padding:52px 46px 360px}
+.majestic-native .invitation-rsvp>h2{font-size:clamp(52px,12vw,68px);font-style:italic}
+.majestic-native .invitation-rsvp>*:not(.invitation-rsvp-lights){position:relative;z-index:1}
+.majestic-native .invitation-envelope{display:flex;flex-direction:column;align-items:center;gap:22px;margin-top:24px}
+.majestic-native .invitation-envelope button,.majestic-native .invitation-rsvp button[type=submit]{min-height:58px;padding:14px 28px;border-radius:2px;background:#716047;color:#fffdf6;font:15px Georgia,serif;letter-spacing:.16em;text-transform:uppercase}
+.majestic-native .invitation-envelope .invitation-envelope-art{width:min(50vw,220px);aspect-ratio:6/5;position:relative;overflow:hidden;min-height:0;padding:0;background:none}
+.majestic-native .invitation-envelope-art img{position:absolute;bottom:0;width:100%;height:auto}
+.majestic-native .invitation-envelope-open{width:min(72vw,300px);height:320px;object-fit:contain;margin:0 auto 34px;display:block}
+.majestic-native .invitation-rsvp form{text-align:left;margin-top:24px}
+.majestic-native .invitation-rsvp form>label{display:grid;gap:12px;margin-bottom:28px;font-size:18px}
+.majestic-native .invitation-rsvp fieldset{border:0;padding:0;margin:0 0 28px}
+.majestic-native .invitation-rsvp legend{margin-bottom:14px}
+.majestic-native .invitation-rsvp fieldset label{display:inline-flex;align-items:center;gap:8px;margin:0 22px 8px 0}
+.majestic-native .invitation-rsvp input[type=radio]{width:22px;height:22px;accent-color:#716047}
+.majestic-native .invitation-rsvp input:not([type=radio]),.majestic-native .invitation-rsvp textarea{width:100%;min-height:58px;padding:14px 16px;border:1px solid #d6c8b2;border-radius:2px;background:transparent;color:inherit;font:18px/1.4 Georgia,serif}
+.majestic-native .invitation-rsvp textarea{min-height:116px;resize:vertical}
+.majestic-native .invitation-rsvp button[type=submit]{width:100%}
+.majestic-native .invitation-rsvp [role=status]{text-align:center;font-size:15px;margin-top:12px}
+.majestic-native .invitation-rsvp-lights{position:absolute;z-index:0;bottom:0;left:0;width:100%;height:340px;background:url('/design6/assets/string-lights-DfoJYed-.png') center bottom/100% auto no-repeat;pointer-events:none}
+.majestic-native .mj-closing{max-width:860px;margin:0 auto 60px;padding:72px 24px 12px;color:#5d6241}
+.majestic-native .mj-closing .mj-names{font-family:MajesticClosingCormorant,Georgia,serif;font-size:clamp(54px,20vw,90px);font-weight:300;font-style:italic;line-height:1.05}
+.majestic-native .mj-closing>p{margin:8px 0 70px;font-size:clamp(16px,4vw,24px);letter-spacing:.04em;text-transform:uppercase}
+.majestic-native .mj-closing img{display:block;width:100%;height:auto}
+.majestic-native .mj-contact{padding:24px 16px 40px;font-size:14px}
+.majestic-native .mj-reveal{opacity:0;transform:translateY(20px);transition:opacity .8s ease,transform .8s ease}
+.majestic-native .mj-reveal.mj-visible{opacity:1;transform:none}
+@media(prefers-reduced-motion:reduce){.majestic-native .mj-reveal{opacity:1;transform:none;transition:none}}
+.majestic-native .personal-music{position:fixed;right:18px;bottom:18px;z-index:40;padding:12px 18px;border-radius:24px;background:#716047;color:#fffdf6;font-size:14px}
+@media(min-width:768px){.majestic-native .mj-hero .mj-names{font-size:96px}.majestic-native .mj-clock{gap:32px}.majestic-native .mj-clock>div{padding:24px}.majestic-native .mj-clock small{font-size:12px}}
+@media(max-width:600px){.majestic-native .mj-welcome>.mj-names+p{font-size:18px}.majestic-native .mj-welcome .mj-names{font-size:33px}.majestic-native .invitation-rsvp{padding:38px 24px 400px;margin-top:56px}.majestic-native .invitation-rsvp-lights{height:380px}.majestic-native .invitation-envelope-open{height:300px}}

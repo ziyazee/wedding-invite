@@ -5,16 +5,9 @@ import { ReferenceOpeningScene, ReferenceWelcomeScene } from './design14/Referen
 import { useDesign14Motion } from './design14/useDesign14Motion'
 import styles from './design14/Design14.css?inline'
 import { useDesign14TextMotion } from './design14/useDesign14TextMotion'
-import type { Celebration } from '../invitations/model'
+import { referenceEvents } from './design14/referenceEvents'
 import { TimelessNotes, TimelessCelebrations as Celebrations } from './design14/TimelessRules'
 import rulesCSS from './design14/TimelessRules.css?inline'
-
-const referenceEvents: [Celebration, Celebration, Celebration, Celebration] = [
-  { title: 'Engagement Ceremony', date: '2026-12-11', time: '18:00', venue: 'Kshana by the Sea', address: 'Kaup', map: '' },
-  { title: 'Sangeeth Celebration', date: '2027-01-31', time: '18:00', venue: 'Shamili Beach Resort', address: 'Padukere', map: '' },
-  { title: 'Marriage Ceremony', date: '2027-02-03', time: '09:00', venue: 'Amrith Garden', address: 'Udupi', map: '' },
-  { title: 'Reception Celebration', date: '2027-02-04', time: '18:00', venue: 'Ocean Pearl Times Square', address: 'Udupi', map: '' },
-]
 
 export default function Design14() {
   const details = useInvitationDetails()

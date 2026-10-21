@@ -2,7 +2,7 @@ import { useEffect, useRef, useState } from 'react'
 import { createPortal } from 'react-dom'
 import { emptyTextLayout, readTextLayout } from '../invitations/textLayout'
 import type { TextLayout, TextOverride } from '../invitations/textLayout'
-import { textSection, textSelector, watchTextDocuments } from '../invitations/textLayoutDom'
+import { textSection, textSelector, textTranslation, watchTextDocuments } from '../invitations/textLayoutDom'
 import './OrderTextEditor.css'
 import { attachTextResizeHandle } from './textResizeHandle'
 
@@ -97,13 +97,13 @@ export default function OrderTextEditor({ template, value, onChange, draftStatus
       const draw = () => {
         raf = 0
         if (!drag) return
-        drag.element.style.setProperty('translate', `${(drag.next.x || 0) * drag.section.clientWidth}px ${(drag.next.y || 0) * drag.section.clientHeight}px`, 'important')
+        drag.element.style.setProperty('translate', textTranslation(drag.element, drag.section, drag.next.x, drag.next.y), 'important')
         const box = drag.element.getBoundingClientRect()
         const bounds = drag.section.getBoundingClientRect()
         const distance = bounds.left + bounds.width / 2 - box.left - box.width / 2
         if (bounds.width && Math.abs(distance) <= 8) {
           drag.next = { ...drag.next, x: bounded((drag.next.x || 0) + distance / bounds.width) }
-          drag.element.style.setProperty('translate', `${drag.next.x! * drag.section.clientWidth}px ${(drag.next.y || 0) * drag.section.clientHeight}px`, 'important')
+          drag.element.style.setProperty('translate', textTranslation(drag.element, drag.section, drag.next.x, drag.next.y), 'important')
         }
         showGuide(drag.element, drag.section)
       }
@@ -197,10 +197,11 @@ export default function OrderTextEditor({ template, value, onChange, draftStatus
   }
   if (!host) return null
   const entry = selection ? current.current.elements[selection.id] || {} : {}
+  const supported = template >= 1 && template <= 11
   return createPortal(<section className="order-text-editor" aria-label="Text layout editor">
     <div className="ote-heading"><span className="ote-brand-icon"><EditorIcon name="text"/></span><div className="ote-title"><span>MAKE IT YOURS</span><strong>{preview ? 'Invitation preview' : 'Text studio'}</strong></div><button className="ote-preview" type="button" aria-label={preview ? 'Back to editing' : 'Preview invitation'} onClick={() => { setPreview(!preview); setSelection(null); setNearCenter(false) }}><EditorIcon name={preview ? 'text' : 'eye'}/>{preview ? 'Edit' : 'Preview'}</button></div>
     {!preview && <>
-      {selection ? <div className="ote-selection"><span className="ote-selection-dot"/><span><small>SELECTED TEXT</small><strong>{selection.label}</strong></span></div> : <div className="ote-empty"><span className="ote-pointer"><EditorIcon name="pointer"/></span><strong>{template === 1 ? 'Make every detail yours' : 'Text editing is coming'}</strong><p>{template === 1 ? 'Open the invitation, then tap text to style it or drag it into place. Scroll using the space around text.' : 'Editing will be available here once this design is connected.'}</p>{template === 1 && <div className="ote-capabilities"><span>Size</span><span>Position</span></div>}</div>}
+      {selection ? <div className="ote-selection"><span className="ote-selection-dot"/><span><small>SELECTED TEXT</small><strong>{selection.label}</strong></span></div> : <div className="ote-empty"><span className="ote-pointer"><EditorIcon name="pointer"/></span><strong>{supported ? 'Make every detail yours' : 'Text editing is coming'}</strong><p>{supported ? 'Tap text to style it or drag it into place. Scroll using the space around text.' : 'Editing will be available here once this design is connected.'}</p>{supported && <div className="ote-capabilities"><span>Size</span><span>Position</span></div>}</div>}
       {selection && <div className="ote-controls">
         <label>Size (px)<input type="number" min="8" max="160" step="1" value={entry.fontSize ?? selection.size} onChange={e => { const n = Number(e.target.value); if (e.target.value && n >= 8 && n <= 160) update({ fontSize: n }) }}/></label>
         <label>Horizontal (%)<input type="number" min="-100" max="100" step="0.5" value={Number(((entry.x || 0) * 100).toFixed(2))} onChange={e => { if (e.target.value) update({ x: bounded(Number(e.target.value) / 100) }) }}/></label>

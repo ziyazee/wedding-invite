@@ -84,7 +84,7 @@ function artwork(title:string,index:number){
  return {file:['engagement','sangeet','wedding','reception'][index%4],top:.62,bottom:.15}
 }
 
-function TimelessCard({event,index,duplicate=false,cloneSide='',offset,couple,showIllustrations}:{event:Celebration;index:number;duplicate?:boolean;cloneSide?:string;offset:string;couple:string;showIllustrations:boolean}){
+function TimelessCard({event,eventKey,index,duplicate=false,cloneSide='',offset,couple,showIllustrations}:{event:Celebration;eventKey:string;index:number;duplicate?:boolean;cloneSide?:string;offset:string;couple:string;showIllustrations:boolean}){
  const root=useRef<HTMLElement>(null)
  const art=artwork(event.title,index)
  const id=`d14-event-${index}${duplicate?`-loop-${cloneSide}`:''}`
@@ -113,7 +113,7 @@ function TimelessCard({event,index,duplicate=false,cloneSide='',offset,couple,sh
   fit()
   return()=>{active=false;observer.disconnect();document.fonts.removeEventListener('loadingdone',fit)}
  },[event.title,event.venue,event.address,event.date,event.time,event.map,showIllustrations,art.top,art.bottom])
- return <section ref={root} id={id} className={`d14-engagement-section d14-rules-card${showIllustrations?'':' d14-rules-plain-card'}`} data-d14-name={`event-${index}`} data-carousel-clone={duplicate?'':undefined} aria-hidden={duplicate||undefined} inert={duplicate} aria-label={event.title} aria-roledescription="slide">
+ return <section ref={root} id={id} data-invite-event-key={eventKey} className={`d14-engagement-section d14-rules-card${showIllustrations?'':' d14-rules-plain-card'}`} data-d14-name={`event-${index}`} data-carousel-clone={duplicate?'':undefined} aria-hidden={duplicate||undefined} inert={duplicate} aria-label={event.title} aria-roledescription="slide">
   {showIllustrations&&<img className="d14-engagement-art" data-couple-illustration="" src={`/design14/assets/${art.file}.png`} alt="" loading="lazy"/>}
   <article className="d14-engagement-content" style={showIllustrations?{top:`${art.top*100}%`,bottom:`${art.bottom*100}%`}:undefined}>
    <h2 className="d14-engagement-heading">{wrapCardText(event.title,18)}</h2>
@@ -144,7 +144,7 @@ export function TimelessCelebrations({opened,events:sourceEvents,offset='+05:30'
  const events=[...sourceEvents].sort((a,b)=>rank(a)-rank(b))
  const {galleryRef,selected,goTo}=useDesign14Carousel(opened,events.length)
  if(!events.length)return null
- const card=(index:number,duplicate=false,cloneSide='')=><TimelessCard key={`${index}-${duplicate}-${cloneSide}`} event={events[index]} index={index} duplicate={duplicate} cloneSide={cloneSide} offset={offset} couple={couple} showIllustrations={showIllustrations}/>
+ const card=(index:number,duplicate=false,cloneSide='')=><TimelessCard key={`${events[index].id || sourceEvents.indexOf(events[index])}-${duplicate}-${cloneSide}`} event={events[index]} eventKey={events[index].id || `legacy-${sourceEvents.indexOf(events[index])}`} index={index} duplicate={duplicate} cloneSide={cloneSide} offset={offset} couple={couple} showIllustrations={showIllustrations}/>
  return <div className="d14-event-gallery d14-rules-gallery" ref={galleryRef} role="region" aria-label="Wedding celebrations" aria-roledescription="carousel">
   <style>{rulesCSS}</style>
   <div className="d14-event-gallery-nav" role="group" aria-label="Choose an event" style={{gridTemplateColumns:`repeat(${events.length}, minmax(72px, 1fr))`}}>
@@ -158,5 +158,5 @@ export function TimelessCelebrations({opened,events:sourceEvents,offset='+05:30'
 }
 
 export function TimelessNotes({dressCode='',note=''}:{dressCode?:string;note?:string}){
- return <>{dressCode.trim()&&<section className="d14-rules-note"><h2>Dress code</h2><p>{dressCode}</p></section>}{note.trim()&&<section className="d14-rules-note"><h2>A little note</h2><p>{note}</p></section>}</>
+ return <>{dressCode.trim()&&<section data-invite-note="dress" className="d14-rules-note"><h2>Dress code</h2><p>{dressCode}</p></section>}{note.trim()&&<section data-invite-note="gift" className="d14-rules-note"><h2>A little note</h2><p>{note}</p></section>}</>
 }

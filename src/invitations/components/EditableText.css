@@ -1,0 +1,5 @@
+/* Explicit client styling wins over template defaults, including legacy
+   !important rules. The editor's temporary inline !important styles still win. */
+[data-invite-text][data-invite-custom-size]{font-size:var(--invite-font-size)!important}
+[data-invite-text][data-invite-custom-font]{font-family:var(--invite-font-family)!important}
+[data-invite-text][data-invite-custom-color]{color:var(--invite-color)!important;-webkit-text-fill-color:var(--invite-color)!important}

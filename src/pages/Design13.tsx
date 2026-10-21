@@ -39,7 +39,7 @@ function applyOpeningDate(frame: HTMLIFrameElement | null, details: unknown) {
   doc.querySelectorAll<HTMLElement>('p.d13-text').forEach((element) => {
     if (!/are getting married/i.test(element.textContent ?? '')) return
     element.textContent = date
-    element.style.setProperty('font-size', 'calc(1em + 2px)', 'important')
+    element.style.setProperty('font-size', 'calc(1em + 2px)')
   })
 }
 

@@ -320,7 +320,7 @@ function ClientWorkspace() {
     setShowDetails(true); setFormStep(0); setTab('Templates'); setNotice(''); setError(''); setReview(false)
   }
   function editTemplateSetting(id: number, patch: Partial<TemplateSettings>) {
-    setTemplateSettings(current => ({ ...current, [id]: { price: 0, sale_type: 'none', sale_value: 0, is_premium: false, ...current[id], ...patch } }))
+    setTemplateSettings(current => ({ ...current, [id]: { ...(current[id] ?? { price: 0, sale_type: 'none', sale_value: 0, is_premium: false }), ...patch } }))
   }
   async function saveTemplateSetting(template: Template) {
     if (!company || !supabase) return

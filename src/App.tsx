@@ -1,39 +1,44 @@
 import { Navigate, Route, Routes, useParams } from 'react-router-dom'
-import Landing from './pages/Landing'
-import Create from './pages/Create'
-import Preview from './pages/Preview'
-import PublicInvite from './pages/PublicInvite'
-import Design2 from './pages/Design2'
-import Design3 from './pages/Design3'
-import EmbroideredGardenPreview from './pages/EmbroideredGardenPreview'
-import Design4 from './pages/Design4'
-import Design5 from './pages/Design5'
-import SecretGardenPreview from './pages/SecretGardenPreview'
-import Design6 from './pages/Design6'
-import Design7 from './pages/Design7'
-import BloomPreview from './pages/BloomPreview'
-import Design8 from './pages/Design8'
-import Design9 from './pages/Design9'
-import Design10 from './pages/Design10'
-import Design11 from './pages/Design11'
-import Design12 from './pages/Design12'
-import Design13 from './pages/Design13'
-import Design14 from './pages/Design14'
-import CelebrationsEmbed from './pages/design14/CelebrationsEmbed'
-import Design15 from './pages/Design15'
-import Design16 from './pages/Design16'
-import Design17 from './pages/Design17'
-import Design18 from './pages/Design18'
-import MaroonLetter from './pages/MaroonLetter'
-import EmeraldParchment from './pages/EmeraldParchment'
-import ShaadiPathT02 from './pages/ShaadiPathT02'
-import MohadRahma from './pages/MohadRahma'
-import GeneratedInvitation from './pages/GeneratedInvitation'
-import Login from './pages/Login'
-import ClientDashboard from './pages/ClientDashboard'
-import ClientLivePreview from './pages/ClientLivePreview'
-import AdminDashboard from './pages/AdminDashboard'
-import OrderManagement from './pages/OrderManagement'
+import { lazy, Suspense } from 'react'
+import { lazySitePage } from './SiteFonts'
+
+// Route boundaries keep dashboards, editor tools and unrelated designs out of
+// the initial guest-page dependency graph.
+const Landing = lazySitePage(() => import('./pages/Landing'))
+const Create = lazySitePage(() => import('./pages/Create'))
+const Preview = lazySitePage(() => import('./pages/Preview'))
+const PublicInvite = lazySitePage(() => import('./pages/PublicInvite'))
+const Design2 = lazySitePage(() => import('./pages/Design2'))
+const Design3 = lazySitePage(() => import('./pages/Design3'))
+const EmbroideredGardenPreview = lazySitePage(() => import('./pages/EmbroideredGardenPreview'))
+const Design4 = lazySitePage(() => import('./pages/Design4'))
+const Design5 = lazySitePage(() => import('./pages/Design5'))
+const SecretGardenPreview = lazySitePage(() => import('./pages/SecretGardenPreview'))
+const Design6 = lazy(() => import('./pages/Design6'))
+const Design7 = lazySitePage(() => import('./pages/Design7'))
+const BloomPreview = lazySitePage(() => import('./pages/BloomPreview'))
+const Design8 = lazySitePage(() => import('./pages/Design8'))
+const Design9 = lazySitePage(() => import('./pages/Design9'))
+const Design10 = lazySitePage(() => import('./pages/Design10'))
+const Design11 = lazySitePage(() => import('./pages/Design11'))
+const Design12 = lazySitePage(() => import('./pages/Design12'))
+const Design13 = lazySitePage(() => import('./pages/Design13'))
+const Design14 = lazySitePage(() => import('./pages/Design14'))
+const CelebrationsEmbed = lazySitePage(() => import('./pages/design14/CelebrationsEmbed'))
+const Design15 = lazySitePage(() => import('./pages/Design15'))
+const Design16 = lazySitePage(() => import('./pages/Design16'))
+const Design17 = lazySitePage(() => import('./pages/Design17'))
+const Design18 = lazySitePage(() => import('./pages/Design18'))
+const MaroonLetter = lazySitePage(() => import('./pages/MaroonLetter'))
+const EmeraldParchment = lazySitePage(() => import('./pages/EmeraldParchment'))
+const ShaadiPathT02 = lazySitePage(() => import('./pages/ShaadiPathT02'))
+const MohadRahma = lazy(() => import('./pages/MohadRahma'))
+const GeneratedInvitation = lazy(() => import('./pages/GeneratedInvitation'))
+const Login = lazySitePage(() => import('./pages/Login'))
+const ClientDashboard = lazySitePage(() => import('./pages/ClientDashboard'))
+const ClientLivePreview = lazy(() => import('./pages/ClientLivePreview'))
+const AdminDashboard = lazySitePage(() => import('./pages/AdminDashboard'))
+const OrderManagement = lazySitePage(() => import('./pages/OrderManagement'))
 
 function SingleSegmentRoute() {
   const { slug = '' } = useParams()
@@ -43,7 +48,7 @@ function SingleSegmentRoute() {
 
 export default function App() {
   return (
-    <Routes>
+    <Suspense fallback={<main role="status" style={{minHeight:'100svh',display:'grid',placeItems:'center',background:'#fffaf2',color:'#75664c',font:'14px Arial,sans-serif'}}>Loading…</main>}><Routes>
       <Route path="/" element={<Landing />} />
       <Route path="/login" element={<Login />} />
       <Route path="/client/dashboard" element={<ClientDashboard />} />
@@ -106,6 +111,6 @@ export default function App() {
       <Route path="/mohadrahma" element={<MohadRahma />} />
       <Route path="/:orderNumber/:slug" element={<GeneratedInvitation />} />
       <Route path="/:slug" element={<SingleSegmentRoute />} />
-    </Routes>
+    </Routes></Suspense>
   )
 }

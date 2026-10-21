@@ -1080,6 +1080,7 @@
   }
 
   function typeText(el, text, ms, onDone) {
+    if (window.orderInvitation) text = el.id === 'bride-name-el' ? window.orderInvitation.bride : window.orderInvitation.groom;
     var i = 0;
     el.setAttribute('aria-label', text);
     el.textContent = '';
@@ -1087,6 +1088,7 @@
     cursor.className = 'cursor-blink';
     el.appendChild(cursor);
     function tick() {
+      if (!cursor.isConnected) { if (onDone) onDone(); return; }
       if (i < text.length) {
         cursor.before(text[i++]);
         setTimeout(tick, ms);
@@ -1354,6 +1356,7 @@
   function initCountdown() {
     var target = new Date('2026-10-26T11:30:00');
     function update() {
+      if (window.orderInvitation) target = new Date(window.orderInvitation.date + 'T' + window.orderInvitation.time + ':00' + window.orderInvitation.offset);
       var now = new Date();
       var diff = target - now;
       if (diff <= 0) {

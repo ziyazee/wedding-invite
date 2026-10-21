@@ -1,5 +1,6 @@
 import { useLayoutEffect, useRef } from 'react'
 import { Celebrations } from './Design14Scenes'
+import { referenceEvents } from './referenceEvents'
 import styles from './Design14.css?inline'
 
 // Share the original carousel inside legacy invitation documents, keeping its
@@ -41,7 +42,7 @@ export default function CelebrationsEmbed() {
         }
       `}</style>
       <div ref={host} className="d14-JfqWY">
-        <Celebrations opened />
+        <Celebrations opened events={referenceEvents} />
       </div>
     </>
   )

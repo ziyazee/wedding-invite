@@ -938,8 +938,8 @@
     const bParents = document.getElementById('bride-parents-el');
     const gParents = document.getElementById('groom-parents-el');
 
-    bParents.textContent = 'Daughter of Mr. & Mrs. Abdul Rasheed';
-    gParents.textContent = 'Son of Mr. & Mrs. Abdul Kareem';
+    bParents.textContent = window.orderInvitation ? window.orderInvitation.brideFamily : 'Daughter of Mr. & Mrs. Abdul Rasheed';
+    gParents.textContent = window.orderInvitation ? window.orderInvitation.groomFamily : 'Son of Mr. & Mrs. Abdul Kareem';
 
     // Bride name types in after container slides up
     setTimeout(() => {
@@ -967,6 +967,7 @@
   }
 
   function typewrite(el, text, onDone) {
+    if (window.orderInvitation) text = el.id === 'bride-name-el' ? window.orderInvitation.bride : window.orderInvitation.groom;
     // Add pulsing cursor while typing
     const cursor = document.createElement('span');
     cursor.className = 'tw-cursor';
@@ -975,6 +976,7 @@
 
     let i = 0;
     (function tick() {
+      if (!cursor.isConnected) { if (onDone) onDone(); return; }
       if (i < text.length) {
         el.insertBefore(document.createTextNode(text[i++]), cursor);
         setTimeout(tick, 85);
@@ -1098,7 +1100,8 @@
   const TARGET = new Date('2026-10-27T11:30:00');
   function updateCountdown() {
     const now  = new Date();
-    const diff = Math.max(0, TARGET - now);
+    const target = window.orderInvitation ? new Date(window.orderInvitation.date + 'T' + window.orderInvitation.time + ':00' + window.orderInvitation.offset) : TARGET;
+    const diff = Math.max(0, target - now);
     const d = Math.floor(diff / 86400000);
     const h = Math.floor((diff % 86400000) / 3600000);
     const m = Math.floor((diff % 3600000) / 60000);

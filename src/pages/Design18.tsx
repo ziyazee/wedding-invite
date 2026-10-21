@@ -126,8 +126,8 @@ export default function Design18() {
         <p className="d18-message">{details.message}</p>
         <p>Your presence, prayers, and love will make our day complete.</p>
         {(details.groomFamily || details.brideFamily) && <div className="d18-families">
-          {details.groomFamily && <p><small>GROOM’S FAMILY</small>{details.groomFamily}</p>}
-          {details.brideFamily && <p><small>BRIDE’S FAMILY</small>{details.brideFamily}</p>}
+          {details.groomFamily && <p data-family="groom"><small>GROOM’S FAMILY</small>{details.groomFamily}</p>}
+          {details.brideFamily && <p data-family="bride"><small>BRIDE’S FAMILY</small>{details.brideFamily}</p>}
         </div>}
         <Flourish /><span className="d18-signature d18-script">{details.groom} & {details.bride}</span>
         <img className="d18-couple-art" src="/design16/couple-watercolor.png" alt="" aria-hidden="true" loading="lazy" />
@@ -144,7 +144,7 @@ export default function Design18() {
 
       <section className="d18-events">
         <header className="d18-section-heading d18-reveal"><p className="d18-kicker">MOMENTS TO CELEBRATE</p><h2 className="d18-script">Every gathering.<br /><em>One beginning.</em></h2><Flourish /></header>
-        {[...details.events].sort((a, b) => `${a.date}${a.time}`.localeCompare(`${b.date}${b.time}`)).map((event, index) => <article className={`d18-event d18-reveal ${/nikah|wedding/i.test(event.title) ? 'd18-main-event' : ''}`} key={`${event.title}-${event.date}`}>
+        {[...details.events].sort((a, b) => `${a.date}${a.time}`.localeCompare(`${b.date}${b.time}`)).map((event, index) => <article data-invite-event-key={event.id || `legacy-${details.events.indexOf(event)}`} className={`d18-event d18-reveal ${/nikah|wedding/i.test(event.title) ? 'd18-main-event' : ''}`} key={event.id || `legacy-${details.events.indexOf(event)}`}>
           <p className="d18-event-index">{String(index + 1).padStart(2, '0')} <span>✧</span> THE CELEBRATION</p>
           <h3 className="d18-script">{event.title}</h3>
           <div className="d18-event-date"><strong>{formatDate(event.date, { day: '2-digit' })}</strong><span>{formatDate(event.date, { weekday: 'long', month: 'long', year: 'numeric' })}<small>{formatTime(event.time)}</small></span></div>
@@ -154,8 +154,8 @@ export default function Design18() {
       </section>
 
       {(details.dressCode || details.giftNote || details.gallery) && <section className="d18-notes d18-reveal">
-        {details.dressCode && <><p className="d18-kicker">A NOTE ON ATTIRE</p><p>{details.dressCode}</p></>}
-        {details.giftNote && <><p className="d18-kicker">WITH LOVE</p><p>{details.giftNote}</p></>}
+        {details.dressCode && <><p data-note="dress-heading" className="d18-kicker">A NOTE ON ATTIRE</p><p data-note="dress">{details.dressCode}</p></>}
+        {details.giftNote && <><p data-note="gift-heading" className="d18-kicker">WITH LOVE</p><p data-note="gift">{details.giftNote}</p></>}
         {details.gallery && <a href={details.gallery} target="_blank" rel="noreferrer">Our memories <Arrow /></a>}
       </section>}
 

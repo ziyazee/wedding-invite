@@ -1,5 +1,5 @@
-import { readTextLayout } from './textLayout'
-import type { TextLayout } from './textLayout'
+import { readTextLayout } from './textLayout.ts'
+import type { TextLayout } from './textLayout.ts'
 
 export const designs = [
   { id: 1, name: 'Royal Grace', description: 'Sage and ivory stationery with pearls and delicate botanical relief.', route: '/mohadrahma', image: '/images/royal-grace/opening-poster.jpg', color: '#8b9274' },
@@ -10,6 +10,9 @@ export const designs = [
   { id: 6, name: 'Embroidered Garden', description: 'Garden illustrations and soft embroidered textures.', route: '/design3', image: '/design3/assets/footer-chateau.png', color: '#dce2cd' },
   { id: 7, name: 'Bloom', description: 'Expressive florals and a beautifully animated welcome.', route: '/design7', image: '/design7/assets/welcome-flowers-Dy0evJgO.png', color: '#e9c9bd' },
   { id: 8, name: 'The Artful Love Story', description: 'An ornate Indian wedding invitation with a photo story, celebration details, and a countdown.', route: '/design13', image: '/design13/assets/zBRd2fZShor1nxxKvdVKhKU.png', color: '#fbf5ed' },
+  { id: 9, name: 'Maroon Letter', description: 'Cinematic maroon stationery and lanterns.', route: '/maroon-letter', image: '/maroon-letter/demo.webp', color: '#31090e' },
+  { id: 10, name: 'Emerald Parchment', description: 'Forest green parchment with a cinematic opening.', route: '/emerald-parchment', image: '/emerald-parchment/demo.webp', color: '#0f1e16' },
+  { id: 11, name: 'Royal Jodhpur', description: 'Midnight blue and gold palace celebrations.', route: '/royal-jodhpur', image: '/shaadipath-t02/assets/layers/Herp Palace.webp', color: '#0d1b3e' },
 ] as const
 export interface Celebration { id?: string; title: string; date: string; time: string; venue: string; address: string; map: string }
 export function nameTextLimit(template: number, field: string): number | undefined {

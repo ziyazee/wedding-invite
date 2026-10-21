@@ -4,6 +4,10 @@ Last updated: 2026-10-17. These notes describe work established in the conversat
 
 ## Project and local workflow
 
+- Majestic (order template 2) migration is implemented in `src/pages/majestic/Majestic.tsx`, `Majestic.css`, and `useMajesticFit.ts`. Orders bypass `AnimatedInvitation`/`TextLayoutLayer` and render native React with the shared layout provider, section, text and media components. `/majestic` and `/design6` use this renderer with catalog sample data through `Design6.tsx`; original `public/design6/` reference files remain. Uses stable `t2.*` text IDs and `t2.event-{event.id || legacy-originalIndex}.*` event IDs, existing version-1 order overrides, and the dashboard editor. Font family/color controls remain hidden. Scoped native CSS retains the existing assets, local fonts, background videos, venue badge, celebration videos, dress artwork, RSVP envelope and closing flowers; visual parity is not verified. The shared native `InvitationRsvp` submits through existing order RSVP storage. Names and card fitting use local observers and respect explicit text sizes. No build, tests or browser checks were run for this migration; verify before calling it complete. Nine other collection templates still await native/editor migration.
+
+- Native template architecture milestone: see `TEMPLATE_ARCHITECTURE.md`. Royal Grace now uses `EditableText`, `InvitationSection`, `InvitationLayoutProvider`, and `InvitationMedia` from `src/invitations/components/`. Its saved version-1 IDs and position boundaries are preserved; it bypasses the DOM-scanning TextLayoutLayer. Sections observe their dimensions only when positioning/base transforms require it. The old layout editor is lazy-loaded for standalone named invitations only. App routes and template renderers are lazy-loaded; `SiteFonts.tsx` provides the old site font set to site pages/unmigrated templates, while Royal Grace uses its own fonts. Opening video preload is metadata and the poster has priority. Source changes are not built, browser-verified, database-tested or performance-measured; the documentation records the pending verification gate before migrating more templates.
+
 - Project root: `/Users/mziya/new/wedding-invite`.
 - React + TypeScript + Vite. Routes are declared in `src/App.tsx`.
 - Follow `AGENTS.md`: direct patches only, no commands/builds/tests/commits/pushes unless requested.
@@ -58,7 +62,7 @@ Important landing assets:
 | --- | --- | --- |
 | 3 | Embroidered Garden | `src/pages/Design3.tsx` iframe wrapper; `public/design3/` |
 | 5 | Secret Garden | `src/pages/Design5.tsx` iframe wrapper; `public/design5/` |
-| 6 | Majestic | `src/pages/Design6.tsx` iframe wrapper; `public/design6/` |
+| 6 | Majestic | Native React: `src/pages/majestic/Majestic.tsx`; `Design6.tsx` sample route; artwork `public/design6/` |
 | 7 | Bloom | `src/pages/Design7.tsx` iframe wrapper; `public/design7/` |
 | 11 | Design 11 | `src/pages/Design11.tsx`, `src/pages/Design11.css` |
 | 13 | The Artful Love Story | `src/pages/Design13.tsx` iframe wrapper; `public/design13/index.html`, `local-runtime.js`, assets |
@@ -74,7 +78,11 @@ Standalone iframe designs commonly use `index.html`, `interactions.js`, `interac
 
 ## Order dashboard and Supabase
 
-- Royal Grace text editing now includes fixed headings, captions, countdown numbers/labels, date-reveal copy, link/button labels, family/note headings, and closing text alongside form fields. Each has a stable override ID and supports the same direct resize/drag controls and per-order persistence. This supersedes the form-text-only restriction for Royal Grace; other template adapters remain pending. Text baked into images/videos/canvas artwork is not a selectable text element. Use Preview to activate a link/button whose label is being edited.
+- New order templates: **9 Maroon Letter**, **10 Emerald Parchment**, **11 Royal Jodhpur**. Apply `supabase/migrations/202610210001_new_order_templates.sql` after the existing compact-ID catalog migrations to expose them in the database-backed dashboard. Migration is prepared, not applied. `model.ts`, `templateData.ts`, and `InvitationRenderer.tsx` now register them. `OrderFrameInvitation.tsx` / `orderFrameAdapter.ts` personalize the existing same-origin iframe documents in place for previews and published orders (names/families, events, dates/countdowns, maps/calendar, music, notes/gallery and order RSVP). Standalone named demo routes retain sample data. Orders omit sample photos and sample RSVP destinations. Maroon keeps its first two scratch cards; further events use additional cards. Emerald keeps its paged shell/timeline. Royal Jodhpur uses its event artwork in a flow layout that supports the order's event count. These are order adapters, **not** shared React text-editor migrations. No builds, tests, browser checks or database writes were run for this addition.
+
+- Text editing is connected to all **11 current order templates**. Royal Grace/Majestic use native components; templates 3–11 use explicit semantic mappings in `legacyTextAdapters.ts` through `TextLayoutLayer`, including same-origin iframe and SVG/foreignObject text. Size, drag, center snap, undo/redo/reset reuse the dashboard editor; font/color controls remain hidden. Fixed headings/captions and mapped action labels are included alongside form text. Artwork baked into images/videos/canvas is not selectable. Use Preview to activate links/buttons. Adapter coverage and SVG geometry have not been browser-verified; no build or tests were run for this extension.
+
+- Preserve adapter IDs (`t<order-template>.<section>.<field>`) and section geometry when migrating. Event IDs use persisted celebration IDs with original-index fallbacks for legacy records; responsive/carousel copies intentionally share IDs. Saved edits continue through `orders.form_data.textOverrides` (version 1), with local draft autosave before Create invitation. No additional database migration is required for adapters. Existing-order dashboard layout autosave remains separate. Guest pages without overrides skip adapter setup; edited legacy pages install mappings/styles but no editor controls. No rendering-latency measurements have been taken.
 
 - Selected form text now has a gold resize handle inside the dashboard phone preview (`textResizeHandle.ts`). Drag outward/inward to adjust font size within 8–160px; pointer release commits one undoable change through the existing draft/order saving. Arrow keys on the handle also adjust size. The separate phone resize handle changes only the preview dimensions.
 
