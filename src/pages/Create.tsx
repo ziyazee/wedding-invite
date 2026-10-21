@@ -17,7 +17,7 @@ export default function Create() {
  async function submit(e:FormEvent) {
   e.preventDefault();if(submitting.current)return;submitting.current=true;setBusy(true);setError('')
   try {
-   const details=validateDetails({template:2,groom,bride,date,time,offset:'+05:30',venue,address:venue,map:'',message:'With the blessings of Allah and the love of our families, we invite you to celebrate the beginning of our forever.',groomFamily:'',brideFamily:'',dressCode:'',giftNote:'',music:'',gallery:'',events:[{title:'Nikah & Wedding',date,time,venue,address:venue,map:''},...events.map(event=>({...event,address:event.venue}))]})
+   const details=validateDetails({template:1,groom,bride,date,time,offset:'+05:30',venue,address:venue,map:'',message:'With the blessings of Allah and the love of our families, we invite you to celebrate the beginning of our forever.',groomFamily:'',brideFamily:'',dressCode:'',giftNote:'',music:'',gallery:'',events:[{title:'Nikah & Wedding',date,time,venue,address:venue,map:''},...events.map(event=>({...event,address:event.venue}))]})
    const response=await fetch('/api/applications/',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(details)})
    if(!response.headers.get('content-type')?.includes('application/json'))throw new Error('Unable to save right now. Please try again.')
    const result=await response.json();if(!response.ok)throw new Error(result.error||'Unable to save your application.')

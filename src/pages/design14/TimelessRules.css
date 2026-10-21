@@ -1,0 +1,37 @@
+/* All bounds are scoped to the updated template and its shared celebration embed. */
+:where(html.d14-document) .d14-rules-opening{position:absolute;z-index:3;top:8%;left:51%;width:min(72vw,44%);max-width:580px;height:11%;display:flex;flex-direction:column;align-items:center;gap:8px;text-align:center;color:#ffe6b3}
+/* The sky extends beyond the viewport. Center the group at the original name
+   anchor and override the legacy SVG transform without changing its fade-in. */
+html:where(.d14-document) #main .d14-rules-opening.d14-entry-name{transform:translateX(-50%)!important}
+:where(html.d14-document) .d14-rules-names{display:flex;align-items:center;justify-content:center;gap:12px;width:100%;min-width:0}
+:where(html.d14-document) .d14-rules-names.is-stacked{flex-direction:column;gap:10px}
+:where(html.d14-document) .d14-rules-names>div{min-width:0;max-width:100%}
+:where(html.d14-document) .d14-rules-names [data-timeless-name]{display:block;margin:0;font-family:'D14 Heading Serif',Georgia,serif;font-size:clamp(24px,6vw,48px);line-height:1.1;white-space:pre-line;overflow-wrap:normal;word-break:normal}
+:where(html.d14-document) .d14-rules-opening [data-timeless-name]{font-size:clamp(36px,9vw,102px);font-weight:700;letter-spacing:normal;color:#ffe6b3}
+:where(html.d14-document) .d14-rules-opening .d14-page-two-family-amp{font-family:'Jost',sans-serif;font-weight:400;font-size:clamp(12px,2vw,20px);line-height:1;margin:0;color:#fff;letter-spacing:normal}
+:where(html.d14-document) .d14-rules-opening-date{font:600 clamp(14px,3vw,28px)/1.3 'D14 Heading Serif',Georgia,serif;color:#fff0cd;margin:0;white-space:pre-line;flex:none}
+:where(html.d14-document) .d14-rules-opening .d14-rules-names{gap:4px;flex:none}
+:where(html.d14-document) .d14-rules-names .d14-page-two-family{font-size:clamp(12px,2.6vw,17px);line-height:1.45;white-space:pre-line;overflow-wrap:anywhere;margin:8px 0 0;color:white}
+:where(html.d14-document) .d14-JfqWY .d14-15337ob{container-type:inline-size;height:auto;min-height:min(184.17vw,100svh);overflow:visible}
+:where(html.d14-document) .d14-page-two-content{--d14-page-two-unit:min(1cqw,5px);position:relative;inset:auto;width:64%;max-width:64%;padding:12% 0 25%;box-sizing:border-box}
+:where(html.d14-document) .d14-page-two-content p{white-space:pre-line;overflow-wrap:anywhere}
+:where(html.d14-document) .d14-page-two-content [hidden],:where(html.d14-document) [data-couple-illustration][hidden]{display:none!important}
+:where(html.d14-document) .d14-rules-gallery .d14-event-gallery-nav{overflow-x:auto}
+:where(html.d14-document) .d14-rules-gallery .d14-event-gallery-nav button{white-space:normal;overflow-wrap:anywhere;line-height:1.4}
+:where(html.d14-document) .d14-rules-gallery .d14-event-gallery-nav .d14-event-label{display:block;min-width:0;max-width:100%;white-space:normal;text-align:center}
+:where(html.d14-document) .d14-JfqWY .d14-rules-card{--d14-card-fit:1;position:relative;aspect-ratio:962/1634;align-self:start}
+:where(html.d14-document) .d14-rules-card>.d14-engagement-art{position:absolute;inset:0;width:100%;height:100%;object-fit:fill}
+:where(html.d14-document) .d14-rules-card .d14-engagement-content{left:20%;right:20%;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:calc(3px + 4px * var(--d14-card-fit));min-width:0}
+:where(html.d14-document) .d14-rules-card .d14-engagement-content>*{flex:none;max-width:100%;min-width:0;margin:0;padding:0;white-space:pre-line;overflow-wrap:anywhere;box-sizing:border-box}
+:where(html.d14-document) .d14-rules-card .d14-engagement-heading{font-size:calc(12px + 4px * var(--d14-card-fit));line-height:1.25;letter-spacing:.08em}
+:where(html.d14-document) .d14-rules-card .d14-engagement-date{font-size:calc(12px + 2px * var(--d14-card-fit));line-height:1.3;display:block}
+:where(html.d14-document) .d14-rules-card .d14-engagement-time{font-size:calc(12px + 2px * var(--d14-card-fit));line-height:1.3}
+:where(html.d14-document) .d14-rules-card .d14-engagement-venue-name{font-size:calc(12px + 4px * var(--d14-card-fit));line-height:1.3;letter-spacing:.04em}
+:where(html.d14-document) .d14-rules-card .d14-engagement-venue-city{font-size:calc(11px + 2px * var(--d14-card-fit));line-height:1.3;letter-spacing:.04em}
+:where(html.d14-document) .d14-rules-actions{display:flex;flex-wrap:wrap;justify-content:center;gap:6px 12px;font:400 12px/1.4 Georgia,serif}
+:where(html.d14-document) .d14-rules-actions a,:where(html.d14-document) .d14-rules-actions button{font:inherit;white-space:normal;color:inherit;background:none;border:0;border-bottom:1px solid currentColor;padding:6px 0;cursor:pointer}
+:where(html.d14-document) .d14-JfqWY .d14-rules-plain-card{aspect-ratio:auto;min-height:420px;background:#fff3d9;border:12px double #a87932;padding:40px 18%}
+:where(html.d14-document) .d14-rules-plain-card .d14-engagement-content{position:relative;inset:auto;width:100%;gap:18px}
+:where(html.d14-document) .d14-rules-note{width:100%;box-sizing:border-box;padding:40px max(18%,24px);background:#fff3d9;color:#59351f;text-align:center;white-space:pre-line;overflow-wrap:anywhere}
+:where(html.d14-document) .d14-rules-note h2{font:400 28px/1.2 'D14 Heading Serif',Georgia,serif;margin:0 0 16px}
+:where(html.d14-document) .d14-rules-note p{font:400 17px/1.6 Georgia,serif;margin:0}

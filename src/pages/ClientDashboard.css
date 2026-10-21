@@ -476,8 +476,7 @@
 .client-workspace.has-client-preview.show-client-details .client-workflow-progress { display: none; }
 .client-workspace.has-client-preview.show-client-details .client-order-progress { grid-column: 1 / -1; width: 100%; height: 5px; overflow: hidden; margin: 0 0 16px; border-radius: 999px; background: #e9eeeb; }
 .client-workspace.has-client-preview.show-client-details .client-order-progress span { display: block; height: 100%; border-radius: inherit; background: linear-gradient(90deg, #3c5148, #829b8a); transition: width .35s ease; }
-.client-workspace.has-client-preview.show-client-details .order-form fieldset:nth-of-type(3) > .secondary-action ~ .form-grid,
-.client-workspace.has-client-preview.show-client-details .order-form fieldset:nth-of-type(3) > label:last-of-type { display: none; }
+.client-workspace.has-client-preview.show-client-details .order-form fieldset:nth-of-type(3) > .secondary-action ~ .form-grid > label:not(:first-child) { display: none; }
 .client-workspace .order-form fieldset:nth-of-type(3) > .form-grid:last-of-type > label:nth-child(2) { display: none !important; }
 .client-workspace.has-client-preview.show-client-details .client-workflow-back,
 .client-workspace.has-client-preview.show-client-details .client-workflow-next { flex: 1 1 0; width: min(100%, 360px); min-height: 48px; }
@@ -803,3 +802,12 @@
   .client-workspace.has-client-preview .client-template-price { min-height: 36px; }
   .client-workspace.has-client-preview .client-template-price-row { gap: 4px; }
 }
+.publish-celebration-list { margin: 0; padding-left: 18px; list-style: disc; }
+.publish-celebration-list li { padding-left: 2px; overflow-wrap: anywhere; }
+.publish-celebration-list li + li { margin-top: 6px; }
+.publish-whatsapp-label { display: inline-flex; align-items: center; gap: 6px; }
+.publish-whatsapp-label svg { flex: 0 0 18px; width: 18px; height: 18px; color: #228b54; }
+.copy-link-manual { display: flex; flex-direction: column; gap: 5px; flex: 1 1 100%; min-width: 0; font-size: 12px; color: #526457; }
+.copy-link-manual input { width: 100%; min-width: 0; box-sizing: border-box; padding: 8px; border: 1px solid #dce3dd; border-radius: 5px; font-size: 13px; }
+.order-selling-price { max-width: 340px; }
+.order-selling-price small { color: #718076; font-size: 12px; font-weight: 400; line-height: 1.5; }

@@ -65,12 +65,78 @@
   }, { threshold: .08 });
   document.querySelectorAll('[data-reveal]').forEach(element => observer.observe(element));
 
-  const days = document.querySelector('#countdown .leading-none');
-  const updateDays = () => {
-    days.textContent = String(Math.max(0, Math.floor((new Date('2026-10-03T17:00:00+02:00').getTime() - Date.now()) / 86400000)));
-  };
-  updateDays();
-  window.setInterval(updateDays, 60000);
+  const countdown = document.querySelector('#countdown');
+  countdown.classList.add('sg-clock-countdown');
+  countdown.innerHTML = `
+    <p class="sg-clock-heading">Until our forever</p>
+    <div class="sg-clock-face">
+      <img class="sg-clock-art" src="/design5/assets/pearl-clock.png" alt="" decoding="async">
+      <svg class="sg-clock-dial" viewBox="0 0 300 300" aria-hidden="true">
+        <path class="sg-clock-sector"></path>
+        <path class="sg-clock-hand" d="M150 83V30"></path>
+      </svg>
+      <div class="sg-clock-value"><span class="sg-clock-days">0</span><span class="sg-clock-unit">Days</span></div>
+    </div>
+    <p class="sg-clock-time" role="timer" aria-live="off"><span data-clock-hours>0</span> hours, <span data-clock-minutes>0</span> min and <span data-clock-seconds>0</span> sec</p>`;
+  const days = countdown.querySelector('.sg-clock-days');
+  const hours = countdown.querySelector('[data-clock-hours]');
+  const minutes = countdown.querySelector('[data-clock-minutes]');
+  const seconds = countdown.querySelector('[data-clock-seconds]');
+  const sector = countdown.querySelector('.sg-clock-sector');
+  const hand = countdown.querySelector('.sg-clock-hand');
+  const motionPreference = window.matchMedia('(prefers-reduced-motion: reduce)');
+  const fallbackDate = new Date('2026-10-03T17:00:00+02:00').getTime();
+  let targetDate = fallbackDate;
+  let clockVisible = false;
+  let clockFrame = 0;
+  const remainingTime = () => Math.max(0, targetDate - Date.now());
+  function drawClock(remaining) {
+    // The seconds remaining decrease, so the hand sweeps counterclockwise.
+    const turn = (remaining % 60000) / 60000;
+    const angle = turn * Math.PI * 2;
+    const x = 150 + 120 * Math.sin(angle);
+    const y = 150 - 120 * Math.cos(angle);
+    sector.setAttribute('d', turn ? `M150 150 L150 30 A120 120 0 ${turn > .5 ? 1 : 0} 1 ${x} ${y} Z` : '');
+    hand.setAttribute('transform', `rotate(${turn * 360} 150 150)`);
+  }
+  function updateClock() {
+    const remaining = remainingTime();
+    const totalSeconds = Math.ceil(remaining / 1000);
+    days.textContent = String(Math.floor(totalSeconds / 86400));
+    hours.textContent = String(Math.floor(totalSeconds / 3600) % 24);
+    minutes.textContent = String(Math.floor(totalSeconds / 60) % 60);
+    seconds.textContent = String(totalSeconds % 60);
+    countdown.querySelector('.sg-clock-unit').textContent = Math.floor(totalSeconds / 86400) === 1 ? 'Day' : 'Days';
+    drawClock(remaining);
+  }
+  function animateClock() {
+    clockFrame = 0;
+    const remaining = remainingTime();
+    drawClock(remaining);
+    if (remaining > 0 && clockVisible && !document.hidden && !motionPreference.matches) {
+      clockFrame = window.requestAnimationFrame(animateClock);
+    }
+  }
+  function resumeClock() {
+    window.cancelAnimationFrame(clockFrame);
+    clockFrame = 0;
+    updateClock();
+    if (clockVisible && !document.hidden && !motionPreference.matches) animateClock();
+  }
+  function readClockDate() {
+    const selectedDate = Date.parse(countdown.dataset.weddingInstant || '');
+    targetDate = Number.isFinite(selectedDate) ? selectedDate : fallbackDate;
+    resumeClock();
+  }
+  new IntersectionObserver(entries => {
+    clockVisible = entries[0].isIntersecting;
+    resumeClock();
+  }).observe(countdown);
+  document.addEventListener('visibilitychange', resumeClock);
+  motionPreference.addEventListener('change', resumeClock);
+  window.addEventListener('invitation-preview-updated', readClockDate);
+  readClockDate();
+  window.setInterval(updateClock, 1000);
 
   const calendarButton = [...document.querySelectorAll('button')].find(button => button.textContent.trim() === 'Calendar' && !button.hasAttribute('data-wedding-calendar'));
   calendarButton?.addEventListener('click', () => {

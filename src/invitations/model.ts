@@ -1,24 +1,26 @@
+import { readTextLayout } from './textLayout'
+import type { TextLayout } from './textLayout'
+
 export const designs = [
-  { id: 2, name: 'Mohad & Rahma', description: 'Sage and ivory stationery with pearls and delicate botanical relief.', route: '/mohadrahma', image: '/images/royal-grace/opening-poster.jpg', color: '#8b9274' },
-  { id: 3, name: 'Embroidered Garden', description: 'Garden illustrations and soft embroidered textures.', route: '/design3', image: '/design3/assets/footer-chateau.png', color: '#dce2cd' },
-  { id: 4, name: 'Blossom & Oud', description: 'A warm, ornate celebration with Moroccan-inspired details.', route: '/design4', image: '/design4/assets/flowers.png', color: '#ead3c0' },
+  { id: 1, name: 'Royal Grace', description: 'Sage and ivory stationery with pearls and delicate botanical relief.', route: '/mohadrahma', image: '/images/royal-grace/opening-poster.jpg', color: '#8b9274' },
+  { id: 2, name: 'Majestic', description: 'Pearl accents, chandeliers and grand garden scenes.', route: '/design6', image: '/design6/assets/hero-poster-DkA1j00-.jpg', color: '#e9dfca' },
+  { id: 3, name: 'A Timeless Union', description: 'A traditional Hindu wedding invitation with family blessings, a mehendi celebration, and a photo story.', route: '/arjunbhavana', image: '/landing/timeless-union-opening.jpg', color: '#f8f2e9' },
+  { id: 4, name: 'Mandap at Dusk', description: 'A sunset mandap reveal with a cinematic curtain opening and a personal name reveal.', route: '/design18', image: '/design18/preview.jpg', color: '#d19b72' },
   { id: 5, name: 'Secret Garden', description: 'Romantic garden scenery and delicate floral details.', route: '/design5', image: '/design5/assets/opened.jpg', color: '#d6d8c3' },
-  { id: 6, name: 'Majestic', description: 'Pearl accents, chandeliers and grand garden scenes.', route: '/design6', image: '/design6/assets/hero-poster-DkA1j00-.jpg', color: '#e9dfca' },
+  { id: 6, name: 'Embroidered Garden', description: 'Garden illustrations and soft embroidered textures.', route: '/design3', image: '/design3/assets/footer-chateau.png', color: '#dce2cd' },
   { id: 7, name: 'Bloom', description: 'Expressive florals and a beautifully animated welcome.', route: '/design7', image: '/design7/assets/welcome-flowers-Dy0evJgO.png', color: '#e9c9bd' },
-  { id: 8, name: 'Noor · A Courtyard in Bloom', description: 'An original Muslim wedding invitation with a lattice-door reveal.', route: '/design8', image: '/design8/courtyard.png', color: '#d7dbc2' },
-  { id: 9, name: 'Sunehri · The Golden Veil', description: 'An embroidered golden arch and a timeless ivory wedding story.', route: '/design9', image: '/design9/curtain-open.jpg', color: '#e9dfc9' },
-  { id: 10, name: 'Yasmin · An Ivory Beginning', description: 'Silken curtains, white floral arches and an intimate ivory-and-sage celebration.', route: '/design10', image: '/design10/open.jpg', color: '#e8dfc8' },
-  { id: 11, name: 'Maitri · A Jewel-Tone Evening', description: 'Deep noir and antique gold with mandala filigree — a cinematic Hindu wedding invitation.', route: '/design11', image: '/design11/preview.jpg', color: '#1a1520' },
-  { id: 12, name: 'Kiran · Temple of Love', description: 'A sacred temple scene with maroon and gold — a grand Hindu wedding invitation with clouds and countdown.', route: '/design12', image: '/design12/preview.webp', color: '#580b1a' },
-  { id: 13, name: 'The Artful Love Story', description: 'An ornate Indian wedding invitation with a photo story, celebration details, and a countdown.', route: '/design13', image: '/design13/assets/zBRd2fZShor1nxxKvdVKhKU.png', color: '#fbf5ed' },
-  { id: 14, name: 'A Timeless Union', description: 'A traditional Hindu wedding invitation with family blessings, a mehendi celebration, and a photo story.', route: '/arjunbhavana', image: '/landing/timeless-union-opening.jpg', color: '#f8f2e9' },
-  { id: 15, name: 'Ivory Arch · A Blessed Beginning', description: 'A cinematic ivory arch reveal with gold calligraphy, a live countdown, and elegant celebration cards.', route: '/design15', image: '/design15/preview.jpg', color: '#e9e2d4' },
-  { id: 16, name: 'Sacred Mandap · A Vow at Dusk', description: 'A cinematic maroon curtain reveal opens onto a glowing mandap, with a Hindu wedding story in vermilion, ivory, and gold.', route: '/design16', image: '/design16/preview.jpg', color: '#6f201e' },
-  { id: 17, name: 'Gulabi Mandap · A Celebration in Bloom', description: 'A rose-filled mandap with falling petals and a romantic Hindu wedding story in blush, ruby, and antique gold.', route: '/design17', image: '/design17/preview.jpg', color: '#a65364' },
-  { id: 18, name: 'Mandap at Dusk', description: 'A sunset mandap reveal with a cinematic curtain opening and a personal name reveal.', route: '/design18', image: '/design18/preview.jpg', color: '#d19b72' },
+  { id: 8, name: 'The Artful Love Story', description: 'An ornate Indian wedding invitation with a photo story, celebration details, and a countdown.', route: '/design13', image: '/design13/assets/zBRd2fZShor1nxxKvdVKhKU.png', color: '#fbf5ed' },
 ] as const
-export interface Celebration { title: string; date: string; time: string; venue: string; address: string; map: string }
+export interface Celebration { id?: string; title: string; date: string; time: string; venue: string; address: string; map: string }
+export function nameTextLimit(template: number, field: string): number | undefined {
+  return [2,3,5,6,7].includes(template) && (field==='groom'||field==='bride') ? 40 : undefined
+}
+export function cardTextLimit(template: number, field: string): number | undefined {
+  return [2,3,5,6,7].includes(template) ? ({ title: 40, venue: 60, address: 100 } as Record<string, number>)[field] : undefined
+}
 export interface InvitationData {
+  textOverrides?: TextLayout;
+  showCoupleIllustrations?: boolean;
   template: number; groom: string; bride: string; date: string; time: string; offset: string;
   venue: string; address: string; map: string; message: string; groomFamily: string; brideFamily: string;
   dressCode: string; giftNote: string; music: string; gallery: string; events: Celebration[];
@@ -31,11 +33,12 @@ export const mapURL = (venue: string, address: string, url = '') => url || `http
 export function nameSlug(groom: string, bride: string) {
   return `${groom}${bride}`.normalize('NFKD').replace(/[\u0300-\u036f]/g, '').toLowerCase().replace(/[^a-z0-9]/g, '').slice(0, 80) || 'wedding'
 }
-export const reservedSlugs = new Set(['assets','images','fonts','dashboard','client','admin','login','create','preview','invite','newdesign','mohadrahma','api','arjunmeera','rohankavya','aarongrace','danielsarah','vikramananya','nikhiladiti',...designs.map(d => `design${d.id}`)])
+export const reservedSlugs = new Set(['assets','images','fonts','dashboard','client','admin','login','create','preview','invite','newdesign','mohadrahma','api','arjunmeera','rohankavya','aarongrace','danielsarah','vikramananya','nikhiladiti',...Array.from({ length: 16 }, (_, index) => `design${index + 3}`)])
 export function validateDetails(value: unknown, allowRetired = false): InvitationData {
   if (!value || typeof value !== 'object') throw new Error('Invitation details are required.')
   const d = value as InvitationData
-  if (!designs.some(t => t.id === d.template) && !(allowRetired && d.template === 1)) throw new Error('Choose an available invitation template.')
+  if(d.showCoupleIllustrations!==undefined&&typeof d.showCoupleIllustrations!=='boolean')throw new Error('Choose a valid illustration setting.')
+  if (!designs.some(t => t.id === d.template) && !(allowRetired && [101, 104, 108, 109, 110, 111, 112, 115, 116, 117].includes(d.template))) throw new Error('Choose an available invitation template.')
   const text = (v: unknown, label: string, max: number, required = false) => {
     if (typeof v !== 'string' || v.length > max || (required && !v.trim())) throw new Error(`Please enter a valid ${label}.`)
     return v.trim()
@@ -57,10 +60,12 @@ export function validateDetails(value: unknown, allowRetired = false): Invitatio
   if (typeof d.offset !== 'string' || !/^[+-](0\d|1[0-4]):(00|15|30|45)$/.test(d.offset)) throw new Error('Choose a valid time zone offset.')
   if (!Array.isArray(d.events) || d.events.length < 1 || d.events.length > 10) throw new Error('Add between one and ten celebrations.')
   return {
-    template:d.template, groom:text(d.groom,'groom name',80,true), bride:text(d.bride,'bride name',80,true), date:date(d.date), time:time(d.time), offset:d.offset,
-    venue:text(d.venue,'venue',160,true),address:text(d.address,'address',300,true),map:url(d.map,'map link'),
+    textOverrides: readTextLayout(d.textOverrides),
+    showCoupleIllustrations:d.showCoupleIllustrations !== false,
+    template:d.template, groom:text(d.groom,'groom name',nameTextLimit(d.template,'groom') ?? 80,true), bride:text(d.bride,'bride name',nameTextLimit(d.template,'bride') ?? 80,true), date:date(d.date), time:time(d.time), offset:d.offset,
+    venue:text(d.venue,'venue',cardTextLimit(d.template,'venue') ?? 160,true),address:text(d.address,'address',cardTextLimit(d.template,'address') ?? 300,true),map:url(d.map,'map link'),
     message:text(d.message,'welcome message',2000),groomFamily:text(d.groomFamily,'groom family',200),brideFamily:text(d.brideFamily,'bride family',200),
     dressCode:text(d.dressCode,'dress code',600),giftNote:text(d.giftNote,'gift note',600),music:url(d.music,'music link'),gallery:url(d.gallery,'gallery link'),
-    events:d.events.map(e=>({title:text(e.title,'celebration name',100,true),date:date(e.date),time:time(e.time),venue:text(e.venue,'celebration venue',160,true),address:text(e.address,'celebration address',300,true),map:url(e.map,'map link')})),
+    events:d.events.map(e=>({...(typeof e.id==='string'&&/^[a-zA-Z0-9_-]{1,80}$/.test(e.id)?{id:e.id}:{}),title:text(e.title,'celebration name',cardTextLimit(d.template,'title') ?? 100,true),date:date(e.date),time:time(e.time),venue:text(e.venue,'celebration venue',cardTextLimit(d.template,'venue') ?? 160,true),address:text(e.address,'celebration address',cardTextLimit(d.template,'address') ?? 300,true),map:url(e.map,'map link')})),
   }
 }

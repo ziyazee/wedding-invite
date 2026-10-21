@@ -4,18 +4,18 @@
   const query = new URLSearchParams(window.location.search)
   if (!query.has('groom') || !query.has('bride')) return
 
-  const groom = query.get('groom') || ''
-  const bride = query.get('bride') || ''
-  const event = query.get('event') || 'Wedding Celebration'
-  const venue = query.get('venue') || ''
-  const address = query.get('address') || ''
-  const message = query.get('message') || ''
-  const groomFamily = query.get('groomFamily') || ''
-  const brideFamily = query.get('brideFamily') || ''
-  const map = query.get('map') || `https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(`${venue}, ${address}`)}`
-  const date = query.get('date') || ''
-  const time = query.get('time') || ''
-  const music = query.get('music') || ''
+  let groom = query.get('groom') || ''
+  let bride = query.get('bride') || ''
+  let event = query.get('event') || 'Wedding Celebration'
+  let venue = query.get('venue') || ''
+  let address = query.get('address') || ''
+  let message = query.get('message') || ''
+  let groomFamily = query.get('groomFamily') || ''
+  let brideFamily = query.get('brideFamily') || ''
+  let map = query.get('map') || `https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(`${venue}, ${address}`)}`
+  let date = query.get('date') || ''
+  let time = query.get('time') || ''
+  let music = query.get('music') || ''
 
   function formatDate(value, options) {
     if (!value) return ''
@@ -23,11 +23,11 @@
     return Number.isNaN(parsed.getTime()) ? '' : new Intl.DateTimeFormat('en-GB', { ...options, timeZone: 'UTC' }).format(parsed)
   }
 
-  const longDate = formatDate(date, { day: 'numeric', month: 'long', year: 'numeric' })
-  const shortDate = formatDate(date, { day: '2-digit', month: '2-digit', year: '2-digit' })
-  const timeLabel = time ? new Date(`2000-01-01T${time}:00Z`).toLocaleTimeString('en-US', { hour: 'numeric', minute: '2-digit', timeZone: 'UTC' }) : ''
-  const initial = `${groom.charAt(0)}&${bride.charAt(0)}`
-  const names = { KIRAN: groom, RAHUL: bride, KRISHNA: groom, RADHA: bride, ...(template === 14 ? { ARJUN: groom, BHAVANA: bride } : {}) }
+  let longDate = formatDate(date, { day: 'numeric', month: 'long', year: 'numeric' })
+  let shortDate = formatDate(date, { day: '2-digit', month: '2-digit', year: '2-digit' })
+  let timeLabel = time ? new Date(`2000-01-01T${time}:00Z`).toLocaleTimeString('en-US', { hour: 'numeric', minute: '2-digit', timeZone: 'UTC' }) : ''
+  let initial = `${groom.charAt(0)}&${bride.charAt(0)}`
+  let names = { KIRAN: groom, RAHUL: bride, KRISHNA: groom, RADHA: bride, ...(template === 14 ? { ARJUN: groom, BHAVANA: bride } : {}) }
   const familyRows = new Map([
     ["Mr. [Bride's Grandfather Name] & Mrs. [Bride's Grandmother Name]", brideFamily],
     ["Mr. [Bride's Father Name] & Mrs. [Bride's Mother Name]", brideFamily],
@@ -40,16 +40,20 @@
     ['On the following events', 'Join us to celebrate'],
   ])
   const processed = new WeakMap()
+  const originals = new WeakMap()
 
-  function transformText(node) {
-    const value = node.nodeValue || ''
-    if (processed.get(node) === value) return
+  function transformText(node, refresh = false) {
+    if (node.parentElement?.closest('script,style,noscript')) return
+    const current = node.nodeValue || ''
+    if (!originals.has(node)) originals.set(node, current)
+    if (!refresh && processed.get(node) === current) return
+    const value = refresh ? originals.get(node) : current
     const trimmed = value.trim()
     let next = value
 
     if (template === 13 && artfulSectionText.has(trimmed)) {
       next = value.replace(trimmed, artfulSectionText.get(trimmed))
-    } else if (message && (trimmed.startsWith('Some souls are destined to find each other') || trimmed.startsWith('Some love stories are written by destiny'))) {
+    } else if ((message || refresh) && (trimmed.startsWith('Some souls are destined to find each other') || trimmed.startsWith('Some love stories are written by destiny'))) {
       next = value.replace(trimmed, message)
     } else if (familyRows.has(trimmed)) {
       next = value.replace(trimmed, familyRows.get(trimmed) || '')
@@ -58,31 +62,32 @@
     } else {
       next = value.replace(/\b(KIRAN|RAHUL|KRISHNA|RADHA|ARJUN|BHAVANA)\b/gi, (match) => {
         const person = names[match.toUpperCase()]
-        if (!person) return match
+        if (person === undefined) return match
         if (match === match.toUpperCase()) return person.toUpperCase()
         if (match === match.toLowerCase()) return person.toLowerCase()
         return person
       })
-      if (template === 13 && trimmed === '15 December 2026' && longDate) next = next.replace(trimmed, longDate)
+      if (template === 13 && trimmed === '15 December 2026' && (longDate || refresh)) next = next.replace(trimmed, longDate)
+      if (template === 13 && /are getting married/i.test(trimmed) && (longDate || refresh)) next = next.replace(trimmed, longDate)
       if (template === 14 && trimmed === '08/08/26 - 📍 TAJ HOTEL MUMBAI') {
         next = value.replace(trimmed, `${shortDate} - 📍 ${venue} ${address}`.trim())
       }
-      if (template === 13 && trimmed === '7:00 PM' && timeLabel) next = next.replace(trimmed, timeLabel)
+      if (template === 13 && trimmed === '7:00 PM' && (timeLabel || refresh)) next = next.replace(trimmed, timeLabel)
       if (template === 14 && trimmed === 'MEHANDI') next = next.replace(trimmed, event.toUpperCase())
       if (template === 13 && trimmed === 'Mehendi Night') next = next.replace(trimmed, event)
-      if (/^TAJ HOTEL(?: MUMBAI)?$/i.test(trimmed) && venue) next = next.replace(trimmed, venue.toUpperCase())
+      if (/^TAJ HOTEL(?: MUMBAI)?$/i.test(trimmed) && (venue || refresh)) next = next.replace(trimmed, venue.toUpperCase())
       if ((trimmed === 'K&R' || (template === 14 && trimmed === 'A&B')) && groom && bride) next = next.replace(trimmed, initial.toUpperCase())
       if (trimmed === '#Rahulkikiran' && groom && bride) next = next.replace(trimmed, `#${groom}${bride}`)
     }
 
-    if (next !== value) node.nodeValue = next
+    if (next !== current) node.nodeValue = next
     processed.set(node, next)
   }
 
-  function apply() {
+  function apply(refresh = false) {
     const walker = document.createTreeWalker(document.body, NodeFilter.SHOW_TEXT)
     let node
-    while ((node = walker.nextNode())) transformText(node)
+    while ((node = walker.nextNode())) transformText(node, refresh)
 
     document.querySelectorAll('a').forEach((anchor) => {
       if (/location|locaion/i.test(anchor.textContent || '')) anchor.href = map
@@ -95,5 +100,20 @@
   }
 
   apply()
-  new MutationObserver(apply).observe(document.body, { subtree: true, childList: true, characterData: true })
+  new MutationObserver(() => apply()).observe(document.body, { subtree: true, childList: true, characterData: true })
+  window.addEventListener('message', (update) => {
+    if (update.source !== window.parent || update.origin !== window.location.origin || update.data?.type !== 'invitation-editor-details' || typeof update.data.query !== 'string') return
+    const values = new URLSearchParams(update.data.query)
+    groom = values.get('groom') || ''; bride = values.get('bride') || ''
+    event = values.get('event') || ''; venue = values.get('venue') || ''; address = values.get('address') || ''
+    message = values.get('message') || ''; groomFamily = values.get('groomFamily') || ''; brideFamily = values.get('brideFamily') || ''
+    map = values.get('map') || ''; date = values.get('date') || ''; time = values.get('time') || ''; music = values.get('music') || ''
+    longDate = formatDate(date, { day: 'numeric', month: 'long', year: 'numeric' })
+    shortDate = formatDate(date, { day: '2-digit', month: '2-digit', year: '2-digit' })
+    timeLabel = time ? new Date(`2000-01-01T${time}:00Z`).toLocaleTimeString('en-US', { hour: 'numeric', minute: '2-digit', timeZone: 'UTC' }) : ''
+    initial = `${groom.charAt(0)}&${bride.charAt(0)}`
+    names = { KIRAN: groom, RAHUL: bride, KRISHNA: groom, RADHA: bride, ...(template === 14 ? { ARJUN: groom, BHAVANA: bride } : {}) }
+    familyRows.forEach((_, label) => familyRows.set(label, /Bride/.test(label) ? brideFamily : groomFamily))
+    apply(true)
+  })
 })()

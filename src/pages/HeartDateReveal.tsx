@@ -1,5 +1,7 @@
 import { useEffect, useId, useRef, useState } from 'react'
 import type { CSSProperties, PointerEvent } from 'react'
+import { useInvitationDetails } from '../invitations/context'
+import { editableText } from '../invitations/textLayout'
 
 const HEART = 'M50 96 C50 96 6 70 6 36 C6 18 20 6 32 6 C42 6 48 14 50 24 C52 14 58 6 68 6 C80 6 94 18 94 36 C94 70 50 96 50 96 Z'
 const particles = Array.from({ length: 90 }, (_, i) => ({
@@ -14,13 +16,17 @@ const particles = Array.from({ length: 90 }, (_, i) => ({
   borderRadius: i % 3 ? '2px' : '50%',
 }) as CSSProperties)
 
-export default function HeartDateReveal({ date = '27 September 2026', day = 'Sunday', time = '5:00 in the evening', tone = 'sage' }: { date?: string; day?: string; time?: string; tone?: 'sage' | 'rose' }) {
+export default function HeartDateReveal({ date = '27 September 2026', day = 'Sunday', time = '5:00 in the evening', tone = 'sage', coatingImage, revealedImage }: { date?: string; day?: string; time?: string; tone?: 'sage' | 'rose'; coatingImage?: string; revealedImage?: string }) {
   const id = `heart-${useId().replace(/:/g, '')}`
+  const details = useInvitationDetails()
+  const text = (field: string, label: string) => editableText(details?.template === 1 ? 1 : undefined, 'date-reveal', field, label)
   const canvas = useRef<HTMLCanvasElement>(null)
   const previous = useRef<{ x: number; y: number } | null>(null)
   const samples = useRef<number[]>([])
   const lastCheck = useRef(0)
   const done = useRef(false)
+  const coatingReady = useRef(false)
+  const [imageLoaded, setImageLoaded] = useState(false)
   const [revealed, setRevealed] = useState(false)
   const [celebrating, setCelebrating] = useState(false)
 
@@ -28,6 +34,8 @@ export default function HeartDateReveal({ date = '27 September 2026', day = 'Sun
     const el = canvas.current, ctx = el?.getContext('2d', { willReadFrequently: true })
     if (!el || !ctx) return
     const width = 600, height = 560
+    coatingReady.current = false
+    setImageLoaded(false)
     el.width = width; el.height = height
     ctx.clearRect(0, 0, width, height)
     ctx.save(); ctx.scale(width / 100, height / 100); ctx.clip(new Path2D(HEART)); ctx.scale(100 / width, 100 / height)
@@ -47,13 +55,32 @@ export default function HeartDateReveal({ date = '27 September 2026', day = 'Sun
     ctx.fillText('A date with forever', 300, 260)
     ctx.font = '18px Georgia'; ctx.fillText('Scratch gently to discover', 300, 302)
     ctx.restore()
-    const pixels = ctx.getImageData(0, 0, width, height).data
-    samples.current = []
-    for (let y = 0; y < height; y += 7) for (let x = 0; x < width; x += 7) {
-      const index = (y * width + x) * 4 + 3
-      if (pixels[index] > 200) samples.current.push(index)
+    function sampleCoating() {
+      const pixels = ctx!.getImageData(0, 0, width, height).data
+      samples.current = []
+      for (let y = 0; y < height; y += 7) for (let x = 0; x < width; x += 7) {
+        const index = (y * width + x) * 4 + 3
+        if (pixels[index] > 200) samples.current.push(index)
+      }
+      coatingReady.current = true
     }
-  }, [tone])
+    if (!coatingImage) { sampleCoating(); return }
+    let cancelled = false
+    const image = new Image()
+    image.onload = () => {
+      if (cancelled) return
+      const scale = Math.min(width / image.naturalWidth, height / image.naturalHeight)
+      const imageWidth = image.naturalWidth * scale, imageHeight = image.naturalHeight * scale
+      ctx.globalCompositeOperation = 'source-over'
+      ctx.clearRect(0, 0, width, height)
+      ctx.drawImage(image, (width - imageWidth) / 2, (height - imageHeight) / 2, imageWidth, imageHeight)
+      sampleCoating()
+      setImageLoaded(true)
+    }
+    image.onerror = () => { if (!cancelled) sampleCoating() }
+    image.src = coatingImage
+    return () => { cancelled = true }
+  }, [tone, coatingImage])
 
   useEffect(() => {
     if (!celebrating) return
@@ -67,7 +94,7 @@ export default function HeartDateReveal({ date = '27 September 2026', day = 'Sun
   }
 
   function scratch(e: PointerEvent<HTMLCanvasElement>) {
-    if (done.current || !e.currentTarget.hasPointerCapture(e.pointerId)) return
+    if (done.current || !coatingReady.current || !e.currentTarget.hasPointerCapture(e.pointerId)) return
     const el = e.currentTarget, ctx = el.getContext('2d')
     if (!ctx) return
     const bounds = el.getBoundingClientRect()
@@ -85,21 +112,23 @@ export default function HeartDateReveal({ date = '27 September 2026', day = 'Sun
     if (samples.current.length && cleared / samples.current.length >= .4) reveal()
   }
 
-  return <div className={`rg-heart-reveal ${tone === 'rose' ? 'is-rose' : ''} ${revealed ? 'is-revealed' : ''}`}>
-    <p className="rg-heart-title rg-script" aria-live="polite">{revealed ? 'Our forever begins' : 'Scratch to reveal'}</p>
+  const cardMask = revealed && revealedImage ? revealedImage : imageLoaded ? coatingImage : undefined
+
+  return <div data-invite-section="date-reveal-section" className={`rg-heart-reveal ${tone === 'rose' ? 'is-rose' : ''} ${revealed ? 'is-revealed' : ''}`}>
+    <p {...text(revealed ? 'revealedHeading' : 'scratchHeading',revealed ? 'Our forever begins' : 'Scratch to reveal')} className="rg-heart-title rg-script" aria-live="polite">{revealed ? 'Our forever begins' : 'Scratch to reveal'}</p>
     <svg width="0" height="0" aria-hidden="true" style={{ position: 'absolute' }}><defs><clipPath id={id} clipPathUnits="objectBoundingBox"><path d={HEART} transform="scale(.01)" /></clipPath></defs></svg>
-    <div className="rg-heart-card">
-      <div className="rg-heart-inner" style={{ clipPath: `url(#${id})` }}>
-        <div className="rg-heart-date"><span className="rg-script">You’re invited!</span><strong>{date}</strong><span>{day}</span><small>{time}</small></div>
+    <div data-invite-section="date-reveal" className="rg-heart-card">
+      <div className="rg-heart-inner" style={cardMask ? { maskImage: `url("${cardMask}")`, maskSize: 'contain', maskPosition: 'center', maskRepeat: 'no-repeat', WebkitMaskImage: `url("${cardMask}")`, WebkitMaskSize: 'contain', WebkitMaskPosition: 'center', WebkitMaskRepeat: 'no-repeat', ...(revealed && revealedImage ? { background: 'transparent' } : {}) } : { clipPath: `url(#${id})` }}>
+        <div className="rg-heart-date" style={revealedImage ? { backgroundImage: `url("${revealedImage}")`, backgroundSize: 'contain', backgroundPosition: 'center', backgroundRepeat: 'no-repeat' } : undefined}><span {...text('invited','You’re invited!')} className="rg-script">You’re invited!</span><strong {...text('date','Wedding date')}>{date}</strong><span {...text('weekday','Wedding date · weekday')}>{day}</span><small {...text('time','Wedding time')}>{time}</small></div>
         <canvas ref={canvas} className="rg-heart-coating" aria-hidden="true"
           onPointerDown={e => { e.currentTarget.setPointerCapture(e.pointerId); previous.current = null; scratch(e) }}
           onPointerMove={scratch} onPointerUp={() => { previous.current = null }}
           onPointerCancel={() => { previous.current = null }} onLostPointerCapture={() => { previous.current = null }} />
       </div>
-      <svg className="rg-heart-outline" viewBox="0 0 100 100" preserveAspectRatio="none" aria-hidden="true"><path d={HEART} fill="none" stroke="#78825b" strokeWidth="1.2" vectorEffect="non-scaling-stroke" /></svg>
+      {!cardMask && <svg className="rg-heart-outline" viewBox="0 0 100 100" preserveAspectRatio="none" aria-hidden="true"><path d={HEART} fill="none" stroke="#78825b" strokeWidth="1.2" vectorEffect="non-scaling-stroke" /></svg>}
     </div>
-    {revealed && <p className="rg-reveal-message" role="status">Let the celebration begin! ♡</p>}
+    {revealed && <p {...text('celebrate','Let the celebration begin!')} className="rg-reveal-message" role="status">Let the celebration begin! ♡</p>}
     {celebrating && <div className="rg-confetti" aria-hidden="true">{particles.map((style, i) => <span key={i} style={tone === 'rose' ? { ...style, background: ['#a44435', '#723229', '#ba8737', '#f1dfbd'][i % 4] } : style} />)}</div>}
-    {!revealed && <button className="rg-text-button" onClick={reveal}>Or tap to reveal ♡</button>}
+    {!revealed && <button {...text('tap','Or tap to reveal')} className="rg-text-button" onClick={reveal}>Or tap to reveal ♡</button>}
   </div>
 }

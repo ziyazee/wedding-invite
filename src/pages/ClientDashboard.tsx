@@ -1,18 +1,28 @@
-import { useCallback, useEffect, useLayoutEffect, useMemo, useRef, useState } from 'react'
+import { createContext, useContext, useCallback, useEffect, useLayoutEffect, useMemo, useRef, useState, lazy, Suspense } from 'react'
 import type { FormEvent } from 'react'
 import { createPortal } from 'react-dom'
-import { designs, nameSlug, validateDetails } from '../invitations/model'
+import { cardTextLimit, nameTextLimit, designs, nameSlug, validateDetails } from '../invitations/model'
 import type { Celebration, InvitationData } from '../invitations/model'
+import { invitationExample } from '../invitations/templateData'
 import { isSupabaseConfigured, supabase } from '../lib/supabase'
 import { DashboardAccess, signOutToLogin } from './DashboardAccess'
 import './Workspaces.css'
 import './ClientDashboard.css'
+import InvitationReview, { ReviewActionIcon } from './InvitationReview'
+import CopyLinkButton from './CopyLinkButton'
+import { formatSellingPrice, parseSellingPrice, templateSellingPrice } from '../lib/orderPricing'
+import { readTextLayout } from '../invitations/textLayout'
+import PhonePreviewResize from './PhonePreviewResize'
 
-type Order = { id: number; groom_name: string; bride_name: string; status: string; created_at: string; form_data: InvitationData; published_path: string | null; published_url: string | null; published_at: string | null; expires_at: string | null; rejection_reason: string | null; template_code: string; phone_number: string; price?: number | null }
+const OrderTextEditor = lazy(() => import('./OrderTextEditor'))
+
+type Order = { id: number; groom_name: string; bride_name: string; status: string; created_at: string; form_data: InvitationData; published_path: string | null; published_url: string | null; management_id: string; published_at: string | null; expires_at: string | null; rejection_reason: string | null; template_code: string; phone_number: string; price?: number | null }
 type Template = { id: number; template_code: string; name: string; category: string; thumbnail_url: string; preview_url: string }
 type TemplateSettings = { price: number; sale_type: 'none' | 'percentage' | 'fixed'; sale_value: number; is_premium: boolean }
-const initial: InvitationData = { template: 2, groom: 'Mohad', bride: 'Rahma', date: '2026-12-20', time: '11:00', offset: '+05:30', venue: 'TMA Pai Convention Centre', address: 'Mangalore', map: 'https://maps.app.goo.gl/1xf3k59k9QEaoQ717', message: 'With the blessings of Allah and the love of our families, we invite you to celebrate the beginning of our forever.', groomFamily: '', brideFamily: '', dressCode: '', giftNote: '', music: '', gallery: '', events: [] }
+const initial: InvitationData = { template: 1, groom: 'Mohad', bride: 'Rahma', date: '2026-12-20', time: '11:00', offset: '+05:30', venue: 'TMA Pai Convention Centre', address: 'Mangalore', map: 'https://maps.app.goo.gl/1xf3k59k9QEaoQ717', message: 'With the love and blessings of our families, we invite you to celebrate the beginning of our forever.', groomFamily: '', brideFamily: '', dressCode: '', giftNote: '', music: '', gallery: '', events: [] }
+const CardTemplateContext = createContext({template:0,showCoupleIllustrations:true,onIllustrationsChange:(_show:boolean)=>{}})
 const initialWeddingEvent = 'Nikah & Wedding'
+const defaultPhoneNumber = '7975948093'
 const initialExtraEvents: Celebration[] = [
   { title: 'Mehendi Programme', date: '2026-12-17', time: '11:00', venue: 'Silvergate Homestay', address: 'Chikmagaluru', map: 'https://maps.app.goo.gl/uaSHaAyVXCriCCrw5' },
   { title: 'Mehendi Mehfil', date: '2026-12-19', time: '17:00', venue: 'Royal Garden Beach Resort', address: 'Ullal, Mangalore', map: 'https://maps.app.goo.gl/43ui6W3Hn6N2cbui8' },
@@ -25,12 +35,12 @@ const companyLogoFiles: Record<string, string> = {
 }
 const statusTitle: Record<string, string> = { CREATED: 'New', IN_PROGRESS: 'In progress', READY: 'Published', REJECTED: 'Needs changes' }
 const templateIntroVideos: Record<number, string> = {
-  2: '/images/royal-grace/opening-mobile.mp4',
-  3: '/design3/assets/intro-doors-trimmed.mp4',
+  1: '/images/royal-grace/opening-mobile.mp4',
+  6: '/design3/assets/intro-doors-trimmed.mp4',
   5: '/design5/assets/hero-video.mp4',
-  6: '/design6/assets/hero-bg-l-slFnvE.mp4',
+  2: '/design6/assets/hero-bg-l-slFnvE.mp4',
   7: '/design7/assets/intro-video-2-a-H3NxSy.mp4',
-  18: '/design18/entry.mp4',
+  4: '/design18/entry.mp4',
 }
 
 export default function ClientDashboard() {
@@ -38,6 +48,9 @@ export default function ClientDashboard() {
 }
 
 function ClientWorkspace() {
+  const draftRestored = useRef(false)
+  const [draftKey, setDraftKey] = useState<string | null>(null)
+  const [draftStatus, setDraftStatus] = useState('Changes are kept with this draft.')
   const previewScreen = useRef<HTMLDivElement>(null)
   const [previewScale, setPreviewScale] = useState(0.75)
   const [tab, setTab] = useState<'Overview' | 'Templates' | 'Orders' | 'Settings'>('Overview')
@@ -48,7 +61,8 @@ function ClientWorkspace() {
   const [templateSettings, setTemplateSettings] = useState<Record<number, TemplateSettings>>({})
   const [companyLogo, setCompanyLogo] = useState('/logo.png')
   const [details, setDetails] = useState(initial)
-  const [phoneNumber, setPhoneNumber] = useState('')
+  const [phoneNumber, setPhoneNumber] = useState(defaultPhoneNumber)
+  const [sellingPrice, setSellingPrice] = useState<string | null>(null)
   const [weddingEventTitle, setWeddingEventTitle] = useState(initialWeddingEvent)
   const [extraEvents, setExtraEvents] = useState<Celebration[]>(initialExtraEvents)
   const [selected, setSelected] = useState<number | null>(null)
@@ -84,6 +98,33 @@ function ClientWorkspace() {
     if (ordersResult.error) setError(ordersResult.error.message)
     const activeTemplates = (templatesResult.data || []) as Template[]
     setAllTemplates(activeTemplates)
+    if(!draftRestored.current&&!templatesResult.error){
+      const key=`shaadi-client-draft-v1:${data.user.id}`
+      try{
+        const saved=localStorage.getItem(key)
+        const draft=saved?JSON.parse(saved):null
+        if(draft&&typeof draft==='object'){
+          if(['Overview','Templates','Orders','Settings'].includes(draft.tab))setTab(draft.tab)
+          const validSelection=activeTemplates.some(template=>template.id===draft.selected)
+          if(validSelection){
+            setSelected(draft.selected)
+            if(typeof draft.sellingPrice==='string')setSellingPrice(draft.sellingPrice)
+            setShowDetails(draft.showDetails===true)
+            setReview(draft.review===true)
+            if(Number.isInteger(draft.formStep)&&draft.formStep>=0)setFormStep(draft.formStep)
+          }
+          if(activeTemplates.some(template=>template.id===draft.previewId))setPreviewId(draft.previewId)
+          if(draft.details&&typeof draft.details==='object'&&Object.keys(initial).filter(field=>field!=='events'&&field!=='template').every(field=>typeof draft.details[field]==='string')){
+            setDetails({...initial,...draft.details,textOverrides:readTextLayout(draft.details.textOverrides),events:[]})
+          }
+          if(typeof draft.phoneNumber==='string')setPhoneNumber(draft.phoneNumber)
+          if(typeof draft.weddingEventTitle==='string')setWeddingEventTitle(draft.weddingEventTitle)
+          if(Array.isArray(draft.extraEvents)&&draft.extraEvents.length<=9&&draft.extraEvents.every((item:Celebration)=>item&&['title','date','time','venue','address','map'].every(field=>typeof item[field as keyof Celebration]==='string')))setExtraEvents(draft.extraEvents)
+        }
+      }catch{ /* Start with the defaults if browser storage is unavailable or invalid. */ }
+      draftRestored.current=true
+      setDraftKey(key)
+    }
     const firstTemplate = activeTemplates[0]
     if (firstTemplate) { setSelected(current => current ?? firstTemplate.id); setPreviewId(current => current ?? firstTemplate.id) }
     setOrders((ordersResult.data || []) as Order[])
@@ -105,34 +146,15 @@ function ClientWorkspace() {
 
   useEffect(() => { void refresh() }, [refresh])
   useEffect(() => {
-    if (!review) return
-    const card = document.querySelector<HTMLElement>('.review-card')
-    if (!card) return
-    const detailsList = document.createElement('dl')
-    detailsList.className = 'review-full-details'
-    const rows: [string, string][] = [
-      ['Phone number', phoneNumber],
-      ['Groom’s family', details.groomFamily],
-      ['Bride’s family', details.brideFamily],
-      ['Wedding celebration', weddingEventTitle],
-      ['Time zone', details.offset],
-      ['Map link', details.map],
-      ...extraEvents.map((event, index) => [`Celebration ${index + 1}`, `${event.title} · ${event.date} · ${event.time} · ${event.venue} · ${event.address}${event.map ? ` · ${event.map}` : ''}`] as [string, string]),
-      ['Dress code', details.dressCode],
-      ['Photo gallery', details.gallery],
-      ['Welcome message', details.message],
-      ['Gift note', details.giftNote],
-    ]
-    rows.forEach(([label, value]) => {
-      const term = document.createElement('dt')
-      term.textContent = label
-      const description = document.createElement('dd')
-      description.textContent = value || '—'
-      detailsList.append(term, description)
-    })
-    card.append(detailsList)
-    return () => detailsList.remove()
-  }, [review, phoneNumber, details, weddingEventTitle, extraEvents])
+    if (extraEvents.some(event => !event.id)) setExtraEvents(events => events.map(event => event.id ? event : { ...event, id: crypto.randomUUID() }))
+  }, [extraEvents])
+  useEffect(()=>{
+    if(!draftKey)return
+    try{
+      localStorage.setItem(draftKey,JSON.stringify({tab,details,phoneNumber,sellingPrice,weddingEventTitle,extraEvents,selected,previewId,showDetails,formStep,review}))
+      setDraftStatus('Draft saved on this device · included when you create the invitation.')
+    }catch{ setDraftStatus('Browser draft could not be saved. Keep this page open until you create the invitation.') }
+  },[draftKey,tab,details,phoneNumber,sellingPrice,weddingEventTitle,extraEvents,selected,previewId,showDetails,formStep,review])
   useEffect(() => {
     if (tab !== 'Templates' || !showDetails) { setFormStepCount(0); setWorkflowHost(null); return }
     const form = document.querySelector<HTMLFormElement>('.order-form')
@@ -160,7 +182,7 @@ function ClientWorkspace() {
     setFormStepCount(sections.length)
     const step = Math.min(formStep, Math.max(0, sections.length - 1))
     sections.forEach((section, index) => { section.style.display = review ? 'none' : index === step ? 'block' : 'none' })
-  }, [formStep, review, selected, showDetails, tab])
+  }, [formStep, review, selected, showDetails, tab, loading])
   useEffect(() => {
     if (!supabase) return
     let channel: ReturnType<NonNullable<typeof supabase>['channel']> | undefined
@@ -187,9 +209,13 @@ function ClientWorkspace() {
   const yesterdayOrders = datedOrders.filter(item => item.date >= yesterdayStart && item.date < todayStart)
   const thisMonthOrders = datedOrders.filter(item => item.date >= monthStart && item.date <= now)
   const previousMonthOrders = datedOrders.filter(item => item.date >= previousMonthStart && item.date < monthStart)
-  const priceIsSet = (order: Order) => typeof order.price === 'number'
-  const formatRevenue = (items: typeof datedOrders) => items.length > 0 && items.every(item=>priceIsSet(item.order)) ? new Intl.NumberFormat('en-IN',{style:'currency',currency:'INR',maximumFractionDigits:0}).format(items.reduce((sum,item)=>sum+(item.order.price||0),0)) : '—'
-  const revenueTrend = (items: typeof datedOrders) => items.length > 0 && items.every(item=>priceIsSet(item.order)) ? items.reduce((sum,item)=>sum+(item.order.price||0),0) : null
+  const priceIsSet = (order: Order) => typeof order.price === 'number' && Number.isFinite(order.price) && order.price >= 0
+  const missingPrices = (items: typeof datedOrders) => items.filter(item => !priceIsSet(item.order)).length
+  const recordedRevenue = (items: typeof datedOrders) => items.reduce((sum,item) => sum + (priceIsSet(item.order) ? Math.round(item.order.price! * 100) : 0), 0) / 100
+  const formatRevenue = (items: typeof datedOrders) => items.length > 0 && missingPrices(items) === items.length
+    ? '—'
+    : new Intl.NumberFormat('en-IN',{style:'currency',currency:'INR',minimumFractionDigits:0,maximumFractionDigits:2}).format(recordedRevenue(items))
+  const revenueTrend = (items: typeof datedOrders) => missingPrices(items) === 0 ? recordedRevenue(items) : null
   const changeLabel = (current: number, previous: number, period: string) => previous > 0 ? `${current>=previous?'↑':'↓'} ${Math.round(Math.abs((current-previous)/previous)*100)}% from ${period}` : `No ${period} comparison`
   const monthOrderChange = changeLabel(thisMonthOrders.length, previousMonthOrders.length, 'last month')
   const todayOrderChange = changeLabel(todayOrders.length, yesterdayOrders.length, 'yesterday')
@@ -197,7 +223,12 @@ function ClientWorkspace() {
   const previousMonthRevenue = revenueTrend(previousMonthOrders)
   const todayRevenue = revenueTrend(todayOrders)
   const yesterdayRevenue = revenueTrend(yesterdayOrders)
-  const revenueChangeLabel = (current: number | null, previous: number | null, period: string) => current !== null && previous !== null ? changeLabel(current, previous, period) : 'Price tracking unavailable'
+  const revenueChangeLabel = (current: number | null, previous: number | null, period: string) => current !== null && previous !== null ? changeLabel(current, previous, period) : 'Comparison unavailable: missing prices'
+  const revenueSummary = (items: typeof datedOrders, comparison: string) => {
+    const missing = missingPrices(items)
+    if (!missing) return comparison
+    return `${missing < items.length ? 'Recorded total · ' : ''}${missing} ${missing === 1 ? 'order has' : 'orders have'} no saved price`
+  }
   const filtered = orders.filter(order => {
     const submitted = order.created_at.slice(0, 10)
     return `${order.id} ${order.groom_name} ${order.bride_name} ${order.phone_number}`.toLowerCase().includes(orderSearch.toLowerCase()) && (!orderDateFrom || submitted >= orderDateFrom) && (!orderDateTo || submitted <= orderDateTo)
@@ -205,6 +236,9 @@ function ClientWorkspace() {
   const categories = useMemo(() => [...new Set(allTemplates.map(template => template.category).filter(Boolean))], [allTemplates])
   const templates = allTemplates.filter(template => (categoryFilter === 'ALL' || template.category === categoryFilter) && `${template.name} ${template.category}`.toLowerCase().includes(templateSearch.trim().toLowerCase())).sort((a,b)=>templateSort==='NAME'?a.name.localeCompare(b.name):a.id-b.id)
   const chosen = allTemplates.find(template => template.id === selected)
+  const defaultSellingPrice = selected === null ? null : templateSellingPrice(templateSettings[selected])
+  const sellingPriceInput = sellingPrice ?? (defaultSellingPrice === null ? '' : String(defaultSellingPrice))
+  const finalSellingPrice = parseSellingPrice(sellingPriceInput)
   const previewTemplate = allTemplates.find(template => template.id === previewId) || chosen || allTemplates[0]
   useLayoutEffect(() => {
     if (tab !== 'Templates') return
@@ -215,22 +249,29 @@ function ClientWorkspace() {
     const observer = new ResizeObserver(resize)
     observer.observe(screen)
     return () => observer.disconnect()
-  }, [tab, previewTemplate?.id])
-  const livePreviewDetails = useMemo<InvitationData>(() => ({
-    ...details,
-    template: showDetails ? selected ?? previewTemplate?.id ?? details.template : previewTemplate?.id ?? details.template,
-    events: [{ title: weddingEventTitle, date: details.date, time: details.time, venue: details.venue, address: details.address, map: details.map }, ...extraEvents],
-  }), [details, extraEvents, previewTemplate?.id, selected, showDetails, weddingEventTitle])
+  }, [tab, previewTemplate?.id, loading])
+  const livePreviewDetails = useMemo<InvitationData>(() => {
+    const example = !showDetails && previewTemplate ? invitationExample(previewTemplate.id) : undefined
+    const previewData = example || details
+    return {
+      ...previewData,
+      template: showDetails ? selected ?? previewTemplate?.id ?? details.template : previewTemplate?.id ?? details.template,
+      events: example
+        ? example.events
+        : [{ id: 'wedding', title: weddingEventTitle, date: details.date, time: details.time, venue: details.venue, address: details.address, map: details.map }, ...extraEvents],
+    }
+  }, [details, extraEvents, previewTemplate?.id, selected, showDetails, weddingEventTitle])
   useEffect(() => {
     if (tab !== 'Templates' || !previewTemplate) return
     try { sessionStorage.setItem('shaadi-client-live-preview', JSON.stringify(livePreviewDetails)) } catch { return }
     const frame = document.querySelector<HTMLIFrameElement>('.client-device-frame iframe')
     if (!frame) return
-    if (new URL(frame.src, window.location.href).pathname !== '/client/live-preview') {
-      frame.src = '/client/live-preview'
+    const previewUrl = new URL(frame.src, window.location.href)
+    if (previewUrl.pathname !== '/client/live-preview' || previewUrl.searchParams.get('editor') !== '1') {
+      frame.src = '/client/live-preview?editor=1'
       return
     }
-  }, [livePreviewDetails, previewTemplate, showDetails, tab])
+  }, [livePreviewDetails, previewTemplate, showDetails, tab, loading])
   function setField(key: keyof InvitationData, value: string) { setDetails(previous => ({ ...previous, [key]: value })) }
   function advanceFormStep() {
     const form = document.querySelector<HTMLFormElement>('.order-form')
@@ -245,8 +286,10 @@ function ClientWorkspace() {
       return
     }
     if (formStep < sections.length - 1) setFormStep(step => step + 1)
-    else if (form) { setError(''); setReview(true) }
-    else setReview(true)
+    else {
+      if (finalSellingPrice === null) { setError('Enter a selling price of ₹0 or more, with up to two decimal places.'); return }
+      setError(''); setReview(true)
+    }
   }
   function selectCategory(category: string) {
     const currentIndex = categoryFilter === 'ALL' ? 0 : categories.indexOf(categoryFilter) + 1
@@ -255,7 +298,27 @@ function ClientWorkspace() {
     setCategoryFilter(category)
     setSelected(category === 'ALL' ? allTemplates[0]?.id || null : allTemplates.find(template => template.category === category)?.id || null)
   }
-  function chooseTemplate(id: number) { setSelected(id); setPreviewId(id); setDetails(previous => ({ ...previous, template: id })); setShowDetails(true); setFormStep(0); setTab('Templates'); setNotice(''); setError(''); setReview(false) }
+  function chooseTemplate(id: number) {
+    const example = invitationExample(id)
+    const price = templateSellingPrice(templateSettings[id])
+    setSellingPrice(price === null ? '' : String(price))
+    setSelected(id)
+    setPreviewId(id)
+    if (example) {
+      const [wedding, ...celebrations] = example.events
+      setDetails({ ...example, events: [] })
+      if (wedding) setWeddingEventTitle(wedding.title)
+      setExtraEvents(celebrations)
+    } else setDetails(previous => ({
+      ...previous,
+      template: id,
+      textOverrides: undefined,
+      message: ['Hindu', 'Indian'].includes(templates.find(template => template.id === id)?.category || '')
+        ? 'With the blessings of Lord Ganesha and our families, we invite you to celebrate the beginning of our forever.'
+        : previous.message,
+    }))
+    setShowDetails(true); setFormStep(0); setTab('Templates'); setNotice(''); setError(''); setReview(false)
+  }
   function editTemplateSetting(id: number, patch: Partial<TemplateSettings>) {
     setTemplateSettings(current => ({ ...current, [id]: { price: 0, sale_type: 'none', sale_value: 0, is_premium: false, ...current[id], ...patch } }))
   }
@@ -298,6 +361,7 @@ function ClientWorkspace() {
       const invalidField = sections[step] ? Array.from(sections[step].querySelectorAll<HTMLInputElement | HTMLSelectElement | HTMLTextAreaElement>(':invalid')).find(field => !(field instanceof HTMLInputElement && field.type === 'url' && field.value.startsWith('/'))) : undefined
       if (invalidField) { invalidField.reportValidity(); return }
       if (step < sections.length - 1) { setFormStep(step + 1); return }
+      if (finalSellingPrice === null) { setError('Enter a selling price of ₹0 or more, with up to two decimal places.'); return }
       setReview(true); return
     }
     setBusy(true); setNotice(''); setError('')
@@ -308,16 +372,17 @@ function ClientWorkspace() {
       if (companyError || !company) throw new Error('Your account is not linked to a company yet.')
       const companyId = company.id
       if (!phoneNumber.trim()) throw new Error('Please enter a phone number for this order.')
-      const formData = validateDetails({ ...details, template: selected, events: [{ title: weddingEventTitle, date: details.date, time: details.time, venue: details.venue, address: details.address, map: details.map }, ...extraEvents] })
+      if (finalSellingPrice === null) throw new Error('Enter a selling price of ₹0 or more, with up to two decimal places.')
+      const formData = validateDetails({ ...details, template: selected, events: [{ id: 'wedding', title: weddingEventTitle, date: details.date, time: details.time, venue: details.venue, address: details.address, map: details.map }, ...extraEvents] })
       const templateCode = templates.find(template => template.id === selected)?.template_code
       if (!templateCode) throw new Error('That design is no longer available. Choose another template.')
-      const { data, error: insertError } = await supabase.from('orders').insert({ company_id: companyId, template_code: templateCode, created_by: user.id, groom_name: formData.groom, bride_name: formData.bride, phone_number: phoneNumber.trim(), form_data: formData }).select('*').single()
+      const { data, error: insertError } = await supabase.from('orders').insert({ company_id: companyId, template_code: templateCode, created_by: user.id, groom_name: formData.groom, bride_name: formData.bride, phone_number: phoneNumber.trim(), form_data: formData, price: finalSellingPrice }).select('*').single()
       if (insertError) throw insertError
       const createdOrder = data as Order
       const publishedPath = `${createdOrder.id}/${nameSlug(createdOrder.groom_name, createdOrder.bride_name)}`
       const publishedUrl = `${window.location.origin}/${publishedPath}`
       setViewOrder({ ...createdOrder, published_path: publishedPath, published_url: publishedUrl })
-      setSelected(null); setDetails(initial); setPhoneNumber(''); setWeddingEventTitle(initialWeddingEvent); setExtraEvents(initialExtraEvents); setTab('Orders'); setReview(false); await refresh()
+      setSelected(null); setDetails(initial); setPhoneNumber(defaultPhoneNumber); setSellingPrice(null); setWeddingEventTitle(initialWeddingEvent); setExtraEvents(initialExtraEvents); setShowDetails(false); setFormStep(0); setTab('Orders'); setReview(false); await refresh()
     } catch (cause) {
       const databaseMessage = cause && typeof cause === 'object' && 'message' in cause && typeof cause.message === 'string' ? cause.message : null
       setError(cause instanceof Error ? cause.message : databaseMessage || 'Unable to submit this order.')
@@ -326,36 +391,42 @@ function ClientWorkspace() {
   }
 
   if (loading) return <main className="dash-loading">Preparing your invitation studio…</main>
-  return <main className={`workspace client-workspace ${tab === 'Templates' ? 'has-client-preview' : ''} ${tab === 'Orders' ? 'has-orders-page' : ''} ${tab === 'Overview' ? 'has-overview-page' : ''} ${showDetails ? 'show-client-details' : ''} ${showDetails && formStepCount > 0 && formStep >= formStepCount - 1 ? 'last-form-step' : ''} ${review ? 'reviewing-client-order' : ''}`}>
+  return <CardTemplateContext.Provider value={{template:selected ?? 0,showCoupleIllustrations:details.showCoupleIllustrations!==false,onIllustrationsChange:show=>setDetails(previous=>({...previous,showCoupleIllustrations:show}))}}><main className={`workspace client-workspace ${tab === 'Templates' ? 'has-client-preview' : ''} ${tab === 'Orders' ? 'has-orders-page' : ''} ${tab === 'Overview' ? 'has-overview-page' : ''} ${showDetails ? 'show-client-details' : ''} ${showDetails && formStepCount > 0 && formStep >= formStepCount - 1 ? 'last-form-step' : ''} ${review ? 'reviewing-client-order' : ''}`}>
     <header className="client-topbar"><label className="client-top-search"><span aria-hidden="true">⌕</span><input value={templateSearch} onChange={event=>{setTemplateSearch(event.target.value);setTab('Templates');setSelected(null)}} placeholder="Search templates by name, category or style…" aria-label="Search invitation designs"/></label>
     <div className="workspace-account"><span className="client-account-name">{company?.company_name || 'Company'}</span><span className="client-account-avatar" aria-hidden="true"><svg viewBox="0 0 24 24"><circle cx="12" cy="8" r="4"/><path d="M4.5 21a7.5 7.5 0 0 1 15 0"/></svg></span></div></header>
     <aside className="workspace-sidebar"><a href="/" className="client-brand"><img src={companyLogo} alt={company?.company_name || 'Shaadi Invites'} onError={()=>setCompanyLogo('/logo.png')}/></a><nav className="client-section-nav" aria-label="Client dashboard">{(['Overview','Templates','Orders','Settings'] as const).map(item=><button type="button" key={item} className={tab===item?'active':''} onClick={()=>{setTab(item);setSelected(item==='Templates'?(chosen?.id||allTemplates[0]?.id||null):null);setError('')}}><span>{item==='Overview'?'⌂':item==='Templates'?'▦':item==='Orders'?'▤':'⚙'}</span>{item==='Overview'?'Dashboard':item}</button>)}</nav><section className="client-sidebar-note"><span>♕ CLIENT SUPPORT</span><h2>Need a hand?</h2><p>Our team can help you create a beautiful invitation.</p><a href="https://wa.me/917975948093?text=Hey%20I%20need%20an%20invitation%21" target="_blank" rel="noreferrer">Contact support <b>↗</b></a></section><button className="workspace-logout" aria-label="Log out" onClick={() => void signOutToLogin()}><span aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M10 4H5.5A1.5 1.5 0 0 0 4 5.5v13A1.5 1.5 0 0 0 5.5 20H10"/><path d="M13 8l4 4-4 4M8 12h9"/></svg></span><span>Log out</span></button></aside>
-    <section className={`workspace-main ${tab==='Orders'?'orders-page':''}`}><header className="workspace-top"><div><span className="workspace-kicker">{tab==='Orders'?'ORDERS':tab==='Templates'?(showDetails?'PERSONALISE YOUR INVITATION':'THE ART OF A BEAUTIFUL BEGINNING'):`${company?.company_name||'Company'} · PRIVATE STUDIO`}</span><h1>{tab==='Templates'?(showDetails?'Create your invitation':'Choose a Template'):tab==='Overview'?'Your invitation studio':tab}</h1></div>{tab==='Orders'&&<button type="button" className="orders-new-order" onClick={()=>{setTab('Templates');setSelected(chosen?.id||allTemplates[0]?.id||null)}}><span aria-hidden="true">＋</span> New Order</button>}{tab==='Templates'&&showDetails&&workflowHost&&createPortal(<div className="client-workflow-controls"><span className="client-workflow-progress" aria-hidden="true"></span><button type="button" className="client-workflow-back" disabled={review?false:formStep===0} onClick={()=>review?setReview(false):setFormStep(step=>Math.max(0,step-1))}>{review?'Edit details':'← Back'}</button><button type="button" className="client-workflow-next" hidden={review} onClick={advanceFormStep}>Continue →</button></div>,workflowHost)}{tab==='Templates'&&showDetails&&<button type="button" className="client-form-back" onClick={()=>{setShowDetails(false);setReview(false)}}>← Back to templates</button>}{tab==='Templates'&&<span className="client-design-count">{allTemplates.length} carefully curated invitations</span>}</header>
+    <section className={`workspace-main ${tab==='Orders'?'orders-page':''}`}><header className="workspace-top"><div><span className="workspace-kicker">{tab==='Orders'?'ORDERS':tab==='Templates'?(showDetails?'PERSONALISE YOUR INVITATION':'THE ART OF A BEAUTIFUL BEGINNING'):`${company?.company_name||'Company'} · PRIVATE STUDIO`}</span><h1>{tab==='Templates'?(showDetails?'Create your invitation':'Choose a Template'):tab==='Overview'?'Your invitation studio':tab}</h1></div>{tab==='Orders'&&<button type="button" className="orders-new-order" onClick={()=>{setTab('Templates');setSelected(chosen?.id||allTemplates[0]?.id||null)}}><span aria-hidden="true">＋</span> New Order</button>}{tab==='Templates'&&showDetails&&workflowHost&&createPortal(<div className="client-workflow-controls"><span className="client-workflow-progress" aria-hidden="true"></span><button type="button" className="client-workflow-back" disabled={review?false:formStep===0} onClick={()=>review?setReview(false):setFormStep(step=>Math.max(0,step-1))}>{review?<><ReviewActionIcon edit/>Edit details</>:'← Back'}</button><button type="button" className="client-workflow-next" hidden={review} onClick={advanceFormStep}>Continue →</button></div>,workflowHost)}{tab==='Templates'&&showDetails&&<button type="button" className="client-form-back" onClick={()=>{setShowDetails(false);setReview(false)}}>← Back to templates</button>}{tab==='Templates'&&<span className="client-design-count">{allTemplates.length} carefully curated invitations</span>}</header>
       {tab==='Templates'&&<div className="client-catalog-controls"><div className="client-filter-chips"><button type="button" className={categoryFilter==='ALL'?'active':''} onClick={()=>selectCategory('ALL')}><span className="category-chip-icon" aria-hidden="true">▦</span>All <span className="category-chip-count">{allTemplates.length}</span></button>{categories.map(category=><button type="button" key={category} className={categoryFilter===category?'active':''} onClick={()=>selectCategory(category)}><span className="category-chip-icon" aria-hidden="true">{category==='Muslim'?'☾':category==='Garden'?'✿':category==='Classic'?'♛':category==='Indian'?'❋':category==='Hindu'?'ॐ':'✧'}</span>{category}</button>)}</div><label className="client-sort-control">Sort by<select value={templateSort} onChange={event=>setTemplateSort(event.target.value as 'CURATED'|'NAME')}><option value="CURATED">Curated</option><option value="NAME">Name</option></select></label></div>}
       {tab==='Templates'&&chosen&&<div className="client-selected-gallery"><div className="client-selected-gallery-title"><span className="workspace-kicker">THE COLLECTION</span><button type="button" onClick={()=>setShowDetails(false)}>{showDetails?'Hide details':'Choose a template'}</button></div><div key={categoryFilter} className={`client-selected-card-grid category-slide-from-${categoryDirection}`}>{templates.map(template=><article key={template.id} className={`client-selected-card ${template.id===previewTemplate?.id?'active':''}`}><button type="button" className="client-card-preview-trigger" onClick={()=>setPreviewId(template.id)} aria-label={`Preview ${template.name} on the mobile screen`}><span className="client-selected-thumb">{templateIntroVideos[template.id]?<video src={templateIntroVideos[template.id]} poster={template.thumbnail_url} autoPlay muted loop playsInline aria-label={`${template.name} intro preview`}/>:<img src={template.thumbnail_url} alt=""/>}{templateSettings[template.id]?.is_premium&&<span className="client-template-premium-badge">PREMIUM</span>}</span><span className="client-template-card-meta"><span className="client-template-card-copy"><strong>{template.name}</strong><small>{template.category}</small></span><TemplatePrice setting={templateSettings[template.id]}/></span></button><button type="button" className="client-selected-card-order" onClick={()=>chooseTemplate(template.id)}>Get this design <span aria-hidden="true">→</span></button></article>)}</div></div>}
       {tab !== 'Settings' && error && <p className="workspace-alert" role="alert">{error}</p>}{tab === 'Templates' && notice && <p className="workspace-success" role="status">{notice}</p>}
-      {viewOrder && <div className="client-order-overlay" role="presentation" onMouseDown={event=>{if(event.target===event.currentTarget)setViewOrder(null)}}><section className="client-order-dialog" role="dialog" aria-modal="true" aria-labelledby="client-order-title"><button className="dialog-close" onClick={()=>setViewOrder(null)} aria-label="Close order details">×</button><span className="workspace-kicker">ORDER #{viewOrder.id}</span><span className={`status-pill status-${viewOrder.status.toLowerCase()}`}>{statusTitle[viewOrder.status]}</span><h2 id="client-order-title">{viewOrder.groom_name} & {viewOrder.bride_name}</h2><p>{designs.find(d=>d.id===viewOrder.form_data.template)?.name} · Submitted {new Date(viewOrder.created_at).toLocaleDateString()}</p><dl><dt>Wedding date</dt><dd>{viewOrder.form_data.date} · {viewOrder.form_data.time}</dd><dt>Venue</dt><dd>{viewOrder.form_data.venue}, {viewOrder.form_data.address}</dd><dt>Celebrations</dt><dd>{viewOrder.form_data.events?.map(event=>`${event.title} · ${event.date} · ${event.venue}`).join(' / ')||'Wedding'}</dd></dl>{viewOrder.rejection_reason&&<p className="workspace-alert"><strong>Studio note:</strong> {viewOrder.rejection_reason}</p>}{viewOrder.status==='CREATED'&&<div className="client-publish-prompt"><label>Your invitation URL<input readOnly value={viewOrder.published_url || `${window.location.origin}/${viewOrder.id}/${nameSlug(viewOrder.groom_name,viewOrder.bride_name)}`}/></label><p>Publish this invitation to make the link live.</p><button type="button" className="primary-action" disabled={busy} onClick={()=>void publishClientOrder(viewOrder)}>{busy?'Publishing…':'Publish invitation →'}</button></div>}{viewOrder.status==='READY'&&viewOrder.published_url&&(!viewOrder.expires_at||new Date(viewOrder.expires_at)>new Date())?<div className="published-link"><a href={viewOrder.published_url} target="_blank" rel="noreferrer">{viewOrder.published_url} ↗</a><button onClick={()=>void navigator.clipboard.writeText(viewOrder.published_url!)}>Copy invitation link</button></div>:viewOrder.status!=='CREATED'&&viewOrder.status!=='READY'&&viewOrder.expires_at&&new Date(viewOrder.expires_at)<=new Date()?<p className="workspace-alert">This invitation link has expired. Contact Shaadi Invites to renew it.</p>:viewOrder.status!=='CREATED'&&viewOrder.status!=='READY'&&<p className="form-note">Your invitation is being prepared. The public link will appear here after publication.</p>}</section></div>}
+      {viewOrder && <div className="client-order-overlay" role="presentation" onMouseDown={event=>{if(event.target===event.currentTarget)setViewOrder(null)}}><section className="client-order-dialog" role="dialog" aria-modal="true" aria-labelledby="client-order-title"><button className="dialog-close" onClick={()=>setViewOrder(null)} aria-label="Close order details">×</button><span className="workspace-kicker">ORDER #{viewOrder.id}</span><span className={`status-pill status-${viewOrder.status.toLowerCase()}`}>{statusTitle[viewOrder.status]}</span><h2 id="client-order-title">{viewOrder.groom_name} & {viewOrder.bride_name}</h2><p>{designs.find(d=>d.id===viewOrder.form_data.template)?.name} · Submitted {new Date(viewOrder.created_at).toLocaleDateString()}</p><dl><dt>Wedding date</dt><dd>{viewOrder.form_data.date} · {viewOrder.form_data.time}</dd><dt>Venue</dt><dd>{viewOrder.form_data.venue}, {viewOrder.form_data.address}</dd><dt>Celebrations</dt><dd><ul className="publish-celebration-list">{viewOrder.form_data.events?.length ? viewOrder.form_data.events.map((event,index)=><li key={index}>{event.title} · {event.date} · {event.venue}</li>) : <li>Wedding</li>}</ul></dd><dt><span className="publish-whatsapp-label"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.6" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true"><path d="M21 11.5a9 9 0 0 1-13.4 7.8L3 21l1.6-4.7A9 9 0 1 1 21 11.5Z"/><path d="m8 7 2 3-1 1a8 8 0 0 0 4 4l1-1 3 1c-1 3-4 2-6 0s-5-5-3-8Z"/></svg>WhatsApp</span></dt><dd>{viewOrder.phone_number?.trim() || '—'}</dd><dt>Selling price</dt><dd>{formatSellingPrice(viewOrder.price)}</dd></dl>{viewOrder.rejection_reason&&<p className="workspace-alert"><strong>Studio note:</strong> {viewOrder.rejection_reason}</p>}{viewOrder.management_id&&<div className="published-link"><a href={`${window.location.origin}/${viewOrder.management_id}`} target="_blank" rel="noreferrer">{`${window.location.origin}/${viewOrder.management_id}`} ↗</a><CopyLinkButton value={`${window.location.origin}/${viewOrder.management_id}`}>Copy management link</CopyLinkButton></div>}{viewOrder.status==='CREATED'&&<div className="client-publish-prompt"><label>Your invitation URL<input readOnly value={viewOrder.published_url || `${window.location.origin}/${viewOrder.id}/${nameSlug(viewOrder.groom_name,viewOrder.bride_name)}`}/></label><p>Publish this invitation to make the link live.</p><button type="button" className="primary-action" disabled={busy} onClick={()=>void publishClientOrder(viewOrder)}>{busy?'Publishing…':'Publish invitation →'}</button></div>}{viewOrder.status==='READY'&&viewOrder.published_url&&(!viewOrder.expires_at||new Date(viewOrder.expires_at)>new Date())?<div className="published-link"><a href={viewOrder.published_url} target="_blank" rel="noreferrer">{viewOrder.published_url} ↗</a><CopyLinkButton value={viewOrder.published_url!}>Copy invitation link</CopyLinkButton></div>:viewOrder.status!=='CREATED'&&viewOrder.status!=='READY'&&viewOrder.expires_at&&new Date(viewOrder.expires_at)<=new Date()?<p className="workspace-alert">This invitation link has expired. Contact Shaadi Invites to renew it.</p>:viewOrder.status!=='CREATED'&&viewOrder.status!=='READY'&&<p className="form-note">Your invitation is being prepared. The public link will appear here after publication.</p>}</section></div>}
       {tab === 'Overview' && <div className="overview-dashboard"><section className="client-overview-welcome"><div><span className="workspace-kicker">WELCOME BACK</span><h2>Your invitation studio</h2><p>Create beautiful digital wedding invitations and manage all your orders in one place.</p></div><button type="button" className="client-overview-primary" onClick={() => { setTab('Templates'); setSelected(chosen?.id || allTemplates[0]?.id || null) }}>＋ Create an invitation</button></section><div className="metric-grid">{[
         {label:'Total orders',value:counts.total,icon:'▤',tone:'blue',change:monthOrderChange},
-        {label:'Total revenue',value:formatRevenue(datedOrders),icon:'▤',tone:'green',change:revenueChangeLabel(monthRevenue,previousMonthRevenue,'last month')},
+        {label:'Total revenue',value:formatRevenue(datedOrders),icon:'▤',tone:'green',change:revenueSummary(datedOrders,revenueChangeLabel(monthRevenue,previousMonthRevenue,'last month'))},
         {label:"Today's orders",value:todayOrders.length,icon:'▦',tone:'purple',change:todayOrderChange},
-        {label:"Today's revenue",value:formatRevenue(todayOrders),icon:'₹',tone:'gold',change:revenueChangeLabel(todayRevenue,yesterdayRevenue,'yesterday')},
+        {label:"Today's revenue",value:formatRevenue(todayOrders),icon:'₹',tone:'gold',change:revenueSummary(todayOrders,revenueChangeLabel(todayRevenue,yesterdayRevenue,'yesterday'))},
       ].map(metric=><article className={`metric-card metric-${metric.tone}`} key={metric.label}><span>{metric.label}</span><strong>{metric.value}</strong><i aria-hidden="true">{metric.icon}</i><small className={metric.change.startsWith('↑')?'metric-change-up':metric.change.startsWith('↓')?'metric-change-down':'metric-change-neutral'}>{metric.change.includes(' from ')?<><b>{metric.change.slice(0,metric.change.indexOf(' from '))}</b>{metric.change.slice(metric.change.indexOf(' from '))}</>:metric.change}</small></article>)}</div><div className="client-overview-columns"><section className="client-recent-orders"><div className="section-heading recent-orders-heading"><h2>Recent orders</h2><button className="text-action" onClick={() => setTab('Orders')}>View all →</button></div><OrderTable orders={orders.slice(0,5)} onSelect={setViewOrder} variant="overview"/><div className="recent-orders-footer">Showing {orders.length===0?'0':`1–${Math.min(5,orders.length)}`} of {orders.length} orders<button type="button" onClick={()=>setTab('Orders')}>View all orders →</button></div></section><aside className="client-overview-side-card"><h2>Orders by status</h2><div className="client-status-breakdown"><div className="client-status-donut" style={{ background: `conic-gradient(#557260 0 ${orders.length ? orders.filter(order=>order.status==='READY').length/orders.length*100 : 0}%, #e3a05b 0 ${orders.length ? (orders.filter(order=>order.status==='READY').length+orders.filter(order=>order.status==='IN_PROGRESS').length)/orders.length*100 : 0}%, #a87592 0 ${orders.length ? (orders.filter(order=>order.status==='READY').length+orders.filter(order=>order.status==='IN_PROGRESS').length+orders.filter(order=>order.status==='CREATED').length)/orders.length*100 : 0}%, #db7f8e 0 100%)` }}><span><strong>{orders.length}</strong><small>Orders</small></span></div><ul><li><i className="status-dot status-dot-published"/>Published <b>{orders.filter(order=>order.status==='READY').length}</b></li><li><i className="status-dot status-dot-progress"/>In progress <b>{orders.filter(order=>order.status==='IN_PROGRESS').length}</b></li><li><i className="status-dot status-dot-new"/>New <b>{orders.filter(order=>order.status==='CREATED').length}</b></li><li><i className="status-dot status-dot-changes"/>Needs changes <b>{orders.filter(order=>order.status==='REJECTED').length}</b></li></ul></div></aside></div><section className="client-popular-templates"><div className="section-heading"><h2>Popular templates</h2><button className="text-action" onClick={()=>setTab('Templates')}>View all templates →</button></div><div className="client-popular-grid">{allTemplates.slice(0,7).map(template=><button type="button" className="client-popular-template" key={template.id} onClick={()=>chooseTemplate(template.id)}><img src={template.thumbnail_url} alt=""/><strong>{template.name}</strong><small>{template.category}</small></button>)}</div></section></div>}
-      {tab === 'Templates' && <>{chosen ? <div className="order-create"><div className="order-template-rail"><button className="back-action" onClick={() => setSelected(null)}>← All templates</button>{templates.map(template => <button key={template.id} className={`rail-template ${selected === template.id ? 'selected' : ''}`} onClick={() => chooseTemplate(template.id)}><img src={template.thumbnail_url} alt=""/><span>{template.name}<small>{template.category}</small></span></button>)}</div><form className="order-form" onSubmit={submitOrder}><div className="form-heading"><span className="workspace-kicker">NEW INVITATION ORDER</span><h2>{chosen.name}</h2><a href={chosen.preview_url} target="_blank" rel="noreferrer">Preview design ↗</a></div><fieldset style={{display:review?'none':undefined}}><legend>01 · The couple</legend><div className="form-grid"><Field label="Groom’s name" required value={details.groom} onChange={v => setField('groom',v)}/><Field label="Bride’s name" required value={details.bride} onChange={v => setField('bride',v)}/><Field label="Groom’s family" value={details.groomFamily} onChange={v => setField('groomFamily',v)}/><Field label="Bride’s family" value={details.brideFamily} onChange={v => setField('brideFamily',v)}/><Field label="Phone number" type="tel" required value={phoneNumber} onChange={setPhoneNumber}/></div></fieldset><fieldset style={{display:review?'none':undefined}}><legend>02 · Wedding details</legend><div className="form-grid"><Field label="Wedding date" type="date" required value={details.date} onChange={v => setField('date',v)}/><Field label="Ceremony time" type="time" required value={details.time} onChange={v => setField('time',v)}/><Field label="Venue" required value={details.venue} onChange={v => setField('venue',v)}/><Field label="Address" required value={details.address} onChange={v => setField('address',v)}/><Field label="Map link" type="url" value={details.map} onChange={v => setField('map',v)}/><label>Time zone<select value={details.offset} onChange={e => setField('offset',e.target.value)}><option value="+05:30">India · UTC+05:30</option><option value="+04:00">UAE · UTC+04:00</option><option value="+00:00">UTC</option><option value="-04:00">UTC−04:00</option><option value="-05:00">UTC−05:00</option></select></label></div></fieldset><fieldset style={{display:review?'none':undefined}}><legend>03 · Celebrations and personal touches</legend><div className="form-grid"><Field label="Wedding celebration name" required value={weddingEventTitle} onChange={setWeddingEventTitle}/></div><p className="form-note">The wedding celebration is included from the details above.</p>{extraEvents.map((item,index)=><div className="celebration-editor" key={index}><div className="section-heading"><h3>Additional celebration {index+1}</h3><button type="button" className="text-action" onClick={()=>setExtraEvents(events=>events.filter((_,i)=>i!==index))}>Remove</button></div><div className="form-grid"><Field label="Event name" required value={item.title} onChange={v=>setExtraEvents(events=>events.map((event,i)=>i===index?{...event,title:v}:event))}/><Field label="Date" type="date" required value={item.date} onChange={v=>setExtraEvents(events=>events.map((event,i)=>i===index?{...event,date:v}:event))}/><Field label="Time" type="time" required value={item.time} onChange={v=>setExtraEvents(events=>events.map((event,i)=>i===index?{...event,time:v}:event))}/><Field label="Venue" required value={item.venue} onChange={v=>setExtraEvents(events=>events.map((event,i)=>i===index?{...event,venue:v}:event))}/><Field label="Address" required value={item.address} onChange={v=>setExtraEvents(events=>events.map((event,i)=>i===index?{...event,address:v}:event))}/><Field label="Map link" type="url" value={item.map} onChange={v=>setExtraEvents(events=>events.map((event,i)=>i===index?{...event,map:v}:event))}/></div></div>)}<button type="button" className="secondary-action" disabled={extraEvents.length>=9} onClick={()=>setExtraEvents(events=>[...events,{title:'',date:details.date,time:'17:00',venue:'',address:'',map:''}])}>+ Add celebration</button><div className="form-grid"><Field label="Dress code" value={details.dressCode} onChange={v => setField('dressCode',v)}/><Field label="Music link" type="url" value={details.music} onChange={v => setField('music',v)}/><Field label="Photo gallery link" type="url" value={details.gallery} onChange={v => setField('gallery',v)}/></div><label>Welcome message<textarea rows={4} value={details.message} onChange={e => setField('message',e.target.value)}/></label><label>Gift note<textarea rows={2} value={details.giftNote} onChange={e => setField('giftNote',e.target.value)}/></label></fieldset>{review&&<section className="review-card"><span className="workspace-kicker">REVIEW ORDER DETAILS</span><h3>{details.groom||'Groom'} & {details.bride||'Bride'}</h3><p>{details.date||'Wedding date'} · {details.time} · {details.venue||'Venue'} · {details.address||'Address'}</p><p>Template: {chosen.name} · Additional celebrations: {extraEvents.length}</p><button type="button" className="back-action" onClick={()=>setReview(false)}>← Edit details</button></section>}<p className="form-note">Your order will be submitted for review before an invitation is created or published.</p><button type="submit" className="primary-action" disabled={busy}>{busy ? 'Submitting order…' : review ? 'Submit order →' : 'Review order →'}</button></form></div> : <><section className="client-collection-intro"><div><span className="workspace-kicker">THE ART OF A BEAUTIFUL BEGINNING</span><h2>Choose a design that tells their story.</h2><p>Preview the collection and prepare a personal invitation order for your couple.</p></div><div className="client-collection-art" aria-hidden="true"><span>Shaadi Invites</span><i>✧</i></div></section><div className="client-collection-heading"><div><span className="workspace-kicker">THE COLLECTION</span><h2>Invitation designs <small>{templates.length} curated styles</small></h2></div><span className="client-collection-note">Select a design to begin an order <b>↓</b></span></div><div className="template-grid">{templates.map((template,index)=><article className="template-tile" key={template.id}><a className="template-image" href={template.preview_url} target="_blank" rel="noreferrer"><img src={template.thumbnail_url} alt={`${template.name} preview`} loading="lazy"/><span>PREVIEW ↗</span></a><div><small>{String(index+1).padStart(2,'0')} · {template.category}</small><h2>{template.name}</h2><button className="text-action" onClick={() => chooseTemplate(template.id)}>Choose this design <b>→</b></button></div></article>)}</div></>}</>}
+      {tab === 'Templates' && <>{chosen ? <div className="order-create"><div className="order-template-rail"><button className="back-action" onClick={() => setSelected(null)}>← All templates</button>{templates.map(template => <button key={template.id} className={`rail-template ${selected === template.id ? 'selected' : ''}`} onClick={() => chooseTemplate(template.id)}><img src={template.thumbnail_url} alt=""/><span>{template.name}<small>{template.category}</small></span></button>)}</div><form className="order-form" onSubmit={submitOrder}><div className="form-heading"><span className="workspace-kicker">NEW INVITATION ORDER</span><h2>{chosen.name}</h2></div><fieldset style={{display:review?'none':undefined}}><legend>01 · The couple</legend><div className="form-grid"><Field label="Groom’s name" required value={details.groom} onChange={v => setField('groom',v)}/><Field label="Bride’s name" required value={details.bride} onChange={v => setField('bride',v)}/><Field label="Groom’s family" value={details.groomFamily} onChange={v => setField('groomFamily',v)}/><Field label="Bride’s family" value={details.brideFamily} onChange={v => setField('brideFamily',v)}/><Field label="Phone number" type="tel" required value={phoneNumber} onChange={setPhoneNumber}/></div></fieldset><fieldset style={{display:review?'none':undefined}}><legend>02 · Wedding details</legend><div className="form-grid"><Field label="Wedding celebration name" required value={weddingEventTitle} onChange={setWeddingEventTitle}/><Field label="Wedding date" type="date" required value={details.date} onChange={v => setField('date',v)}/><Field label="Ceremony time" type="time" required value={details.time} onChange={v => setField('time',v)}/><Field label="Venue" required value={details.venue} onChange={v => setField('venue',v)}/><Field label="Address" required value={details.address} onChange={v => setField('address',v)}/><Field label="Map link" type="url" value={details.map} onChange={v => setField('map',v)}/></div></fieldset><fieldset style={{display:review?'none':undefined}}><legend>03 · Celebrations and personal touches</legend><p className="form-note">The wedding celebration is included from the details above.</p>{extraEvents.map((item,index)=><div className="celebration-editor" key={index}><div className="section-heading"><h3>Additional celebration {index+1}</h3><button type="button" className="text-action" onClick={()=>setExtraEvents(events=>events.filter((_,i)=>i!==index))}>Remove</button></div><div className="form-grid"><Field label="Event name" required value={item.title} onChange={v=>setExtraEvents(events=>events.map((event,i)=>i===index?{...event,title:v}:event))}/><Field label="Date" type="date" required value={item.date} onChange={v=>setExtraEvents(events=>events.map((event,i)=>i===index?{...event,date:v}:event))}/><Field label="Time" type="time" required value={item.time} onChange={v=>setExtraEvents(events=>events.map((event,i)=>i===index?{...event,time:v}:event))}/><Field label="Venue" required value={item.venue} onChange={v=>setExtraEvents(events=>events.map((event,i)=>i===index?{...event,venue:v}:event))}/><Field label="Address" required value={item.address} onChange={v=>setExtraEvents(events=>events.map((event,i)=>i===index?{...event,address:v}:event))}/><Field label="Map link" type="url" value={item.map} onChange={v=>setExtraEvents(events=>events.map((event,i)=>i===index?{...event,map:v}:event))}/></div></div>)}<button type="button" className="secondary-action" disabled={extraEvents.length>=9} onClick={()=>setExtraEvents(events=>[...events,{title:'',date:details.date,time:'17:00',venue:'',address:'',map:''}])}>+ Add celebration</button><div className="form-grid"><Field label="Dress code" value={details.dressCode} onChange={v => setField('dressCode',v)}/><Field label="Music link" type="url" value={details.music} onChange={v => setField('music',v)}/><Field label="Photo gallery link" type="url" value={details.gallery} onChange={v => setField('gallery',v)}/></div><label>Welcome message<textarea rows={4} value={details.message} onChange={e => setField('message',e.target.value)}/></label><label>Gift note<textarea rows={2} value={details.giftNote} onChange={e => setField('giftNote',e.target.value)}/></label><label className="order-selling-price">Selling price (₹)<input type="number" min="0" max="9999999999.99" step="0.01" inputMode="decimal" required value={sellingPriceInput} onChange={event=>setSellingPrice(event.target.value)} aria-describedby="selling-price-help"/><small id="selling-price-help">{finalSellingPrice===0?'Complimentary invitation.':'Use the default price or enter your own. Enter 0 for complimentary.'}</small></label></fieldset>{review&&<InvitationReview sellingPrice={finalSellingPrice} details={details} phone={phoneNumber} title={weddingEventTitle} events={extraEvents} template={chosen.name}/>}<p className="form-note">Your order will be submitted for review before an invitation is created or published.</p><button type="submit" className="primary-action" disabled={busy}>{busy ? 'Submitting order…' : review ? <><ReviewActionIcon/>Create invitation</> : 'Review order →'}</button></form></div> : <><section className="client-collection-intro"><div><span className="workspace-kicker">THE ART OF A BEAUTIFUL BEGINNING</span><h2>Choose a design that tells their story.</h2><p>Preview the collection and prepare a personal invitation order for your couple.</p></div><div className="client-collection-art" aria-hidden="true"><span>Shaadi Invites</span><i>✧</i></div></section><div className="client-collection-heading"><div><span className="workspace-kicker">THE COLLECTION</span><h2>Invitation designs <small>{templates.length} curated styles</small></h2></div><span className="client-collection-note">Select a design to begin an order <b>↓</b></span></div><div className="template-grid">{templates.map((template,index)=><article className="template-tile" key={template.id}><a className="template-image" href={template.preview_url} target="_blank" rel="noreferrer"><img src={template.thumbnail_url} alt={`${template.name} preview`} loading="lazy"/><span>PREVIEW ↗</span></a><div><small>{String(index+1).padStart(2,'0')} · {template.category}</small><h2>{template.name}</h2><button className="text-action" onClick={() => chooseTemplate(template.id)}>Choose this design <b>→</b></button></div></article>)}</div></>}</>}
       {tab === 'Orders' && <><p className="workspace-lede orders-description">View and manage all invitation orders submitted by your customers.</p><div className="orders-filters"><label className="orders-search"><span aria-hidden="true">⌕</span><input value={orderSearch} onChange={e => {setOrderSearch(e.target.value);setOrdersPage(0)}} placeholder="Search by order ID, couple name, or phone number…" aria-label="Search orders"/></label><div className="orders-date-filter"><span aria-hidden="true">▦</span><input type="date" value={orderDateFrom} onChange={e=>{setOrderDateFrom(e.target.value);setOrdersPage(0)}} aria-label="Submitted from"/><span className="orders-date-separator">to</span><input type="date" value={orderDateTo} onChange={e=>{setOrderDateTo(e.target.value);setOrdersPage(0)}} aria-label="Submitted to"/></div></div><OrderTable orders={filtered.slice(ordersPage*20,ordersPage*20+20)} onSelect={setViewOrder} onCreate={orders.length===0?()=>{setTab('Templates');setSelected(chosen?.id||allTemplates[0]?.id||null)}:undefined}/>{filtered.length>20&&<div className="pagination"><button disabled={ordersPage===0} onClick={()=>setOrdersPage(p=>p-1)}>← Previous</button><span>Page {ordersPage+1} of {Math.max(1,Math.ceil(filtered.length/20))}</span><button disabled={(ordersPage+1)*20>=filtered.length} onClick={()=>setOrdersPage(p=>p+1)}>Next →</button></div>}</>}
       {tab === 'Settings' && <TemplateSettingsPanel companyName={company?.company_name || 'your company'} templates={allTemplates} settings={templateSettings} error={error} notice={notice} savingId={savingSetting} canSave={Boolean(company)} onChange={editTemplateSetting} onSave={template=>void saveTemplateSetting(template)}/>}
     </section>
     {tab === 'Templates' && <aside className="client-preview-panel"><div className="client-preview-heading"><div><span className="workspace-kicker">LIVE PREVIEW</span><h2>{previewTemplate?.name || 'Invitation preview'}</h2></div><span className="preview-live-dot" aria-label="Live preview"/></div>{previewTemplate ? <><div className="client-device-frame"><div className="client-device-screen" ref={previewScreen}><iframe key={previewTemplate.id} title={`${previewTemplate.name} mobile invitation preview`} src={previewTemplate.preview_url} loading="lazy" style={{ transform: `scale(${previewScale})` }} onLoad={() => { const screen = previewScreen.current; if (screen) setPreviewScale(Math.min(screen.clientWidth / 402, screen.clientHeight / 874)) }}/></div></div><div className="client-preview-thumbs" aria-label="Choose a design to preview">{templates.map(template=><button type="button" key={template.id} className={previewTemplate.id === template.id ? 'active' : ''} onClick={()=>setPreviewId(template.id)} aria-label={`Preview ${template.name}`}><img src={template.thumbnail_url} alt=""/></button>)}</div><a className="client-preview-open" href={previewTemplate.preview_url} target="_blank" rel="noreferrer">Preview Full Invitation <span>↗</span></a><button type="button" className="client-preview-choose" onClick={()=>chooseTemplate(previewTemplate.id)}>Get this design <span>→</span></button></> : <p className="form-note">Your invitation previews will appear here.</p>}</aside>}
-  </main>
+    {tab === 'Templates' && showDetails && selected !== null && <Suspense fallback={null}><OrderTextEditor key={selected} template={selected} value={details.textOverrides} draftStatus={draftStatus} onChange={textOverrides => setDetails(previous => ({ ...previous, textOverrides }))}/></Suspense>}
+    {tab === 'Templates' && previewTemplate && <PhonePreviewResize screen={previewScreen}/>}
+  </main></CardTemplateContext.Provider>
 }
 
-function Field({ label, value, onChange, type = 'text', required = false }: { label: string; value: string; onChange: (value: string) => void; type?: string; required?: boolean }) { return <label>{label}{required && <i> *</i>}<input type={type} value={value} onChange={event => onChange(event.target.value)} maxLength={type === 'url' ? 2000 : 600} required={required}/></label> }
+function Field({ label, value, onChange, type = 'text', required = false }: { label: string; value: string; onChange: (value: string) => void; type?: string; required?: boolean }) {
+  const {template,showCoupleIllustrations,onIllustrationsChange} = useContext(CardTemplateContext)
+  const field = ({ 'Groom’s name':'groom', 'Bride’s name':'bride', 'Wedding celebration name': 'title', 'Event name': 'title', Venue: 'venue', Address: 'address' } as Record<string, string>)[label]
+  const maxLength = nameTextLimit(template,field) ?? cardTextLimit(template, field) ?? (type === 'url' ? 2000 : 600)
+  const multiline = Boolean(field && !['groom', 'bride'].includes(field)) || ['Groom’s family', 'Bride’s family', 'Dress code', 'Gift note', 'Notes'].includes(label)
+  return <><label>{label}{required && <i> *</i>}{multiline && type==='text' ? <textarea rows={2} value={value} onChange={event => onChange(event.target.value)} maxLength={maxLength} required={required} style={{resize:'vertical'}}/> : <input type={type} value={value} onChange={event => onChange(event.target.value)} maxLength={maxLength} required={required}/>}</label>{[2,3,5,6,7].includes(template)&&label==='Bride’s family'&&<label style={{display:'flex',alignItems:'center',gap:12,gridColumn:'1 / -1'}}><input type="checkbox" checked={showCoupleIllustrations} onChange={event=>onIllustrationsChange(event.target.checked)} style={{width:20,height:20,minHeight:0,margin:0,padding:0}}/>Show Bride &amp; Groom Illustrations</label>}</>
+}
 function TemplatePrice({ setting }: { setting?: TemplateSettings }) {
   if (!setting) return <span className="client-template-price client-template-price-unset">Price not set</span>
-  const formatPrice = (value: number) => new Intl.NumberFormat('en-IN', { style: 'currency', currency: 'INR', maximumFractionDigits: 0 }).format(value)
-  const currentPrice = setting.sale_type === 'percentage'
-    ? setting.price * (1 - setting.sale_value / 100)
-    : setting.sale_type === 'fixed' ? setting.price - setting.sale_value : setting.price
+  const formatPrice = (value: number) => new Intl.NumberFormat('en-IN', { style: 'currency', currency: 'INR', minimumFractionDigits: 0, maximumFractionDigits: 2 }).format(value)
+  const currentPrice = templateSellingPrice(setting) ?? 0
   if (setting.sale_type === 'none' || setting.sale_value === 0) return <span className="client-template-price"><strong>{formatPrice(setting.price)}</strong></span>
   return <span className="client-template-price client-template-price-sale"><small className="client-template-sale-badge">{setting.sale_type === 'percentage' ? `${setting.sale_value}% OFF` : `${formatPrice(setting.sale_value)} OFF`}</small><span className="client-template-price-row"><strong>{formatPrice(currentPrice)}</strong><i aria-hidden="true"/><del>{formatPrice(setting.price)}</del></span></span>
 }
@@ -374,9 +445,9 @@ function OrderTable({ orders, onSelect, onCreate, variant = 'orders' }: { orders
           <td>{designs.find(d => d.id === order.form_data.template)?.name || 'Invitation design'}</td>
           <td>{order.phone_number||'—'}</td>
           <td><span className={`status-pill status-${order.status.toLowerCase()}`}>{variant==='overview'?({CREATED:'Pending',IN_PROGRESS:'In Progress',READY:'Completed',REJECTED:'Needs changes'}[order.status]||order.status):(statusTitle[order.status] || order.status)}</span>{order.rejection_reason && <small className="rejection-note">{order.rejection_reason}</small>}</td>
-          <td>{typeof order.price==='number'?new Intl.NumberFormat('en-IN',{style:'currency',currency:'INR',maximumFractionDigits:0}).format(order.price):'—'}</td>
+          <td>{formatSellingPrice(order.price)}</td>
           {variant==='overview'&&<td>{new Date(order.created_at).toLocaleDateString('en-IN',{day:'2-digit',month:'short',year:'numeric'})}</td>}
-          <td className="order-actions">{variant==='overview'?<>{active?<a className="overview-view-link" href={order.published_url!} target="_blank" rel="noreferrer">↗ View</a>:onSelect&&<button className="overview-view-link" onClick={()=>onSelect(order)}>▷ Preview</button>}{active&&<button className="overview-more-action" aria-label="Copy invitation link" onClick={()=>void navigator.clipboard.writeText(order.published_url!)}>⋮</button>}</>:<>{active&&<a href={order.published_url!} target="_blank" rel="noreferrer">Open invitation ↗</a>}{onSelect&&<button className="row-action" onClick={()=>onSelect(order)}>Details →</button>}{active&&<button className="row-action" onClick={()=>void navigator.clipboard.writeText(order.published_url!)}>Copy link</button>}{!active&&expired&&<span className="quiet">Expired</span>}{!active&&!expired&&<span className="quiet">Not published</span>}</>}</td>
+          <td className="order-actions">{variant==='overview'?<>{active?<a className="overview-view-link" href={order.published_url!} target="_blank" rel="noreferrer">↗ View</a>:onSelect&&<button className="overview-view-link" onClick={()=>onSelect(order)}>▷ Preview</button>}{active&&<CopyLinkButton className="overview-more-action" label="Copy invitation link" value={order.published_url!}>⋮</CopyLinkButton>}</>:<>{active&&<a href={order.published_url!} target="_blank" rel="noreferrer">Open invitation ↗</a>}{onSelect&&<button className="row-action" onClick={()=>onSelect(order)}>Details →</button>}{active&&<CopyLinkButton className="row-action" value={order.published_url!}>Copy link</CopyLinkButton>}{!active&&expired&&<span className="quiet">Expired</span>}{!active&&!expired&&<span className="quiet">Not published</span>}</>}</td>
         </tr>
       })}</tbody>
     </table>

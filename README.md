@@ -200,7 +200,7 @@ where id = 'ADMIN-AUTH-USER-UUID'::uuid;
 
 Assign `ADMIN` only through the trusted Supabase SQL editor or a trusted server process. After changing `app_metadata`, have the user sign out and back in so their JWT receives the updated claim. The app does not provide self-service role changes. Published dashboard orders use `/{orderNumber}/{groombrideName}` and are looked up through `get_published_invitation`; only rows with `READY` status are returned to public visitors. Existing D1/local invitations continue to use their existing storage routes.
 
-The new dashboards require the Supabase migration and Auth accounts to be configured before use. No Supabase schema changes or deployment are applied automatically by the frontend.
+The new dashboards require the Supabase migration and Auth accounts to be configured before use. Apply `supabase/migrations/202610200001_order_management_links.sql` after `202610180003_order_rsvps.sql` to add per-order mobile management links for editing invitation details and reading RSVP responses. Anyone holding a management link can access that order, so share it privately. No Supabase schema changes or deployment are applied automatically by the frontend.
 
 
 ### Design 14 — Arjun & Bhavana

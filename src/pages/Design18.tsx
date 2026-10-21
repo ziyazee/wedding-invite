@@ -6,7 +6,7 @@ import HeartDateReveal from './HeartDateReveal'
 import './Design18.css'
 
 const demo: InvitationData = {
-  template: 18,
+  template: 4,
   groom: 'Arjun',
   bride: 'Meera',
   date: '2027-02-21',
@@ -134,7 +134,7 @@ export default function Design18() {
       </section>
 
       <section className="d18-heart-section d18-reveal" aria-label="Scratch to reveal the wedding date">
-        <HeartDateReveal date={formatDate(details.date, { day: 'numeric', month: 'long', year: 'numeric' })} day={formatDate(details.date, { weekday: 'long' })} time={formatTime(details.time)} tone="rose" />
+        <HeartDateReveal date={formatDate(details.date, { day: 'numeric', month: 'long', year: 'numeric' })} day={formatDate(details.date, { weekday: 'long' })} time={formatTime(details.time)} tone="rose" coatingImage="/design18/scratch.png" revealedImage="/design18/post-scratch.png" />
       </section>
 
       <section className="d18-countdown d18-reveal">

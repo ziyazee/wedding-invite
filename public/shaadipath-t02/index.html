@@ -1,0 +1,562 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+<meta name="color-scheme" content="only light">
+<style>:root,html,body{color-scheme:only light}</style>
+<title id="page-title">Priya &amp; Arjun · 12.12.2026</title>
+<link rel="preload" href="assets/layers/Herp Palace.webp" as="image">
+<link rel="preload" href="assets/layers/Hero background.webp" as="image">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;500;600&family=EB+Garamond:ital,wght@0,300;0,400;1,300;1,400&family=Raleway:wght@200;300;400&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="style.css">
+
+<script type="application/json" id="wedding-config">{"couple":{"bride":"Priya","groom":"Arjun","date":"2026-12-12","venue":"Umaid Bhawan Palace, Jodhpur","whatsapp":"","hashtag":"#PriyaWedsArjun"},"invite":{"blessing":"With the blessings of the divine\nand the love of our families","brideFather":"Mr. Suresh Sharma","brideMother":"Mrs. Sunita Sharma","groomFather":"Mr. Ramesh Kapoor","groomMother":"Mrs. Kavita Kapoor","showGrandparents":false},"events":[{"id":"mehendi","name":"Mehendi","date":"2026-12-11","time":"14:00","venue":"Garden Pavilion","desc":"Henna artistry, folk music, and the scent of marigold.","icon":"assets/icons/icon-mehendi.webp","mapsLink":""},{"id":"haldi","name":"Haldi","date":"2026-12-11","time":"10:00","venue":"Crystal Hall","desc":"Golden hues, saffron paste, and laughter in the morning air.","icon":"assets/icons/icon-haldi.webp","mapsLink":""},{"id":"cocktail","name":"Cocktail","date":"2026-12-11","time":"19:30","venue":"Zenana Courtyard","desc":"Elegance under the stars with cocktails and conversation.","icon":"assets/icons/icon-cocktail.webp","mapsLink":""},{"id":"sagan","name":"Sagan","date":"2026-12-13","time":"17:00","venue":"Crystal Hall","desc":"Intimate blessings and rituals with close family before the big day.","icon":"assets/icons/icon-sagan.webp","mapsLink":""},{"id":"shaadi","name":"Shaadi","date":"2026-12-14","time":"10:00","venue":"Grand Darbar Hall","desc":"Seven vows, one lifetime — the ceremony that begins forever.","icon":"assets/icons/icon-shaadi.webp","mapsLink":""},{"id":"reception","name":"Reception","date":"2026-12-12","time":"19:00","venue":"Grand Terrace","desc":"Dance, dine, and celebrate as the newlyweds take the floor.","icon":"assets/icons/icon-reception.webp","mapsLink":""}],"story":{"show":true,"customHashtag":"","tags":["Hopeless romantics","Chai addicts","Jodhpur dreamers","Forever &amp; always"]},"gallery":{"show":true,"layout":"4","photos":[]},"thingsToKnow":[{"id":"hashtag","label":"Hashtag","value":"#PriyaWedsArjun"},{"id":"dresscode","label":"Dress Code","value":"Indian Festive"},{"id":"venue","label":"Venue","value":"Umaid Bhawan\nJodhpur"},{"id":"parking","label":"Parking","value":"Available\non-site"}],"rsvp":{"mode":"whatsapp","heading":"Will you join us?","subtext":"We've saved a seat for you — at our table, in our hearts, and under the royal sky. Come celebrate with us as we begin this new chapter together.","btnText":"Yes, I'll be there","whatsapp":""},"music":{"enabled":true,"src":"/audios/template02.mp3","name":"Template 02"},"calendarUrls":{"google":"https://calendar.google.com/calendar/render?action=TEMPLATE&text=Priya%20weds%20Arjun&dates=20261212/20261213&location=Umaid%20Bhawan%20Palace%2C%20Jodhpur","apple":""}}</script>
+<script>window.__WEDDING_CONFIG__ = JSON.parse(document.getElementById('wedding-config').textContent);</script>
+</head>
+<body>
+
+<div class="c-ring" id="cRing"></div>
+<div class="c-dot"  id="cDot"></div>
+
+<!-- BACKGROUND MUSIC -->
+<audio id="bgMusic" loop preload="none">
+  <source src="/audios/template02.mp3" type="audio/mpeg">
+</audio>
+<button class="music-btn" id="musicBtn" onclick="toggleMusic()" aria-label="Toggle music">🔔</button>
+
+<!-- PRELOADER -->
+<div id="preloader" class="preloader">
+  <div class="pl-bg"></div>
+  <div class="pl-content">
+    <div class="pl-mandala-wrap" aria-hidden="true">
+      <svg class="pl-mandala" viewBox="0 0 120 120" width="86" height="86">
+        <circle class="pl-m-ring pl-m-r1" cx="60" cy="60" r="52" fill="none" stroke="#C8860A" stroke-width="0.9"/>
+        <circle class="pl-m-ring pl-m-r2" cx="60" cy="60" r="38" fill="none" stroke="#C8860A" stroke-width="0.7"/>
+        <circle class="pl-m-ring pl-m-r3" cx="60" cy="60" r="22" fill="none" stroke="#C8860A" stroke-width="0.5"/>
+        <g class="pl-m-petals">
+          <ellipse cx="60" cy="18" rx="5" ry="13" fill="#C8860A" opacity="0.22" transform="rotate(0   60 60)"/>
+          <ellipse cx="60" cy="18" rx="5" ry="13" fill="#C8860A" opacity="0.22" transform="rotate(45  60 60)"/>
+          <ellipse cx="60" cy="18" rx="5" ry="13" fill="#C8860A" opacity="0.22" transform="rotate(90  60 60)"/>
+          <ellipse cx="60" cy="18" rx="5" ry="13" fill="#C8860A" opacity="0.22" transform="rotate(135 60 60)"/>
+          <ellipse cx="60" cy="18" rx="5" ry="13" fill="#C8860A" opacity="0.22" transform="rotate(180 60 60)"/>
+          <ellipse cx="60" cy="18" rx="5" ry="13" fill="#C8860A" opacity="0.22" transform="rotate(225 60 60)"/>
+          <ellipse cx="60" cy="18" rx="5" ry="13" fill="#C8860A" opacity="0.22" transform="rotate(270 60 60)"/>
+          <ellipse cx="60" cy="18" rx="5" ry="13" fill="#C8860A" opacity="0.22" transform="rotate(315 60 60)"/>
+        </g>
+        <circle class="pl-m-dot" cx="60" cy="60" r="4" fill="#C8860A"/>
+      </svg>
+    </div>
+    <div class="pl-names" id="plNames">
+      <span class="pl-n1">Priya</span>
+      <span class="pl-weds">weds</span>
+      <span class="pl-n2">Arjun</span>
+    </div>
+  </div>
+</div>
+
+<!-- HERO SCROLL SCENE -->
+<div id="heroWrap" class="hero-wrap">
+  <div id="heroPin" class="hero-pin">
+    <div class="hero-sky"></div>
+    <div class="hero-moon" id="heroMoon"></div>
+    <img id="l3" class="hl hl-palace" src="assets/layers/Herp Palace.webp" alt="">
+    <div class="hero-floats" aria-hidden="true">
+      <img class="fl diya-l" src="assets/elements/Element 1.webp" alt="">
+      <img class="fl diya-r" src="assets/elements/Element 1.webp" alt="">
+      <img class="fl fall-l" src="assets/elements/Element 4.webp" alt="">
+      <img class="fl fall-r" src="assets/elements/Element 5.webp" alt="">
+    </div>
+    <div id="petalHero" class="petal-canvas"></div>
+    <div class="rangoli-orb" style="top:22%;left:6%;animation-delay:0s" aria-hidden="true"></div>
+    <div class="rangoli-orb" style="top:58%;right:10%;animation-delay:5s" aria-hidden="true"></div>
+    <div id="heroCopy" class="hero-copy">
+      <h1 class="hc-bride">Priya</h1>
+      <span class="hc-weds">weds</span>
+      <h1 class="hc-groom">Arjun</h1>
+      <div id="heroCountdown" class="hc-countdown" aria-label="Countdown to the wedding"></div>
+    </div>
+    <div class="scroll-nudge" id="scrollNudge">
+      <span>Scroll</span>
+      <div class="sn-line"><div class="sn-dot"></div></div>
+    </div>
+  </div>
+</div>
+
+<!-- ELEPHANT TRANSITION BRIDGE -->
+<div class="eleph-bridge" id="elephBridge" aria-hidden="true">
+  <div class="eleph eleph-l" id="elephL">
+    <img src="assets/elements/Elephant_L.webp" alt=""
+         onerror="this.style.display='none';this.nextElementSibling.style.display='block'">
+    <svg class="eleph-svg" viewBox="0 0 220 320" style="display:none">
+      <ellipse cx="110" cy="200" rx="90" ry="80" fill="#1A2C5B" opacity="0.9"/>
+      <ellipse cx="155" cy="130" rx="55" ry="50" fill="#1A2C5B" opacity="0.9"/>
+      <ellipse cx="110" cy="125" rx="38" ry="42" fill="#0D1B3E" opacity="0.8"/>
+      <path d="M175,110 Q195,70 210,40 Q215,20 205,10 Q195,5 188,15 Q180,30 175,55 Q165,85 160,110Z" fill="#1A2C5B" opacity="0.9"/>
+      <ellipse cx="205" cy="10" rx="8" ry="6" fill="#0D1B3E" opacity="0.9"/>
+      <circle cx="162" cy="118" r="5" fill="#F0E0B0" opacity="0.8"/>
+      <circle cx="163" cy="117" r="2" fill="#FAF4E4"/>
+      <path d="M172,145 Q185,155 180,168" fill="none" stroke="#F0E0B0" stroke-width="4" stroke-linecap="round"/>
+      <path d="M55,165 Q110,140 165,165 Q170,195 165,220 Q110,235 55,220 Z" fill="#A01830" opacity="0.75"/>
+      <path d="M55,165 Q110,140 165,165 Q170,195 165,220 Q110,235 55,220 Z" fill="none" stroke="#C8860A" stroke-width="2" opacity="0.6"/>
+      <circle cx="110" cy="190" r="10" fill="#C8860A" opacity="0.8"/>
+      <circle cx="110" cy="190" r="6"  fill="#F0E0B0" opacity="0.9"/>
+      <rect x="65"  y="265" width="30" height="50" rx="12" fill="#0D1B3E" opacity="0.85"/>
+      <rect x="105" y="265" width="30" height="50" rx="12" fill="#0D1B3E" opacity="0.85"/>
+      <rect x="130" y="262" width="30" height="48" rx="12" fill="#0D1B3E" opacity="0.85"/>
+      <rect x="63"  y="300" width="34" height="6" rx="3" fill="#C8860A" opacity="0.7"/>
+      <rect x="103" y="300" width="34" height="6" rx="3" fill="#C8860A" opacity="0.7"/>
+      <path d="M28,200 Q15,230 22,255 Q28,268 35,262" fill="none" stroke="#0D1B3E" stroke-width="5" stroke-linecap="round"/>
+    </svg>
+    <canvas class="confetti-canvas" id="confettiL"></canvas>
+  </div>
+  <div class="eleph eleph-r" id="elephR">
+    <img src="assets/elements/Elephant_R.webp" alt=""
+         onerror="this.style.display='none';this.nextElementSibling.style.display='block'">
+    <svg class="eleph-svg" viewBox="0 0 220 320" style="display:none;transform:scaleX(-1)">
+      <ellipse cx="110" cy="200" rx="90" ry="80" fill="#1A2C5B" opacity="0.9"/>
+      <ellipse cx="155" cy="130" rx="55" ry="50" fill="#1A2C5B" opacity="0.9"/>
+      <ellipse cx="110" cy="125" rx="38" ry="42" fill="#0D1B3E" opacity="0.8"/>
+      <path d="M175,110 Q195,70 210,40 Q215,20 205,10 Q195,5 188,15 Q180,30 175,55 Q165,85 160,110Z" fill="#1A2C5B" opacity="0.9"/>
+      <ellipse cx="205" cy="10" rx="8" ry="6" fill="#0D1B3E" opacity="0.9"/>
+      <circle cx="162" cy="118" r="5" fill="#F0E0B0" opacity="0.8"/>
+      <circle cx="163" cy="117" r="2" fill="#FAF4E4"/>
+      <path d="M172,145 Q185,155 180,168" fill="none" stroke="#F0E0B0" stroke-width="4" stroke-linecap="round"/>
+      <path d="M55,165 Q110,140 165,165 Q170,195 165,220 Q110,235 55,220 Z" fill="#A01830" opacity="0.75"/>
+      <path d="M55,165 Q110,140 165,165 Q170,195 165,220 Q110,235 55,220 Z" fill="none" stroke="#C8860A" stroke-width="2" opacity="0.6"/>
+      <circle cx="110" cy="190" r="10" fill="#C8860A" opacity="0.8"/>
+      <circle cx="110" cy="190" r="6"  fill="#F0E0B0" opacity="0.9"/>
+      <rect x="65"  y="265" width="30" height="50" rx="12" fill="#0D1B3E" opacity="0.85"/>
+      <rect x="105" y="265" width="30" height="50" rx="12" fill="#0D1B3E" opacity="0.85"/>
+      <rect x="130" y="262" width="30" height="48" rx="12" fill="#0D1B3E" opacity="0.85"/>
+      <rect x="63"  y="300" width="34" height="6" rx="3" fill="#C8860A" opacity="0.7"/>
+      <rect x="103" y="300" width="34" height="6" rx="3" fill="#C8860A" opacity="0.7"/>
+      <path d="M28,200 Q15,230 22,255 Q28,268 35,262" fill="none" stroke="#0D1B3E" stroke-width="5" stroke-linecap="round"/>
+    </svg>
+    <canvas class="confetti-canvas" id="confettiR"></canvas>
+  </div>
+  <canvas class="confetti-rain" id="confettiRain"></canvas>
+</div>
+
+<!-- INVITATION -->
+<section id="invite" class="s-invite">
+  <img class="bg-fill" src="assets/backgrounds/Background 6.webp" alt="">
+  <img class="invite-couple-bg" src="assets/layers/Hero couple.webp" alt="" aria-hidden="true">
+  <div class="toran" aria-hidden="true">
+    <svg viewBox="0 0 1200 120" width="100%" preserveAspectRatio="xMidYMax meet" style="display:block">
+      <path d="M0,18 Q300,8 600,18 Q900,28 1200,18" fill="none" stroke="#C8860A" stroke-width="1.2" opacity="0.60"/>
+      <g transform="translate(60,18)"><line x1="0" y1="0" x2="0" y2="18" stroke="#C8860A" stroke-width="0.8" opacity="0.55"/><ellipse cx="0" cy="22" rx="10" ry="4" fill="#C8860A" opacity="0.55"/><path d="M-8,22 Q0,42 8,22Z" fill="#A01830" opacity="0.80"/><ellipse cx="0" cy="20" rx="7" ry="3" fill="#C8860A" opacity="0.65"/><path d="M0,14 Q1.5,8 0,14" fill="#F0E0B0" opacity="0.90"/></g>
+      <g transform="translate(150,14)"><line x1="0" y1="0" x2="0" y2="14" stroke="#C8860A" stroke-width="0.7" opacity="0.45"/><circle cx="0" cy="20" r="9" fill="#C8860A" opacity="0.30"/><circle cx="0" cy="20" r="6" fill="#C8860A" opacity="0.55"/><circle cx="0" cy="20" r="3" fill="#F0E0B0" opacity="0.70"/></g>
+      <g transform="translate(240,20)"><line x1="0" y1="0" x2="0" y2="20" stroke="#C8860A" stroke-width="0.8" opacity="0.55"/><ellipse cx="0" cy="24" rx="11" ry="4.5" fill="#C8860A" opacity="0.55"/><path d="M-9,24 Q0,46 9,24Z" fill="#A01830" opacity="0.80"/><ellipse cx="0" cy="22" rx="8" ry="3" fill="#C8860A" opacity="0.65"/><path d="M0,15 Q1.8,8 0,15" fill="#F0E0B0" opacity="0.90"/></g>
+      <g transform="translate(330,12)"><line x1="0" y1="0" x2="0" y2="12" stroke="#C8860A" stroke-width="0.7" opacity="0.45"/><circle cx="0" cy="18" r="8" fill="#C8860A" opacity="0.28"/><circle cx="0" cy="18" r="5.5" fill="#C8860A" opacity="0.50"/><circle cx="0" cy="18" r="2.5" fill="#F0E0B0" opacity="0.65"/></g>
+      <g transform="translate(440,16)"><line x1="0" y1="0" x2="0" y2="22" stroke="#C8860A" stroke-width="1.0" opacity="0.65"/><ellipse cx="0" cy="27" rx="13" ry="5" fill="#C8860A" opacity="0.60"/><path d="M-11,27 Q0,52 11,27Z" fill="#A01830" opacity="0.85"/><ellipse cx="0" cy="25" rx="9" ry="3.5" fill="#C8860A" opacity="0.70"/><path d="M0,17 Q2,9 0,17" fill="#F0E0B0" opacity="0.95"/></g>
+      <g transform="translate(600,10)"><line x1="0" y1="0" x2="0" y2="12" stroke="#C8860A" stroke-width="1.0" opacity="0.70"/><ellipse cx="0" cy="18" rx="14" ry="6" fill="none" stroke="#C8860A" stroke-width="0.8" opacity="0.50"/><path d="M0,24 Q-8,14 0,10 Q8,14 0,24Z" fill="#C8860A" opacity="0.55"/><path d="M-6,22 Q-12,12 -4,10 Q0,14 0,24Z" fill="#C8860A" opacity="0.35"/><path d="M6,22 Q12,12 4,10 Q0,14 0,24Z" fill="#C8860A" opacity="0.35"/><circle cx="0" cy="16" r="3" fill="#F0E0B0" opacity="0.75"/></g>
+      <g transform="translate(760,16)"><line x1="0" y1="0" x2="0" y2="22" stroke="#C8860A" stroke-width="1.0" opacity="0.65"/><ellipse cx="0" cy="27" rx="13" ry="5" fill="#C8860A" opacity="0.60"/><path d="M-11,27 Q0,52 11,27Z" fill="#A01830" opacity="0.85"/><ellipse cx="0" cy="25" rx="9" ry="3.5" fill="#C8860A" opacity="0.70"/><path d="M0,17 Q2,9 0,17" fill="#F0E0B0" opacity="0.95"/></g>
+      <g transform="translate(870,12)"><line x1="0" y1="0" x2="0" y2="12" stroke="#C8860A" stroke-width="0.7" opacity="0.45"/><circle cx="0" cy="18" r="8" fill="#C8860A" opacity="0.28"/><circle cx="0" cy="18" r="5.5" fill="#C8860A" opacity="0.50"/><circle cx="0" cy="18" r="2.5" fill="#F0E0B0" opacity="0.65"/></g>
+      <g transform="translate(960,20)"><line x1="0" y1="0" x2="0" y2="20" stroke="#C8860A" stroke-width="0.8" opacity="0.55"/><ellipse cx="0" cy="24" rx="11" ry="4.5" fill="#C8860A" opacity="0.55"/><path d="M-9,24 Q0,46 9,24Z" fill="#A01830" opacity="0.80"/><ellipse cx="0" cy="22" rx="8" ry="3" fill="#C8860A" opacity="0.65"/><path d="M0,15 Q1.8,8 0,15" fill="#F0E0B0" opacity="0.90"/></g>
+      <g transform="translate(1050,14)"><line x1="0" y1="0" x2="0" y2="14" stroke="#C8860A" stroke-width="0.7" opacity="0.45"/><circle cx="0" cy="20" r="9" fill="#C8860A" opacity="0.30"/><circle cx="0" cy="20" r="6" fill="#C8860A" opacity="0.55"/><circle cx="0" cy="20" r="3" fill="#F0E0B0" opacity="0.70"/></g>
+      <g transform="translate(1140,18)"><line x1="0" y1="0" x2="0" y2="18" stroke="#C8860A" stroke-width="0.8" opacity="0.55"/><ellipse cx="0" cy="22" rx="10" ry="4" fill="#C8860A" opacity="0.55"/><path d="M-8,22 Q0,42 8,22Z" fill="#A01830" opacity="0.80"/><ellipse cx="0" cy="20" rx="7" ry="3" fill="#C8860A" opacity="0.65"/><path d="M0,14 Q1.5,8 0,14" fill="#F0E0B0" opacity="0.90"/></g>
+      <circle cx="200" cy="18" r="2" fill="#C8860A" opacity="0.35"/>
+      <circle cx="500" cy="16" r="2" fill="#C8860A" opacity="0.35"/>
+      <circle cx="700" cy="16" r="2" fill="#C8860A" opacity="0.35"/>
+      <circle cx="1000" cy="18" r="2" fill="#C8860A" opacity="0.35"/>
+    </svg>
+  </div>
+  <img class="fl-moon" src="assets/elements/Element 3.webp" alt="" aria-hidden="true">
+  <img class="fl-leaf-l" src="assets/elements/Element 4.webp" alt="" aria-hidden="true">
+  <img class="fl-leaf-r" src="assets/elements/Element 5.webp" alt="" aria-hidden="true">
+  <div class="container">
+    <div class="invite-card scroll-in">
+      <div class="card-tl"><svg viewBox="0 0 50 50" width="50"><path d="M8,42 Q25,-5 45,12 Q58,28 32,40Z" fill="none" stroke="#C8860A" stroke-width="0.8" opacity="0.45"/></svg></div>
+      <div class="card-tr"><svg viewBox="0 0 50 50" width="50"><path d="M42,42 Q25,-5 5,12 Q-8,28 18,40Z" fill="none" stroke="#C8860A" stroke-width="0.8" opacity="0.45"/></svg></div>
+      <div class="i-ganesha">
+        <img src="assets/elements/Element 6.webp" alt="Ganesha" class="i-ganesha-img">
+      </div>
+      <div class="i-rule"><svg viewBox="0 0 300 8" width="100%" style="max-width:300px"><line x1="0" y1="4" x2="128" y2="4" stroke="#C8860A" stroke-width="0.8" opacity="0.50"/><polygon points="150,1 160,4 150,7 140,4" fill="#C8860A" opacity="0.85"/><line x1="172" y1="4" x2="300" y2="4" stroke="#C8860A" stroke-width="0.8" opacity="0.50"/></svg></div>
+      <p class="i-bless">With the blessings of the divine<br>and the love of our families</p>
+      <p class="i-label">Together we invite you to celebrate</p>
+      <div class="i-names">
+        <span class="i-bride">Priya</span>
+        <span class="i-amp">&amp;</span>
+        <span class="i-groom">Arjun</span>
+      </div>
+      <div class="i-rule"><svg viewBox="0 0 300 8" width="100%" style="max-width:300px"><line x1="0" y1="4" x2="128" y2="4" stroke="#C8860A" stroke-width="0.8" opacity="0.50"/><polygon points="150,1 160,4 150,7 140,4" fill="#C8860A" opacity="0.85"/><line x1="172" y1="4" x2="300" y2="4" stroke="#C8860A" stroke-width="0.8" opacity="0.50"/></svg></div>
+      <div class="i-fam" id="iFam">
+        <div class="fam-side">
+          <div class="fam-gp" id="iFamGpBride" style="display:none"></div>
+          <div class="fam-parents"><em>Daughter of</em><br><span id="iBrideParents">Mr. &amp; Mrs. Suresh Sharma</span></div>
+        </div>
+        <div class="fam-dot">✦</div>
+        <div class="fam-side">
+          <div class="fam-gp" id="iFamGpGroom" style="display:none"></div>
+          <div class="fam-parents"><em>Son of</em><br><span id="iGroomParents">Mr. &amp; Mrs. Ramesh Kapoor</span></div>
+        </div>
+      </div>
+      <p class="i-close">On the following auspicious occasions</p>
+    </div>
+  </div>
+  <div id="petalInvite" class="petal-canvas"></div>
+</section>
+
+<!-- Wave divider -->
+<div class="wdiv"><svg viewBox="0 0 1440 55" preserveAspectRatio="none"><path d="M0,28 C360,55 720,0 1080,28 C1260,40 1440,15 1440,28 L1440,55 L0,55Z" fill="#0D1B3E"/></svg></div>
+
+<!-- EVENTS -->
+<section id="events" class="s-events">
+  <img class="bg-fill" src="assets/backgrounds/Background 3.webp" alt="">
+  <div class="ev-paper-veil"></div>
+  <img class="fl-leaf-l" src="assets/elements/Element 4.webp" alt="" aria-hidden="true">
+  <img class="fl-leaf-r" src="assets/elements/Element 5.webp" alt="" aria-hidden="true">
+  <div class="container">
+    <div class="s-head scroll-in">
+      <span class="sh-eye">The Celebrations</span>
+      <h2 class="sh-h">Our <em>Events</em></h2>
+    </div>
+    <div class="ev-journey-wrap" aria-hidden="true">
+      <svg class="ev-journey-svg" id="evJourneySvg" preserveAspectRatio="none">
+        <path class="ej-track" id="ejTrack" fill="none"/>
+        <path class="ej-drawn" id="ejDrawn" fill="none"/>
+      </svg>
+    </div>
+    <div class="ev-float-stage" id="evStage">
+      <article class="ev-node ev-row1 scroll-in" style="--sd:.05s" data-idx="0">
+        <div class="ev-icon-wrap"><img src="assets/icons/icon-mehendi.webp" alt="Mehendi" class="ev-icon" loading="lazy"><div class="ev-glow"></div></div>
+        <div class="ev-label"><span class="ev-name">Mehendi</span><span class="ev-date">11 Dec · 2:00 PM</span></div>
+        <div class="ev-detail"><p class="ev-venue">Garden Pavilion</p><p class="ev-desc">Henna artistry, folk music, and the scent of marigold.</p></div>
+      </article>
+      <article class="ev-node ev-row1 scroll-in" style="--sd:.15s" data-idx="1">
+        <div class="ev-icon-wrap"><img src="assets/icons/icon-haldi.webp" alt="Haldi" class="ev-icon" loading="lazy"><div class="ev-glow"></div></div>
+        <div class="ev-label"><span class="ev-name">Haldi</span><span class="ev-date">11 Dec · 10:00 AM</span></div>
+        <div class="ev-detail"><p class="ev-venue">Crystal Hall</p><p class="ev-desc">Golden hues, saffron paste, and laughter in the morning air.</p></div>
+      </article>
+      <article class="ev-node ev-row1 scroll-in" style="--sd:.25s" data-idx="2">
+        <div class="ev-icon-wrap"><img src="assets/icons/icon-cocktail.webp" alt="Cocktail" class="ev-icon" loading="lazy"><div class="ev-glow"></div></div>
+        <div class="ev-label"><span class="ev-name">Cocktail</span><span class="ev-date">11 Dec · 7:30 PM</span></div>
+        <div class="ev-detail"><p class="ev-venue">Zenana Courtyard</p><p class="ev-desc">Elegance under the stars with cocktails and conversation.</p></div>
+      </article>
+      <article class="ev-node ev-row2 scroll-in" style="--sd:.10s" data-idx="3">
+        <div class="ev-icon-wrap"><img src="assets/icons/icon-sagan.webp" loading="lazy" alt="Sagan" class="ev-icon"><div class="ev-glow"></div></div>
+        <div class="ev-label"><span class="ev-name">Sagan</span><span class="ev-date">13 Dec · 5:00 PM</span></div>
+        <div class="ev-detail"><p class="ev-venue">Crystal Hall</p><p class="ev-desc">Intimate blessings and rituals with close family before the big day.</p></div>
+      </article>
+      <article class="ev-node ev-row2 ev-node--hero scroll-in" style="--sd:.20s" data-idx="4">
+        <div class="ev-icon-wrap"><img src="assets/icons/icon-shaadi.webp" loading="lazy" alt="Shaadi" class="ev-icon"><div class="ev-glow"></div></div>
+        <div class="ev-label"><span class="ev-name">Shaadi</span><span class="ev-date">14 Dec · 10:00 AM</span></div>
+        <div class="ev-detail"><p class="ev-venue">Grand Darbar Hall</p><p class="ev-desc">Seven vows, one lifetime — the ceremony that begins forever.</p></div>
+      </article>
+      <article class="ev-node ev-row2 scroll-in" style="--sd:.30s" data-idx="5">
+        <div class="ev-icon-wrap"><img src="assets/icons/icon-reception.webp" loading="lazy" alt="Reception" class="ev-icon"><div class="ev-glow"></div></div>
+        <div class="ev-label"><span class="ev-name">Reception</span><span class="ev-date">12 Dec · 7:00 PM</span></div>
+        <div class="ev-detail"><p class="ev-venue">Grand Terrace</p><p class="ev-desc">Dance, dine, and celebrate as the newlyweds take the floor.</p></div>
+      </article>
+    </div>
+  </div>
+  <div id="petalEvents" class="petal-canvas"></div>
+</section>
+
+<!-- Leaf divider -->
+<div class="leaf-div"><svg viewBox="0 0 800 48" width="100%" preserveAspectRatio="xMidYMid meet"><path d="M400,24 Q280,4 160,18 Q80,28 0,22" fill="none" stroke="#6B8E7A" stroke-width="0.9" opacity="0.5"/><path d="M400,24 Q520,4 640,18 Q720,28 800,22" fill="none" stroke="#6B8E7A" stroke-width="0.9" opacity="0.5"/><ellipse cx="310" cy="15" rx="13" ry="6" fill="#6B8E7A" opacity="0.35" transform="rotate(-22 310 15)"/><ellipse cx="230" cy="20" rx="11" ry="5" fill="#6B8E7A" opacity="0.30" transform="rotate(-32 230 20)"/><ellipse cx="490" cy="15" rx="13" ry="6" fill="#6B8E7A" opacity="0.35" transform="rotate(22 490 15)"/><ellipse cx="570" cy="20" rx="11" ry="5" fill="#6B8E7A" opacity="0.30" transform="rotate(32 570 20)"/><circle cx="400" cy="24" r="3" fill="#C8860A" opacity="0.6"/></svg></div>
+
+<!-- STORY -->
+<section id="story" class="s-story">
+  <div class="st-paper-bg"></div>
+  <div id="petalStory" class="petal-canvas" style="z-index:8"></div>
+  <div class="st-stage" id="stStage">
+    <div class="st-reveal" id="stReveal">
+      <div class="st-mandala" aria-hidden="true">
+        <svg viewBox="0 0 320 320" width="320" height="320">
+          <circle cx="160" cy="160" r="130" fill="none" stroke="rgba(200,134,10,.12)" stroke-width="1"/>
+          <circle cx="160" cy="160" r="100" fill="none" stroke="rgba(200,134,10,.09)" stroke-width="0.8"/>
+          <circle cx="160" cy="160" r="70"  fill="none" stroke="rgba(200,134,10,.07)" stroke-width="0.6"/>
+          <g opacity=".14">
+            <ellipse cx="160" cy="60" rx="10" ry="28" fill="#C8860A" transform="rotate(0   160 160)"/>
+            <ellipse cx="160" cy="60" rx="10" ry="28" fill="#C8860A" transform="rotate(45  160 160)"/>
+            <ellipse cx="160" cy="60" rx="10" ry="28" fill="#C8860A" transform="rotate(90  160 160)"/>
+            <ellipse cx="160" cy="60" rx="10" ry="28" fill="#C8860A" transform="rotate(135 160 160)"/>
+            <ellipse cx="160" cy="60" rx="10" ry="28" fill="#C8860A" transform="rotate(180 160 160)"/>
+            <ellipse cx="160" cy="60" rx="10" ry="28" fill="#C8860A" transform="rotate(225 160 160)"/>
+            <ellipse cx="160" cy="60" rx="10" ry="28" fill="#C8860A" transform="rotate(270 160 160)"/>
+            <ellipse cx="160" cy="60" rx="10" ry="28" fill="#C8860A" transform="rotate(315 160 160)"/>
+          </g>
+          <circle cx="160" cy="160" r="18" fill="rgba(200,134,10,.08)"/>
+        </svg>
+      </div>
+      <div class="st-rv-inner">
+        <div class="st-rv-header" id="stRvHeader">
+          <span class="sh-eye">Our Journey</span>
+          <h2 class="sh-h">Meet the <em>Couple</em></h2>
+        </div>
+        <div class="st-rv-names" id="stRvNames">
+          <span class="st-rv-bride" id="stRvBride">Priya</span>
+          <span class="st-rv-amp">&amp;</span>
+          <span class="st-rv-groom" id="stRvGroom">Arjun</span>
+        </div>
+        <p class="st-rv-verse" id="stRvVerse">Two souls, one chai stall, a lifetime of mornings.</p>
+        <div class="st-rv-tags" id="stRvTags">
+          <span class="st-rv-tag">Hopeless romantics</span>
+          <span class="st-rv-tag">Chai addicts</span>
+          <span class="st-rv-tag">Jodhpur dreamers</span>
+          <span class="st-rv-tag">Forever &amp; always</span>
+        </div>
+      </div>
+      <div class="st-petals" id="stPetals"></div>
+    </div>
+    <div class="st-char st-bride" id="stBride">
+      <img src="assets/elements/Element_Bride.webp" alt="Bride" class="st-char-img" loading="lazy">
+    </div>
+    <div class="st-char st-groom" id="stGroom">
+      <img src="assets/elements/Element_Groom.webp" alt="Groom" class="st-char-img" loading="lazy">
+    </div>
+    <div class="st-curtains" id="stCurtains">
+      <div class="st-curt st-curt-l" id="stCurtL">
+        <img src="assets/elements/Element_Curtain.webp" alt="" class="st-curt-img" loading="lazy">
+        <div class="st-curt-shadow st-curt-shadow-l"></div>
+      </div>
+      <div class="st-curt st-curt-r" id="stCurtR">
+        <img src="assets/elements/Element_Curtain.webp" alt="" class="st-curt-img st-curt-img-mirror" loading="lazy">
+        <div class="st-curt-shadow st-curt-shadow-r"></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- Diya garland divider -->
+<div class="diya-div"><svg viewBox="0 0 600 56" width="100%" preserveAspectRatio="xMidYMid meet"><path d="M0,16 Q150,6 300,16 Q450,26 600,16" fill="none" stroke="#C8860A" stroke-width="0.8" opacity="0.40"/><g transform="translate(55,16)"><line x1="0" y1="0" x2="0" y2="7" stroke="#C8860A" stroke-width="0.5" opacity="0.4"/><path d="M-7,7 Q0,20 7,7Z" fill="#A01830" opacity="0.70"/><ellipse cx="0" cy="5.5" rx="5.5" ry="2" fill="#C8860A" opacity="0.60"/><path d="M0,3 Q0.8,0 0,3" fill="#F0E0B0" opacity="0.9"/></g><g transform="translate(135,12)"><line x1="0" y1="0" x2="0" y2="7" stroke="#C8860A" stroke-width="0.5" opacity="0.4"/><path d="M-7,7 Q0,20 7,7Z" fill="#A01830" opacity="0.70"/><ellipse cx="0" cy="5.5" rx="5.5" ry="2" fill="#C8860A" opacity="0.60"/><path d="M0,3 Q0.8,0 0,3" fill="#F0E0B0" opacity="0.9"/></g><g transform="translate(215,19)"><line x1="0" y1="0" x2="0" y2="7" stroke="#C8860A" stroke-width="0.5" opacity="0.4"/><path d="M-7,7 Q0,20 7,7Z" fill="#A01830" opacity="0.70"/><ellipse cx="0" cy="5.5" rx="5.5" ry="2" fill="#C8860A" opacity="0.60"/><path d="M0,3 Q0.8,0 0,3" fill="#F0E0B0" opacity="0.9"/></g><g transform="translate(300,16)"><line x1="0" y1="0" x2="0" y2="7" stroke="#C8860A" stroke-width="0.5" opacity="0.4"/><path d="M-7,7 Q0,20 7,7Z" fill="#C8860A" opacity="0.70"/><ellipse cx="0" cy="5.5" rx="5.5" ry="2" fill="#F0E0B0" opacity="0.60"/><path d="M0,3 Q0.8,0 0,3" fill="#F0E0B0" opacity="0.9"/></g><g transform="translate(385,20)"><line x1="0" y1="0" x2="0" y2="7" stroke="#C8860A" stroke-width="0.5" opacity="0.4"/><path d="M-7,7 Q0,20 7,7Z" fill="#A01830" opacity="0.70"/><ellipse cx="0" cy="5.5" rx="5.5" ry="2" fill="#C8860A" opacity="0.60"/><path d="M0,3 Q0.8,0 0,3" fill="#F0E0B0" opacity="0.9"/></g><g transform="translate(465,14)"><line x1="0" y1="0" x2="0" y2="7" stroke="#C8860A" stroke-width="0.5" opacity="0.4"/><path d="M-7,7 Q0,20 7,7Z" fill="#A01830" opacity="0.70"/><ellipse cx="0" cy="5.5" rx="5.5" ry="2" fill="#C8860A" opacity="0.60"/><path d="M0,3 Q0.8,0 0,3" fill="#F0E0B0" opacity="0.9"/></g><g transform="translate(545,16)"><line x1="0" y1="0" x2="0" y2="7" stroke="#C8860A" stroke-width="0.5" opacity="0.4"/><path d="M-7,7 Q0,20 7,7Z" fill="#A01830" opacity="0.70"/><ellipse cx="0" cy="5.5" rx="5.5" ry="2" fill="#C8860A" opacity="0.60"/><path d="M0,3 Q0.8,0 0,3" fill="#F0E0B0" opacity="0.9"/></g></svg></div>
+
+<!-- GALLERY -->
+<section id="gallery" class="s-gallery">
+  <img class="bg-fill" src="assets/backgrounds/Background 6.webp" alt="" loading="lazy">
+  <div id="petalGallery" class="petal-canvas"></div>
+  <div class="container">
+    <div class="s-head scroll-in">
+      <span class="sh-eye">Moments</span>
+      <h2 class="sh-h">Our <em>Gallery</em></h2>
+    </div>
+    <div class="gal-grid">
+      <div class="gal-item gal-tall scroll-in" style="--sd:0s"><div class="gal-ph"><span class="gal-m">P&amp;A</span><span class="gal-s">Your photo</span></div></div>
+      <div class="gal-item scroll-in" style="--sd:0.08s"><div class="gal-ph"><span class="gal-m">P&amp;A</span><span class="gal-s">Your photo</span></div></div>
+      <div class="gal-item scroll-in" style="--sd:0.16s"><div class="gal-ph"><span class="gal-m">P&amp;A</span><span class="gal-s">Your photo</span></div></div>
+      <div class="gal-item scroll-in" style="--sd:0.24s"><div class="gal-ph"><span class="gal-m">P&amp;A</span><span class="gal-s">Your photo</span></div></div>
+    </div>
+  </div>
+</section>
+
+<!-- THINGS TO KNOW -->
+<section id="things" class="s-things">
+  <img class="bg-fill things-sky" src="assets/layers/Hero background.webp" alt="">
+  <div class="things-veil"></div>
+  <div id="petalThings" class="petal-canvas"></div>
+  <div class="container">
+    <div class="s-head scroll-in">
+      <span class="sh-eye sh-eye--lt">Good to Know</span>
+      <h2 class="sh-h sh-h--lt">Things to <em>Know</em></h2>
+    </div>
+    <div class="tt-row">
+      <div class="tt scroll-in" style="--sd:0s">
+        <svg class="tt-ic" viewBox="0 0 32 32" width="38" height="38" fill="none" stroke="#C8860A" stroke-width="1.3" stroke-linecap="round"><line x1="7" y1="12" x2="25" y2="12"/><line x1="7" y1="20" x2="25" y2="20"/><line x1="13" y1="6" x2="11" y2="26"/><line x1="21" y1="6" x2="19" y2="26"/></svg>
+        <span class="tt-l" data-ttk="hashtag">Hashtag</span><p class="tt-v" id="ttkHashtag">#PriyaWedsArjun</p>
+      </div>
+      <div class="tt scroll-in" style="--sd:0.1s">
+        <svg class="tt-ic" viewBox="0 0 32 32" width="38" height="38" fill="none" stroke="#C8860A" stroke-width="1.3" stroke-linecap="round"><path d="M16 7a3 3 0 0 1 3 3"/><path d="M5 23 L16 11 L27 23 Q28 25 26 26 L6 26 Q4 25 5 23Z"/></svg>
+        <span class="tt-l">Dress Code</span><p class="tt-v">Indian Festive</p>
+      </div>
+      <div class="tt scroll-in" style="--sd:0.2s">
+        <svg class="tt-ic" viewBox="0 0 32 32" width="38" height="38" fill="none" stroke="#C8860A" stroke-width="1.3" stroke-linecap="round"><path d="M16 3a10 10 0 0 1 10 10c0 9-10 18-10 18S6 22 6 13A10 10 0 0 1 16 3z"/><circle cx="16" cy="13" r="3.5"/></svg>
+        <span class="tt-l" data-ttk="venue">Venue</span><p class="tt-v" id="ttkVenue">Umaid Bhawan<br>Jodhpur</p>
+      </div>
+      <div class="tt scroll-in" style="--sd:0.3s">
+        <svg class="tt-ic" viewBox="0 0 32 32" width="38" height="38" fill="none" stroke="#C8860A" stroke-width="1.3" stroke-linecap="round"><circle cx="16" cy="16" r="12"/><path d="M16 10v6l4 3"/></svg>
+        <span class="tt-l">Parking</span><p class="tt-v">Available<br>on-site</p>
+      </div>
+    </div>
+    <div class="tt-ig scroll-in"><span>Follow our story</span><a href="#">#PriyaWedsArjun</a></div>
+  </div>
+</section>
+
+<!-- Wave up into RSVP -->
+<div class="wdiv wdiv--up"><svg viewBox="0 0 1440 65" preserveAspectRatio="none"><path d="M0,33 C360,0 720,65 1080,33 C1260,16 1440,50 1440,33 L1440,65 L0,65Z" fill="#FAF4E4"/></svg></div>
+
+<!-- RSVP -->
+<section id="rsvp" class="s-rsvp">
+  <div class="rsvp-paper-veil"></div>
+  <div class="rsvp-florals" aria-hidden="true">
+    <svg class="rsvp-fl rsvp-fl--tl" viewBox="0 0 180 180" fill="none"><ellipse cx="60" cy="90" rx="18" ry="42" fill="#A01830" opacity=".07" transform="rotate(-30 60 90)"/><ellipse cx="90" cy="55" rx="14" ry="36" fill="#C8860A" opacity=".06" transform="rotate(20 90 55)"/><ellipse cx="115" cy="95" rx="16" ry="38" fill="#A01830" opacity=".05" transform="rotate(60 115 95)"/><circle cx="88" cy="88" r="6" fill="#C8860A" opacity=".10"/></svg>
+    <svg class="rsvp-fl rsvp-fl--br" viewBox="0 0 180 180" fill="none"><ellipse cx="60" cy="90" rx="18" ry="42" fill="#A01830" opacity=".07" transform="rotate(-30 60 90)"/><ellipse cx="90" cy="55" rx="14" ry="36" fill="#C8860A" opacity=".06" transform="rotate(20 90 55)"/><ellipse cx="115" cy="95" rx="16" ry="38" fill="#A01830" opacity=".05" transform="rotate(60 115 95)"/><circle cx="88" cy="88" r="6" fill="#C8860A" opacity=".10"/></svg>
+    <svg class="rsvp-fl rsvp-fl--tr" viewBox="0 0 120 120" fill="none"><ellipse cx="40" cy="60" rx="10" ry="28" fill="#A01830" opacity=".07" transform="rotate(15 40 60)"/><ellipse cx="75" cy="45" rx="9" ry="24" fill="#C8860A" opacity=".06" transform="rotate(-40 75 45)"/></svg>
+    <svg class="rsvp-fl rsvp-fl--bl" viewBox="0 0 120 120" fill="none"><ellipse cx="40" cy="60" rx="10" ry="28" fill="#A01830" opacity=".07" transform="rotate(15 40 60)"/><ellipse cx="75" cy="45" rx="9" ry="24" fill="#C8860A" opacity=".06" transform="rotate(-40 75 45)"/></svg>
+  </div>
+  <img class="s-diya-l" src="assets/elements/Element 1.webp" alt="" aria-hidden="true">
+  <img class="s-diya-r" src="assets/elements/Element 1.webp" alt="" aria-hidden="true">
+  <div class="rsvp-toran" aria-hidden="true">
+    <img src="assets/backgrounds/Background 4.webp" alt="" class="toran-img">
+  </div>
+  <div id="petalRsvp" class="petal-canvas"></div>
+  <div class="container rsvp-body">
+    <div class="rsvp-rule scroll-in">
+      <svg viewBox="0 0 400 12" width="100%" style="max-width:400px"><line x1="0" y1="6" x2="168" y2="6" stroke="#C8860A" stroke-width="0.8" opacity=".40"/><path d="M 184 6 m -8 0 a 8 8 0 1 0 16 0 a 8 8 0 1 0 -16 0" fill="none" stroke="#C8860A" stroke-width="1" opacity=".60"/><line x1="200" y1="6" x2="400" y2="6" stroke="#C8860A" stroke-width="0.8" opacity=".40"/></svg>
+    </div>
+    <span class="rsvp-eye scroll-in" style="--sd:.05s">Join the Celebration</span>
+    <h2 class="rsvp-heading scroll-in" id="rsvpHeading" style="--sd:.12s">Will you <em>join us?</em></h2>
+    <p class="rsvp-sub scroll-in" id="rsvpSub" style="--sd:.22s">
+      We've saved a seat for you — at our table, in our hearts, and under the royal sky.<br>
+      Come celebrate with us as we begin this new chapter together.
+    </p>
+    <div class="rsvp-cta-wrap scroll-in" style="--sd:.34s">
+      <a id="rsvpWaBtn" class="rsvp-wa-btn" href="https://wa.me/919999999999?text=Hi%20Priya%20%26%20Arjun!%20I%20would%20love%20to%20join%20your%20celebration." target="_blank" rel="noopener noreferrer" aria-label="RSVP via WhatsApp">
+        <span class="rsvp-wa-shimmer"></span>
+        <span class="rsvp-wa-inner">
+          <svg class="rsvp-wa-icon" viewBox="0 0 24 24" width="18" height="18" fill="currentColor" aria-hidden="true">
+            <path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347z"/>
+            <path d="M12 0C5.373 0 0 5.373 0 12c0 2.125.554 4.121 1.527 5.855L0 24l6.306-1.506A11.951 11.951 0 0012 24c6.627 0 12-5.373 12-12S18.627 0 12 0zm0 21.818a9.818 9.818 0 01-5.003-1.37l-.359-.214-3.737.892.93-3.63-.235-.373A9.818 9.818 0 1112 21.818z"/>
+          </svg>
+          Yes, I'll be there ✨
+        </span>
+      </a>
+    </div>
+    <p class="rsvp-ps scroll-in" style="--sd:.44s">You'll be redirected to WhatsApp to confirm your attendance.</p>
+    <div class="rsvp-rule scroll-in" style="--sd:.5s">
+      <svg viewBox="0 0 400 12" width="100%" style="max-width:400px"><line x1="0" y1="6" x2="168" y2="6" stroke="#C8860A" stroke-width="0.8" opacity=".40"/><path d="M 184 6 m -8 0 a 8 8 0 1 0 16 0 a 8 8 0 1 0 -16 0" fill="none" stroke="#C8860A" stroke-width="1" opacity=".60"/><line x1="200" y1="6" x2="400" y2="6" stroke="#C8860A" stroke-width="0.8" opacity=".40"/></svg>
+    </div>
+  </div>
+</section>
+
+<!-- FOOTER -->
+<footer class="footer">
+  <svg class="ft-lotus" viewBox="0 0 80 40" width="70" aria-hidden="true"><ellipse cx="40" cy="34" rx="7" ry="11" fill="#C8860A" opacity="0.22" transform="rotate(-40 40 34)"/><ellipse cx="40" cy="34" rx="7" ry="11" fill="#C8860A" opacity="0.22" transform="rotate(-20 40 34)"/><ellipse cx="40" cy="34" rx="7" ry="11" fill="#C8860A" opacity="0.22" transform="rotate(0 40 34)"/><ellipse cx="40" cy="34" rx="7" ry="11" fill="#C8860A" opacity="0.22" transform="rotate(20 40 34)"/><ellipse cx="40" cy="34" rx="7" ry="11" fill="#C8860A" opacity="0.22" transform="rotate(40 40 34)"/><circle cx="40" cy="34" r="5" fill="#C8860A" opacity="0.48"/></svg>
+  <div class="ft-names">Priya &amp; Arjun</div>
+  <div class="ft-rule"></div>
+  <p class="ft-date">12 December 2026 · Umaid Bhawan Palace, Jodhpur</p>
+  <p class="ft-credit">A beautiful wedding invitation</p>
+</footer>
+
+<script src="script.js"></script>
+
+<script>
+(function applyWeddingConfig(){
+  'use strict';
+  const C = (typeof WEDDING_CONFIG !== 'undefined') ? WEDDING_CONFIG : null;
+  if(!C){ initMusic(); return; }
+  const {couple, invite, events, story, gallery, thingsToKnow, rsvp} = C;
+
+  function fmt(d){ try{ return new Date(d+'T00:00').toLocaleDateString('en-IN',{day:'numeric',month:'long',year:'numeric'}); }catch(e){return d||'';} }
+  function el(id){ return document.getElementById(id); }
+
+  /* PAGE TITLE + HERO */
+  const dShort=couple.date?new Date(couple.date+'T00:00').toLocaleDateString('en-IN',{day:'2-digit',month:'2-digit',year:'numeric'}):'';
+  document.title=couple.bride+' & '+couple.groom+' · '+dShort;
+  const heroCopy=el('heroCopy');
+  if(heroCopy){
+    const b=heroCopy.querySelector('.hc-bride'),g=heroCopy.querySelector('.hc-groom');
+    if(b) b.textContent=couple.bride;
+    if(g) g.textContent=couple.groom;
+  }
+  const pn1=document.querySelector('.pl-n1'),pn2=document.querySelector('.pl-n2');
+  if(pn1) pn1.textContent=couple.bride;
+  if(pn2) pn2.textContent=couple.groom;
+
+  /* INVITATION */
+  const blessEl=document.querySelector('.i-bless');
+  if(blessEl&&invite&&invite.blessing) blessEl.innerHTML=invite.blessing.replace(/\n/g,'<br>');
+  const ib=document.querySelector('.i-bride'),ig2=document.querySelector('.i-groom');
+  if(ib) ib.textContent=couple.bride;
+  if(ig2) ig2.textContent=couple.groom;
+  if(invite){
+    const bF=[invite.brideFather,invite.brideMother].filter(Boolean).join(' & ')||'Mr. & Mrs. Sharma';
+    const gF=[invite.groomFather,invite.groomMother].filter(Boolean).join(' & ')||'Mr. & Mrs. Kapoor';
+    const bPar=el('iBrideParents'),gPar=el('iGroomParents');
+    if(bPar) bPar.textContent=bF;
+    if(gPar) gPar.textContent=gF;
+  }
+
+  /* STORY */
+  const stBrideEl=el('stRvBride'),stGroomEl=el('stRvGroom');
+  if(stBrideEl) stBrideEl.textContent=couple.bride;
+  if(stGroomEl) stGroomEl.textContent=couple.groom;
+  if(story&&story.tags&&story.tags.length){
+    const tagEl=el('stRvTags');
+    if(tagEl) tagEl.innerHTML=story.tags.map(t=>'<span class="st-rv-tag">'+t+'</span>').join('');
+  }
+
+  /* RSVP */
+  const rsvpSec=el('rsvp');
+  if(rsvpSec&&rsvp){
+    const hEl=el('rsvpHeading');
+    if(hEl&&rsvp.heading) hEl.innerHTML=rsvp.heading.replace(/(join us[?!.]?)/i,'<em>$1</em>');
+    const subEl=el('rsvpSub');
+    if(subEl&&rsvp.subtext) subEl.innerHTML=rsvp.subtext.replace(/\n/g,'<br>');
+    const waBtn=el('rsvpWaBtn');
+    if(waBtn){
+      const phone=((couple.whatsapp||rsvp.whatsapp||'').replace(/\D/g,''));
+      if(phone){
+        const full=phone.startsWith('91')?phone:'91'+phone;
+        const msg=encodeURIComponent('Hi '+couple.bride+' & '+couple.groom+'! I would love to join your celebration!');
+        waBtn.href='https://wa.me/'+full+'?text='+msg;
+      }
+    }
+    const btnInner=rsvpSec.querySelector('.rsvp-wa-inner');
+    if(btnInner&&rsvp.btnText){ const ic=btnInner.querySelector('svg'); btnInner.textContent=rsvp.btnText+' ✨'; if(ic) btnInner.prepend(ic); }
+  }
+
+  /* FOOTER */
+  const ftN=document.querySelector('.ft-names');
+  if(ftN) ftN.textContent=couple.bride+' & '+couple.groom;
+  const ftD=document.querySelector('.ft-date');
+  if(ftD) ftD.textContent=fmt(couple.date)+(couple.venue?' · '+couple.venue:'');
+
+  /* HASHTAG in things to know */
+  const hashEl=el('ttkHashtag');
+  if(hashEl&&couple.hashtag) hashEl.textContent=couple.hashtag;
+  const ttIgA=document.querySelector('.tt-ig a');
+  if(ttIgA&&couple.hashtag) ttIgA.textContent=couple.hashtag;
+
+  initMusic();
+})();
+if(typeof WEDDING_CONFIG==='undefined') initMusic();
+
+function initMusic(){
+  const audio=document.getElementById('bgMusic');
+  const btn=document.getElementById('musicBtn');
+  if(!audio||!btn) return;
+
+  let playing=false;
+  function setPlayingUI(isPlaying){
+    playing=isPlaying;
+    btn.classList.toggle('playing',isPlaying);
+    btn.textContent=isPlaying?'🔔':'🔕';
+  }
+
+  window.toggleMusic=function(){
+    if(playing){ audio.pause(); setPlayingUI(false); }
+    else { audio.play().then(()=>setPlayingUI(true)).catch(()=>setPlayingUI(false)); }
+  };
+
+  var _awayPaused=false;
+  function _pauseForAway(){ if(audio&&!audio.paused){ _awayPaused=true; audio.pause(); } }
+  function _resumeOnReturn(){ if(audio&&_awayPaused&&audio.paused){ _awayPaused=false; audio.play().catch(function(){}); } }
+  document.addEventListener('visibilitychange',function(){ if(document.visibilityState==='hidden')_pauseForAway(); else _resumeOnReturn(); });
+  window.addEventListener('pagehide',_pauseForAway);
+  window.addEventListener('pageshow',_resumeOnReturn);
+
+  function tryAutoplay(){
+    audio.volume = 0.55;
+    audio.play().then(()=>{ setPlayingUI(true); }).catch(()=>{
+      setPlayingUI(false);
+      function onFirstInteraction(){
+        audio.play().then(()=>setPlayingUI(true)).catch(()=>{});
+        document.removeEventListener('touchstart', onFirstInteraction);
+        document.removeEventListener('click', onFirstInteraction);
+        document.removeEventListener('scroll', onFirstInteraction);
+      }
+      document.addEventListener('touchstart', onFirstInteraction, {once:true, passive:true});
+      document.addEventListener('click', onFirstInteraction, {once:true});
+      document.addEventListener('scroll', onFirstInteraction, {once:true, passive:true});
+    });
+  }
+  tryAutoplay();
+  setTimeout(tryAutoplay, 400);
+}
+</script>
+</body>
+</html>

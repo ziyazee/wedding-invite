@@ -17,10 +17,13 @@ import Design15 from '../pages/Design15'
 import Design16 from '../pages/Design16'
 import Design17 from '../pages/Design17'
 import Design18 from '../pages/Design18'
+import TextLayoutLayer from './TextLayoutLayer'
 
 export default function InvitationRenderer({ details, rsvpTarget }: { details: InvitationData; rsvpTarget?: RsvpTarget }) {
-  return <InvitationContext.Provider value={details}>
-    {(details.template === 1 || details.template === 8) && details.music && <PersonalMusic src={details.music} />}
-    {details.template === 1 ? <NewDesign /> : details.template === 2 ? <MohadRahma /> : details.template === 4 ? <Design4 /> : details.template === 8 ? <Design8 /> : details.template === 9 ? <Design9 /> : details.template === 10 ? <Design10 /> : details.template === 11 ? <Design11 /> : details.template === 12 ? <Design12 /> : details.template === 13 ? <Design13 /> : details.template === 14 ? <Design14 /> : details.template === 15 ? <Design15 /> : details.template === 16 ? <Design16 /> : details.template === 17 ? <Design17 /> : details.template === 18 ? <Design18 /> : <AnimatedInvitation details={details} rsvpTarget={rsvpTarget} />}
-  </InvitationContext.Provider>
+  const animatedTemplateId = details.template === 2 ? 6 : details.template === 6 ? 3 : details.template
+  const animatedDetails = { ...details, template: animatedTemplateId }
+  return <InvitationContext.Provider value={details}><TextLayoutLayer layout={details.textOverrides}>
+    {(details.template === 101 || details.template === 108) && details.music && <PersonalMusic src={details.music} />}
+    {details.template === 1 ? <MohadRahma /> : details.template === 3 ? <Design14 /> : details.template === 4 ? <Design18 /> : details.template === 8 ? <Design13 /> : details.template === 101 ? <NewDesign /> : details.template === 104 ? <Design4 /> : details.template === 108 ? <Design8 /> : details.template === 109 ? <Design9 /> : details.template === 110 ? <Design10 /> : details.template === 111 ? <Design11 /> : details.template === 112 ? <Design12 /> : details.template === 115 ? <Design15 /> : details.template === 116 ? <Design16 /> : details.template === 117 ? <Design17 /> : <InvitationContext.Provider value={animatedDetails}><AnimatedInvitation details={animatedDetails} rsvpTarget={rsvpTarget} /></InvitationContext.Provider>}
+  </TextLayoutLayer></InvitationContext.Provider>
 }

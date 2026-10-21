@@ -36,7 +36,7 @@ function applyOpeningDate(frame: HTMLIFrameElement | null, details: unknown) {
   const doc = frame?.contentDocument
   if (!date || !doc) return
 
-  doc.querySelectorAll('p.d13-text').forEach((element) => {
+  doc.querySelectorAll<HTMLElement>('p.d13-text').forEach((element) => {
     if (!/are getting married/i.test(element.textContent ?? '')) return
     element.textContent = date
     element.style.setProperty('font-size', 'calc(1em + 2px)', 'important')
@@ -47,6 +47,9 @@ export default function Design13() {
   const details = useInvitationDetails()
   const frameRef = useRef<HTMLIFrameElement>(null)
   const templateSrc = invitationTemplateSrc('/design13/index.html', 13, details)
+  const initialTemplateSrc = useRef(templateSrc)
+  const editorPreview = new URLSearchParams(window.location.search).get('editor') === '1'
+  const frameSrc = editorPreview ? initialTemplateSrc.current : templateSrc
 
   useEffect(() => {
     const previousTitle = document.title
@@ -56,16 +59,21 @@ export default function Design13() {
 
   useEffect(() => {
     applyOpeningDate(frameRef.current, details)
-  }, [details])
+    if (editorPreview) frameRef.current?.contentWindow?.postMessage({ type: 'invitation-editor-details', query: new URL(templateSrc, window.location.origin).search }, window.location.origin)
+  }, [details, editorPreview, templateSrc])
 
   return (
     <iframe
       ref={frameRef}
-      src={`${templateSrc}${templateSrc.includes('?') ? '&' : '?'}v=story-no-photos`}
+      src={`${frameSrc}${frameSrc.includes('?') ? '&' : '?'}v=story-no-photos`}
       title="Kiran and Rahul wedding invitation"
       style={{ position: 'fixed', inset: 0, width: '100%', height: '100%', border: 0, background: '#fffaf2' }}
       allow="autoplay"
-      onLoad={() => applyOpeningDate(frameRef.current, details)}
+      onLoad={() => {
+        applyOpeningDate(frameRef.current, details)
+        if (editorPreview && frameRef.current?.contentDocument) frameRef.current.contentDocument.documentElement.style.overflowAnchor = 'none'
+        if (editorPreview) frameRef.current?.contentWindow?.postMessage({ type: 'invitation-editor-details', query: new URL(templateSrc, window.location.origin).search }, window.location.origin)
+      }}
     />
   )
 }

@@ -34,7 +34,7 @@ export const showcaseInvitations: Record<string, SavedInvitation> = {
   },
   aarongrace: {
     slug: 'aarongrace', createdAt: '2026-10-14T00:00:00.000Z', details: {
-      template: 6, groom: 'Aaron D’Souza', bride: 'Grace Fernandes', date: '2027-06-19', time: '16:00', offset: '+05:30',
+      template: 2, groom: 'Aaron D’Souza', bride: 'Grace Fernandes', date: '2027-06-19', time: '16:00', offset: '+05:30',
       venue: 'The Chapel by the Sea', address: 'Candolim, Goa, India', map: '',
       message: 'With grateful hearts and the blessings of our families, we invite you to witness our vows and celebrate the love that brings us together.',
       groomFamily: 'The D’Souza family', brideFamily: 'The Fernandes family',
@@ -62,7 +62,7 @@ export const showcaseInvitations: Record<string, SavedInvitation> = {
   },
   kiranrahul: {
     slug: 'kiranrahul', createdAt: '2026-10-14T00:00:00.000Z', details: {
-      template: 11, groom: 'Kiran Mehta', bride: 'Rahul Joshi', date: '2026-12-15', time: '19:00', offset: '+05:30',
+      template: 111, groom: 'Kiran Mehta', bride: 'Rahul Joshi', date: '2026-12-15', time: '19:00', offset: '+05:30',
       venue: 'Taj Hotel', address: 'Mumbai, Maharashtra, India', map: '',
       message: 'Some souls are destined to find each other, no matter how long the journey. Krishna and Radha’s story wasn’t just about falling in love—it was about finding peace in each other’s presence, strength in every challenge, and a home in each other’s hearts. Through every smile, every tear, and every moment in between, their love only grew deeper. Today, as they take the sacred vows of forever, they carry with them not only dreams of a beautiful future but also the blessings of everyone who has been part of their journey. With hearts full of love and gratitude, they invite you to celebrate the beginning of their forever.',
       groomFamily: 'The Mehta family', brideFamily: 'The Joshi family',
@@ -76,7 +76,7 @@ export const showcaseInvitations: Record<string, SavedInvitation> = {
   },
   vikramananya: {
     slug: 'vikramananya', createdAt: '2026-10-14T00:00:00.000Z', details: {
-      template: 2, groom: 'Vikram Reddy', bride: 'Ananya Nair', date: '2027-10-30', time: '18:00', offset: '+05:30',
+      template: 1, groom: 'Vikram Reddy', bride: 'Ananya Nair', date: '2027-10-30', time: '18:00', offset: '+05:30',
       venue: 'Saffron Palace Gardens', address: 'Hyderabad, Telangana, India', map: '',
       message: 'With the blessings of our elders and the love of our families, we invite you to celebrate our wedding. Your presence will make our day brighter.',
       groomFamily: 'The Reddy family', brideFamily: 'The Nair family',
@@ -90,7 +90,7 @@ export const showcaseInvitations: Record<string, SavedInvitation> = {
   },
   nikhiladiti: {
     slug: 'nikhiladiti', createdAt: '2026-10-14T00:00:00.000Z', details: {
-      template: 17, groom: 'Nikhil Mehta', bride: 'Aditi Kapoor', date: '2027-02-28', time: '17:30', offset: '+05:30',
+      template: 117, groom: 'Nikhil Mehta', bride: 'Aditi Kapoor', date: '2027-02-28', time: '17:30', offset: '+05:30',
       venue: 'Jai Mahal Palace', address: 'Jaipur, Rajasthan, India', map: '',
       message: 'With the blessings of Lord Ganesha and the love of our families, we invite you to join us as we exchange our vows and begin a life together.',
       groomFamily: 'The Mehta family', brideFamily: 'The Kapoor family',

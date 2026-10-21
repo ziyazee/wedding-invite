@@ -1,0 +1,6 @@
+.client-device-frame .phone-preview-resize { position: absolute; z-index: 5; right: -7px; bottom: -7px; display: grid; place-items: center; width: 34px; height: 34px; padding: 6px; border: 1px solid #cfbb94; border-radius: 11px; background: #fffaf0; color: #92713a; box-shadow: 0 3px 10px #30250e22; cursor: nwse-resize; touch-action: none; user-select: none; }
+.phone-preview-resize svg { width: 20px; height: 20px; pointer-events: none; }
+.client-device-frame .phone-preview-resize:hover { background: #f3e5ca; }
+.client-device-frame .phone-preview-resize:focus-visible { outline: 2px solid #a57b32; outline-offset: 3px; }
+.client-workspace.has-client-preview .client-device-frame.is-phone-resizing iframe { pointer-events: none; }
+.client-workspace.has-client-preview .client-preview-panel:has(.phone-preview-resize) { overflow-y: auto; justify-content: flex-start; }

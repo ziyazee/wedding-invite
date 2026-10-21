@@ -1,6 +1,7 @@
 import { useEffect, useRef, useState } from 'react'
 import type { PointerEvent, ReactNode } from 'react'
 import './InvitationLayoutEditor.css'
+import { useInvitationDetails } from '../invitations/context'
 
 type Placement = { x: number; y: number; scale: number }
 type Layout = Record<string, Placement>
@@ -32,9 +33,10 @@ function readLayout(): Layout {
 }
 
 export default function InvitationLayoutEditor({ children }: { children: ReactNode }) {
-  const enabled = new URLSearchParams(window.location.search).get('edit') === '1'
+  const personalized = !!useInvitationDetails()
+  const enabled = !personalized && new URLSearchParams(window.location.search).get('edit') === '1'
   const [editing, setEditing] = useState(enabled)
-  const [layout, setLayout] = useState<Layout>(readLayout)
+  const [layout, setLayout] = useState<Layout>(() => personalized ? { ...defaultLayout } : readLayout())
   const [selected, setSelected] = useState<string | null>(null)
   const [notice, setNotice] = useState('Select text, then drag it or change its size.')
   const root = useRef<HTMLDivElement>(null)

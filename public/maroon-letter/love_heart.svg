@@ -1,0 +1,26 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64" fill="none">
+  <defs>
+    <linearGradient id="love-gold" x1="32" y1="6" x2="32" y2="58" gradientUnits="userSpaceOnUse">
+      <stop offset="0%" stop-color="#fff6d2"/>
+      <stop offset="28%" stop-color="#f0d48a"/>
+      <stop offset="62%" stop-color="#d4af37"/>
+      <stop offset="100%" stop-color="#8d6414"/>
+    </linearGradient>
+    <linearGradient id="love-edge" x1="12" y1="12" x2="52" y2="52" gradientUnits="userSpaceOnUse">
+      <stop offset="0%" stop-color="#fff8e0"/>
+      <stop offset="100%" stop-color="#b88922"/>
+    </linearGradient>
+  </defs>
+  <path
+    fill="url(#love-gold)"
+    stroke="url(#love-edge)"
+    stroke-width="1.35"
+    stroke-linejoin="round"
+    d="M32 55.2C32 55.2 7.5 39.4 7.5 22.6 7.5 14.2 14 8.2 21.8 8.2c4.4 0 8.2 2.1 10.2 5.4 2-3.3 5.8-5.4 10.2-5.4 7.8 0 14.3 6 14.3 14.4 0 16.8-24.5 32.6-24.5 32.6Z"
+  />
+  <path
+    fill="#fff8e8"
+    fill-opacity="0.35"
+    d="M22.4 14.2c-4.6.2-8.6 3.8-8.8 8.6-.1 2.2.6 4.2 1.8 5.8 1.8-6.4 6.6-11.4 12.6-13.6-1.7-.6-3.6-.9-5.6-.8Z"
+  />
+</svg>

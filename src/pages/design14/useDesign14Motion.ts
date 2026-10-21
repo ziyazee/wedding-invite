@@ -1,6 +1,6 @@
 import { useEffect, useLayoutEffect, type RefObject } from 'react'
 
-export function useDesign14Motion(host: RefObject<HTMLDivElement | null>, opened: boolean) {
+export function useDesign14Motion(host: RefObject<HTMLDivElement | null>, opened: boolean, revision = '') {
   useLayoutEffect(() => {
     const container = host.current
     if (!container) return
@@ -135,7 +135,7 @@ export function useDesign14Motion(host: RefObject<HTMLDivElement | null>, opened
       cancelAnimationFrame(animationFrame)
       cloudGroups.forEach(group => group.clouds.forEach(({ element, previous }) => { element.style.animationPlayState = previous }))
     }
-  }, [host, opened])
+  }, [host, opened, revision])
 
   useEffect(() => {
     if (!opened || !host.current) return
@@ -166,5 +166,5 @@ export function useDesign14Motion(host: RefObject<HTMLDivElement | null>, opened
       observer?.disconnect()
       frames.forEach(cancelAnimationFrame)
     }
-  }, [host, opened])
+  }, [host, opened, revision])
 }

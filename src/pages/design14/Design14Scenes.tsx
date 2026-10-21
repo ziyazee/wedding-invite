@@ -1,10 +1,21 @@
 import type { CSSProperties } from 'react'
+import { TimelessNames } from './TimelessRules'
+import type { Celebration } from '../../invitations/model'
 import { useDesign14Carousel } from './useDesign14Carousel'
 
 // Existing invitation artwork and geometry, preserved as JSX.
 type Names = { groom: string; bride: string }
+type PersonalDetails = Names & { groomFamily?: string; brideFamily?: string; message?: string; date?: string; opened?: boolean }
+function eventDateParts(value: string) {
+  const date = new Date(`${value}T12:00:00Z`)
+  return { month: date.toLocaleDateString('en-GB', { month: 'long', timeZone: 'UTC' }), day: String(date.getUTCDate()), iso: value }
+}
+function eventTime(value: string) {
+  return new Date(`2000-01-01T${value}:00Z`).toLocaleTimeString('en-US', { hour: 'numeric', minute: '2-digit', timeZone: 'UTC' })
+}
 
-export function OpeningScene({ groom, bride }: Names) {
+export function OpeningScene({ groom, bride, date, opened = false }: PersonalDetails) {
+  const weddingDate = date ? new Date(`${date}T12:00:00Z`).toLocaleDateString('en-GB', { day: 'numeric', month: 'long', year: 'numeric', timeZone: 'UTC' }) : '3rd February 2027'
   return (
     <div className={"d14-wnkptn"} data-d14-name={"PAGE 1"}>
       <div className={"d14-151n5zr"} data-d14-name={"SKY"}>
@@ -26,28 +37,10 @@ export function OpeningScene({ groom, bride }: Names) {
             <img decoding={"async"} width={"1536"} height={"1024"} sizes={"(min-width: 1440px) max(calc((100vw + 686px) * 0.1538), calc((100vw + 686px) * 0.3165)), (min-width: 1201px) and (max-width: 1439.98px) max(calc((100vw + 686px) * 0.1538), calc((100vw + 686px) * 0.3165)), (min-width: 810px) and (max-width: 1200.98px) max(calc((100vw + 686px) * 0.1538), calc((100vw + 686px) * 0.3165)), (max-width: 809.98px) max(calc((100vw + 686px) * 0.1538), calc((100vw + 686px) * 0.3165))"} srcSet={"/design14/assets/zGWp5UP4NXxBVD059Ha4jDG8lIE.webp 512w,/design14/assets/zGWp5UP4NXxBVD059Ha4jDG8lIE.webp 1024w,/design14/assets/zGWp5UP4NXxBVD059Ha4jDG8lIE.webp 1536w"} src={"/design14/assets/zGWp5UP4NXxBVD059Ha4jDG8lIE.webp"} alt="" style={{"display": "block", "width": "100%", "height": "100%", "borderRadius": "inherit", "cornerShape": "inherit", "objectPosition": "center", "objectFit": "cover"} as CSSProperties} />
           </div>
         </div>
-        <svg className={"d14-14zc4xz d14-entry-name"} data-d14-name={"GROOM NAME"} data-d14-component-type={"RichTextContainer"} viewBox={"0 0 504 119"} style={{"willChange": "transform", "opacity": "0", "transform": "translate(-50%, -50%) translateY(40px)"} as CSSProperties}>
-          <text x={"50%"} y={"50%"} dominantBaseline={"central"} textAnchor={"middle"} fontFamily={"D14 Heading Serif, Georgia, serif"} fontSize={"102"} fontWeight={"700"} fill={"#ffe6b3"}>
-            {groom.toUpperCase()}
-          </text>
-        </svg>
-        <svg className={"d14-1sy4tjt d14-entry-name"} data-d14-component-type={"RichTextContainer"} viewBox={"0 0 89 38"} style={{"willChange": "transform", "opacity": "0", "transform": "translate(-50%, -50%) translateY(40px)"} as CSSProperties}>
-          <foreignObject width={"100%"} height={"100%"} className={"d14-fit-text"} transform={"scale(1)"} style={{"overflow": "visible", "transformOrigin": "center center"} as CSSProperties}>
-            <p dir={"auto"} style={{"--font-selector": "R0Y7Sm9zdC1yZWd1bGFy", "--d14-font-family": "\"Jost\", \"Jost Placeholder\", sans-serif", "--d14-font-size": "32px", "--d14-text-color": "rgb(255, 255, 255)"} as CSSProperties} className={"d14-text"}>
-              {"WEDS"}
-            </p>
-          </foreignObject>
-        </svg>
-        <svg className={"d14-1xwenpz d14-entry-name"} data-d14-name={"BRIDE NAME"} data-d14-component-type={"RichTextContainer"} viewBox={"0 0 361 130"} style={{"willChange": "transform", "opacity": "0", "transform": "translate(-50%, -50%) translateY(40px)"} as CSSProperties}>
-          <text x={"50%"} y={"50%"} dominantBaseline={"central"} textAnchor={"middle"} fontFamily={"D14 Heading Serif, Georgia, serif"} fontSize={"68"} fontWeight={"700"} fill={"#ffe6b3"}>
-            {bride.toUpperCase()}
-          </text>
-        </svg>
-        <svg style={{ opacity: 0 }} className={"d14-entry-date d14-entry-name"} viewBox={"0 0 361 50"} role={"img"} aria-label={"3rd February 2027"}>
-          <text x={"50%"} y={"50%"} dominantBaseline={"central"} textAnchor={"middle"} fontFamily={"D14 Heading Serif, Georgia, serif"} fontSize={"34"} fontWeight={"600"} fill={"#fff0cd"}>
-            {"3rd February 2027"}
-          </text>
-        </svg>
+        <div className="d14-rules-opening d14-entry-name" aria-hidden={!opened} style={{opacity:0,visibility:opened?'visible':'hidden'}}>
+          <TimelessNames groom={groom} bride={bride} stacked separator="WEDS" />
+          <p className="d14-rules-opening-date">{weddingDate}</p>
+        </div>
         <img className={"d14-local-cloud"} src={"/design14/assets/UeasMBu07jHUk5ch5onj5OD9f4.webp"} alt={""} aria-hidden={"true"} />
       </div>
       <div className={"d14-29qdai"} data-d14-appear-id={"29qdai"} data-d14-name={"TEMPLE"} style={{"willChange": "transform", "opacity": "0.001", "transform": "none"} as CSSProperties}>
@@ -64,7 +57,7 @@ export function OpeningScene({ groom, bride }: Names) {
   )
 }
 
-export function WelcomeScene({ groom, bride }: Names) {
+export function WelcomeScene({ groom, bride, groomFamily, brideFamily, message }: PersonalDetails) {
   return (
     <div className={"d14-15337ob"} data-d14-name={"PAGE 2"}>
       <div className={"d14-e0yggs"} data-d14-name={"SKY"}>
@@ -82,27 +75,10 @@ export function WelcomeScene({ groom, bride }: Names) {
         <p className={"d14-page-two-invocation"} lang={"sa"}>
           {"॥ ॐ श्री गणेशाय नमः ॥"}
         </p>
-        <p className={"d14-page-two-intro"}>
-          {"With the blessings of God and our beloved families,"}
-          <br />
-          {"we joyfully invite you to celebrate the wedding of"}
+        <p className={"d14-page-two-intro"} hidden={message !== undefined && !message.trim()}>
+          {message === undefined ? <>{'With the blessings of God and our beloved families,'}<br />{'we joyfully invite you to celebrate the wedding of'}</> : message}
         </p>
-        <div className="d14-page-two-families">
-          <h2 className="d14-page-two-names">{groom.toUpperCase()}</h2>
-          <p className="d14-page-two-family">
-            Son of Sri Bhaskar Shetty P &amp; Smt. Shilpashri B. Shetty,
-            Grandson of Late Puttanna Shetty Pandubettu and Late Bhoja S. Shetty Shanarabettu.<br />
-            Brother of Dr. Anmol B. Shetty.
-          </p>
-          <p className="d14-page-two-family-amp">&amp;</p>
-          <h2 className="d14-page-two-names">{bride.toUpperCase()}</h2>
-          <p className="d14-page-two-family">
-            Daughter of Sri Sadashiva Shetty &amp; Smt. Rekha S. Shetty.<br />
-            Granddaughter of Haradi Marbinamane Late Krishnayya Shetty, Chantharu Guddemane
-            Late Hiriyanna Shetty.<br />
-            Sister of Suhas Shetty &amp; Chinraj Shetty.
-          </p>
-        </div>
+        <TimelessNames groom={groom} bride={bride} groomFamily={groomFamily === undefined ? 'Son of Sri Bhaskar Shetty P & Smt. Shilpashri B. Shetty,\nGrandson of Late Puttanna Shetty Pandubettu and Late Bhoja S. Shetty Shanarabettu.\nBrother of Dr. Anmol B. Shetty.' : groomFamily} brideFamily={brideFamily === undefined ? 'Daughter of Sri Sadashiva Shetty & Smt. Rekha S. Shetty.\nGranddaughter of Haradi Marbinamane Late Krishnayya Shetty, Chantharu Guddemane Late Hiriyanna Shetty.\nSister of Suhas Shetty & Chinraj Shetty.' : brideFamily} />
         <div className={"d14-page-two-celebrate"}>
           <span className={"d14-page-two-divider"} aria-hidden={"true"}>
             <i />
@@ -196,7 +172,8 @@ export function CoupleScene() {
   )
 }
 
-function EngagementCard({ duplicate = false }: { duplicate?: boolean }) {
+function EngagementCard({ duplicate = false, event }: { duplicate?: boolean; event: Celebration }) {
+  const date = eventDateParts(event.date)
   return (
     <section data-carousel-clone={duplicate ? "" : undefined} aria-hidden={duplicate || undefined} inert={duplicate} className={"d14-engagement-section"} data-d14-name={"Engagement Ceremony"} id={"d14-engagement-slide" + (duplicate ? "-loop" : "")} aria-labelledby={"d14-engagement-title" + (duplicate ? "-loop" : "")} aria-roledescription={"slide"}>
       <img className={"d14-engagement-art"} src={"/design14/assets/engagement.png"} width={"962"} height={"1634"} alt={""} loading={"lazy"} decoding={"async"} />
@@ -205,11 +182,11 @@ function EngagementCard({ duplicate = false }: { duplicate?: boolean }) {
           <span className={"d14-engagement-sr-only"}>
             {"Engagement "}
           </span>
-          {"Ceremony"}
+          {event.title}
         </h2>
-        <time className={"d14-engagement-date"} dateTime={"12-11"}>
+        <time className={"d14-engagement-date"} dateTime={`${date.iso}T${event.time}`}>
           <span className={"d14-event-month"}>
-            {"December"}
+            {date.month}
           </span>
           <span className={"d14-engagement-date-row"}>
             <svg className={"d14-engagement-floret"} viewBox={"0 0 30 54"} fill={"none"} stroke={"currentColor"} strokeWidth={"1.2"} aria-hidden={"true"}>
@@ -218,7 +195,7 @@ function EngagementCard({ duplicate = false }: { duplicate?: boolean }) {
             </svg>
             <span className={"d14-event-date-line"} aria-hidden={"true"} />
             <span className={"d14-engagement-day"}>
-              {"11"}
+              {date.day}
             </span>
             <span className={"d14-event-date-line"} aria-hidden={"true"} />
             <svg className={"d14-engagement-floret"} viewBox={"0 0 30 54"} fill={"none"} stroke={"currentColor"} strokeWidth={"1.2"} aria-hidden={"true"}>
@@ -228,7 +205,7 @@ function EngagementCard({ duplicate = false }: { duplicate?: boolean }) {
           </span>
         </time>
         <p className={"d14-engagement-time"}>
-          {"Evening"}
+          {eventTime(event.time)}
         </p>
         <div className={"d14-engagement-rule"} aria-hidden={"true"}>
           <svg className={"d14-engagement-lotus"} viewBox={"0 0 60 44"} fill={"none"} stroke={"currentColor"} strokeWidth={"1.5"} aria-hidden={"true"}>
@@ -238,10 +215,10 @@ function EngagementCard({ duplicate = false }: { duplicate?: boolean }) {
         </div>
         <div className={"d14-engagement-venue"}>
           <p className={"d14-engagement-venue-name"}>
-            {"Kshana by the Sea"}
+            {event.venue}
           </p>
           <p className={"d14-engagement-venue-city"}>
-            {"Kaup"}
+            {event.address}
           </p>
         </div>
         <svg className={"d14-engagement-footer-ornament"} viewBox={"0 0 180 50"} fill={"none"} stroke={"currentColor"} strokeWidth={"1.4"} strokeLinecap={"round"} aria-hidden={"true"}>
@@ -253,7 +230,8 @@ function EngagementCard({ duplicate = false }: { duplicate?: boolean }) {
   )
 }
 
-function SangeethCard({ duplicate = false }: { duplicate?: boolean }) {
+function SangeethCard({ duplicate = false, event }: { duplicate?: boolean; event: Celebration }) {
+  const date = eventDateParts(event.date)
   return (
     <section data-carousel-clone={duplicate ? "" : undefined} aria-hidden={duplicate || undefined} inert={duplicate} className={"d14-engagement-section d14-sangeet-section"} data-d14-name={"Sangeeth Celebration"} id={"d14-sangeet-slide" + (duplicate ? "-loop" : "")} aria-labelledby={"d14-sangeet-title" + (duplicate ? "-loop" : "")} aria-roledescription={"slide"}>
       <img className={"d14-engagement-art"} src={"/design14/assets/sangeet.png"} width={"962"} height={"1635"} alt={""} loading={"lazy"} decoding={"async"} />
@@ -262,11 +240,11 @@ function SangeethCard({ duplicate = false }: { duplicate?: boolean }) {
           <span className={"d14-engagement-sr-only"}>
             {"Sangeeth "}
           </span>
-          {"Celebration"}
+          {event.title}
         </h2>
-        <time className={"d14-engagement-date"} dateTime={"01-31"}>
+        <time className={"d14-engagement-date"} dateTime={`${date.iso}T${event.time}`}>
           <span className={"d14-event-month"}>
-            {"January"}
+            {date.month}
           </span>
           <span className={"d14-engagement-date-row"}>
             <svg className={"d14-engagement-floret"} viewBox={"0 0 30 54"} fill={"none"} stroke={"currentColor"} strokeWidth={"1.2"} aria-hidden={"true"}>
@@ -275,7 +253,7 @@ function SangeethCard({ duplicate = false }: { duplicate?: boolean }) {
             </svg>
             <span className={"d14-event-date-line"} aria-hidden={"true"} />
             <span className={"d14-engagement-day"}>
-              {"31"}
+              {date.day}
             </span>
             <span className={"d14-event-date-line"} aria-hidden={"true"} />
             <svg className={"d14-engagement-floret"} viewBox={"0 0 30 54"} fill={"none"} stroke={"currentColor"} strokeWidth={"1.2"} aria-hidden={"true"}>
@@ -285,7 +263,7 @@ function SangeethCard({ duplicate = false }: { duplicate?: boolean }) {
           </span>
         </time>
         <p className={"d14-engagement-time"}>
-          {"Evening"}
+          {eventTime(event.time)}
         </p>
         <div className={"d14-engagement-rule"} aria-hidden={"true"}>
           <svg className={"d14-engagement-lotus"} viewBox={"0 0 60 44"} fill={"none"} stroke={"currentColor"} strokeWidth={"1.5"} aria-hidden={"true"}>
@@ -295,10 +273,10 @@ function SangeethCard({ duplicate = false }: { duplicate?: boolean }) {
         </div>
         <div className={"d14-engagement-venue"}>
           <p className={"d14-engagement-venue-name"}>
-            {"Shamili Beach Resort"}
+            {event.venue}
           </p>
           <p className={"d14-engagement-venue-city"}>
-            {"Padukere"}
+            {event.address}
           </p>
         </div>
         <svg className={"d14-engagement-footer-ornament"} viewBox={"0 0 180 50"} fill={"none"} stroke={"currentColor"} strokeWidth={"1.4"} strokeLinecap={"round"} aria-hidden={"true"}>
@@ -310,7 +288,8 @@ function SangeethCard({ duplicate = false }: { duplicate?: boolean }) {
   )
 }
 
-function MarriageCard({ duplicate = false }: { duplicate?: boolean }) {
+function MarriageCard({ duplicate = false, event }: { duplicate?: boolean; event: Celebration }) {
+  const date = eventDateParts(event.date)
   return (
     <section data-carousel-clone={duplicate ? "" : undefined} aria-hidden={duplicate || undefined} inert={duplicate} className={"d14-engagement-section d14-wedding-section"} data-d14-name={"Marriage Ceremony"} id={"d14-wedding-slide" + (duplicate ? "-loop" : "")} aria-labelledby={"d14-wedding-title" + (duplicate ? "-loop" : "")} aria-roledescription={"slide"}>
       <img className={"d14-engagement-art"} src={"/design14/assets/wedding.png"} width={"962"} height={"1635"} alt={""} loading={"lazy"} decoding={"async"} />
@@ -319,11 +298,11 @@ function MarriageCard({ duplicate = false }: { duplicate?: boolean }) {
           <span className={"d14-engagement-sr-only"}>
             {"Marriage "}
           </span>
-          {"Ceremony"}
+          {event.title}
         </h2>
-        <time className={"d14-engagement-date"} dateTime={"02-03"}>
+        <time className={"d14-engagement-date"} dateTime={`${date.iso}T${event.time}`}>
           <span className={"d14-event-month"}>
-            {"February"}
+            {date.month}
           </span>
           <span className={"d14-engagement-date-row"}>
             <svg className={"d14-engagement-floret"} viewBox={"0 0 30 54"} fill={"none"} stroke={"currentColor"} strokeWidth={"1.2"} aria-hidden={"true"}>
@@ -332,7 +311,7 @@ function MarriageCard({ duplicate = false }: { duplicate?: boolean }) {
             </svg>
             <span className={"d14-event-date-line"} aria-hidden={"true"} />
             <span className={"d14-engagement-day"}>
-              {"3"}
+              {date.day}
             </span>
             <span className={"d14-event-date-line"} aria-hidden={"true"} />
             <svg className={"d14-engagement-floret"} viewBox={"0 0 30 54"} fill={"none"} stroke={"currentColor"} strokeWidth={"1.2"} aria-hidden={"true"}>
@@ -342,7 +321,7 @@ function MarriageCard({ duplicate = false }: { duplicate?: boolean }) {
           </span>
         </time>
         <p className={"d14-engagement-time"}>
-          {"Morning"}
+          {eventTime(event.time)}
         </p>
         <div className={"d14-engagement-rule"} aria-hidden={"true"}>
           <svg className={"d14-engagement-lotus"} viewBox={"0 0 60 44"} fill={"none"} stroke={"currentColor"} strokeWidth={"1.5"} aria-hidden={"true"}>
@@ -352,10 +331,10 @@ function MarriageCard({ duplicate = false }: { duplicate?: boolean }) {
         </div>
         <div className={"d14-engagement-venue"}>
           <p className={"d14-engagement-venue-name"}>
-            {"Amrith Garden"}
+            {event.venue}
           </p>
           <p className={"d14-engagement-venue-city"}>
-            {"Udupi"}
+            {event.address}
           </p>
         </div>
         <svg className={"d14-engagement-footer-ornament"} viewBox={"0 0 180 50"} fill={"none"} stroke={"currentColor"} strokeWidth={"1.4"} strokeLinecap={"round"} aria-hidden={"true"}>
@@ -367,7 +346,8 @@ function MarriageCard({ duplicate = false }: { duplicate?: boolean }) {
   )
 }
 
-function ReceptionCard({ duplicate = false }: { duplicate?: boolean }) {
+function ReceptionCard({ duplicate = false, event }: { duplicate?: boolean; event: Celebration }) {
+  const date = eventDateParts(event.date)
   return (
     <section data-carousel-clone={duplicate ? "" : undefined} aria-hidden={duplicate || undefined} inert={duplicate} className={"d14-engagement-section d14-reception-section"} data-d14-name={"Reception Celebration"} id={"d14-reception-slide" + (duplicate ? "-loop" : "")} aria-labelledby={"d14-reception-title" + (duplicate ? "-loop" : "")} aria-roledescription={"slide"}>
       <img className={"d14-engagement-art"} src={"/design14/assets/reception.png"} width={"962"} height={"1635"} alt={""} loading={"lazy"} decoding={"async"} />
@@ -376,11 +356,11 @@ function ReceptionCard({ duplicate = false }: { duplicate?: boolean }) {
           <span className={"d14-engagement-sr-only"}>
             {"Reception "}
           </span>
-          {"Celebration"}
+          {event.title}
         </h2>
-        <time className={"d14-engagement-date"} dateTime={"02-04"}>
+        <time className={"d14-engagement-date"} dateTime={`${date.iso}T${event.time}`}>
           <span className={"d14-event-month"}>
-            {"February"}
+            {date.month}
           </span>
           <span className={"d14-engagement-date-row"}>
             <svg className={"d14-engagement-floret"} viewBox={"0 0 30 54"} fill={"none"} stroke={"currentColor"} strokeWidth={"1.2"} aria-hidden={"true"}>
@@ -389,7 +369,7 @@ function ReceptionCard({ duplicate = false }: { duplicate?: boolean }) {
             </svg>
             <span className={"d14-event-date-line"} aria-hidden={"true"} />
             <span className={"d14-engagement-day"}>
-              {"4"}
+              {date.day}
             </span>
             <span className={"d14-event-date-line"} aria-hidden={"true"} />
             <svg className={"d14-engagement-floret"} viewBox={"0 0 30 54"} fill={"none"} stroke={"currentColor"} strokeWidth={"1.2"} aria-hidden={"true"}>
@@ -399,7 +379,7 @@ function ReceptionCard({ duplicate = false }: { duplicate?: boolean }) {
           </span>
         </time>
         <p className={"d14-engagement-time"}>
-          {"Evening"}
+          {eventTime(event.time)}
         </p>
         <div className={"d14-engagement-rule"} aria-hidden={"true"}>
           <svg className={"d14-engagement-lotus"} viewBox={"0 0 60 44"} fill={"none"} stroke={"currentColor"} strokeWidth={"1.5"} aria-hidden={"true"}>
@@ -409,10 +389,10 @@ function ReceptionCard({ duplicate = false }: { duplicate?: boolean }) {
         </div>
         <div className={"d14-engagement-venue"}>
           <p className={"d14-engagement-venue-name"}>
-            {"Ocean Pearl Times Square"}
+            {event.venue}
           </p>
           <p className={"d14-engagement-venue-city"}>
-            {"Udupi"}
+            {event.address}
           </p>
         </div>
         <svg className={"d14-engagement-footer-ornament"} viewBox={"0 0 180 50"} fill={"none"} stroke={"currentColor"} strokeWidth={"1.4"} strokeLinecap={"round"} aria-hidden={"true"}>
@@ -424,7 +404,7 @@ function ReceptionCard({ duplicate = false }: { duplicate?: boolean }) {
   )
 }
 
-export function Celebrations({ opened }: { opened: boolean }) {
+export function Celebrations({ opened, events }: { opened: boolean; events: [Celebration, Celebration, Celebration, Celebration] }) {
   const { galleryRef, selected, goTo } = useDesign14Carousel(opened)
   return (
     <div className={"d14-event-gallery"} role={"region"} aria-label={"Wedding celebrations"} aria-roledescription={"carousel"} ref={galleryRef}>
@@ -444,18 +424,18 @@ export function Celebrations({ opened }: { opened: boolean }) {
         </button>
       </div>
       <div className={"d14-event-gallery-track"} tabIndex={0} aria-label={"Event invitations. Swipe horizontally or use the left and right arrow keys."}>
-        <ReceptionCard duplicate />
-        <EngagementCard />
-        <SangeethCard />
-        <MarriageCard />
-        <ReceptionCard />
-        <EngagementCard duplicate />
+        <ReceptionCard duplicate event={events[3]} />
+        <EngagementCard event={events[0]} />
+        <SangeethCard event={events[1]} />
+        <MarriageCard event={events[2]} />
+        <ReceptionCard event={events[3]} />
+        <EngagementCard duplicate event={events[0]} />
       </div>
     </div>
   )
 }
 
-export function ClosingScene() {
+export function ClosingScene({ showIllustrations = true }: { showIllustrations?: boolean }) {
   return (
     <section className={"d14-end-scene"} data-d14-name={"End Scene"} aria-label={"Temple scene"}>
       <div className={"d14-end-clouds"} aria-hidden={"true"}>
@@ -464,7 +444,7 @@ export function ClosingScene() {
         <img className={"d14-end-cloud d14-end-cloud--low"} src={"/design14/assets/UeasMBu07jHUk5ch5onj5OD9f4.webp"} alt={""} loading={"lazy"} decoding={"async"} />
       </div>
       <img className={"d14-end-scene-art"} src={"/design14/assets/end-scene.png"} width={"1024"} height={"1536"} alt={"An ornate temple decorated with flowers and saffron flags"} loading={"lazy"} decoding={"async"} />
-      <img className="d14-end-couple" src="/design14/assets/brideandgrrom.png" width="1024" height="1536" alt="Bride and groom exchanging wedding garlands" loading="lazy" decoding="async" />
+      <img hidden={!showIllustrations} data-couple-illustration="" className="d14-end-couple" src="/design14/assets/brideandgrrom.png" width="1024" height="1536" alt="Bride and groom exchanging wedding garlands" loading="lazy" decoding="async" />
       <div className={"d14-end-gratitude"}>
         <p className={"d14-end-gratitude-intro"}>
           {"With hearts full of gratitude"}

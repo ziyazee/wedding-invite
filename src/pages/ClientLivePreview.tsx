@@ -17,6 +17,14 @@ export default function ClientLivePreview() {
   const [details, setDetails] = useState<InvitationData | null>(readPreview)
 
   useEffect(() => {
+    if (new URLSearchParams(window.location.search).get('editor') !== '1') return
+    const style = document.documentElement.style
+    const previous = style.overflowAnchor
+    style.overflowAnchor = 'none'
+    return () => { style.overflowAnchor = previous }
+  }, [])
+
+  useEffect(() => {
     const syncPreview = (event: StorageEvent) => {
       if (event.key === previewKey) setDetails(readPreview())
     }

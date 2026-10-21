@@ -1,6 +1,6 @@
 import { useCallback, useLayoutEffect, useRef, useState } from 'react'
 
-export function useDesign14Carousel(opened: boolean) {
+export function useDesign14Carousel(opened: boolean, eventCount = 4) {
   const galleryRef = useRef<HTMLDivElement>(null)
   const navigate = useRef<(index: number) => void>(() => {})
   const [selected, setSelected] = useState(0)
@@ -231,7 +231,7 @@ export function useDesign14Carousel(opened: boolean) {
       if (drag && track.hasPointerCapture(drag.id)) track.releasePointerCapture(drag.id)
       track.classList.remove('is-dragging', 'is-repositioning')
     }
-  }, [opened])
+  }, [opened, eventCount])
 
   return { galleryRef, selected, goTo }
 }

@@ -3,6 +3,9 @@ import type { InvitationData } from './model'
 import { formatDate, formatTime, mapURL, weddingISO } from './model'
 import { downloadCalendar } from './calendar'
 import { saveOrderRsvp, type RsvpSubmitRequest, type RsvpTarget } from './rsvp'
+import { markEditorDocument, updateEditorDocument } from './editorDocument'
+import { installCardContentFit, secretGardenCardCSS, wrapCardText } from './cardContentFit'
+import { bloomRulesCSS, installBloomFit, fitBloomNames } from './bloomRules'
 const themes: Record<number,{names:string[];floral:string;frame:string;bg:string;ink:string}>={
  3:{names:['Camille','Antoine'],floral:'/design3/assets/embroidered-swans-hero-v2.png',frame:'/design3/assets/ceremony-reception-bg-v2.webp',bg:'#F5F0E8',ink:'#536249'},
  5:{names:['Clara','Nour'],floral:'/design5/assets/bouquet_flores_majestic.png',frame:'',bg:'#EFE8DA',ink:'#485b41'},
@@ -26,6 +29,10 @@ const bloomDateCopy=(iso:string)=>{
 }
 export default function AnimatedInvitation({details:d,rsvpTarget}:{details:InvitationData;rsvpTarget?:RsvpTarget}){
  const [html,setHTML]=useState('');const [error,setError]=useState('');const frame=useRef<HTMLIFrameElement>(null)
+ const editorSource=useRef<Document | null>(null)
+ const currentDetails=useRef(d)
+ currentDetails.current=d
+ const editorPreview=new URLSearchParams(window.location.search).get('editor')==='1'
  useEffect(()=>{
   const abort=new AbortController()
   async function load(){
@@ -66,9 +73,35 @@ export default function AnimatedInvitation({details:d,rsvpTarget}:{details:Invit
      paragraphs[1].after(closing)
     }
    }
+   if(d.template===3||d.template===5||d.template===6||d.template===7){
+    const openingNames=hero?.querySelector(d.template===3?'.opening-name':'h1')
+    if(openingNames){
+     openingNames.classList.add('atelier-opening-names')
+     if(d.template===6)openingNames.classList.add('atelier-majestic-opening-names')
+     openingNames.parentElement?.classList.add('atelier-opening-copy')
+     if(d.template===3){
+      openingNames.setAttribute('data-names-layout','stacked')
+      openingNames.classList.add('atelier-names-stacked')
+      openingNames.innerHTML=`<span>${escape(d.groom)}</span><span>&amp;</span><span>${escape(d.bride)}</span>`
+     }else if(d.template===7){
+      openingNames.classList.add('atelier-bloom-names','atelier-bloom-opening-names')
+      openingNames.setAttribute('data-names-layout','stacked')
+      openingNames.classList.add('atelier-names-stacked')
+     }else{
+      openingNames.innerHTML=`<span>${escape(d.groom)}</span><span>&amp;</span><span>${escape(d.bride)}</span>`
+     }
+    }
+   }
    const bloomWelcome=d.template===7?doc.querySelector<HTMLElement>('section#welcome'):null
    const bloomCeremony=d.template===7?doc.querySelector<HTMLElement>('section#wedding-events'):null
    const bloomFooter=d.template===7?doc.querySelector('footer'):null
+   if(embroideredWelcome){
+    embroideredWelcome.classList.add('atelier-embroidered-introduction')
+    embroideredWelcome.querySelectorAll('p').forEach((paragraph,index)=>{
+     paragraph.classList.add(index===0?'atelier-fixed-intro-heading':'atelier-fit-intro-content')
+     if(index===0)paragraph.innerHTML='Two souls.<br>One beautiful journey.'
+    })
+   }
    const embroideredFooter=d.template===3?doc.querySelector('footer'):null
    const bloomEnding=doc.createDocumentFragment()
    const referenceDetails=doc.createDocumentFragment()
@@ -85,18 +118,53 @@ export default function AnimatedInvitation({details:d,rsvpTarget}:{details:Invit
     // Its original standalone lights must not remain below the personalized content.
     if(d.template===5)doc.querySelector('img[src="/design5/assets/lights.png"]')?.remove()
     lights.className='atelier-majestic-lights'
+    if(d.template===5)lights.classList.add('atelier-secret-garden-lights')
+    if(d.template===6)lights.classList.add('atelier-majestic-intro-lights')
     lights.removeAttribute('style')
-    details.classList.add('atelier-majestic-details')
+    details.classList.add('atelier-majestic-details','atelier-secret-garden-details')
+    if(d.template===5){
+     details.classList.add('atelier-secret-garden-details')
+     const message=doc.createElement('p')
+     message.className='atelier-details-message'
+     message.textContent=d.message
+     message.hidden=!d.message.trim()
+     details.querySelector('.sg-details-heading h2')?.after(message)
+    }
     programme.classList.add('atelier-majestic-programme')
+    if(d.template===6)programme.classList.add('atelier-majestic-programme-compact')
     dress.classList.add('atelier-majestic-dress')
+    if(d.template===5||d.template===6){
+     const dressArt=dress.querySelector('img')
+     const hideIllustration=d.showCoupleIllustrations===false
+     dress.classList.toggle('atelier-dress-without-illustration',hideIllustration)
+     if(dressArt){
+      dressArt.setAttribute('data-couple-illustration','')
+      dressArt.hidden=hideIllustration
+      const artWrapper=dressArt.parentElement
+      if(artWrapper){artWrapper.setAttribute('data-couple-illustration','');artWrapper.hidden=hideIllustration}
+     }
+    }
     details.querySelector('.sg-venue-name')!.textContent=d.venue
     details.querySelector('.sg-venue-city')!.textContent=d.address
     details.querySelector('.sg-venue-time span')!.textContent=formatTime(d.time)
+    if(d.template===5){
+     const venueDate=doc.createElement('p')
+     venueDate.className='sg-venue-date'
+     venueDate.textContent=formatDate(d.date)
+     details.querySelector('.sg-venue-time')?.before(venueDate)
+    }
     const maps=details.querySelector<HTMLAnchorElement>('.sg-venue-actions a')!
     maps.href=mapURL(d.venue,d.address,d.map)
+    maps.hidden=!d.map.trim()
     const calendar=details.querySelector<HTMLButtonElement>('.sg-venue-actions button')!
     calendar.type='button'
     calendar.setAttribute('data-wedding-calendar','')
+    if(d.template===5||d.template===6){
+     const labels=doc.createTreeWalker(calendar,NodeFilter.SHOW_TEXT)
+     while(labels.nextNode()){
+      if(labels.currentNode.textContent?.trim()==='Calendar')labels.currentNode.textContent='Add to calendar'
+     }
+    }
     const programmeImage=programme.querySelector('img')!
     programmeImage.src='/design6/assets/food.png'
     programmeImage.className='atelier-majestic-programme-art'
@@ -114,7 +182,9 @@ export default function AnimatedInvitation({details:d,rsvpTarget}:{details:Invit
      dressCard.querySelectorAll('p').forEach(paragraph=>paragraph.remove())
     }
     referenceDetails.append(lights,details,programme)
-    if(d.dressCode.trim())referenceDetails.append(dress)
+    const dressSection=dress as HTMLElement
+    dressSection.hidden=!d.dressCode.trim()
+    referenceDetails.append(dress)
    }
    sections.forEach(section=>{if(section!==hero&&section!==embroideredWelcome&&section.id!=='countdown'&&section!==bloomWelcome&&section!==bloomCeremony)section.style.setProperty('display','none','important')})
    // Keep the invitation artwork, countdown and scroll effects. Video opening gates are retired.
@@ -128,7 +198,37 @@ export default function AnimatedInvitation({details:d,rsvpTarget}:{details:Invit
      if(heading==='Dress code'||(heading===title&&note.querySelector('p')?.textContent===formatDate(d.date)))note.remove()
     })
    }
+   if(d.template===3||d.template===5||d.template===6||d.template===7){
+    personal.querySelectorAll('.atelier-event').forEach((card,index)=>{
+     const event=events[index]
+     const title=card.querySelector('h2')
+     const venue=card.querySelector('h3')
+     const address=venue?.nextElementSibling
+     for(const [field,value,limit] of [[title,event.title,18],[venue,event.venue,24],[address,event.address,32]] as const){
+      if(field){field.setAttribute('data-card-text','');field.textContent=wrapCardText(value,limit)}
+     }
+     const directions=card.querySelector<HTMLAnchorElement>('.atelier-links a')
+     if(directions)directions.hidden=!events[index].map.trim()
+     const calendar=card.querySelector<HTMLButtonElement>('[data-personal-calendar]')
+     if(calendar)calendar.textContent='Add to calendar'
+    })
+   }
    if(d.template===7){
+    personal.classList.add('atelier-bloom-rules')
+    personal.querySelectorAll<HTMLElement>(':scope > .atelier-note').forEach(note=>{
+     const heading=note.querySelector('h2')?.textContent
+     if(heading==='Dress code'){
+      note.hidden=!d.dressCode.trim()
+      const art=doc.createElement('img')
+      art.src='/design7/assets/black-tie-illustration-Bzqxj15v.png'
+      art.alt='Wedding attire illustration'
+      art.setAttribute('data-couple-illustration','')
+      art.hidden=d.showCoupleIllustrations===false
+      note.append(art)
+     }
+     if(heading==='A little note')note.hidden=!d.giftNote.trim()
+     if(note.querySelector('a'))note.hidden=!d.gallery.trim()
+    })
     const weddingEvent=d.events[0]
     const weddingEventIndex=events.indexOf(weddingEvent)
     const ceremonyCard=personal.querySelectorAll<HTMLElement>('.atelier-event')[weddingEventIndex]
@@ -143,12 +243,16 @@ export default function AnimatedInvitation({details:d,rsvpTarget}:{details:Invit
     const time=dateRow?.lastElementChild
     const address=details?.lastElementChild
     if(!sectionHeading||!venue||!location||!date||!time||!address)throw new Error('Could not load the Bloom celebration details.')
-    sectionHeading.textContent=weddingEvent.title.replace(/\s+&\s+/g,'\n& ')
-    venue.textContent=weddingEvent.venue
+    bloomCeremony.classList.add('atelier-bloom-ceremony')
+    const nativeFrame=bloomCeremony.querySelector<HTMLElement>('[style*="aspect-ratio"]')!
+    nativeFrame.setAttribute('data-bloom-card','image')
+    ceremonyCopy!.setAttribute('data-bloom-copy','')
+    sectionHeading.textContent=wrapCardText(weddingEvent.title,18)
+    venue.textContent=wrapCardText(weddingEvent.venue,24)
     venue.classList.remove('whitespace-nowrap')
     const addressParts=weddingEvent.address.split(/\n|,\s*/).map(part=>part.trim()).filter(Boolean)
-    const locality=addressParts.slice(1).join(', ')
-    location.textContent=locality
+    const locality=weddingEvent.address.includes('\n')?'':addressParts.slice(1).join(', ')
+    location.textContent=wrapCardText(locality,32)
     location.classList.remove('whitespace-nowrap')
     if(!locality)location.remove()
     const eventDate=new Date(`${weddingEvent.date}T12:00:00Z`)
@@ -157,8 +261,8 @@ export default function AnimatedInvitation({details:d,rsvpTarget}:{details:Invit
     date.children[0].textContent=`${formatDate(weddingEvent.date,{weekday:'long'})}, ${day}${suffix}`
     date.children[1].textContent=`of ${formatDate(weddingEvent.date,{month:'long',year:'numeric'}).replace(/ (\d{4})$/,', $1')}`
     time.textContent=formatTime(weddingEvent.time)
-    address.children[0].textContent=addressParts[0]||''
-    address.children[1].textContent=locality
+    address.children[0].textContent=wrapCardText(weddingEvent.address.includes('\n')?weddingEvent.address:addressParts[0]||'',32)
+    address.children[1].textContent=wrapCardText(locality,32)
     if(!locality)address.children[1].remove()
     const venueArt=bloomCeremony.querySelector('img')
     if(venueArt)venueArt.alt=''
@@ -169,16 +273,18 @@ export default function AnimatedInvitation({details:d,rsvpTarget}:{details:Invit
      directions.className=originalButtons[0].className
      directions.textContent='Open in Maps'
      directions.href=mapURL(weddingEvent.venue,weddingEvent.address,weddingEvent.map)
+     directions.hidden=!weddingEvent.map.trim()
      directions.target='_blank'
      directions.rel='noreferrer'
      originalButtons[0].replaceWith(directions)
      const calendar=originalButtons[1]
-     calendar.textContent='Save the date +'
+     calendar.textContent='Add to calendar'
      calendar.setAttribute('data-personal-calendar','0')
      for(const attribute of ['id','aria-haspopup','aria-expanded','data-state'])calendar.removeAttribute(attribute)
     }
     ceremonyCard.remove()
     personal.querySelectorAll<HTMLElement>('.atelier-event').forEach(card=>{
+     card.setAttribute('data-bloom-card','video')
      const video=doc.createElement('video')
      video.src='/design7/assets/hum.mov'
      video.autoplay=true
@@ -202,7 +308,8 @@ export default function AnimatedInvitation({details:d,rsvpTarget}:{details:Invit
       copy.style.gridArea='1 / 1'
       copy.style.position='relative'
       copy.style.zIndex='1'
-      copy.style.padding='70px 17%'
+      copy.style.padding='0'
+      copy.setAttribute('data-bloom-copy','')
      }
     })
     // Use Design 7's original markup and utility classes for its welcome section.
@@ -225,17 +332,26 @@ export default function AnimatedInvitation({details:d,rsvpTarget}:{details:Invit
     nameHeadings[0].textContent=d.groom
     nameHeadings[1].textContent=d.bride
     connector.textContent='&'
+    bloomWelcome.classList.add('atelier-bloom-welcome')
+    nameBlock!.classList.remove('space-y-2')
+    nameBlock!.classList.add('atelier-opening-names','atelier-family-names','atelier-bloom-names')
+    nameBlock!.setAttribute('data-names-layout',d.groomFamily.trim()||d.brideFamily.trim()?'stacked':'auto')
+    for(const [index,family] of [d.groomFamily,d.brideFamily].entries()){
+     const person=doc.createElement('div')
+     person.className='atelier-bloom-person'
+     nameHeadings[index].replaceWith(person)
+     const familyText=doc.createElement('p')
+     familyText.className='atelier-bloom-family'
+     familyText.textContent=family
+     familyText.hidden=!family.trim()
+     person.append(nameHeadings[index],familyText)
+    }
     welcomeMessage.textContent=d.message
+    ;(welcomeMessage as HTMLElement).hidden=!d.message.trim()
     welcomeMessage.classList.add('whitespace-pre-line')
     const [weekdayLine,dateLine,yearLine]=bloomDateCopy(d.date)
     weekday.textContent=weekdayLine
     writtenDate.replaceChildren(doc.createTextNode(dateLine),doc.createElement('br'),doc.createTextNode(yearLine))
-    if(d.groomFamily||d.brideFamily){
-     const familyDetails=doc.createElement('p')
-     familyDetails.className='font-body text-base md:text-lg leading-relaxed text-sage-dark whitespace-pre-line'
-     familyDetails.textContent=[d.groomFamily,d.brideFamily].filter(Boolean).join('\n')
-     messageBlock.append(familyDetails)
-    }
     personal.querySelector('.atelier-welcome')?.remove()
     // Restore Design 7's original RSVP and closing card outside the generic styles.
     const rsvpResponse=await fetch('/design7/rsvp.html',{signal:abort.signal})
@@ -256,7 +372,12 @@ export default function AnimatedInvitation({details:d,rsvpTarget}:{details:Invit
     const closingAmpersand=doc.createElement('span')
     closingAmpersand.className='italic'
     closingAmpersand.textContent='&'
-    closingNames.replaceChildren(doc.createTextNode(`${d.groom} `),closingAmpersand,doc.createTextNode(` ${d.bride}`))
+    const closingGroom=doc.createElement('span')
+    const closingBride=doc.createElement('span')
+    closingGroom.textContent=d.groom
+    closingBride.textContent=d.bride
+    closingNames.classList.add('atelier-opening-names','atelier-bloom-names')
+    closingNames.replaceChildren(closingGroom,closingAmpersand,closingBride)
     closingDate.textContent=formatDate(d.date)
     const contact=bloomFooter.querySelector('.bloom-invitation-contact')
     const whatsappLink=contact?.querySelector<HTMLAnchorElement>('a')
@@ -273,8 +394,28 @@ export default function AnimatedInvitation({details:d,rsvpTarget}:{details:Invit
     bloomEnding.append(rsvp,bloomFooter)
    }
    if(d.template===3){
-    const coupleNames=personal.querySelector('.atelier-welcome h2')
-    if(coupleNames)coupleNames.innerHTML=`${escape(d.groom)}<br>&<br>${escape(d.bride)}`
+    personal.classList.add('atelier-card-content-fit','atelier-embroidered-fit')
+    const welcome=personal.querySelector('.atelier-welcome')
+    if(welcome){
+     welcome.classList.add('atelier-secret-garden-welcome')
+     const hasFamily=Boolean(d.groomFamily.trim()||d.brideFamily.trim())
+     welcome.innerHTML=`<p class="atelier-eyebrow">Together with our families</p><div class="atelier-opening-names atelier-family-names${hasFamily?' atelier-names-stacked':''}" data-names-layout="${hasFamily?'stacked':'auto'}"><div class="atelier-couple-person"><h2 class="font-script">${escape(d.groom)}</h2><p class="atelier-family-details"${d.groomFamily.trim()?'':' hidden'}>${escape(d.groomFamily)}</p></div><span class="atelier-couple-connector font-script">&amp;</span><div class="atelier-couple-person"><h2 class="font-script">${escape(d.bride)}</h2><p class="atelier-family-details"${d.brideFamily.trim()?'':' hidden'}>${escape(d.brideFamily)}</p></div></div><p>${escape(d.message)}</p>`
+    }
+    personal.querySelectorAll<HTMLElement>(':scope > .atelier-note').forEach(note=>{
+     const heading=note.querySelector('h2')?.textContent
+     if(heading==='Dress code'){
+      note.hidden=!d.dressCode.trim()
+      const art=doc.createElement('img')
+      art.src='/design3/assets/dress-code-illustration-v2.webp'
+      art.alt='Embroidered wedding attire illustrations'
+      art.loading='lazy'
+      art.setAttribute('data-couple-illustration','')
+      art.hidden=d.showCoupleIllustrations===false
+      note.append(art)
+     }
+     if(heading==='A little note')note.hidden=!d.giftNote.trim()
+     if(note.querySelector('a'))note.hidden=!d.gallery.trim()
+    })
    }
    if(d.template===3){
     const mainEvent=personal.querySelector<HTMLElement>('.atelier-event')
@@ -314,7 +455,7 @@ export default function AnimatedInvitation({details:d,rsvpTarget}:{details:Invit
      video.style.cssText='grid-area:1 / 1;display:block;width:100%;height:auto;object-fit:contain;pointer-events:none'
      card.prepend(video)
      const copy=card.querySelector<HTMLElement>('.atelier-event-copy')
-     if(copy){copy.style.gridArea='1 / 1';copy.style.position='relative';copy.style.zIndex='1';copy.style.padding='clamp(32px,10vw,80px) 20%'}
+     if(copy){copy.style.position='absolute';copy.style.zIndex='1'}
     })
    }
    if(d.template===5){
@@ -326,6 +467,7 @@ export default function AnimatedInvitation({details:d,rsvpTarget}:{details:Invit
    }
    if(d.template===5||d.template===6){
     doc.documentElement.classList.add('atelier-video-page')
+    personal.classList.add('atelier-card-content-fit')
     personal.querySelectorAll<HTMLElement>('.atelier-event').forEach(card=>{
      const video=doc.createElement('video')
      video.className='atelier-event-video'
@@ -361,8 +503,6 @@ export default function AnimatedInvitation({details:d,rsvpTarget}:{details:Invit
     personal.append(closing)
    }
    if(d.template===3){
-    const coupleNames=personal.querySelector('.atelier-welcome h2')
-    if(coupleNames)coupleNames.innerHTML=`${escape(d.groom)}<br>&<br>${escape(d.bride)}`
     const rsvp=doc.createElement('section')
     rsvp.className='atelier-note atelier-rsvp'
     rsvp.innerHTML=`<form data-atelier-rsvp><label><span class="atelier-label-text">Full name <span class="atelier-required">*</span></span><input name="fullName" type="text" maxlength="120" placeholder="Your full name" required></label><fieldset><legend>Will you be attending? <span>*</span></legend><label><input name="attendance" type="radio" value="yes" required checked> Joyfully accepts</label><label><input name="attendance" type="radio" value="no"> Regretfully declines</label></fieldset><div class="atelier-guest-count"><p>Number of guests attending <span>*</span></p><button type="button" data-guest-step="-1" aria-label="Remove a guest">−</button><output data-guest-count>1</output><button type="button" data-guest-step="1" aria-label="Add a guest">+</button><input name="guestCount" type="hidden" value="1"></div><div class="atelier-additional-guests"></div><label><span class="atelier-label-text">A personal message for the couple</span><textarea name="message" maxlength="1000" rows="4" placeholder="Write a message (optional)"></textarea></label><p class="atelier-rsvp-note">Your reply will be shared with the hosts.</p><button type="submit">Update RSVP</button><p class="atelier-rsvp-status" role="status" aria-live="polite"></p></form>`
@@ -387,8 +527,24 @@ export default function AnimatedInvitation({details:d,rsvpTarget}:{details:Invit
     const welcome=personal.querySelector('.atelier-welcome')
     const lights=doc.querySelector('.atelier-majestic-lights')
     if(welcome&&lights){
-     const names=welcome.querySelector('h2')
-     if(names)names.replaceChildren(doc.createTextNode(d.groom),doc.createElement('br'),doc.createTextNode('&'),doc.createElement('br'),doc.createTextNode(d.bride))
+     {
+      welcome.classList.add('atelier-secret-garden-welcome')
+      if(d.template===6)welcome.classList.add('atelier-majestic-welcome')
+      const hasFamily=Boolean(d.groomFamily.trim()||d.brideFamily.trim())
+      welcome.innerHTML=`<p class="atelier-eyebrow">Together with our families</p><div class="atelier-opening-names atelier-family-names${hasFamily?' atelier-names-stacked':''}" data-names-layout="${hasFamily?'stacked':'auto'}"><div class="atelier-couple-person"><h2 class="font-script">${escape(d.groom)}</h2><p class="atelier-family-details"${d.groomFamily.trim()?'':' hidden'}>${escape(d.groomFamily)}</p></div><span class="atelier-couple-connector font-script">&amp;</span><div class="atelier-couple-person"><h2 class="font-script">${escape(d.bride)}</h2><p class="atelier-family-details"${d.brideFamily.trim()?'':' hidden'}>${escape(d.brideFamily)}</p></div></div><p>${escape(d.message)}</p>`
+     }
+     if(d.template===5){
+      welcome.querySelector(':scope > p:last-child')?.remove()
+      const coupleArt=doc.createElement('img')
+      coupleArt.className='atelier-secret-garden-couple'
+      coupleArt.setAttribute('data-couple-illustration','')
+      coupleArt.hidden=d.showCoupleIllustrations===false
+      coupleArt.src='/design5/assets/couple.png'
+      coupleArt.alt='Illustrated bride and groom holding hands'
+      coupleArt.loading='lazy'
+      coupleArt.decoding='async'
+      welcome.append(coupleArt)
+     }
      const welcomeSection=doc.createElement('div')
      welcomeSection.className='atelier-personal'
      welcomeSection.append(welcome)
@@ -401,6 +557,13 @@ export default function AnimatedInvitation({details:d,rsvpTarget}:{details:Invit
    if(bloomCeremony)personal.before(bloomCeremony)
    if(d.template===7)personal.after(bloomEnding)
    if(embroideredFooter)personal.after(embroideredFooter)
+   doc.querySelectorAll('.atelier-opening-names').forEach(block=>{
+    const children=Array.from(block.children)
+    for(const [index,value] of [[0,d.groom],[2,d.bride]] as const){
+     const child=children[index]
+     if(child)(child.querySelector('h2,h3')||child).setAttribute('data-name-input',value)
+    }
+   })
    doc.querySelectorAll('footer').forEach(footer=>{if(footer!==bloomFooter&&footer!==embroideredFooter)footer.style.display='none'})
    if(d.template===7){
     // Keep Bloom's personalized hero date in the template's compact stacked style.
@@ -424,11 +587,26 @@ export default function AnimatedInvitation({details:d,rsvpTarget}:{details:Invit
     .atelier-video-page,.atelier-video-page body,.atelier-video-page main,.atelier-video-page .bg-background,.atelier-video-page .bg-ivory,.atelier-video-page .bg-countdown,.atelier-video-page .majestic-invitation-contact,.atelier-video-page .sg-invitation-contact{background-color:#EFE8DA}
     .atelier-template-7,.atelier-template-7~#rsvp,.atelier-template-7~footer,.atelier-template-7~footer .bg-ivory{background-color:#F5F0E8}
     .atelier-majestic-lights{display:block;width:100%;height:auto;position:relative;margin-top:-3cm;pointer-events:none}
+    .atelier-secret-garden-lights{top:-20px}
+    .atelier-majestic-intro-lights{top:40px}
+    .atelier-opening-copy{width:100%;box-sizing:border-box}
+    .atelier-opening-names{display:flex;justify-content:center;align-items:center;gap:.2em;width:100%;min-width:0}
+    .atelier-opening-names>*{flex:0 0 auto;white-space:nowrap}
+    .atelier-opening-names.atelier-names-stacked{flex-direction:column;gap:6px}
+    .atelier-opening-names.atelier-names-stacked>*{max-width:100%;white-space:pre-line;overflow-wrap:anywhere;margin-block:0;text-wrap:balance}
+    .atelier-opening-names [data-name-input]{white-space:pre-line!important}
+    .atelier-majestic-opening-names.atelier-names-stacked>span:nth-child(2){position:relative;top:-.3em}
+    .atelier-family-names .atelier-couple-person h2{display:inline-block;white-space:nowrap}
+    .atelier-family-names.atelier-names-stacked .atelier-couple-person h2{max-width:100%;white-space:normal;overflow-wrap:anywhere}
+    .atelier-family-names:not(.atelier-names-stacked) .atelier-couple-person h2{margin:0}
+    .atelier-family-names:not(.atelier-names-stacked){column-gap:16px}
+    .atelier-secret-garden-welcome .atelier-family-names+p{margin-top:32px}
     .atelier-majestic-details,.atelier-majestic-programme,.atelier-majestic-dress{background:#EFE8DA;color:${theme.ink}}
     .atelier-majestic-details h2,.atelier-majestic-programme h2,.atelier-majestic-dress h2{color:${theme.ink};font-size:clamp(48px,8vw,60px);line-height:1;margin-bottom:12px}
     .atelier-majestic-details [class*="text-sage"],.atelier-majestic-programme [class*="text-sage"],.atelier-majestic-dress [class*="text-sage"]{color:${theme.ink}}
     .atelier-majestic-details{padding:8px 12px 48px;overflow:hidden}
     .atelier-majestic-details .sg-details-heading{text-align:center;margin:0 0 8px}
+    .atelier-majestic-details .atelier-details-message{max-width:520px;margin:20px auto 24px;padding:0 24px;font-size:18px;line-height:1.6;white-space:pre-line;overflow-wrap:anywhere;letter-spacing:normal;text-transform:none}
     .atelier-majestic-details .sg-venue-card{position:relative;isolation:isolate;width:min(100%,560px);aspect-ratio:1/1.32;margin-inline:auto;display:flex;align-items:center;justify-content:center}
     .atelier-majestic-details .sg-venue-frame{position:absolute;z-index:-1;top:0;left:-16%;width:132%;max-width:none;height:100%;object-fit:contain;pointer-events:none}
     .atelier-majestic-details .sg-venue-content{width:68%;display:flex;flex-direction:column;align-items:center;gap:8px;text-align:center;overflow-wrap:anywhere}
@@ -436,19 +614,42 @@ export default function AnimatedInvitation({details:d,rsvpTarget}:{details:Invit
     .atelier-majestic-details .sg-venue-heading{font-size:clamp(34px,8vw,50px);line-height:1.15}
     .atelier-majestic-details .sg-venue-name{max-width:100%;font-size:clamp(15px,4vw,21px);line-height:1.4;letter-spacing:.1em;text-transform:uppercase;text-wrap:balance}
     .atelier-majestic-details .sg-venue-city{font-size:clamp(13px,3.5vw,16px);line-height:1.4;white-space:pre-line}
+    .atelier-secret-garden-details .sg-venue-content{width:58%;min-width:0}
+    .atelier-secret-garden-details .sg-venue-content>*{min-width:0;max-width:100%;box-sizing:border-box}
+    .atelier-secret-garden-details .sg-venue-name,.atelier-secret-garden-details .sg-venue-city{width:100%;white-space:pre-line;overflow-wrap:anywhere;text-wrap:balance}
+    .atelier-secret-garden-details .sg-venue-date{width:100%;font-size:clamp(13px,3.5vw,16px);line-height:1.4;overflow-wrap:anywhere}
+    .atelier-secret-garden-details .sg-venue-actions [hidden]{display:none!important}
     .atelier-majestic-details .sg-venue-time{display:flex;align-items:center;justify-content:center;gap:6px;font-size:clamp(13px,3.5vw,16px);line-height:1.4}
     .atelier-majestic-details .sg-venue-actions{display:flex;flex-wrap:wrap;justify-content:center;align-items:center;gap:clamp(10px,3.8vw,18px);margin:36px auto 0;width:min(100%,460px)}
     .atelier-majestic-details .sg-venue-actions a,.atelier-majestic-details .sg-venue-actions button{display:inline-flex;align-items:center;justify-content:center;gap:8px;min-height:48px;height:auto;font-family:Georgia,'Times New Roman',serif;font-size:clamp(15px,4.5vw,22px);font-weight:400;padding:12px clamp(12px,4vw,20px);border:0;border-radius:8px;background:${d.template===5?'#5a6340':'#716149'};color:#fffdf6;cursor:pointer}
     .atelier-majestic-details svg{width:20px;height:20px;flex:none}
     .atelier-majestic-programme{overflow:hidden;padding-bottom:32px}
     .atelier-majestic-programme-art{display:block;width:min(80vw,460px);height:auto;object-fit:contain;margin:auto}
+    .atelier-majestic-programme-compact .atelier-majestic-programme-art{width:min(68vw,390px)}
+    .atelier-majestic-programme-compact{padding-bottom:8px}
+    .atelier-template-6 .atelier-events>.atelier-event:first-child{margin-top:12px}
     .atelier-majestic-dress{padding:48px 24px 64px}
+    .atelier-majestic-dress[hidden]{display:none!important}
     .atelier-majestic-dress>div{max-width:576px;margin:auto}
     .atelier-majestic-dress img{display:block;width:100%;height:auto;object-fit:contain}
     .atelier-majestic-dress-card{background:#f7f2e8;border:1px solid ${theme.ink}26;border-radius:32px;padding:32px;text-align:center}
+    .atelier-dress-without-illustration .atelier-majestic-dress-card{margin-top:24px}
     .atelier-majestic-dress-card h3{font-size:20px;line-height:1.5;letter-spacing:.12em;white-space:pre-line}
     .atelier-welcome,.atelier-note{max-width:680px;margin:auto;padding:55px 30px}.atelier-welcome>img{width:230px;max-height:190px;object-fit:contain;margin:0 auto 25px}
     .atelier-personal h2{font-size:42px;line-height:1.2;margin:12px 0 24px}.atelier-personal p{font-size:20px;line-height:1.6;white-space:pre-line}.atelier-personal .atelier-eyebrow{font-size:12px;letter-spacing:2px;text-transform:uppercase}
+    .atelier-secret-garden-welcome .atelier-couple-person{min-width:0;overflow-wrap:anywhere}
+    .atelier-welcome.atelier-majestic-welcome{padding-bottom:12px}
+    .atelier-majestic-welcome>p:last-child{margin-bottom:0}
+    .atelier-majestic-welcome .atelier-family-names+p{margin-top:48px}
+    .atelier-majestic-welcome>.atelier-eyebrow{margin-bottom:28px}
+    .atelier-majestic-welcome .atelier-family-names.atelier-names-stacked>.atelier-couple-connector{position:relative;top:-.3em}
+    .atelier-secret-garden-welcome>img.atelier-secret-garden-couple{display:block;width:min(100%,320px);height:auto;max-height:none;object-fit:contain;margin:32px auto 0}
+    [data-couple-illustration][hidden]{display:none!important}
+    .atelier-secret-garden-welcome .atelier-couple-person h2{margin:0}
+    .atelier-secret-garden-welcome .atelier-family-details{font-size:17px;line-height:1.6;margin:8px 0 0}
+    .atelier-secret-garden-welcome .atelier-couple-connector{display:block;font-size:32px;line-height:1.2;margin:0}
+    .atelier-secret-garden-welcome .atelier-couple-connector+.atelier-couple-person h2{margin-top:0}
+    .atelier-secret-garden-welcome .atelier-couple-person+p{margin-top:32px}
     .atelier-personal .atelier-majestic-dress h2{font-size:clamp(48px,8vw,60px);line-height:1;margin:0 0 12px}
     .atelier-personal .atelier-majestic-dress p{font-size:16px;line-height:1.625;white-space:normal}
     .atelier-personal .atelier-majestic-dress h2+p{font-size:12px}
@@ -530,28 +731,115 @@ export default function AnimatedInvitation({details:d,rsvpTarget}:{details:Invit
     .atelier-majestic-closing img{display:block;width:100%;height:auto;margin:0 auto;object-fit:contain}
     @media(min-width:768px){.atelier-garland-wrap{width:100%}}
     @media(max-width:600px){.atelier-event{padding:75px 17%;min-height:520px}.atelier-personal h2{font-size:33px}.atelier-personal p{font-size:18px}.atelier-event h3{font-size:23px}.atelier-rsvp{padding:38px 24px 30px;margin-top:56px}.atelier-rsvp-majestic{padding:38px 24px 400px;margin-top:56px}.atelier-rsvp-majestic .atelier-majestic-lights{height:380px}.atelier-rsvp-secret-garden{padding:38px 17px 30px}.atelier-rsvp-secret-garden .atelier-rsvp-open-envelope{height:300px}.atelier-rsvp form>label,.atelier-rsvp fieldset,.atelier-guest-count,.atelier-additional-guests label{font-size:19px}.atelier-rsvp:before,.atelier-rsvp:after{width:130px;height:175px}.atelier-rsvp-secret-garden:before,.atelier-rsvp-secret-garden:after,.atelier-rsvp-majestic:before,.atelier-rsvp-majestic:after{width:min(100%,200px);height:1px}}
+   ${secretGardenCardCSS}
+   ${bloomRulesCSS}
    `;doc.head.append(style)
    // The same countdown implementation now reads the selected wedding instant.
+   if(d.template===5)doc.querySelector('#countdown')?.setAttribute('data-wedding-instant',weddingISO(d))
    const script=doc.querySelector<HTMLScriptElement>('script[src$="interactions.js"]')
    if(script){const js=await fetch(script.getAttribute('src')!,{signal:abort.signal});if(!js.ok)throw new Error('Could not load invitation animation.');script.removeAttribute('src');script.removeAttribute('defer');script.textContent=(await js.text()).replace(/new Date\('\d{4}-\d{2}-\d{2}T[^']+'\)/g,`new Date(${JSON.stringify(weddingISO(d))})`)}
-   if(!abort.signal.aborted)setHTML('<!doctype html>'+doc.documentElement.outerHTML)
+   if(!abort.signal.aborted){
+    if(editorPreview){
+     markEditorDocument(doc)
+     const live=frame.current?.contentDocument
+     if(live?.body.hasAttribute('data-editor-node')&&editorSource.current){
+      updateEditorDocument(live,editorSource.current,doc)
+     }else setHTML('<!doctype html>'+doc.documentElement.outerHTML)
+     editorSource.current=doc
+    }else setHTML('<!doctype html>'+doc.documentElement.outerHTML)
+   }
   }
-  void load().catch(e=>{if(!abort.signal.aborted)setError(e instanceof Error?e.message:'Could not load design.')})
+  void load().catch(e=>{if(!abort.signal.aborted&&!editorPreview)setError(e instanceof Error?e.message:'Could not load design.')})
   return()=>abort.abort()
- },[d,rsvpTarget?.orderId,rsvpTarget?.path])
+ },[d,rsvpTarget?.orderId,rsvpTarget?.path,editorPreview])
  if(error)return <div className="studio-empty" role="alert">{error}<p><button onClick={()=>location.reload()}>Try again</button></p></div>
  if(!html)return <div className="studio-empty" role="status">Preparing your invitation…</div>
  return <iframe ref={frame} srcDoc={html} title={`${d.groom} & ${d.bride} wedding invitation`} allow="autoplay" style={{position:'fixed',inset:0,width:'100%',height:'100%',border:0}} onLoad={()=>{
   frame.current?.contentDocument?.addEventListener('click',event=>{
    const target=event.target as HTMLElement
+   const latest=currentDetails.current
    if(target.closest('[data-wedding-calendar]')){
-    downloadCalendar({title:'Wedding',date:d.date,time:d.time,venue:d.venue,address:d.address,map:d.map},d.offset,`${d.groom} & ${d.bride}`)
+    event.preventDefault()
+    downloadCalendar({title:'Wedding',date:latest.date,time:latest.time,venue:latest.venue,address:latest.address,map:latest.map},latest.offset,`${latest.groom} & ${latest.bride}`)
     return
    }
    const button=target.closest<HTMLElement>('[data-personal-calendar]')
-   if(button){const item=d.events[Number(button.dataset.personalCalendar)];if(item)downloadCalendar(item,d.offset,`${d.groom} & ${d.bride}`)}
+   if(button){event.preventDefault();const item=latest.events[Number(button.dataset.personalCalendar)];if(item)downloadCalendar(item,latest.offset,`${latest.groom} & ${latest.bride}`)}
   })
   const invitationDocument=frame.current?.contentDocument
+  if(invitationDocument)installCardContentFit(invitationDocument)
+  if(invitationDocument)installBloomFit(invitationDocument)
+  if(invitationDocument)invitationDocument.querySelectorAll<HTMLElement>('.atelier-opening-names').forEach(openingNames=>{
+   const previewWindow=invitationDocument.defaultView
+   const fitNames=()=>{
+    if(openingNames.classList.contains('atelier-bloom-names')){
+     fitBloomNames(openingNames)
+     return
+    }
+    openingNames.classList.remove('atelier-names-stacked')
+    // Measure the complete unwrapped line, including both names and the ampersand.
+    const spans=Array.from(openingNames.children) as HTMLElement[]
+    if(spans.length!==3)return
+    const nameSpans=[spans[0].querySelector<HTMLElement>('h2,h3')||spans[0],spans[2].querySelector<HTMLElement>('h2,h3')||spans[2]]
+    nameSpans.forEach(span=>span.style.removeProperty('font-size'))
+    const availableWidth=openingNames.clientWidth
+    if(!availableWidth)return
+    const maximumSize=parseFloat(getComputedStyle(nameSpans[0]).fontSize)
+    const widths=[nameSpans[0].getBoundingClientRect().width,spans[1].getBoundingClientRect().width,nameSpans[1].getBoundingClientRect().width]
+    const gap=parseFloat(getComputedStyle(openingNames).columnGap)||0
+    const requiredWidth=widths.reduce((total,width)=>total+width,0)+gap*(spans.length-1)
+    const openingLayout=openingNames.classList.contains('atelier-family-names')
+     ? invitationDocument.querySelector('.atelier-opening-names:not(.atelier-family-names)')
+     : null
+    // Reserve breathing room around a combined line instead of filling the entire text area.
+    openingNames.classList.toggle('atelier-names-stacked',openingNames.dataset.namesLayout==='stacked'||Boolean(openingLayout?.classList.contains('atelier-names-stacked'))||requiredWidth>availableWidth*.8)
+    // Allow multiword names to wrap before reducing the shared font size.
+    const probe=invitationDocument.createElement('span')
+    probe.style.cssText='position:fixed;visibility:hidden;pointer-events:none;white-space:nowrap;width:max-content'
+    invitationDocument.body.append(probe)
+    let widestName=0
+    nameSpans.forEach(name=>{
+     const style=getComputedStyle(name)
+     probe.style.font=style.font
+     probe.style.letterSpacing=style.letterSpacing
+     probe.style.textTransform=style.textTransform
+     const shrinkBeforeWrapping=openingNames.classList.contains('atelier-bloom-names')
+     const measuredParts=shrinkBeforeWrapping?[name.textContent||'']:(name.textContent||'').split(/\s+/)
+     for(const word of measuredParts){
+      probe.textContent=word
+      widestName=Math.max(widestName,probe.getBoundingClientRect().width)
+     }
+    })
+    probe.remove()
+    if(widestName>availableWidth){
+     // Both names share the size required by the wider name; the ampersand keeps its own size.
+     const minimumSize=openingNames.classList.contains('atelier-bloom-names')
+      ? Math.min(maximumSize,Math.max(24,maximumSize*.75))
+      : Math.min(24,maximumSize)
+     const fittedSize=Math.max(minimumSize,Math.floor(maximumSize*availableWidth/widestName*10)/10)
+     nameSpans.forEach(span=>{span.style.fontSize=`${fittedSize}px`})
+    }
+   }
+   let previousWidth=-1
+   const resize=new ResizeObserver(entries=>{
+    const width=entries[0]?.contentRect.width
+    if(width===undefined||width===previousWidth)return
+    previousWidth=width
+    fitNames()
+   })
+   resize.observe(openingNames)
+   previewWindow?.addEventListener('invitation-preview-updated',fitNames)
+   previewWindow?.addEventListener('resize',fitNames)
+   invitationDocument.fonts.addEventListener('loadingdone',fitNames)
+   void invitationDocument.fonts.ready.then(fitNames)
+   fitNames()
+   previewWindow?.addEventListener('unload',()=>{
+    resize.disconnect()
+    previewWindow.removeEventListener('invitation-preview-updated',fitNames)
+    previewWindow.removeEventListener('resize',fitNames)
+    invitationDocument.fonts.removeEventListener('loadingdone',fitNames)
+   },{once:true})
+  })
   const rsvpForm=invitationDocument?.querySelector<HTMLFormElement>('[data-atelier-rsvp]')
   const rsvpSubmitButton=rsvpForm?.querySelector<HTMLButtonElement>('[type="submit"]')
   const rsvpStatusKey=d.template===6&&rsvpTarget?`majestic-rsvp-sent:${rsvpTarget.orderId}`:null

@@ -36,3 +36,16 @@ button:focus-visible, a:focus-visible { outline: 2px solid #5a6340; outline-offs
 .sg-venue-actions { display: flex; flex-wrap: nowrap; justify-content: center; align-items: center; gap: clamp(10px, 3.8vw, 18px); margin: 36px auto 0; width: min(100%, 460px); }
 .sg-venue-actions a, .sg-venue-actions button { min-height: 48px; height: auto; font-family: Georgia, 'Times New Roman', serif; font-size: clamp(15px, 4.5vw, 22px); font-weight: 400; padding: 12px clamp(12px, 4vw, 20px); border-radius: 8px; }
 .sg-venue-actions svg { width: 20px; height: 20px; }
+
+/* Pearl-and-gold countdown dial; scoped to Secret Garden. */
+#countdown.sg-clock-countdown { padding: 48px 24px 56px; color: #5a6340; text-align: center; }
+.sg-clock-heading { margin: 0 0 32px; font-family: 'Arial Narrow', sans-serif; font-size: 12px; font-weight: 400; letter-spacing: .32em; text-transform: uppercase; }
+.sg-clock-face { position: relative; width: min(84%, 275px); aspect-ratio: 1; margin-inline: auto; }
+.sg-clock-art { display: block; width: 100%; height: 100%; object-fit: contain; mix-blend-mode: multiply; pointer-events: none; }
+.sg-clock-dial { position: absolute; inset: 0; display: block; width: 100%; height: 100%; overflow: visible; }
+.sg-clock-sector { fill: #b69a5b; fill-opacity: .08; }
+.sg-clock-hand { fill: none; stroke: #967035; stroke-width: 1.4; stroke-linecap: round; }
+.sg-clock-value { position: absolute; inset: 0; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 10px; pointer-events: none; }
+.sg-clock-days { max-width: 54%; font-family: 'Arial Narrow', 'Helvetica Neue', sans-serif; font-size: clamp(36px, 14vw, 60px); font-weight: 200; font-stretch: condensed; line-height: 1; letter-spacing: -.055em; font-variant-numeric: tabular-nums; transform: scaleX(.75); }
+.sg-clock-unit { font-family: 'Arial Narrow', sans-serif; font-size: 10px; letter-spacing: .32em; text-transform: uppercase; }
+.sg-clock-time { margin: 28px 0 0; font-family: Cormorant, Georgia, serif; font-size: clamp(20px, 5.8vw, 28px); font-style: italic; line-height: 1.4; font-variant-numeric: tabular-nums; color: #737858; }

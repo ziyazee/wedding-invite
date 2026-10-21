@@ -3,7 +3,7 @@ import { useLayoutEffect, type RefObject } from 'react'
 type TextNode = HTMLElement | SVGElement
 type TextGroup = { key: string; anchor: Element; nodes: TextNode[]; repeat: boolean }
 
-export function useDesign14TextMotion(host: RefObject<HTMLDivElement | null>, opened: boolean) {
+export function useDesign14TextMotion(host: RefObject<HTMLDivElement | null>, opened: boolean, revision = '') {
   useLayoutEffect(() => {
     const container = host.current
     if (!container) return
@@ -82,5 +82,5 @@ export function useDesign14TextMotion(host: RefObject<HTMLDivElement | null>, op
         node.classList.remove('d14-text-visible')
       })
     }
-  }, [host, opened])
+  }, [host, opened, revision])
 }
