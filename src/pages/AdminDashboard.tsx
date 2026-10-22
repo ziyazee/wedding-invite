@@ -79,7 +79,7 @@ function AdminWorkspace() {
   function startProcessing(){void changeOrder({status:'IN_PROGRESS',rejection_reason:null},'Order moved into processing.')}
   function rejectOrder(){const reason=window.prompt('Share a reason with the client.');if(!reason?.trim())return;void changeOrder({status:'REJECTED',rejection_reason:reason.trim()},'Order rejected and the client will see the reason.')}
   async function publish(){
-    if(!selected)return
+    if(!selected || !supabase)return
     if(selected.published_path){
       const publishedAt=selected.published_at||new Date().toISOString()
       const expiresAt=expiresOn?new Date(`${expiresOn}T23:59:59`).toISOString():null

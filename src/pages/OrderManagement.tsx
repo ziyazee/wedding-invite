@@ -2,7 +2,7 @@ import { useCallback, useEffect, useRef, useState } from 'react'
 import type { FormEvent } from 'react'
 import { useParams } from 'react-router-dom'
 import { isSupabaseConfigured, supabase } from '../lib/supabase'
-import type { Celebration, InvitationData } from '../invitations/model'
+import type { InvitationData } from '../invitations/model'
 import { cardTextLimit, nameTextLimit, formatDate, formatTime, validateDetails } from '../invitations/model'
 import './OrderManagement.css'
 import MusicPicker from './MusicPicker'
@@ -222,7 +222,7 @@ export default function OrderManagement() {
     queuePreviewScroll(`detail.${key}`, value, String(details?.[key] || ''))
     setDetails(current => current ? { ...current, [key]: value } : current)
   }
-  function setEvent(index: number, key: keyof Celebration, value: string) {
+  function setEvent(index: number, key: 'title' | 'date' | 'time' | 'venue' | 'address' | 'map', value: string) {
     const limit=cardTextLimit(details?.template ?? 0,key)
     if(limit!==undefined)value=value.slice(0,limit)
     queuePreviewScroll(`event.${index}.${key}`, value, details?.events[index]?.[key] || '')
