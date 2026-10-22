@@ -48,11 +48,11 @@ export function slugVariants(groom: string, bride: string): string[] {
   return [
     base,
     `${g}weds${b}`,
-    `${g}-${b}`,
-    `${g}marries${b}`,
     `${g}and${b}`,
+    `${g}-${b}`,
     `${g}.${b}`,
-    `${base}forever`,
+    `${g}marries${b}`,
+    `${g}with${b}`,
     `${base}wedding`,
   ]
 }

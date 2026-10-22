@@ -1,12 +1,14 @@
 # Wedding invitation project context
 
-Last updated: 2026-10-17. These notes describe work established in the conversation, not a fresh repository audit.
+Last updated: 2026-10-23. These notes describe work established in the conversation, not a fresh repository audit.
 
 ## Project and local workflow
 
 - The song picker groups `musicCatalog.ts` into Muslim, Hindu, Christian, and General. Twelve unique repository MP3s were copied into `public/audios/` category folders; Destination/Raabta/Qubool share identical audio and one catalog entry. Wedding Nasheed is Muslim; tracks without established religious classification remain General pending identification. Hindu and Christian folders are currently empty. Original audio paths remain intact; the two old `/audios/` selections are recognized as aliases. No database migration is needed: selections still use `orders.form_data.music`.
 
 - Public invitation routes now use `InvitationViewport` at the App boundary on screens at least 768px wide: a centered 9:16 iframe with a light ivory surround. The frame loads the same route so native designs and legacy templates receive a real portrait viewport. Embedded previews bypass this wrapper to prevent recursion and preserve dashboard editor access. Phones, application routes, order-management links, and the standalone celebrations embed retain their existing layout. No browser or build verification was run for this change.
+
+- Company order invitations reserve a unique `*.shaadiinvites.in` subdomain when the order is created. Candidate priority is joined names, `weds`, `and`, hyphen, dot, `marries`, `with`, then `wedding`; the database unique constraint handles collisions and a deleted order releases its path. The reservation and publish RPCs are in `202610230001_order_subdomain_fallbacks.sql`. Apply the migration before deploying the dashboard code. All eight candidates being occupied returns an error; no numeric fallback is defined.
 
 - Majestic (order template 2) migration is implemented in `src/pages/majestic/Majestic.tsx`, `Majestic.css`, and `useMajesticFit.ts`. Orders bypass `AnimatedInvitation`/`TextLayoutLayer` and render native React with the shared layout provider, section, text and media components. `/majestic` and `/design6` use this renderer with catalog sample data through `Design6.tsx`; original `public/design6/` reference files remain. Uses stable `t2.*` text IDs and `t2.event-{event.id || legacy-originalIndex}.*` event IDs, existing version-1 order overrides, and the dashboard editor. Font family/color controls remain hidden. Scoped native CSS retains the existing assets, local fonts, background videos, venue badge, celebration videos, dress artwork, RSVP envelope and closing flowers; visual parity is not verified. The shared native `InvitationRsvp` submits through existing order RSVP storage. Names and card fitting use local observers and respect explicit text sizes. No build, tests or browser checks were run for this migration; verify before calling it complete. Nine other collection templates still await native/editor migration.
 

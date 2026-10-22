@@ -1,0 +1,548 @@
+<!doctype html>
+<html lang="en-IN">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Rohan &amp; Aisha's Housewarming · Flat 1204</title>
+<meta name="description" content="Come warm our new home in Whitefield, Bengaluru on 22 May 2027 — the grand tour, the evening plan, the fridge-door wall and RSVP.">
+<meta name="theme-color" content="#16213A">
+<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Instrument+Serif:ital@0;1&family=Manrope:wght@400;500;600;700;800&family=Caveat:wght@500;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="_kit/kit.css">
+<style>/* Dil Se Invite — shared premium base for culture templates.
+   Every template sets its own tokens, fonts and art on top of this. */
+:root{
+  --ink:#231A16; --ink-2:rgba(35,26,22,.66); --ink-3:rgba(35,26,22,.42);
+  --bg:#FBF7F1; --bg-2:#F4ECE1; --deep:#1A1210; --line:rgba(35,26,22,.14);
+  --accent:#B3252F; --accent-2:#C79A3E; --on-accent:#fff;
+  --f-d:"Cormorant Garamond",Georgia,serif; --f-b:Manrope,system-ui,-apple-system,sans-serif; --f-s:"Pinyon Script",cursive;
+  --rad:18px; --wrap:1080px; --pad:clamp(20px,5vw,44px);
+  --kit-accent:var(--accent); --kit-accent-fg:var(--on-accent);
+}
+body{background:var(--bg);color:var(--ink);font-family:var(--f-b);font-size:16px;line-height:1.65;text-rendering:optimizeLegibility}
+::selection{background:var(--accent);color:var(--on-accent)}
+main{display:block}
+section{position:relative;padding:clamp(64px,10vw,116px) var(--pad)}
+.wrap{max-width:var(--wrap);margin:0 auto}
+.narrow{max-width:720px;margin-inline:auto}
+.center{text-align:center}
+.muted{color:var(--ink-2)}
+h1,h2,h3{font-family:var(--f-d);font-weight:500;margin:0;line-height:1.08;letter-spacing:-.01em}
+p{margin:0 0 1em}
+p:last-child{margin-bottom:0}
+
+/* headings */
+.kick{font-family:var(--f-b);font-size:11px;font-weight:800;letter-spacing:.3em;text-transform:uppercase;color:var(--accent);margin-bottom:16px}
+.kick.center{text-align:center}
+.title{font-size:clamp(34px,7.4vw,62px)}
+.title em{font-style:italic;color:var(--accent)}
+.title .scr{font-family:var(--f-s);font-style:normal;font-size:1.18em;color:var(--accent-2)}
+.lead{font-size:clamp(16px,2.4vw,19px);line-height:1.75;color:var(--ink-2);max-width:62ch}
+.lead.center{margin-inline:auto;text-align:center}
+.orn{display:flex;align-items:center;justify-content:center;gap:14px;margin:26px 0;color:var(--accent-2)}
+.orn::before,.orn::after{content:"";height:1px;width:min(120px,22vw);background:linear-gradient(90deg,transparent,currentColor)}
+.orn::after{background:linear-gradient(270deg,transparent,currentColor)}
+.orn i{width:7px;height:7px;transform:rotate(45deg);background:currentColor;display:block}
+
+/* buttons */
+.btn{display:inline-flex;align-items:center;justify-content:center;gap:9px;min-height:52px;padding:0 26px;border-radius:999px;
+  background:var(--accent);color:var(--on-accent);font-weight:700;font-size:15px;letter-spacing:.02em;text-decoration:none;
+  box-shadow:0 16px 34px -18px rgba(0,0,0,.6);transition:transform .3s,box-shadow .3s}
+.btn:hover{transform:translateY(-2px);box-shadow:0 22px 40px -18px rgba(0,0,0,.6)}
+.btn.ghost{background:transparent;color:var(--ink);border:1px solid var(--line);box-shadow:none}
+
+/* gate */
+.gate{position:fixed;inset:0;z-index:70;display:flex;flex-direction:column;align-items:center;text-align:center;padding:26px;background:var(--deep);color:#fff;
+  overflow-y:auto;overscroll-behavior:contain;-webkit-overflow-scrolling:touch;transition:opacity 1.1s ease,visibility 1.1s}
+.gate.open{opacity:0;visibility:hidden;pointer-events:none}
+.gate .g-in{position:relative;z-index:3;max-width:560px;width:100%;margin:auto}
+.gate small{display:block;font-size:11px;letter-spacing:.28em;text-transform:uppercase;opacity:.72}
+.gate h1{font-size:clamp(40px,11vw,74px);margin:18px 0 10px}
+.gate .date{font-size:12px;letter-spacing:.34em;opacity:.8}
+.gate .enter{margin-top:30px;min-height:54px;padding:0 30px;border-radius:999px;background:var(--accent);color:var(--on-accent);
+  font-weight:700;font-size:13px;letter-spacing:.18em;text-transform:uppercase}
+.gate .hint{margin-top:16px;font-size:12px;opacity:.55}
+
+/* hero */
+.hero{min-height:100svh;display:grid;place-items:center;text-align:center;overflow:hidden;padding-block:90px}
+.hero .in{position:relative;z-index:3;max-width:860px}
+.hero .names{font-family:var(--f-d);font-size:clamp(46px,13vw,110px);line-height:.98}
+.hero .amp{font-family:var(--f-s);font-size:clamp(30px,8vw,64px);color:var(--accent-2);margin:2px 0}
+.hero .when{margin-top:22px;font-size:12px;font-weight:700;letter-spacing:.34em;text-transform:uppercase}
+.hero .where{margin-top:8px;font-size:13px;letter-spacing:.14em;opacity:.72}
+.hero .cue{position:absolute;left:50%;bottom:26px;transform:translateX(-50%);font-size:10px;letter-spacing:.3em;opacity:.6;animation:wfloat 2.6s ease-in-out infinite}
+@keyframes wfloat{50%{transform:translate(-50%,8px)}}
+.bgimg{position:absolute;inset:0;z-index:0}
+.bgimg img{width:100%;height:100%;object-fit:cover}
+
+/* countdown */
+.count{display:flex;flex-wrap:wrap;justify-content:center;gap:clamp(14px,4vw,40px);margin-top:28px}
+.count>div{min-width:74px}
+.count b{display:block;font-family:var(--f-d);font-size:clamp(34px,8vw,58px);font-weight:500;line-height:1}
+.count small{display:block;margin-top:6px;font-size:10px;letter-spacing:.24em;opacity:.62}
+
+/* story timeline */
+.wtl{list-style:none;margin:34px 0 0;padding:0;display:grid;gap:22px}
+.wtl li{display:grid;grid-template-columns:86px 1fr;gap:18px;align-items:start;padding-bottom:22px;border-bottom:1px solid var(--line)}
+.wtl li:last-child{border-bottom:0}
+.wtl b{font-family:var(--f-d);font-size:19px;color:var(--accent)}
+.wtl strong{display:block;font-weight:700;font-size:15px;margin-bottom:3px}
+.wtl span{color:var(--ink-2);font-size:15px}
+
+/* events */
+.wevs{display:grid;gap:18px;margin-top:34px;grid-template-columns:repeat(auto-fit,minmax(min(100%,288px),1fr))}
+.wev{position:relative;padding:26px 24px;border:1px solid var(--line);border-radius:var(--rad);background:#fff}
+.wev.main{background:var(--deep);color:#fff;border-color:transparent}
+.wev.main .meta span,.wev.main p{color:rgba(255,255,255,.76)}
+.wev header{display:flex;justify-content:space-between;gap:14px;align-items:flex-start}
+.wev h3{font-size:26px}
+.wev .when{text-align:right;font-size:11px;font-weight:700;letter-spacing:.14em;text-transform:uppercase;line-height:1.5;opacity:.72}
+.wev .when span{display:block}
+.wev p{margin:14px 0 0;font-size:15px;color:var(--ink-2)}
+.wev .meta{display:flex;flex-wrap:wrap;gap:8px 14px;margin-top:16px;font-size:13px;color:var(--ink-2)}
+.wev .meta span{display:inline-flex;gap:6px}
+.wev .acts{display:flex;flex-wrap:wrap;gap:16px;margin-top:18px;font-size:13px;font-weight:700}
+.wev .acts a,.wev .acts button{color:var(--accent);text-decoration:none}
+.wev.main .acts a,.wev.main .acts button{color:var(--accent-2)}
+
+/* families */
+.wfam{display:grid;gap:20px;margin-top:34px;grid-template-columns:repeat(auto-fit,minmax(min(100%,280px),1fr))}
+.wfam .fam{padding:28px 24px;border:1px solid var(--line);border-radius:var(--rad);text-align:center;background:#fff}
+.wfam .fam small{font-size:10px;letter-spacing:.24em;text-transform:uppercase;color:var(--accent)}
+.wfam .fam h3{font-size:27px;margin:10px 0 12px}
+.wfam .fam p{color:var(--ink-2);font-size:15px}
+.blessing{grid-column:1/-1;text-align:center;font-family:var(--f-d);font-style:italic;font-size:clamp(19px,3.4vw,25px);color:var(--ink-2);margin-top:10px}
+
+/* gallery rail */
+.wgal{display:flex;gap:14px;overflow-x:auto;scroll-snap-type:x mandatory;padding:34px var(--pad) 10px;margin-inline:0;scroll-padding-inline:var(--pad);-webkit-overflow-scrolling:touch;scrollbar-width:none}
+.wgal::-webkit-scrollbar{display:none}
+.wgal figure{flex:0 0 min(78vw,320px);margin:0;scroll-snap-align:center}
+.wgal img{width:100%;height:min(62vh,420px);object-fit:cover;border-radius:var(--rad)}
+.wgal figcaption{margin-top:10px;font-size:12px;letter-spacing:.14em;text-transform:uppercase;color:var(--ink-3);text-align:center}
+.swipe{text-align:center;font-size:11px;letter-spacing:.24em;color:var(--ink-3);text-transform:uppercase}
+
+/* venue + travel */
+.wmap{margin-top:26px;border-radius:var(--rad);overflow:hidden;border:1px solid var(--line);aspect-ratio:16/10;display:grid;place-items:center;background:var(--bg-2)}
+.wmap iframe{width:100%;height:100%;border:0}
+.wmap button{font-weight:700;color:var(--accent)}
+.wtravel{display:grid;gap:16px;margin-top:34px;grid-template-columns:repeat(auto-fit,minmax(min(100%,260px),1fr))}
+.wtr{display:flex;gap:14px;padding:22px;border:1px solid var(--line);border-radius:var(--rad);background:#fff}
+.wtr i{font-style:normal;font-size:22px;line-height:1}
+.wtr b{display:block;font-size:15px;margin-bottom:4px}
+.wtr span{font-size:14px;color:var(--ink-2)}
+
+/* rsvp */
+.wform{max-width:520px;margin:34px auto 0;display:grid;gap:15px}
+.wform label{display:block;font-size:12px;font-weight:700;letter-spacing:.14em;text-transform:uppercase;color:var(--ink-2)}
+.wform input,.wform select{width:100%;margin-top:7px;min-height:52px;padding:0 16px;border:1px solid var(--line);border-radius:12px;background:#fff;font-size:16px;letter-spacing:0;text-transform:none;font-weight:400;color:var(--ink)}
+.wform input:focus,.wform select:focus{outline:2px solid var(--accent);outline-offset:1px}
+.wform .choice{display:flex;gap:10px;flex-wrap:wrap}
+.wform .choice label{position:relative;flex:1 1 150px;display:flex;align-items:center;justify-content:center;gap:8px;min-height:52px;border:1px solid var(--line);border-radius:12px;background:#fff;cursor:pointer;text-transform:none;letter-spacing:0;font-size:14px}
+.wform .choice input{position:absolute;opacity:0;width:0;height:0;margin:0}
+.wform .choice label:has(input:checked){border-color:var(--accent);background:var(--accent);color:var(--on-accent)}
+.fns{display:flex;flex-wrap:wrap;gap:8px}
+.fns label{display:inline-flex;align-items:center;gap:7px;min-height:42px;padding:0 14px;border:1px solid var(--line);border-radius:999px;background:#fff;cursor:pointer;text-transform:none;letter-spacing:0;font-size:13px}
+.fns label:has(input:checked){border-color:var(--accent);color:var(--accent)}
+.fns input{accent-color:var(--accent);width:15px;height:15px}
+.wform .btn{width:100%}
+.wthx{display:none;text-align:center;max-width:520px;margin:34px auto 0}
+.wthx h3{font-size:clamp(26px,5vw,36px);color:var(--accent)}
+.wthx p{margin-top:10px;color:var(--ink-2)}
+.sent .wform{display:none}
+.sent .wthx{display:block;animation:wfade .8s both}
+@keyframes wfade{from{opacity:0;transform:translateY(14px)}}
+
+/* finale */
+.finale{min-height:74svh;display:grid;place-items:center;text-align:center;color:#fff;background:var(--deep);overflow:hidden}
+.finale .in{position:relative;z-index:3}
+.finale .names{font-family:var(--f-d);font-size:clamp(38px,9vw,74px);margin-top:16px}
+.finale .kick{color:rgba(255,255,255,.7)}
+
+/* small screens */
+@media (max-width:520px){
+  .wtl li{grid-template-columns:70px 1fr;gap:12px}
+  .wev{padding:22px 18px}
+}
+
+/* ======================================================================
+   Cinematic opening (DSIOpen)
+   ====================================================================== */
+.gate.op{display:block;padding:0;overflow:hidden;--p:0;--op-ink:#fff;--op-glow:rgba(255,255,255,.9);color:var(--op-ink)}
+.gate.op *{-webkit-tap-highlight-color:transparent}
+.op-scene{position:absolute;inset:0;z-index:1;overflow:hidden}
+.op-fx{position:absolute;inset:0;width:100%;height:100%;z-index:4;pointer-events:none}
+.op-top{position:absolute;left:0;right:0;top:max(64px,9svh);z-index:5;text-align:center;padding:0 26px;pointer-events:none;transition:opacity .7s,transform .9s cubic-bezier(.2,.7,.1,1)}
+.op-top small{display:block;font-size:10.5px;font-weight:700;letter-spacing:.34em;text-transform:uppercase;opacity:.8}
+.op-top p{margin:12px auto 0;max-width:24ch;font-family:var(--f-d);font-size:clamp(21px,5.4vw,32px);line-height:1.22}
+.op-ritual{position:absolute;inset:0;z-index:3;display:grid;place-items:center;transition:opacity 1s,transform 1.3s cubic-bezier(.2,.7,.1,1),filter 1s}
+.op-touch{touch-action:none;-webkit-user-select:none;user-select:none;-webkit-touch-callout:none;cursor:pointer}
+.op-hint{position:absolute;left:50%;bottom:max(30px,5svh);transform:translateX(-50%);z-index:6;display:flex;align-items:center;gap:10px;
+  padding:10px 16px 10px 14px;border-radius:999px;background:rgba(0,0,0,.34);-webkit-backdrop-filter:blur(10px);backdrop-filter:blur(10px);
+  font-size:13px;font-weight:600;letter-spacing:.01em;white-space:nowrap;max-width:calc(100vw - 32px);transition:opacity .5s,transform .5s;pointer-events:none}
+.op-hint span{overflow:hidden;text-overflow:ellipsis}
+.op-hint i{flex:none;width:8px;height:8px;border-radius:50%;background:currentColor;animation:opPing 1.6s infinite}
+@keyframes opPing{0%{box-shadow:0 0 0 0 rgba(255,255,255,.55)}100%{box-shadow:0 0 0 12px rgba(255,255,255,0)}}
+.op-prog{flex:none;width:46px;height:3px;border-radius:3px;background:rgba(255,255,255,.25);overflow:hidden}
+.op-prog s{display:block;height:100%;width:calc(var(--p)*100%);background:currentColor;text-decoration:none}
+.op-skip{position:absolute;right:14px;top:14px;z-index:8;min-height:34px;padding:0 12px;border-radius:999px;font-size:11px;font-weight:700;letter-spacing:.12em;
+  text-transform:uppercase;color:inherit;opacity:.7;background:rgba(0,0,0,.18);transition:opacity .4s}
+.op-skip:hover{opacity:1}
+.op-done{position:absolute;inset:0;z-index:7;display:flex;flex-direction:column;align-items:center;padding:26px;text-align:center;overflow-y:auto;
+  opacity:0;visibility:hidden;pointer-events:none;transition:opacity .9s,visibility 0s .9s}
+.op-card{margin:auto;max-width:560px;width:100%}
+.op-card>*{opacity:0;transform:translateY(22px);transition:opacity .9s cubic-bezier(.2,.7,.1,1),transform 1.1s cubic-bezier(.2,.7,.1,1)}
+.gate.done .op-done{opacity:1;visibility:visible;pointer-events:auto;transition:opacity 1s .45s,visibility 0s}
+.gate.done .op-card>*{opacity:1;transform:none}
+.gate.done .op-card>*:nth-child(1){transition-delay:.55s}.gate.done .op-card>*:nth-child(2){transition-delay:.75s}
+.gate.done .op-card>*:nth-child(3){transition-delay:.9s}.gate.done .op-card>*:nth-child(4){transition-delay:1.05s}
+.gate.done .op-card>*:nth-child(5){transition-delay:1.25s}.gate.done .op-card>*:nth-child(6){transition-delay:1.4s}
+.gate.done .op-hint{opacity:0;transform:translate(-50%,12px)}
+.gate.done .op-skip{opacity:0;pointer-events:none}
+.gate.done .op-top{opacity:0;transform:translateY(-16px)}
+.op-mono{position:relative;width:104px;height:104px;margin:0 auto 18px;display:grid;place-items:center}
+.op-mono svg{position:absolute;inset:0;width:100%;height:100%;overflow:visible}
+.op-mono circle{fill:none;stroke:var(--op-line,currentColor);stroke-width:1;stroke-dasharray:360;stroke-dashoffset:360;transition:stroke-dashoffset 2s cubic-bezier(.6,.1,.2,1) .5s}
+.op-mono circle+circle{opacity:.45;transition-delay:.8s}
+.gate.done .op-mono circle{stroke-dashoffset:0}
+.op-ini{font-family:var(--f-d);font-size:34px;line-height:1;letter-spacing:.02em}
+.op-ini i{font-style:italic;font-size:.62em;margin:0 3px;opacity:.75}
+.op-sub{margin-top:14px;font-size:12px;opacity:.6}
+.gate.op .enter{box-shadow:0 0 0 0 rgba(255,255,255,.35);animation:opBreathe 2.8s ease-in-out infinite}
+@keyframes opBreathe{50%{box-shadow:0 0 0 10px rgba(255,255,255,0)}}
+.op-flash{position:absolute;inset:0;z-index:9;pointer-events:none;opacity:0;background:radial-gradient(circle at 50% 52%,var(--op-glow),rgba(255,255,255,0) 62%)}
+.gate.op.open .op-flash{animation:opFlash 1.3s ease-out}
+@keyframes opFlash{25%{opacity:.9}100%{opacity:0}}
+.gate.op.open .op-done{opacity:0;transform:scale(1.07);filter:blur(5px);transition:opacity .9s,transform 1.2s,filter 1s}
+.gate.done .op-ritual.fade-on-done{opacity:0;transform:scale(1.06);filter:blur(4px)}
+.op-dot{cursor:pointer}
+.op-dot .hit{fill:transparent}
+.op-dot .ring{fill:none;stroke:currentColor;stroke-width:1.2;opacity:0;transform-box:fill-box;transform-origin:center}
+.op-dot .core{fill:currentColor;opacity:.55;transition:opacity .3s}
+.op-dot.next .ring{opacity:.9;animation:opRing 1.4s ease-out infinite}
+.op-dot.next .core,.op-dot.on .core{opacity:1}
+.op-dot.nope .core{animation:opNope .4s}
+@keyframes opRing{0%{transform:scale(.6);opacity:.9}100%{transform:scale(1.7);opacity:0}}
+@keyframes opNope{25%{transform:translateX(-3px)}75%{transform:translateX(3px)}}
+.op-line{fill:none;stroke:currentColor;stroke-width:3;stroke-linecap:round;stroke-linejoin:round}
+
+/* hero entrance */
+body.intro .hero .in>*{animation:heroRise 1.3s cubic-bezier(.2,.7,.1,1) both}
+body.intro .hero .in>*:nth-child(1){animation-delay:.35s}body.intro .hero .in>*:nth-child(2){animation-delay:.5s}
+body.intro .hero .in>*:nth-child(3){animation-delay:.65s}body.intro .hero .in>*:nth-child(4){animation-delay:.8s}
+body.intro .hero .in>*:nth-child(5){animation-delay:.95s}body.intro .hero .in>*:nth-child(6){animation-delay:1.1s}
+body.intro .hero .in>*:nth-child(7){animation-delay:1.25s}body.intro .hero .in>*:nth-child(8){animation-delay:1.4s}
+@keyframes heroRise{from{opacity:0;transform:translateY(30px);filter:blur(6px)}}
+@media (prefers-reduced-motion:reduce){.op-card>*{opacity:1;transform:none}}
+
+/* Welcome Home — night-blue towers, warm window light */
+:root{
+  --ink:#1C2438; --ink-2:rgba(28,36,56,.7); --ink-3:rgba(28,36,56,.45);
+  --bg:#F6F3EE; --bg-2:#ECE6DC; --deep:#16213A; --line:rgba(28,36,56,.12);
+  --accent:#D9704F; --accent-2:#6F8F76; --on-accent:#fff;
+  --f-d:"Instrument Serif",Georgia,serif; --f-b:Manrope,system-ui,sans-serif; --f-s:Caveat,cursive;
+  --rad:22px; --kit-accent:#D9704F;
+}
+h1,h2,h3{font-weight:400;letter-spacing:-.015em}
+.title{font-size:clamp(38px,8vw,68px)}
+.title em{color:var(--accent)}
+.kick{letter-spacing:.24em;color:var(--accent-2)}
+.btn{background:var(--deep)}
+
+/* hero: a tower at night */
+.hero{background:linear-gradient(180deg,#0F1830,#16213A 55%,#243152);color:#F4EFE6;overflow:hidden}
+.tower{position:absolute;left:50%;bottom:0;width:min(78vw,420px);height:62%;transform:translateX(-50%);z-index:1;opacity:.9;
+  background:linear-gradient(#1E2B4A,#131C33);border-radius:4px 4px 0 0;box-shadow:0 0 0 1px rgba(255,255,255,.06)}
+.tower .grid{position:absolute;inset:22px 18px 0;display:grid;grid-template-columns:repeat(6,1fr);gap:12px 10px;align-content:start}
+.tower i{height:22px;border-radius:2px;background:#26345A;animation:lit 6s ease-in-out infinite;animation-delay:var(--d)}
+.tower i.ours{background:#FFC977;box-shadow:0 0 22px 4px rgba(255,201,119,.6);animation:none}
+@keyframes lit{0%,40%{background:#26345A}50%,90%{background:#F2B866;box-shadow:0 0 12px rgba(242,184,102,.4)}}
+.hero::after{content:"";position:absolute;inset:0;background:radial-gradient(ellipse 60% 40% at 50% 45%,rgba(15,24,48,.88),rgba(15,24,48,.2) 100%);z-index:2;pointer-events:none}
+.hero .in{z-index:3}
+.hero .kick{color:#FFC977}
+.hero .names{font-family:var(--f-d);font-size:clamp(58px,16vw,128px);line-height:.98}
+.hero .names em{color:#FFC977}
+.sub{max-width:30ch;margin:14px auto 0;font-size:clamp(17px,4vw,21px);color:rgba(244,239,230,.78)}
+.addr{display:inline-flex;flex-direction:column;align-items:center;gap:2px;margin:24px auto 0;padding:12px 22px;border-radius:14px;border:1px solid rgba(255,201,119,.35)}
+.addr b{font-weight:700;letter-spacing:.14em;color:#FFC977;font-size:14px;text-transform:uppercase}
+.addr span{font-size:14px;color:rgba(244,239,230,.75)}
+.hero .when{color:#fff}
+.hero .cue{color:rgba(255,255,255,.5)}
+
+/* room tour rail */
+.tour-sec{background:var(--bg);padding-inline:0}
+.tour-sec .wrap{padding-inline:var(--pad)}
+.rooms{display:flex;gap:14px;overflow-x:auto;scroll-snap-type:x mandatory;padding:34px var(--pad) 16px;scroll-padding-inline:var(--pad);scrollbar-width:none}
+.rooms::-webkit-scrollbar{display:none}
+.room{flex:0 0 min(74vw,280px);scroll-snap-align:start;position:relative;padding:26px 22px 24px;border-radius:26px;background:var(--c);min-height:280px;display:flex;flex-direction:column}
+.room .no{font-size:12px;font-weight:800;letter-spacing:.2em;color:var(--ink-3)}
+.room i{font-style:normal;font-size:54px;line-height:1;margin:auto 0 14px}
+.room h3{font-family:var(--f-d);font-size:30px}
+.room p{margin:6px 0 0;font-size:14.5px;color:var(--ink-2)}
+.swipe{margin:6px 0 0}
+
+/* evening plan */
+.eve-sec{background:var(--bg-2)}
+.line{list-style:none;margin:34px 0 0;padding:0;display:grid;gap:0;counter-reset:line}
+.line li{display:grid;grid-template-columns:80px 1fr;gap:16px;align-items:start;padding:22px 0;border-bottom:1px solid var(--line)}
+.line li:first-child{border-top:1px solid var(--line)}
+.line time{font-size:12px;font-weight:800;letter-spacing:.12em;color:var(--accent-2);padding-top:5px}
+.line h3{font-size:clamp(22px,4vw,28px);margin-bottom:6px}
+.line p{color:var(--ink-2);font-size:15px}
+
+/* countdown */
+.count-sec{background:var(--deep);color:#F4EFE6;text-align:center;padding:clamp(64px,10vw,100px) var(--pad)}
+.count-sec .kick{color:rgba(255,201,119,.8)}
+.count-sec .title{color:#F4EFE6}
+.count b{color:#FFC977}
+.count small{color:rgba(255,255,255,.5)}
+
+/* fridge */
+.fridge-sec{background:var(--bg)}
+.note-form{display:flex;flex-wrap:wrap;gap:10px;margin-top:28px;max-width:560px;margin-inline:auto}
+.note-form input{flex:1 1 200px;min-height:48px;padding:0 16px;border:1px solid var(--line);border-radius:12px;background:#fff;font-size:15px;color:var(--ink)}
+.note-form input:focus{outline:2px solid var(--accent);outline-offset:1px}
+.note-form .btn{flex:none}
+.door-fridge{margin-top:28px;background:var(--deep);border-radius:26px;padding:28px;min-height:220px}
+.notes{display:flex;flex-wrap:wrap;gap:14px;justify-content:center}
+.nt{position:relative;background:var(--c);border-radius:10px;padding:16px 18px 14px;min-width:140px;max-width:200px;transform:rotate(var(--r));box-shadow:2px 4px 14px rgba(0,0,0,.18)}
+.nt.fresh{animation:noteIn .5s cubic-bezier(.2,.7,.1,1)}
+@keyframes noteIn{from{opacity:0;transform:rotate(var(--r)) scale(.6)}}
+.nt p{font-family:var(--f-s);font-size:17px;line-height:1.4;color:#1C2438;margin:0 0 6px}
+.nt footer{font-size:11px;font-weight:700;letter-spacing:.14em;color:rgba(28,36,56,.55)}
+.mag{position:absolute;top:-10px;left:50%;transform:translateX(-50%);width:18px;height:18px;border-radius:50%;background:var(--m);box-shadow:0 2px 6px rgba(0,0,0,.25)}
+
+/* rules */
+.rules-sec{background:var(--bg-2)}
+.rules{display:grid;gap:14px;margin-top:34px;grid-template-columns:repeat(auto-fit,minmax(min(100%,240px),1fr))}
+.rule{display:flex;gap:14px;align-items:start;padding:22px 20px;border:1px solid var(--line);border-radius:var(--rad);background:#fff}
+.rule span{font-size:11px;font-weight:800;letter-spacing:.14em;color:var(--ink-3);padding-top:4px}
+.rule i{font-style:normal;font-size:28px;line-height:1}
+.rule b{display:block;font-size:15px;font-weight:700;margin-bottom:4px}
+.rule p{font-size:14px;color:var(--ink-2);margin:0}
+
+/* rsvp */
+.rsvp-sec{background:var(--bg)}
+
+/* finale */
+.finale .fline{color:rgba(244,239,230,.72);margin-top:10px;font-size:clamp(16px,2.4vw,19px)}
+
+/* scene — plaster wall, tiled floor, plant */
+.gate.op .wall{position:absolute;inset:0 0 18%;background:linear-gradient(90deg,rgba(0,0,0,.05),transparent 30%,transparent 70%,rgba(0,0,0,.06)),repeating-linear-gradient(90deg,#EDE4D6 0 60px,#E7DDCD 60px 61px)}
+.gate.op .floor{position:absolute;left:0;right:0;bottom:0;height:18%;background:repeating-linear-gradient(90deg,#B98A5E 0 90px,#A97B51 90px 92px),#B98A5E;box-shadow:inset 0 10px 20px -10px rgba(0,0,0,.4)}
+.gate.op .plant{position:absolute;right:8%;bottom:14%;width:70px;height:150px;background:radial-gradient(ellipse at 50% 30%,#6F8F76 0 38%,transparent 40%) 0 0/100% 70% no-repeat,linear-gradient(#D9704F,#B85A3E) 50% 100%/46px 50px no-repeat;border-radius:4px}
+/* doorway + door */
+.doorway{position:relative;width:min(66vw,260px);height:min(60svh,430px);margin-top:12svh;perspective:900px}
+.doorway::before{content:"";position:absolute;inset:-14px -14px 0;border-radius:6px 6px 0 0;background:#F8F4EE;box-shadow:0 0 0 1px rgba(0,0,0,.06),0 20px 40px -24px rgba(0,0,0,.5)}
+.doorway .light{position:absolute;inset:0;background:radial-gradient(ellipse at 40% 50%,#FFF3D6,#FFC977 50%,#E99A4D)}
+.door{position:absolute;inset:0;transform-origin:0 50%;transition:transform 1.4s cubic-bezier(.5,.05,.2,1);background:linear-gradient(90deg,#2C4A4E,#35575C 50%,#2A464A);box-shadow:inset -6px 0 12px rgba(0,0,0,.2)}
+.door .panel{position:absolute;inset:18px 18px 18px 18px;border:2px solid rgba(255,255,255,.08);box-shadow:inset 0 0 0 16px rgba(0,0,0,.05)}
+.door .plate{position:absolute;left:50%;top:18%;transform:translateX(-50%);padding:10px 16px;border-radius:6px;background:linear-gradient(135deg,#E9C98A,#B98B3E);color:#2A1E0E;text-align:center;white-space:nowrap}
+.door .plate small{display:block;font-size:10px;font-weight:800;letter-spacing:.2em}
+.door .plate b{display:block;font-family:var(--f-d);font-weight:400;font-size:20px;line-height:1.1}
+.door .handle{position:absolute;right:18px;top:40%;width:8px;height:70px;border-radius:4px;background:linear-gradient(90deg,#9C7A3A,#F0D494,#9C7A3A)}
+.door .lock{position:absolute;right:16px;top:calc(40% + 86px);width:14px;height:22px;border-radius:7px;background:radial-gradient(circle at 50% 36%,#1A1A1A 0 3px,transparent 3.5px),linear-gradient(135deg,#F0D494,#9C7A3A)}
+.doorway .mat{position:absolute;left:-10%;right:-10%;bottom:-38px;height:30px;border-radius:4px;background:#6F5A45;color:#EADBC4;font-style:normal;font-weight:800;font-size:11px;letter-spacing:.4em;display:grid;place-items:center}
+.doorway.open .door{transform:rotateY(-82deg)}
+.doorway.turn .key{animation:none;transform:scaleY(.3)}
+.doorway.open .key{opacity:0;transition:opacity .3s}
+.gate.done .op-ritual{opacity:0;transform:scale(1.12);filter:blur(3px)}
+.gate.done{background:#FFE7BF}
+.gate.op .op-top small{color:#B85A3E}
+.gate.op .op-top p{font-family:var(--f-d);font-size:clamp(26px,6.6vw,38px)}
+/* key — horizontal, slides right into lock */
+.key{position:absolute;z-index:4;top:calc(40% + 83px);left:calc(100% - 118px - (1 - var(--p)) * min(42vw,170px));width:110px;height:28px;outline:none;transition:transform .5s;filter:drop-shadow(0 6px 6px rgba(0,0,0,.35))}
+.key::after{content:"";position:absolute;inset:-26px -16px}
+.key .bow{position:absolute;left:0;top:0;width:34px;height:28px;border-radius:50%;background:radial-gradient(circle at 36% 50%,#E9DFD0 0 5px,transparent 5.5px),linear-gradient(135deg,#F3DDA2,#B8903F)}
+.key .blade{position:absolute;left:30px;top:10px;width:76px;height:8px;border-radius:0 3px 3px 0;background:linear-gradient(#F3DDA2,#B8903F);-webkit-mask:linear-gradient(90deg,#000 60%,transparent 60% 66%,#000 66% 74%,transparent 74% 80%,#000 80%);mask:none}
+.key .blade::after{content:"";position:absolute;right:6px;top:6px;width:30px;height:6px;background:repeating-linear-gradient(90deg,#C9A052 0 6px,transparent 6px 10px)}
+.key .tag{position:absolute;left:-20px;top:18px;width:26px;height:34px;border-radius:4px 4px 12px 12px;background:#D9704F;rotate:18deg;transform-origin:100% 0}
+.key:not(.dragging){animation:keyHint 2.6s ease-in-out infinite}
+@keyframes keyHint{0%,70%,100%{translate:0 0}82%{translate:14px 0}}
+</style>
+</head>
+<body class="locked">
+
+<div class="gate op" id="gate" role="dialog" aria-label="Housewarming invitation">
+  <div class="op-scene" aria-hidden="true"><i class="wall"></i><i class="floor"></i><i class="plant"></i></div>
+  <div class="op-ritual">
+    <div class="doorway" id="doorway">
+      <i class="light"></i>
+      <div class="door"><i class="panel"></i><div class="plate"><small data-t="gate.flat"></small><b data-names=" &amp; "></b></div><i class="handle"></i><i class="lock"></i></div>
+      <i class="mat" data-t="gate.mat" style="font-style:normal"></i>
+      <div class="key op-touch" id="key" tabindex="0" role="button" aria-label="Drag the key into the lock"><i class="bow"></i><i class="blade"></i><i class="tag"></i></div>
+    </div>
+  </div>
+  <div class="op-top"><small data-t="gate.kicker"></small><p data-t="gate.line"></p></div>
+  <canvas class="op-fx" id="opFx" aria-hidden="true"></canvas>
+  <div class="op-hint" id="opHint" aria-live="polite"><i aria-hidden="true"></i><span data-t="gate.hint"></span><b class="op-prog" aria-hidden="true"><s></s></b></div>
+  <button class="op-skip" type="button" id="opSkip" data-t="gate.skip"></button>
+
+  <div class="op-done" aria-live="polite">
+    <div class="op-card">
+      <div class="op-mono" aria-hidden="true"><svg viewBox="0 0 120 120"><circle cx="60" cy="60" r="57"/><circle cx="60" cy="60" r="50"/></svg><span class="op-ini"></span></div>
+      <small data-t="gate.kicker"></small>
+      <h1 data-names=" &amp; "></h1>
+      <div class="date" data-t="basics.date_short"></div>
+      <button class="enter" id="enter" data-t="gate.button"></button>
+      <div class="op-sub" data-t="gate.done_hint"></div>
+    </div>
+  </div>
+  <div class="op-flash" aria-hidden="true"></div>
+</div>
+
+<main>
+  <section class="hero" id="top">
+    <div class="tower" aria-hidden="true" id="tower"></div>
+    <div class="in">
+      <small class="kick" data-t="hero.kicker"></small>
+      <div class="names"><span data-first></span> <em>&amp;</em> <span data-second></span></div>
+      <p class="sub" data-t="hero.sub"></p>
+      <div class="addr"><b data-t="hero.flat"></b><span data-t="hero.building"></span></div>
+      <div class="when" data-t="basics.date_text"></div>
+      <div class="where" data-t="basics.city"></div>
+    </div>
+    <div class="cue" data-t="hero.cue"></div>
+  </section>
+
+  <section class="tour-sec" id="tour" data-section="tour" data-move="tour">
+    <div class="wrap">
+      <div class="kick rv" data-t="tour.kicker"></div>
+      <h2 class="title rv"><span data-t="tour.title"></span> <em data-t="tour.title_em"></em></h2>
+      <p class="lead rv" style="margin-top:14px" data-tb="tour.lead"></p>
+    </div>
+    <div class="rooms" id="rooms"></div>
+    <p class="swipe" data-t="tour.hint"></p>
+  </section>
+
+  <section class="eve-sec" id="evening" data-section="evening" data-move="evening">
+    <div class="wrap narrow">
+      <div class="kick center rv" data-t="evening.kicker"></div>
+      <h2 class="title center rv"><span data-t="evening.title"></span> <em data-t="evening.title_em"></em></h2>
+      <ol class="line" id="line"></ol>
+    </div>
+  </section>
+
+  <section class="count-sec" data-move="countdown">
+    <div class="wrap center">
+      <div class="kick center" data-t="countdown.kicker"></div>
+      <h2 class="title" data-t="countdown.title"></h2>
+      <div class="count" data-count><div><b>0</b><small>DAYS</small></div><div><b>00</b><small>HOURS</small></div><div><b>00</b><small>MINUTES</small></div><div><b>00</b><small>SECONDS</small></div></div>
+    </div>
+  </section>
+
+  <section id="events" data-move="events">
+    <div class="wrap">
+      <div class="kick center rv" data-t="events_section.kicker"></div>
+      <h2 class="title center rv"><span data-t="events_section.title"></span> <em data-t="events_section.title_em"></em></h2>
+      <div class="orn rv"><i></i></div>
+      <div class="wevs" id="eventList"></div>
+    </div>
+  </section>
+
+  <section class="fridge-sec" id="fridge" data-section="fridge" data-move="fridge">
+    <div class="wrap">
+      <div class="kick center rv" data-t="fridge.kicker"></div>
+      <h2 class="title center rv"><span data-t="fridge.title"></span> <em data-t="fridge.title_em"></em></h2>
+      <p class="lead center rv" style="margin-top:14px" data-tb="fridge.lead"></p>
+      <form class="note-form rv" id="noteForm">
+        <input id="noteText" maxlength="80" data-val="fridge.placeholder" aria-label="Your note" required>
+        <input id="noteName" maxlength="24" data-val="fridge.name_placeholder" aria-label="Your name">
+        <button class="btn" type="submit" data-t="fridge.button"></button>
+      </form>
+      <div class="door-fridge"><div class="notes" id="notes"></div></div>
+    </div>
+  </section>
+
+  <section class="rules-sec" id="rules" data-section="rules" data-move="rules">
+    <div class="wrap">
+      <div class="kick center rv" data-t="rules.kicker"></div>
+      <h2 class="title center rv"><span data-t="rules.title"></span> <em data-t="rules.title_em"></em></h2>
+      <div class="rules" id="rulesList"></div>
+    </div>
+  </section>
+
+  <section id="venue" data-section="venue" data-move="venue">
+    <div class="wrap narrow">
+      <div class="kick center rv" data-t="venue.kicker"></div>
+      <h2 class="title center rv"><span data-t="venue.title"></span> <em data-t="venue.title_em"></em></h2>
+      <p class="center muted rv" style="margin-top:14px" data-t="venue.line"></p>
+      <div class="wmap rv" id="map"><button type="button" id="loadMap" data-t="venue.map_button"></button></div>
+      <div class="center rv" style="margin-top:18px"><a class="btn" id="dirBtn" target="_blank" rel="noopener" data-t="venue.directions_label"></a></div>
+    </div>
+  </section>
+
+  <section class="rsvp-sec" id="rsvp" data-section="rsvp" data-move="rsvp">
+    <div class="wrap narrow">
+      <div class="kick center rv" data-t="rsvp.kicker"></div>
+      <h2 class="title center rv"><span data-t="rsvp.title"></span> <em data-t="rsvp.title_em"></em></h2>
+      <p class="center muted rv" style="margin-top:12px" data-t="rsvp.deadline"></p>
+      <form class="wform rv" id="rsvpForm">
+        <label><span data-t="rsvp.name_label"></span><input name="n" required autocomplete="name" maxlength="60"></label>
+        <label hidden aria-hidden="true">Website<input name="website" tabindex="-1" autocomplete="off"></label>
+        <div class="choice"><label><input type="radio" name="a" value="yes" checked><span data-t="rsvp.yes_label"></span></label><label><input type="radio" name="a" value="no"><span data-t="rsvp.no_label"></span></label></div>
+        <label><span data-t="rsvp.guests_label"></span><select name="g" id="guestSel"></select></label>
+        <label><span data-t="rsvp.phone_label"></span><input name="p" type="tel" inputmode="tel" autocomplete="tel" maxlength="20"></label>
+        <div id="fnWrap"><label data-t="rsvp.functions_label"></label><div class="fns" id="fns" style="margin-top:8px"></div></div>
+        <label><span data-t="rsvp.message_label"></span><input name="m" maxlength="200"></label>
+        <button class="btn" type="submit" data-t="rsvp.button"></button>
+        <p class="err" id="rsvpErr" style="color:#b3261e;font-size:13px;margin:0" hidden></p>
+      </form>
+      <div class="wthx" id="thanks"><h3 id="thxH"></h3><p id="thxP"></p></div>
+    </div>
+  </section>
+
+  <section class="finale">
+    <div class="in wrap">
+      <div class="kick center" data-t="finale.kicker"></div>
+      <div class="names"><span data-first></span> <em>&amp;</em> <span data-second></span></div>
+      <p class="fline" data-t="finale.line"></p>
+    </div>
+  </section>
+</main>
+
+<nav class="kit-dock" aria-label="Quick actions">
+  <a class="pri" href="#rsvp">RSVP</a>
+  <a href="#tour" data-t="hero.dock_tour"></a>
+  <button type="button" data-music aria-label="Play music"><span class="kit-eq"><i></i><i></i><i></i></span>Music</button>
+  <button type="button" data-share aria-label="Share"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="18" cy="5" r="2.5"/><circle cx="6" cy="12" r="2.5"/><circle cx="18" cy="19" r="2.5"/><path d="M8.2 10.8l7.6-4.4M8.2 13.2l7.6 4.4"/></svg></button>
+</nav>
+
+<script>window.WEDDING={"basics":{"groom":"Rohan","bride":"Aisha","order":"groom_first","date":"2027-05-22T17:00","tz":"+05:30","date_text":"Saturday · 22 May · 2027","date_short":"22 · 05 · 2027","city":"Whitefield, Bengaluru"},"seo":{"title":"Rohan & Aisha's Housewarming · Flat 1204","description":"Come warm our new home in Whitefield, Bengaluru on 22 May 2027 — the grand tour, the evening plan, the fridge-door wall and RSVP.","image":""},"gate":{"enabled":true,"kicker":"Griha Pravesh · Housewarming","line":"We finally have our own keys","hint":"Slide the key into the lock →","flat":"FLAT 1204","mat":"WELCOME","button":"STEP INSIDE","done_hint":"Shoes off, snacks on","skip":"Skip"},"hero":{"kicker":"Housewarming · Griha Pravesh","sub":"got the keys. Come see the place before we fill it with too much furniture.","flat":"Tower B · Flat 1204","building":"Prestige Lakeside Habitat","dock_tour":"Tour","cue":"SCROLL"},"tour":{"kicker":"The grand tour","title":"Room","title_em":"by room","lead":"It's not big, but every corner has a plan (and a pending Amazon order).","hint":"Swipe →","rooms":[{"icon":"🛋️","name":"The living room","text":"One sofa, one very large TV, and space for everyone to sit on the floor."},{"icon":"🍳","name":"The kitchen","text":"Open plan. Aisha cooks, Rohan narrates."},{"icon":"🌇","name":"The balcony","text":"Twelfth floor, lake view, and the best chai spot in Whitefield."},{"icon":"💻","name":"The study","text":"Two desks facing each other. For focus, supposedly."},{"icon":"🛏️","name":"The guest room","text":"Booked by both mothers for the first three months."},{"icon":"🪴","name":"The plant corner","text":"Bring a plant, get naming rights."}]},"evening":{"kicker":"The plan","title":"Saturday,","title_em":"at home","items":[{"time":"5:00 PM","title":"Griha pravesh puja","text":"A short puja with family — kalash, a lamp at the door and the first milk on the new stove."},{"time":"6:30 PM","title":"Open house","text":"Friends arrive. Tour the flat, find your name on the fridge."},{"time":"7:30 PM","title":"Dinner","text":"Biryani from Aisha's favourite place and Rohan's attempt at dessert."},{"time":"9:00 PM","title":"Terrace music","text":"Playlist on, lights on, neighbours pre-warned."}]},"countdown":{"kicker":"We open the door in","title":"Until the housewarming","scratch":true,"scratch_material":"gold","scratch_label":"Scratch the gold leaf","scratch_only":false},"events_section":{"kicker":"When & where","title":"One evening,","title_em":"one address"},"events":[{"name":"Griha Pravesh Puja","short":"Puja","day":"Sat · 22 May","time":"5:00 PM","venue":"Flat 1204, Tower B","address":"Prestige Lakeside Habitat, Whitefield","map":"","dress":"Indian casual","note":"Family and close friends. Short and sweet.","start":"2027-05-22T17:00","end":"2027-05-22T18:30","featured":false},{"name":"Housewarming Party","short":"Party","day":"Sat · 22 May","time":"6:30 PM","venue":"Flat 1204 & terrace","address":"Prestige Lakeside Habitat, Whitefield","map":"","dress":"Whatever's comfortable","note":"Dinner, music and a fridge door full of notes.","start":"2027-05-22T18:30","end":"2027-05-22T23:00","featured":true}],"fridge":{"kicker":"The fridge door","title":"Stick a note","title_em":"on our fridge","lead":"Every home needs a fridge covered in notes. Leave yours — advice, a wish, or your claim on the guest room.","placeholder":"Dear new home…","name_placeholder":"Your name","button":"Stick it on","added":"Stuck on the fridge! 🧲","items":[{"text":"Rule 1: the last slice is always the guest's.","from":"Mom"},{"text":"May the Wi-Fi be strong and the fights be short.","from":"Kabir"},{"text":"I'm calling dibs on the balcony chair.","from":"Sana"},{"text":"Happy homes have loud kitchens. Make noise!","from":"Nani"}]},"rules":{"kicker":"House rules","title":"Before you","title_em":"ring the bell","items":[{"icon":"🚗","title":"Parking","text":"Visitor parking at basement B2. Tell the gate you're coming to B-1204."},{"icon":"👟","title":"Shoes off","text":"There's a rack by the door and slippers for everyone."},{"icon":"🎁","title":"No gifts","text":"Bring a plant instead. We'll name it after you."},{"icon":"👶","title":"Kids welcome","text":"The study becomes a play room for the evening."}]},"venue":{"kicker":"Location","title":"Prestige","title_em":"Lakeside","line":"Tower B, Flat 1204 · Prestige Lakeside Habitat, Whitefield","map_query":"Prestige Lakeside Habitat, Whitefield, Bengaluru","map_link":"","map_button":"Tap to load the map","directions_label":"Get directions"},"rsvp":{"kicker":"RSVP","title":"Coming","title_em":"over?","deadline":"Please let us know by 15 May","whatsapp":"","wa_auto":false,"wa_title":"RSVP for {names}'s housewarming","name_label":"Your name","yes_label":"Yes, we're coming","no_label":"Sorry, can't make it","guests_label":"How many of you","max_guests":5,"phone_label":"Phone (optional)","ask_phone":true,"functions_label":"Coming for","ask_functions":true,"message_label":"Food allergies or a song request (optional)","ask_message":true,"button":"Send RSVP","thanks_yes":"See you at 1204, {name}! Your slippers are waiting.","thanks_no":"Thanks for telling us, {name}. The door's open anytime."},"finale":{"kicker":"See you at home","line":"The keys are ours. The evening is yours."},"music":{"enabled":true,"preset":"pad","song":""},"sections":{"tour":true,"evening":true,"fridge":true,"rules":true,"venue":true,"rsvp":true,"dock":true},"branding":{"credit":false},"arrange":["tour","evening","countdown","events","fridge","rules","venue","rsvp"]};
+window.DSI_MODE={"demo":false,"base":"/housewarming/","site":"/housewarming/","template":"newkeys"};</script>
+<script src="_kit/kit.js"></script>
+<script src="_kit/open.js"></script>
+<script src="_kit/wed.js"></script>
+<script>
+(function(){
+  var K=DSIKit, Wed=DSIWed, W=K.W, $=K.$, esc=K.esc;
+  /* tower: windows light up one by one, ours glows brightest */
+  var tw=$("#tower"), cells="";
+  for(var i=0;i<48;i++){ cells+='<i class="'+(i===17?"ours":"")+'" style="--d:'+((i*37)%23)/4+'s"></i>'; }
+  tw.innerHTML='<div class="grid">'+cells+'</div>';
+  K.list($("#rooms"),(W.tour||{}).rooms,function(r,i){
+    return '<article class="room" style="--c:'+["#F4E3D7","#E3ECE4","#E6E4F2","#F6ECD2","#E0EAF3","#F2E1E1"][i%6]+'"><span class="no">0'+(i+1)+'</span><i>'+esc(r.icon)+'</i><h3>'+esc(r.name)+'</h3><p>'+K.nl(r.text)+'</p></article>';
+  });
+  K.list($("#line"),(W.evening||{}).items,function(it){ return '<li class="rv"><time>'+esc(it.time)+'</time><div><h3>'+esc(it.title)+'</h3><p>'+K.nl(it.text)+'</p></div></li>'; });
+  K.list($("#rulesList"),(W.rules||{}).items,function(r,i){ return '<article class="rule rv"><span>'+(i+1)+'</span><i>'+esc(r.icon)+'</i><b>'+esc(r.title)+'</b><p>'+K.nl(r.text)+'</p></article>'; });
+  var F=W.fridge||{}, notes=$("#notes"), nn=0, COL=["#FFE58A","#FFC6B8","#C9E7D2","#CFE0FA","#F4D0EA"];
+  function note(n,fresh){ nn++; return '<article class="nt'+(fresh?' fresh':'')+'" style="--c:'+COL[nn%5]+';--r:'+((nn*47)%9-4)+'deg"><i class="mag" style="--m:'+COL[(nn+2)%5]+'"></i><p>'+K.nl(n.text)+'</p><footer>'+esc(n.from||"")+'</footer></article>'; }
+  notes.innerHTML=(F.items||[]).map(function(n){ return note(n); }).join("");
+  $("#noteForm").addEventListener("submit",function(e){ e.preventDefault(); var t=$("#noteText").value.trim(), n=$("#noteName").value.trim(); if(!t) return;
+    notes.insertAdjacentHTML("afterbegin",note({text:t,from:n},true)); $("#noteText").value=""; K.sfx("stamp"); K.toast(F.added||"Stuck on the fridge!"); });
+  Wed.page({ scratch:{ material:"gold" }, music:"pad" });
+
+  /* opening: slide the key in, turn it, door swings open */
+  Wed.ritual(function(O){
+    var fx=O.fx($("#opFx"),{kind:"dust",colors:["#FFD58A","#FFF1CF","#FFB85C"],rain:0,max:220,r:2.6});
+    var d=$("#doorway");
+    O.drag($("#key"),{axis:"x",dir:1,dist:function(){ return Math.min(innerWidth*.42,170); },playMs:900,snap:.6,
+      onDone:function(){
+        d.classList.add("turn"); K.sfx("click");
+        setTimeout(function(){ d.classList.add("open"); K.sfx("whoosh"); var c=O.center(d); fx.burst(140,c[0],c[1],{explode:true,speed:5,r:3,life:220}); fx.rain(.3); },650);
+        setTimeout(function(){ O.complete(); },1700);
+      }});
+  });
+})();
+</script>
+</body>
+</html>

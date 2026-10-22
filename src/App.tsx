@@ -37,6 +37,7 @@ const AamantranDestination = lazySitePage(() => import('./pages/AamantranDestina
 const AamantranRaabta = lazySitePage(() => import('./pages/AamantranRaabta'))
 const AamantranQubool = lazySitePage(() => import('./pages/AamantranQubool'))
 const BirthdayInvite = lazySitePage(() => import('./pages/BirthdayInvite'))
+const HousewarmingInvite = lazySitePage(() => import('./pages/HousewarmingInvite'))
 const MohadRahma = lazy(() => import('./pages/MohadRahma'))
 const GeneratedInvitation = lazy(() => import('./pages/GeneratedInvitation'))
 
@@ -134,6 +135,7 @@ export default function App() {
       <Route path="/design24" element={<AamantranQubool />} />
       <Route path="/qubool" element={<AamantranQubool />} />
       <Route path="/birthday" element={<BirthdayInvite />} />
+      <Route path="/housewarming" element={<HousewarmingInvite />} />
       <Route path="/royal-grace" element={<MohadRahma />} />
       <Route path="/mohadrahm" element={<Navigate to="/mohadrahma" replace />} />
       <Route path="/mohadrahma" element={<MohadRahma />} />
