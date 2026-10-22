@@ -1,6 +1,7 @@
 import type { ReactNode } from 'react'
 import type { InvitationData, Celebration } from '../invitations/model'
 import { formatSellingPrice } from '../lib/orderPricing'
+import { musicLabel } from '../invitations/musicCatalog'
 import './InvitationReview.css'
 
 function reviewTime(value: string) {
@@ -61,7 +62,7 @@ export default function InvitationReview({ details, phone, title, events, templa
           ['Phone number', phone, 'phone'], ['Dress code', details.dressCode, 'dress'],
           ['Photo gallery', details.gallery, 'image'], ['Welcome message', details.message, 'note'],
           ['Short note', details.giftNote, 'gift'],
-          ...(details.music.trim() ? [['Music', details.music, 'note'] as Row] : []),
+          ...(details.music.trim() ? [['Music', musicLabel(details.music), 'note'] as Row] : []),
         ]}/>
       </div>
       <div className="inv-review-column">

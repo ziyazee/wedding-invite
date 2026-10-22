@@ -1,4 +1,6 @@
 import { formatDate, formatTime } from './model'
+import { isCatalogMusic } from './musicCatalog'
+import { applyNewOrderTemplate } from './newOrderTemplates'
 import type { InvitationData, Celebration } from './model'
 import { downloadCalendar } from './calendar'
 import { saveOrderRsvp } from './rsvp'
@@ -32,7 +34,9 @@ export function applyOrderFrame(doc: Document, d: InvitationData) {
     doc.head.append(css)
     initialized.add(doc)
   }
-  if (d.template === 9) {
+  if (d.template >= 12) {
+    applyNewOrderTemplate(doc, d)
+  } else if (d.template === 9) {
     text('#bride-name-el', d.bride); text('#groom-name-el', d.groom)
     doc.querySelector('#bride-name-el')?.setAttribute('aria-label', d.bride)
     doc.querySelector('#groom-name-el')?.setAttribute('aria-label', d.groom)
@@ -73,13 +77,12 @@ export function applyOrderFrame(doc: Document, d: InvitationData) {
     // cards below own current data and their own calendar/map actions instead.
     doc.querySelectorAll<HTMLElement>('.ev-journey-wrap').forEach(el => { el.hidden = true })
   }
-  updateEvents(doc, d)
-  updateExtras(doc, d)
+  if (d.template < 12) { updateEvents(doc, d); updateExtras(doc, d) }
   const music = doc.querySelector<HTMLAudioElement>('audio')
   if (music) {
     if (!musicDefaults.has(music)) musicDefaults.set(music, music.currentSrc || music.src || music.querySelector('source')?.src || '')
-    const source = safeURL(d.music) || musicDefaults.get(music)!
-    if (source && music.src !== source) {
+    const source = (isCatalogMusic(d.music) ? d.music : safeURL(d.music)) || musicDefaults.get(music)!
+    if (source && music.src !== new URL(source, doc.baseURI).href) {
       const playing = !music.paused
       music.src = source
       if (playing) void music.play().catch(() => {})
@@ -194,8 +197,9 @@ function updateExtras(doc: Document, d: InvitationData) {
 }
 
 export function installOrderFrameRsvp(doc: Document, template: number, target?: RsvpTarget) {
-  const host = doc.querySelector(template === 9 ? '#rsvp-section' : template === 10 ? '#rsvp-form-wrap' : '#rsvp .container')
+  const host = doc.querySelector(template === 12 ? '#order-rsvp-host' : template === 13 ? '#order-rsvp-host,#rsvpSection .rsvp-action-area' : template === 14 ? '#order-rsvp-host,[data-scene="8"] .card:has([data-aamantran="rsvp"])' : template === 9 ? '#rsvp-section' : template === 10 ? '#rsvp-form-wrap' : '#rsvp .container')
   if (!host || host.querySelector('.order-rsvp')) return () => {}
+  if(template>=12)host.id='order-rsvp-host'
   const form = doc.createElement('form'); form.className = 'order-rsvp'
   const name = doc.createElement('input'); name.placeholder = 'Your name'; name.setAttribute('aria-label', 'Your name'); name.required = true; name.maxLength = 120
   const count = doc.createElement('input'); count.type = 'number'; count.min = '1'; count.max = '10'; count.value = '1'; count.required = true; count.setAttribute('aria-label', 'Number of guests')

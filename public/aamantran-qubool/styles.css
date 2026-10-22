@@ -1,0 +1,2824 @@
+/* ============================================================================
+   Mehrab — Muslim / Nikah wedding invitation
+   Cinematic layered-parallax scenes carrying real invitation content.
+
+   Structure: 8 full-viewport .panel scenes. Each stacks transparent .layer
+   images (background → glow → figures → props → foreground) that drift on
+   scroll and breathe when scrolling stops.
+
+   The one thing to understand before editing: GSAP owns `transform` on every
+   .layer. Never position a layer with transform — use left/right/width/height
+   and background-position instead, or the idle animation will fight you.
+   ========================================================================= */
+
+:root {
+  /* Mughal courtyard palette: antique brass and rose on deep teal-green — the
+     colours of carved jaali screens at dusk, hanging brass lanterns and the
+     rose gardens of a Mughal charbagh. */
+  --marigold:   #D4A757;   /* antique brass — the accent, lantern light */
+  --marigold-d: #A67C2E;   /* deeper brass, for gradients and rules */
+  --maroon:     #2E5A55;   /* deep teal-green — the Mughal courtyard tile */
+  --maroon-d:   #143430;   /* the shadowed end of that green */
+  --rose:       #C4787E;   /* dusty rose — gulab, used sparingly on hearts */
+  --ink:        #F6EFE2;   /* warm ivory, like old marble */
+  --ink-soft:   rgba(246, 239, 226, .78);
+  --ink-faint:  rgba(246, 239, 226, .58);
+  --night:      #0E1F1D;   /* deep green-black night */
+
+  --serif: "Cormorant Garamond", Georgia, "Times New Roman", serif;
+  --sans:  "Jost", -apple-system, "Segoe UI", sans-serif;
+  /* Amiri is a naskh-style Arabic serif — used only for the Bismillah line so
+     it reads correctly; everything else stays on the Latin serif. */
+  --arabic: "Amiri", "Scheherazade New", Georgia, serif;
+  --ease:  cubic-bezier(.22, .61, .36, 1);
+
+  /* Panel side padding, reused by the scene text and the cards inside it. */
+  --pad-x: 8vw;
+}
+
+* { margin: 0; padding: 0; box-sizing: border-box; }
+
+/* The UA's `[hidden] { display: none }` carries the same specificity as a class
+   selector and always loses to an author stylesheet, so any element given both
+   a `display:` rule and the `hidden` attribute stays visible. That is how an
+   empty countdown could render "0 days 0 hrs" on an invite with no date. This
+   makes `hidden` mean hidden, which the RSVP steps and wish controls rely on. */
+[hidden] { display: none !important; }
+
+html { scroll-behavior: smooth; }
+
+body {
+  height: 100%;
+  background: var(--night);
+  color: var(--ink);
+  font-family: var(--serif);
+  -webkit-font-smoothing: antialiased;
+  text-rendering: optimizeLegibility;
+  overflow: hidden;               /* .scroller does the scrolling */
+}
+
+img { max-width: 100%; display: block; }
+
+/* ── Scroller ───────────────────────────────────────────────────────────
+   Scrolling happens inside .scroller, not on window — ScrollTrigger is
+   configured with the same element. Continuous flow, no scroll-snap, so
+   scenes bleed into one another. */
+.scroller {
+  height: 100svh;
+  overflow-y: scroll;
+  overflow-x: hidden;
+  -webkit-overflow-scrolling: touch;
+  scrollbar-width: none;
+}
+.scroller::-webkit-scrollbar { width: 0; height: 0; }
+
+/* The gate is up until the guest taps; don't let the page scroll behind it. */
+body.is-gated .scroller { overflow: hidden; }
+
+/* ── Panels ─────────────────────────────────────────────────────────── */
+.panel {
+  position: relative;
+  min-height: 100svh;
+  overflow: hidden;
+  display: grid;
+  place-items: end start;
+  isolation: isolate;
+}
+
+/* Scenes carrying long content (functions, RSVP) grow past one screen. */
+/* Content-carrying scenes grow past one screen when they need to — but they
+   must never shrink below it, or the next scene's background bleeds in above
+   the fold (hit this for real on scene 7 at 390px, where the Instagram +
+   film block came to only 0.87 screens). min-height keeps the floor; the
+   content pushes past it on its own. */
+.panel--tall { min-height: 100svh; padding: 14svh 0; }
+
+.panel[data-text="top-left"]     { place-items: start start; }
+.panel[data-text="top-right"]    { place-items: start end; }
+.panel[data-text="center-left"]  { place-items: center start; }
+.panel[data-text="center"]       { place-items: center; }
+.panel[data-text="bottom-left"]  { place-items: end start; }
+.panel[data-text="bottom-right"] { place-items: end end; }
+
+/* Fallback tint so a scene looks intentional before its art loads. */
+.panel[data-tint="warm"] {
+  /* Brass lantern light falling on green courtyard stone. */
+  background: radial-gradient(120% 120% at 60% 30%, #8A6A2E 0%, #24423D 55%, #0E1F1D 100%);
+}
+.panel[data-tint="cool"] {
+  /* The quiet beats: moonlit marble, blue-green, the quiet counterpoint to the warm scenes. */
+  background: radial-gradient(120% 120% at 35% 25%, #26505C 0%, #14303A 55%, #081A20 100%);
+}
+
+/* ── Layers ─────────────────────────────────────────────────────────────
+   .layer      = the opaque background plate, overscanned so parallax never
+                 reveals a bare edge.
+   .layer.el   = a transparent cutout composed on the same canvas, laid in
+                 at `contain` so it lands where it was drawn. */
+.layer {
+  position: absolute;
+  inset: -12%;
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
+  will-change: transform;
+  pointer-events: none;
+  z-index: 1;
+}
+
+.layer.el {
+  inset: 0;
+  background-size: contain;
+  background-position: 62% bottom;
+}
+
+/* Fade a layer in once its image has actually decoded, so scenes never
+   flash a half-loaded plate. JS adds .is-ready. */
+.layer { opacity: 0; transition: opacity .6s var(--ease); }
+.layer.is-ready { opacity: 1; }
+.layer.el.glow.is-ready { opacity: .55; }
+
+/* ── Placement classes ──────────────────────────────────────────────────
+   Re-anchor a cutout with left/right/width/height — never transform.
+
+   These are tuned against the real artwork, scene by scene. When new art
+   lands, expect to nudge them: the generator rarely places a figure exactly
+   where the previous one stood, and a figure under the title block is the
+   usual symptom. */
+/* ALPHA-MEASURED from the real Mehrab plates:
+     02-her  — figure at x 10-41% of canvas, y 1-99%  (30% wide, 98% tall)
+     03-him  — figure at x 65-93% of canvas, y 1-99%  (28% wide, 98% tall)
+   Each cutout is a WIDE 16:9 canvas holding a NARROW full-height person. With
+   `background-size: contain` the height fits first, so the person renders at
+   the box height while ~70% of the box is empty transparency — that is why
+   they looked tiny. Scaling by height (`auto 100%`) and letting the empty
+   canvas overflow the sides is what makes them read at full size.
+
+   Because the plate is scaled past the box, background-position picks WHICH
+   part shows: the bride sits left-of-centre in her canvas (~25%), the groom
+   right-of-centre (~79%). */
+/* The couple stand TOGETHER, centre-right of the frame — she just left of him,
+   shoulders close — rather than at opposite edges. The title column owns the
+   left third, so the pair sits clear of it. Each box is scaled by height and
+   the background-position picks the person out of their wide canvas. */
+/* Show each cutout WHOLE — nothing cropped.
+
+   `auto 100%` scaled the plate past a narrow box, so the person's sides were
+   being clipped by the box edges. `contain` fits the entire plate inside the
+   box instead, so the figure is shown exactly as drawn, uncut.
+
+   The plate is a wide 16:9 canvas with the person in one third of it (measured:
+   she spans x 10-41%, he spans x 65-93%). With `contain` the whole canvas is
+   fitted, so the BOX must be wide enough to hold that canvas — the person then
+   lands within it at the position they were drawn. That is why these boxes are
+   wide and overlap: most of each box is the plate's empty transparency. */
+/* Whole cutouts, standing NEAR each other.
+
+   Each plate is a wide 16:9 canvas with the person in one slice of it
+   (measured: she spans x 10-41%, centre ~26%; he spans x 65-93%, centre ~79%).
+   To show a plate uncropped it must be fitted whole (`contain`), which means
+   the BOX stays plate-width — most of it empty transparency.
+
+   So they are positioned by SLIDING each box, not by shrinking it: the box may
+   hang off the frame edge and the empty part simply goes off-screen.
+
+   Both stand in the RIGHT half with a gap between them, leaving the left third
+   clear for the names. Solved for her centre at 62% of the panel, his at 82%:
+     her box left = 62 - 0.257*96 = 37.4%
+     his box left = 82 - 0.787*96 =  6.4%
+   To move them, change only those two target percentages and re-solve; keep
+   width at 96% or the plate starts cropping again. */
+.layer.el.fig-left {
+  /* Re-solved for a wider gap — at 62%/82% the two overlapped on a desktop
+     stage. Her centre 26% of canvas, his 79%:
+       her box left = 58 - 0.257*96 = 33.4%
+       his box left = 86 - 0.787*96 = 10.4%  */
+  inset: auto; left: 33.4%; right: auto; bottom: 0;
+  width: 96%; height: 72%;
+  background-size: contain;
+  background-position: left bottom;
+}
+.layer.el.fig-right {
+  inset: auto; left: 10.4%; right: auto; bottom: 0;
+  width: 96%; height: 72%;
+  background-size: contain;
+  background-position: left bottom;
+}
+.layer.el.fig-cl {
+  inset: auto; left: 2%; right: auto; bottom: 0;
+  width: 60%; height: 104%;
+}
+.layer.el.fig-cr {
+  inset: auto; right: 7%; left: auto; bottom: -4%;
+  width: 64%; height: 112%;
+}
+/* Centred via left+right, never translate — GSAP owns transform.
+   116% overshot once the real art arrived: scene 3's seated couple was drawn
+   filling more of its canvas than the placeholder, so the extra height cropped
+   them at the bottom edge. Sized to the frame instead. */
+.layer.el.fig-center {
+  inset: auto; left: 18%; right: 18%; bottom: 0;
+  height: 98%;
+}
+.layer.el.fig-seated {
+  inset: auto; left: 20%; right: 20%; bottom: 0;
+  height: 78%;
+}
+
+/* The finale's seated couple came back larger than briefed and rose into the
+   footer, printing the date and watermark across the groom's turban. Hold it
+   small and low so the closing lines stay clean. */
+.panel--finale .layer.el.fig-seated {
+  left: 30%; right: 30%;
+  height: 42%;
+}
+@media (max-width: 720px) {
+  .panel--finale .layer.el.fig-seated { left: 14%; right: 14%; height: 34%; }
+}
+.panel--finale .layer.el.fig-seated.is-ready { opacity: .9; }
+.panel--finale .footer { position: relative; z-index: 61; }
+
+/* Scenes that carry cards (functions, RSVP) put content across the FULL width,
+   not just one text column — so a centred figure lands underneath it. Scene 4's
+   figures ran straight through the function cards. Push the
+   figure into the right margin, below the card grid, and let it sit back a
+   little so the cards stay the subject. */
+.panel--tall .layer.el.fig-center {
+  left: auto; right: 0;
+  width: 62%;
+  height: 88%;
+}
+.panel--tall .layer.el.fig-center.is-ready { opacity: .82; }
+.layer.el.hands {
+  inset: 6% 12% 26% 12%;   /* high in frame, clear of the text block below */
+  background-size: contain;
+  background-position: center;
+}
+.layer.el.branch {
+  inset: 0;
+  background-size: cover;
+  background-position: center top;
+}
+.layer.el.toplights {
+  /* A hanging band (garlands, string lights) that frames the TOP of the scene.
+     `cover` would scale a 3:2 source up to fill a wide viewport and push the
+     hanging ends down over the text — real problem on scene 2, where the
+     marigolds landed across the family names. Anchoring the box height
+     instead keeps it a band, and `100% auto` scales by width so the strands
+     stay their drawn thickness. */
+  inset: 0 0 auto 0;
+  height: 46%;
+  background-size: 100% auto;
+  background-position: center top;
+  -webkit-mask-image: linear-gradient(180deg, #000 0%, #000 52%, transparent 92%);
+          mask-image: linear-gradient(180deg, #000 0%, #000 52%, transparent 92%);
+}
+
+/* ── Scene 3 (measured against the real plates) ─────────────────────────
+   02-couple-seated: the pair span x 7-92%, y 0-99% — they fill most of their
+   canvas, unlike scene 1's narrow single figures. So `contain` shows them
+   whole at a good size without any sliding trick.
+   03-arch: a true archway — its side columns run the full canvas height, so
+   its alpha box is the whole frame, but the CENTRE is open. It is meant to
+   frame the scene edge-to-edge, so it keeps the default full-bleed box. */
+.panel[data-scene="3"] .layer.el.fig-center {
+  /* Centred with left+right, NEVER transform — GSAP owns transform on every
+     .layer and would fight it (see the note at the top of this file). */
+  inset: auto; left: 26%; right: 26%; bottom: 0;
+  height: 62%;
+  background-size: contain;
+  background-position: center bottom;
+  /* Above the panel scrim (z-index 40), which is a dark overlay that was
+     washing the couple out. Text sits at 60, so it still wins. */
+  z-index: 45;
+}
+.panel[data-scene="3"] .layer.el.branch {
+  width: clamp(240px, 24vw, 360px);
+  height: 54%;
+  background-size: contain;
+  -webkit-mask-image: none;
+          mask-image: none;
+  z-index: 46;
+  opacity: 0.94;
+}
+.panel[data-scene="3"] .layer.el.branch--left {
+  inset: -6% auto auto 0;
+  background-position: left top;
+}
+.panel[data-scene="3"] .layer.el.branch--right {
+  inset: -12% 0 auto auto;
+  background-position: right top;
+}
+
+/* ── Scene 4 (measured against the real plates) ─────────────────────────
+   02-mehendi-moment: the pair span x 59-95%, y 1-99% — they sit in the RIGHT
+   third with the left half genuinely empty, exactly as briefed, so the
+   ceremony cards on the left are safe. Shown whole with `contain`; the box is
+   pushed right so the empty left of the plate falls outside the frame.
+   03-lanternstring: stops at 37% of its canvas, so it is already a shallow
+   top band and needs no extra trimming (unlike scene 2's). */
+.panel[data-scene="4"] .layer.el.fig-center {
+  inset: auto; left: auto; right: -8%; bottom: 0;
+  width: 76%; height: 82%;
+  background-size: contain;
+  background-position: right bottom;
+  z-index: 45;                 /* above the panel scrim, so they stay solid */
+}
+.panel[data-scene="4"] .layer.el.toplights {
+  height: 40%;
+}
+
+/* ── Scene 5 (measured against the real plate) ──────────────────────────
+   02-dholak: measured, the drum spans x 23-77%, y 6-73% of a 1920x1080 plate —
+   centred, in the upper two-thirds, the bottom third clear (4% alpha) so the
+   "Things to know" copy underneath is safe. The generic `.hands` rule carries a
+   radial oval mask tuned for an earlier plate, which was drawn filling its
+   canvas; applied here it would slice the edge of the drum shell. This plate
+   already has clean alpha, so this scene drops the mask and shows it whole.
+
+   NOTE: the class is still `.hands` — it is a layer-role name (a centred
+   floating close-up), not a description of the subject. Renaming it would mean
+   touching five media queries for no visual gain.
+
+   The box is taller than the henna plate it replaced (62% -> 72%). The drum is
+   wider and shallower than the pair of hands was, and with `contain` on a 16:9
+   plate the rendered size is driven by WIDTH, so the old 62% box left it
+   looking small and floating. */
+.panel[data-scene="5"] .layer.el.hands {
+  inset: 3% 0 auto 0;
+  height: 72%;
+  background-size: contain;
+  background-position: center top;
+  -webkit-mask-image: none;
+          mask-image: none;
+  z-index: 45;                 /* above the panel scrim, so they stay solid */
+}
+
+/* The petal wash: keep it behind the copy and gentle, so it never rains over
+   the contact and travel lines. */
+.panel[data-scene="5"] .layer.el.fill:not(.glow) { z-index: 0; }
+.panel[data-scene="5"] .layer.el.fill:not(.glow).is-ready { opacity: .5; }
+
+/* ── Scene 6 (measured against the real plate) ──────────────────────────
+   02-nikah-moment: the pair span x 9-91%, y 1-98% — centred and filling most
+   of a 3:2 canvas (1536x1024, not 16:9 like the other cutouts), so `contain`
+   shows them whole with no sliding trick. This is the ceremony beat, so they
+   sit large and centred and carry the scene. */
+.panel[data-scene="6"] .layer.el.fig-center {
+  inset: auto; left: 18%; right: 18%; bottom: 0;
+  height: 72%;
+  background-size: contain;
+  background-position: center bottom;
+  z-index: 45;                 /* above the panel scrim, so they stay solid */
+}
+@media (max-width: 720px) {
+  /* On a phone the 3:2 plate fitted across a narrow screen renders them
+     small, so the box runs past both edges to bring them up to size. */
+  .panel[data-scene="6"] .layer.el.fig-center {
+    inset: auto; left: -10%; right: -10%; bottom: 0;
+    height: 44%;
+  }
+}
+
+/* ── Scene 7 (measured against the real plate) ──────────────────────────
+   02-couple-close: the pair span x 32-65% (middle third, essentially centred)
+   and y 0-99% — FULL BODY with feet at the bottom edge, which is what the earlier template's
+   equivalent plate failed to do. So no crop-compensation is needed here: fit
+   the plate whole and centre it.
+   03-rose-arch: its alpha covers the whole canvas because a column of roses
+   runs down the left side, but the CENTRE is open — it is a corner frame and
+   keeps the default full-bleed box. */
+.panel[data-scene="7"] .layer.el.fig-center {
+  inset: auto; left: 12%; right: 12%; bottom: 0;
+  height: 88%;
+  background-size: contain;
+  background-position: center bottom;
+  z-index: 45;                 /* above the panel scrim, so they stay solid */
+}
+
+/* ── Scene 8, the finale (measured against the real plates) ─────────────
+   02-couple-sit: the pair span x 23-78%, y 37-96% — already drawn SMALL and
+   low with the upper third of the canvas empty, exactly as briefed. the earlier template's
+   equivalent came back too large and printed the footer across the groom's
+   turban; this one needs no such correction, so it is simply shown whole.
+   04-terrace-fg: occupies the bottom 31% — a proper shallow band. */
+.panel--finale .layer.el.fig-seated {
+  inset: auto; left: 22%; right: 22%; bottom: 0;
+  height: 52%;
+  background-size: contain;
+  background-position: center bottom;
+  z-index: 45;                 /* above the panel scrim, so they stay solid */
+}
+.panel--finale .layer.el.fig-seated.is-ready { opacity: 1; }
+
+.panel[data-scene="8"] .layer.el.fill:not(.glow) {
+  inset: auto 0 0 0;
+  height: 30%;
+  background-size: 100% auto;
+  background-position: center bottom;
+}
+
+@media (max-width: 720px) {
+  /* On a phone the finale carries the RSVP form and the wish wall, so the
+     couple stays small and low and never rises into the form. */
+  .panel--finale .layer.el.fig-seated {
+    left: 12%; right: 12%;
+    height: 30svh;
+  }
+  /* The terrace parapet is a NEAR-CAMERA band and must stay at the frame's
+     lip. At 22svh it rose to ~16svh above the panel bottom — straight across
+     the seated couple's backs — and because the figures are z-index 45 over
+     its z-index 1, the railing appeared to pass THROUGH them: a boundary
+     floating in mid-air.
+
+     Lifting the couple instead was tried and is worse: it cropped their heads
+     at the panel edge and pushed them into the footer. The band itself is
+     what has to come down. At 12svh only its top rail and lantern tops show
+     along the bottom edge, which is what a foreground band is for — the
+     figures sit clearly on the terrace behind it. */
+  .panel[data-scene="8"] .layer.el.fill:not(.glow) { height: 12svh; }
+}
+
+/* ── Mobile: close the dead space between the art and the copy ────────────────────
+   Two scenes had large empty bands on a phone:
+
+   Scene 5 — the close-up sat pinned to the top and the "Things to know" copy
+   to the bottom, leaving most of the screen as blurred background between them.
+   Bring the art down and the copy up so the scene reads as one composition.
+
+   Scene 8 — the finale card stretched into a tall dark box with wide gaps
+   above and below its lines, because the tall-panel backdrop is sized to the
+   panel rather than the content. Tighten it to the text. */
+@media (max-width: 720px) {
+  .panel[data-scene="5"] .layer.el.hands {
+    /* The dholak close-up. Three things are load-bearing here:
+
+       - `contain` sizes this plate by WIDTH, so on a narrow phone the drum
+         renders smaller than the old henna plate did — hence 34svh, up from
+         the 30svh that plate used.
+       - The parallax transform lifts this layer ~50px at the panel's rest
+         position. At an 8svh inset the top of the drum measured -52px, i.e.
+         clipped off the viewport; the inset has to absorb that offset.
+       - svh, never %: a % inset resolves against the ~1600px tall panel
+         rather than the viewport (see the note at the top of this section).
+
+       Sits slightly below centre in the upper half, which reads better than
+       dead-centre with the copy below it. */
+    inset: 22svh 0 auto 0;
+    height: 34svh;
+  }
+  /* The panel is `align: end`, so the copy pins to the bottom edge. With the
+     art ending around 42svh that left a ~270px band of bare blurred background
+     between the two on a 844px phone — measured, not eyeballed. Lifting the
+     copy by ~14svh closes the gap so the drum and the text read as one
+     composition instead of two things at opposite ends of the screen. */
+  .panel[data-scene="5"] .panel__inner {
+    margin-top: 0;
+    margin-bottom: 8svh;
+  }
+
+  /* The finale's card hugs its content instead of stretching. */
+  .panel--finale .panel__inner {
+    margin-top: 4svh;
+    margin-bottom: 4svh;
+    padding: 1.1rem 1rem;
+  }
+  .panel--finale .footer { margin-top: 1.4rem; }
+  .panel--finale .footer__names { margin-bottom: .2rem; }
+  .panel--finale .footer__date  { margin-bottom: .6rem; }
+}
+
+/* Scene 2's lantern plate came back reaching 69% down its canvas (measured)
+   rather than the ~40% briefed, so at the default band height the hanging
+   ends fell across the family names — the exact failure the note above
+   describes. Hold the band shorter and let the mask fade the strands out
+   before they reach the text. */
+.panel[data-scene="2"] .layer.el.toplights {
+  height: 34%;
+  -webkit-mask-image: linear-gradient(180deg, #000 0%, #000 58%, transparent 96%);
+          mask-image: linear-gradient(180deg, #000 0%, #000 58%, transparent 96%);
+}
+.layer.el.fill {
+  inset: -6%;
+  background-size: cover;
+  background-position: center bottom;
+}
+
+/* Scene 1's rose band came back 56% of its canvas tall (measured) rather than
+   the ~30% the brief asked for, so at `cover` it swallowed both figures from
+   the waist down. Anchoring it to the bottom as a shorter band keeps the
+   flowers as a foreground frame — which is their job — without hiding the
+   couple standing behind them. */
+.panel[data-scene="1"] .layer.el.fill {
+  /* The foreground is now a carved marble balustrade and reflecting pool, not
+     a bed of roses — the flower field read as the Sikh template's opening and
+     the marigold tones carried the wrong religious cue.
+
+     An architectural plate must NOT be feathered or cropped: a balustrade with
+     a faded top edge or a clipped end looks broken in a way foliage never
+     does. So it is scaled by width (`100% auto`), anchored to the bottom, and
+     given the height its own drawing needs — no mask. */
+  inset: auto 0 0 0;
+  /* The plate is 1672x940 and its drawn content sits in the lower ~40%, so a
+     box of 40% of the panel width-scaled shows the balustrade whole with its
+     base on the frame edge. */
+  height: 40%;
+  background-size: 100% auto;
+  background-position: center bottom;
+  -webkit-mask-image: none;
+          mask-image: none;
+  z-index: 1;
+}
+
+/* The couple read clearly IN FRONT of the flowers, rather than standing among
+   them — so the figures outrank the band despite coming earlier in the DOM. */
+.panel[data-scene="1"] .layer.el.fig-left,
+.panel[data-scene="1"] .layer.el.fig-right {
+  /* Above the rose band AND above the panel scrim (z-index 40), which is a
+     dark overlay that was washing the couple out — they must not look washed out. Text sits at z-index 60, so it still wins. */
+  z-index: 45;
+}
+/* The glow is an accent BEHIND the people — never a veil over them. */
+.layer.el.glow { z-index: 0; }
+
+/* Scene 5's petals came back dense rather than sparse, and at full strength
+   they rained over the text. Accent layers are atmosphere, never foreground:
+   hold them back and keep them behind the copy. */
+.panel[data-scene="5"] .layer.el.fill:not(.glow) { z-index: 0; }
+.panel[data-scene="5"] .layer.el.fill:not(.glow).is-ready { opacity: .45; }
+
+/* ── Feathering ─────────────────────────────────────────────────────────
+   Every cutout is a rectangle; without a mask its edge shows as a seam.
+   Figures stay solid at the bottom so they keep their footing. */
+/* NO FEATHER MASK on the figures.
+
+   An earlier revision faded the cutout edges (top 12%, both sides 14%) so figures melted
+   into the scene. That was tuned for plates whose subject sat well inside the
+   canvas. Mehrab's cutouts are drawn FULL-HEIGHT — measured, the couple spans
+   1%-99% of the plate — so the fade landed directly on their heads and
+   shoulders and made them look see-through. Solid figures are wanted here,
+   and these plates already have clean alpha edges, so the mask has
+   nothing useful left to do. Do not reintroduce it for this template. */
+.layer.el.branch {
+  -webkit-mask-image: radial-gradient(140% 120% at 15% 5%, #000 55%, transparent 85%);
+          mask-image: radial-gradient(140% 120% at 15% 5%, #000 55%, transparent 85%);
+}
+/* A floating centred close-up. The tight oval sliced the subject's edges once
+   the real art arrived — it was drawn filling its canvas (alpha bbox
+   1344x989 of 1536x1024), not the middle half the brief asked for. The artwork
+   carries its own soft falloff, so this only takes the corners off. */
+.layer.el.hands {
+  -webkit-mask-image: radial-gradient(ellipse 86% 88% at 50% 50%, #000 78%, transparent 100%);
+          mask-image: radial-gradient(ellipse 86% 88% at 50% 50%, #000 78%, transparent 100%);
+}
+.layer.el.fill {
+  -webkit-mask-image: linear-gradient(90deg, transparent 0%, #000 10%, #000 90%, transparent 100%);
+          mask-image: linear-gradient(90deg, transparent 0%, #000 10%, #000 90%, transparent 100%);
+}
+
+/* ── Cinematic grade ────────────────────────────────────────────────────
+   Vignette + directional scrims so type reads over any artwork. */
+.panel::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  z-index: 40;
+  pointer-events: none;
+  background:
+    radial-gradient(130% 100% at 50% 45%, transparent 55%, rgba(14, 31, 29, .52) 100%),
+    linear-gradient(180deg, rgba(14, 31, 29, .60) 0%, transparent 34%),
+    linear-gradient(0deg,   rgba(14, 31, 29, .58) 0%, transparent 32%);
+}
+/* Darken the side the text sits on, so the words always have a ground. */
+.panel[data-text$="left"]::after  { background-image:
+    radial-gradient(130% 100% at 50% 45%, transparent 55%, rgba(14,31,29,.52) 100%),
+    linear-gradient(180deg, rgba(14,31,29,.60) 0%, transparent 34%),
+    linear-gradient(0deg,   rgba(14,31,29,.58) 0%, transparent 32%),
+    linear-gradient(90deg,  rgba(14,31,29,.58) 0%, transparent 46%); }
+.panel[data-text$="right"]::after { background-image:
+    radial-gradient(130% 100% at 50% 45%, transparent 55%, rgba(14,31,29,.52) 100%),
+    linear-gradient(180deg, rgba(14,31,29,.60) 0%, transparent 34%),
+    linear-gradient(0deg,   rgba(14,31,29,.58) 0%, transparent 32%),
+    linear-gradient(270deg, rgba(14,31,29,.58) 0%, transparent 46%); }
+.panel[data-text="center"]::after { background-image:
+    radial-gradient(120% 100% at 50% 50%, rgba(14,31,29,.30) 0%, rgba(14,31,29,.62) 100%),
+    linear-gradient(180deg, rgba(14,31,29,.50) 0%, transparent 30%); }
+
+/* ── Scene content ──────────────────────────────────────────────────── */
+.panel__inner {
+  position: relative;
+  z-index: 60;
+  margin: 9svh var(--pad-x);
+  /* 24ch of Cormorant is narrow; a right-anchored block at that width wraps
+     into a cramped strip against the frame edge (scene 5's Things-to-know
+     wrapped "Sahnewal (LUH), 12 km" across four lines). */
+  max-width: min(34ch, 84vw);
+  filter: drop-shadow(0 6px 30px rgba(0, 0, 0, .7));
+}
+/* Prose-width, for reading columns like the family scene. */
+.panel__inner--wide { max-width: min(62ch, 86vw); }
+
+/* Card-carrying scenes need real layout width, not a text measure — 62ch of
+   Cormorant is narrow enough that the functions grid collapses to one column.
+   `justify-self: stretch` is the other half of the fix: the panel's grid uses
+   `place-items: … start`, which shrink-wraps the item to its content width, so
+   a max-width alone leaves the cards in a narrow column. */
+.panel--tall .panel__inner--wide {
+  max-width: min(1080px, 86vw);
+  justify-self: stretch;
+  width: 100%;
+}
+
+.panel[data-text$="right"]  .panel__inner { text-align: right; }
+.panel[data-text="center"]  .panel__inner { text-align: center; }
+
+.eyebrow {
+  font-family: var(--sans);
+  font-size: clamp(.94rem, 1.3vw, 1.12rem);
+  font-weight: 400;
+  letter-spacing: .3em;
+  text-transform: uppercase;
+  color: var(--ink-soft);
+  margin-bottom: 1.1rem;
+}
+
+.names {
+  font-size: clamp(2.8rem, 7.5vw, 6.4rem);
+  font-weight: 600;
+  line-height: .98;
+  letter-spacing: -.01em;
+  text-shadow: 0 4px 40px rgba(0, 0, 0, .7);
+}
+.amp {
+  display: block;
+  font-size: .38em;
+  font-style: italic;
+  color: var(--marigold);
+  margin: .12em 0;
+  font-weight: 400;
+}
+
+.scene-title {
+  font-size: clamp(2rem, 5vw, 3.6rem);
+  font-weight: 600;
+  line-height: 1.05;
+  text-shadow: 0 4px 40px rgba(0, 0, 0, .7);
+}
+
+.date-big {
+  font-size: clamp(1.9rem, 5.4vw, 4rem);
+  font-weight: 600;
+  line-height: 1.1;
+  letter-spacing: .01em;
+  text-shadow: 0 4px 40px rgba(0, 0, 0, .7);
+}
+
+.lede {
+  margin-top: 1.2rem;
+  font-size: clamp(1rem, 1.7vw, 1.45rem);
+  font-style: italic;
+  line-height: 1.5;
+  color: var(--ink-soft);
+  text-shadow: 0 2px 20px rgba(0, 0, 0, .7);
+}
+.lede--story { max-width: 46ch; margin-inline: auto; }
+
+.crest {
+  width: clamp(46px, 6vw, 74px);
+  margin-bottom: 1.4rem;
+  opacity: .92;
+  filter: drop-shadow(0 2px 14px rgba(0, 0, 0, .5));
+}
+.crest--sm { width: clamp(36px, 4.4vw, 54px); }
+.panel[data-text$="right"] .crest { margin-left: auto; }
+.panel[data-text="center"] .crest { margin-inline: auto; }
+
+/* ── Families (scene 2) ─────────────────────────────────────────────── */
+.blessing {
+  font-family: var(--sans);
+  font-size: .95rem;
+  letter-spacing: .16em;
+  text-transform: uppercase;
+  color: var(--ink-faint);
+  margin-bottom: .5rem;
+}
+.blessing__names {
+  font-family: var(--serif);
+  font-size: clamp(1.05rem, 2.2vw, 1.3rem);
+  color: var(--ink-soft);
+  margin-bottom: 1.6rem;
+}
+.families {
+  display: grid;
+  grid-template-columns: 1fr auto 1fr;
+  align-items: center;
+  gap: clamp(1rem, 4vw, 2.6rem);
+  margin-top: .6rem;
+}
+.family__label {
+  font-family: var(--sans);
+  font-size: .86rem;
+  letter-spacing: .2em;
+  text-transform: uppercase;
+  color: var(--marigold);
+  margin-bottom: .7rem;
+}
+.family__name {
+  font-size: clamp(1.05rem, 2.1vw, 1.6rem);
+  line-height: 1.45;
+}
+.family__note {
+  margin-top: .5rem;
+  font-family: var(--sans);
+  font-size: .95rem;
+  font-weight: 300;
+  color: var(--ink-faint);
+  line-height: 1.5;
+}
+.family__sep img {
+  width: clamp(30px, 4vw, 52px);
+  opacity: .85;
+}
+/* Only one side of the family was filled in: the three-column grid would park
+   it in the left third with a divider beside an empty column. Collapse to a
+   single centred column and drop the divider, which now divides nothing. */
+.families:not(:has(.family ~ .family)) {
+  grid-template-columns: 1fr;
+  justify-items: center;
+}
+.families:not(:has(.family ~ .family)) .family__sep { display: none; }
+
+/* ── Countdown (scene 3) ────────────────────────────────────────────── */
+.countdown {
+  display: flex;
+  gap: clamp(.9rem, 2.6vw, 2rem);
+  margin-top: 1.8rem;
+}
+.panel[data-text$="right"] .countdown { justify-content: flex-end; }
+.countdown__unit { display: grid; gap: .3rem; text-align: center; }
+.countdown__n {
+  font-size: clamp(1.5rem, 3.4vw, 2.6rem);
+  font-weight: 600;
+  line-height: 1;
+  /* Cormorant defaults to old-style figures, which render "436" with the 3
+     and 6 dropping below the baseline — wrong for a countdown readout. */
+  font-variant-numeric: lining-nums tabular-nums;
+  font-feature-settings: "lnum" 1, "tnum" 1;
+}
+.countdown__l {
+  font-family: var(--sans);
+  font-size: .76rem;
+  font-weight: 300;
+  letter-spacing: .18em;
+  text-transform: uppercase;
+  color: var(--ink-faint);
+}
+
+/* ── Functions (scene 4) ────────────────────────────────────────────── */
+.functions {
+  display: grid;
+  gap: clamp(.9rem, 2vw, 1.3rem);
+  margin-top: 1.8rem;
+  grid-template-columns: repeat(auto-fit, minmax(min(260px, 100%), 1fr));
+  text-align: left;
+}
+.fn {
+  background: rgba(26, 12, 14, .48);
+  backdrop-filter: blur(9px);
+  -webkit-backdrop-filter: blur(9px);
+  border: 1px solid rgba(232, 163, 61, .3);
+  border-radius: 3px;
+  padding: clamp(1.1rem, 2.4vw, 1.6rem);
+}
+.fn__name {
+  font-size: clamp(1.25rem, 2.4vw, 1.7rem);
+  font-weight: 600;
+  color: var(--marigold);
+  margin-bottom: .6rem;
+}
+.fn__when {
+  display: flex;
+  flex-wrap: wrap;
+  gap: .4rem .9rem;
+  font-family: var(--sans);
+  font-size: .95rem;
+  letter-spacing: .06em;
+  color: var(--ink);
+  margin-bottom: .7rem;
+}
+.fn__time { color: var(--ink-faint); font-size: 1.02rem; }
+.fn__venue { font-size: 1.02rem; line-height: 1.45; }
+.fn__addr {
+  display: block;
+  font-family: var(--sans);
+  font-size: .95rem;
+  font-weight: 300;
+  color: var(--ink-faint);
+  margin-top: .2rem;
+}
+.fn__meta {
+  margin-top: .7rem;
+  font-family: var(--sans);
+  font-size: 1.02rem;
+  font-weight: 300;
+  color: var(--ink-soft);
+}
+.fn__meta span {
+  color: var(--marigold);
+  letter-spacing: .12em;
+  text-transform: uppercase;
+  font-size: .8rem;
+  margin-right: .4rem;
+}
+.fn__meta--note { font-style: italic; }
+.fn__map {
+  display: inline-block;
+  margin-top: .9rem;
+  font-family: var(--sans);
+  font-size: .96rem;
+  letter-spacing: .14em;
+  text-transform: uppercase;
+  color: var(--marigold);
+  text-decoration: none;
+  border-bottom: 1px solid rgba(232, 163, 61, .45);
+  padding-bottom: .2rem;
+  transition: color .25s, border-color .25s;
+}
+.fn__map:hover, .fn__map:focus-visible { color: var(--ink); border-color: var(--ink); }
+
+/* The second lantern row is a phones-only addition — see the mobile block. */
+.layer.el.toplights--row2 { display: none; }
+
+/* ── FLOATING LANTERNS ───────────────────────────────────────────────
+   Scene 4 only, at every size. */
+.panel[data-scene="4"] .lantern-layer {
+  position: absolute;
+  inset: 0;
+  z-index: 35;                /* sits behind panel__inner (z-index 60) and function cards */
+  pointer-events: none;
+  overflow: hidden;
+  opacity: 0.6;               /* low opacity atmospheric backdrop */
+}
+.float-lantern {
+  position: absolute;
+  top: 0;
+  width: var(--size, 70px);
+  transform: translate3d(var(--x, 0px), var(--y, 0px), 0) rotate(var(--rot, 0deg));
+  will-change: transform;
+  opacity: var(--op, 0.55);
+  filter: drop-shadow(0 0 16px rgba(226, 185, 89, 0.28));
+}
+.float-lantern .fl-img {
+  width: 100%;
+  display: block;
+  animation: fl-sway var(--sway, 6s) ease-in-out infinite;
+  transform-origin: 50% 0;
+}
+@keyframes fl-sway {
+  0%, 100% { transform: rotate(-4.5deg); }
+  50%      { transform: rotate(4.5deg); }
+}
+@media (max-width: 520px) {
+  .float-lantern:nth-child(n+10) { display: none; }
+}
+@media (min-width: 1100px) {
+  .float-lantern { width: calc(var(--size, 70px) * 1.5); }
+}
+@media (prefers-reduced-motion: reduce) {
+  .float-lantern .fl-img { animation: none; }
+  .lantern-layer { display: none; }
+}
+
+/* ── Things to know (scene 5) ───────────────────────────────────────── */
+.know { display: grid; gap: 1rem; margin-top: 1.4rem; }
+.know__row { display: grid; gap: .25rem; }
+.panel[data-text$="right"] .know__row { justify-items: end; }
+.know__k {
+  font-family: var(--sans);
+  font-size: .94rem;
+  letter-spacing: .18em;
+  text-transform: uppercase;
+  color: var(--marigold);
+}
+.know__v { font-size: 1.14rem; line-height: 1.45; color: var(--ink-soft); }
+.know__v a { color: var(--ink); text-decoration: none; border-bottom: 1px solid rgba(251,240,228,.35); }
+
+/* ── Hashtag / Instagram / film (scene 7) ───────────────────────────── */
+/* A wedding hashtag is one unbreakable token, and couples pick long ones.
+   `word-break: break-word` shattered a long tag into three lines mid-word.
+   Keep it on one line and let it scale down instead: cqi units size it
+   against the container, so a long tag shrinks rather than fragmenting. */
+.hashtag {
+  container-type: inline-size;
+  font-size: clamp(1.15rem, 4.4vw, 3rem);
+  font-weight: 600;
+  color: var(--marigold);
+  line-height: 1.15;
+  text-shadow: 0 4px 40px rgba(0, 0, 0, .7);
+  overflow-wrap: normal;
+  word-break: keep-all;
+  hyphens: none;
+}
+/* Belt and braces: cqi alone still let a long tag overrun the text column,
+   so the element also scales itself down to fit. JS measures the real overflow
+   and sets --fit; CSS multiplies the clamp by it. Falls back gracefully to the
+   clamp above if the script never runs. */
+.hashtag { font-size: calc(clamp(1.15rem, 4.4vw, 3rem) * var(--fit, 1)); }
+
+/* The hashtag needs more room than the 34ch prose column gives it — squeezed
+   there, a 22-character tag shrank to 23px. Widen just the block that carries
+   it. (`width: max-content` is NOT the fix: it makes the box grow with the
+   text, so the fit measurement always reads 1 and the tag overruns instead.) */
+.panel[data-scene="7"] .panel__inner { max-width: min(46ch, 82vw); }
+.film { margin-top: 1.6rem; }
+.film__label {
+  font-family: var(--sans);
+  font-size: .94rem;
+  letter-spacing: .18em;
+  text-transform: uppercase;
+  color: var(--ink-faint);
+  margin-bottom: .7rem;
+}
+.film__frame {
+  position: relative;
+  aspect-ratio: 16 / 9;
+  border: 1px solid rgba(232, 163, 61, .3);
+  border-radius: 3px;
+  overflow: hidden;
+  background: rgba(0, 0, 0, .45);
+}
+.film__frame iframe { position: absolute; inset: 0; width: 100%; height: 100%; border: 0; }
+
+/* ── Buttons ────────────────────────────────────────────────────────── */
+.btn {
+  display: inline-flex;
+  align-items: center;
+  gap: .55rem;
+  margin-top: 1.4rem;
+  padding: .8rem 1.5rem;
+  font-family: var(--sans);
+  font-size: .88rem;
+  letter-spacing: .16em;
+  text-transform: uppercase;
+  text-decoration: none;
+  border-radius: 2px;
+  cursor: pointer;
+  transition: background .25s, color .25s, border-color .25s;
+}
+.btn__ico { width: 17px; height: 17px; flex: none; }
+.btn--ghost {
+  color: var(--ink);
+  border: 1px solid rgba(232, 163, 61, .5);
+  background: rgba(26, 12, 14, .35);
+}
+.btn--ghost:hover, .btn--ghost:focus-visible { background: var(--marigold); color: var(--maroon-d); border-color: var(--marigold); }
+.btn--solid {
+  width: 100%;
+  justify-content: center;
+  border: 0;
+  background: var(--marigold);
+  color: var(--maroon-d);
+  font-weight: 500;
+}
+.btn--solid:hover, .btn--solid:focus-visible { background: #F4BC5C; }
+
+/* ── Cards, forms (scene 8) ─────────────────────────────────────────── */
+.card {
+  background: rgba(26, 12, 14, .55);
+  backdrop-filter: blur(11px);
+  -webkit-backdrop-filter: blur(11px);
+  border: 1px solid rgba(232, 163, 61, .28);
+  border-radius: 4px;
+  padding: clamp(1.3rem, 3.4vw, 2.2rem);
+  margin-bottom: clamp(1rem, 2.6vw, 1.6rem);
+  text-align: left;
+}
+.form { margin-top: 1.4rem; display: grid; gap: 1rem; }
+.field { display: grid; gap: .4rem; }
+.field-row { display: grid; gap: 1rem; grid-template-columns: repeat(auto-fit, minmax(min(150px, 100%), 1fr)); }
+.field label {
+  font-family: var(--sans);
+  font-size: .82rem;
+  letter-spacing: .16em;
+  text-transform: uppercase;
+  color: var(--ink-faint);
+}
+.field input,
+.field select,
+.field textarea {
+  width: 100%;
+  padding: .72rem .85rem;
+  font-family: var(--sans);
+  font-size: 1rem;             /* 16px — anything smaller makes iOS zoom on focus */
+  color: var(--ink);
+  background: rgba(0, 0, 0, .32);
+  border: 1px solid rgba(232, 163, 61, .28);
+  border-radius: 2px;
+  transition: border-color .2s, background .2s;
+}
+.field textarea { resize: vertical; min-height: 4.5rem; font-family: var(--sans); }
+.field input:focus, .field select:focus, .field textarea:focus {
+  outline: none;
+  border-color: var(--marigold);
+  background: rgba(0, 0, 0, .5);
+}
+.field select { appearance: none; -webkit-appearance: none; cursor: pointer;
+  background-image: linear-gradient(45deg, transparent 50%, var(--marigold) 50%),
+                    linear-gradient(135deg, var(--marigold) 50%, transparent 50%);
+  background-position: calc(100% - 18px) 55%, calc(100% - 13px) 55%;
+  background-size: 5px 5px, 5px 5px;
+  background-repeat: no-repeat;
+  padding-right: 2.2rem;
+}
+.field select option { background: var(--maroon-d); color: var(--ink); }
+
+/* The runtime injects one checkbox per ceremony here, and hides the whole
+   node when there's only one function — so it must style from empty. */
+.field--functions:not(:empty) {
+  display: flex;
+  flex-wrap: wrap;
+  gap: .6rem 1.2rem;
+  font-family: var(--sans);
+  font-size: .9rem;
+  padding: .3rem 0;
+}
+.field--functions label {
+  display: inline-flex;
+  align-items: center;
+  gap: .45rem;
+  font-size: .9rem;
+  letter-spacing: 0;
+  text-transform: none;
+  color: var(--ink-soft);
+  cursor: pointer;
+}
+.field--functions input[type="checkbox"] { accent-color: var(--marigold); width: 1rem; height: 1rem; }
+
+/* The platform runtime writes its own inline colour onto these nodes — a dark
+   green on success, a dark red on error — which are chosen for light templates
+   and disappear against this one's near-black cards. Inline styles outrank a
+   class, so !important is the only way to keep the message readable. */
+.status {
+  font-family: var(--sans);
+  font-size: .96rem;
+  color: var(--marigold) !important;
+  min-height: 1.2em;
+}
+
+/* ── RSVP: the yes / no question ────────────────────────────────────────
+   Ask first, then show either the form or a kind note. */
+.rsvp-ask {
+  font-family: var(--serif);
+  font-size: clamp(1.15rem, 2.6vw, 1.45rem);
+  color: var(--ink-soft);
+}
+.rsvp-actions {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: .8rem;
+}
+/* .btn--solid is width:100% by default, which pushed the ghost button onto its
+   own line at a different width. Both share the row here and grow equally.
+   justify-content is restated because only .btn--solid centres its own label —
+   .btn--ghost would otherwise inherit .btn's flex-start and sit left-aligned
+   beside a centred one. */
+.rsvp-actions .btn {
+  width: auto;
+  flex: 1 1 12rem;
+  margin-top: 1rem;
+  justify-content: center;
+  text-align: center;
+}
+
+.rsvp-miss {
+  font-family: var(--serif);
+  font-size: clamp(1.35rem, 3.4vw, 1.8rem);
+  color: var(--marigold);
+  margin-top: .6rem;
+}
+.rsvp-miss-sub {
+  margin-top: .5rem;
+  font-size: 1rem;
+  line-height: 1.6;
+  color: var(--ink-soft);
+}
+/* Deliberately understated: reversing an answer should be findable, not a
+   second call to action competing with the form's submit button. */
+.rsvp-back {
+  display: inline-block;
+  margin-top: 1.2rem;
+  padding: 0;
+  border: 0;
+  background: none;
+  font-family: var(--sans);
+  font-size: .82rem;
+  letter-spacing: .12em;
+  text-transform: uppercase;
+  color: var(--ink-faint);
+  text-decoration: underline;
+  text-underline-offset: 4px;
+  cursor: pointer;
+  transition: color .2s;
+}
+.rsvp-back:hover, .rsvp-back:focus-visible { color: var(--marigold); }
+
+/* ── Wish wall ──────────────────────────────────────────────────────────
+   The runtime builds these nodes; we only supply the styling. script.js shows
+   four at a time and rotates through the rest. */
+.wishwall { margin-top: 1.6rem; display: grid; gap: .8rem; }
+.wishwall:empty { display: none; }
+@media (min-width: 720px) {
+  .wishwall { grid-template-columns: 1fr 1fr; }
+}
+/* ── View all wishes ─────────────────────────────────────────────────── */
+.wish-viewall {
+  display: block;
+  margin: 1.2rem auto 0;
+  padding: .6rem 1.4rem;
+  border: 1px solid rgba(212, 167, 87, .5);
+  border-radius: 999px;
+  background: rgba(0, 0, 0, .28);
+  font-family: var(--sans);
+  font-size: .8rem;
+  letter-spacing: .14em;
+  text-transform: uppercase;
+  color: var(--ink-soft);
+  cursor: pointer;
+  transition: background .2s, color .2s, border-color .2s;
+}
+.wish-viewall:hover, .wish-viewall:focus-visible {
+  background: var(--marigold);
+  color: var(--maroon-d);
+  border-color: var(--marigold);
+}
+.aamantran-wish {
+  background: rgba(0, 0, 0, .28);
+  border-left: 2px solid var(--marigold);
+  border-radius: 2px;
+  padding: .9rem 1.1rem;
+  transition: opacity .36s var(--ease);
+}
+/* The wall keeps four cards and cycles the rest through them; these two states
+   drive that swap. wish-out fades a card while it still holds its place, so the
+   grid never reflows mid-rotation; wish-hidden then takes it out of flow. */
+.wish-hidden { display: none; }
+.wish-out { opacity: 0; }
+.aamantran-wish-message { font-style: italic; font-size: 1.02rem; line-height: 1.5; color: var(--ink-soft); }
+.aamantran-wish-author {
+  display: block;
+  margin-top: .5rem;
+  font-family: var(--sans);
+  font-size: .85rem;
+  letter-spacing: .12em;
+  text-transform: uppercase;
+  color: var(--marigold);
+}
+
+/* ── "View all wishes" ──────────────────────────────────────────────────
+   Fixed to the viewport, so it sits outside .scroller and is unaffected by the
+   panel stacking below it. Kept under the gate's z-index (200); on /demo/ the
+   store watermark still paints above everything, but it is pointer-events:none
+   and cannot swallow a click. */
+.wishmodal {
+  position: fixed;
+  inset: 0;
+  z-index: 180;
+  display: grid;
+  place-items: center;
+  padding: clamp(1rem, 5vw, 2.5rem);
+}
+.wishmodal__scrim {
+  position: absolute;
+  inset: 0;
+  background: rgba(8, 20, 18, .84);
+  backdrop-filter: blur(6px);
+  -webkit-backdrop-filter: blur(6px);
+}
+.wishmodal__panel {
+  position: relative;
+  width: min(660px, 100%);
+  max-height: 82svh;
+  display: flex;
+  flex-direction: column;
+  background: rgba(18, 38, 35, .96);
+  border: 1px solid rgba(212, 167, 87, .3);
+  border-radius: 4px;
+  box-shadow: 0 24px 70px rgba(0, 0, 0, .6);
+  animation: wishmodal-in .4s var(--ease) both;
+}
+.wishmodal__head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+  padding: clamp(1rem, 3vw, 1.5rem);
+  border-bottom: 1px solid rgba(212, 167, 87, .2);
+}
+.wishmodal__title {
+  font-family: var(--serif);
+  font-size: clamp(1.15rem, 3vw, 1.5rem);
+  font-weight: 600;
+  color: var(--ink);
+}
+.wishmodal__close {
+  flex: 0 0 auto;
+  width: 36px; height: 36px;
+  display: grid;
+  place-items: center;
+  font-size: 1.5rem;
+  line-height: 1;
+  color: var(--marigold);
+  background: none;
+  border: 1px solid rgba(212, 167, 87, .3);
+  border-radius: 50%;
+  cursor: pointer;
+  transition: background .2s, color .2s;
+}
+.wishmodal__close:hover, .wishmodal__close:focus-visible {
+  background: var(--marigold);
+  color: var(--maroon-d);
+}
+.wishmodal__list {
+  overflow-y: auto;
+  -webkit-overflow-scrolling: touch;
+  display: grid;
+  gap: .8rem;
+  padding: clamp(1rem, 3vw, 1.5rem);
+}
+@keyframes wishmodal-in {
+  from { opacity: 0; transform: translateY(12px); }
+  to   { opacity: 1; transform: none; }
+}
+/* The list scrolls on its own; the invite behind it must not move with it. */
+body.is-modal .scroller { overflow: hidden; }
+
+@media (prefers-reduced-motion: reduce) {
+  .wishmodal__panel { animation: none; }
+  .aamantran-wish { transition: none; }
+}
+
+/* ── Footer ─────────────────────────────────────────────────────────── */
+.footer { text-align: center; padding-top: clamp(1.6rem, 4vw, 2.6rem); }
+.footer__orn { width: clamp(110px, 22vw, 190px); margin: 0 auto 1.2rem; opacity: .85; }
+.footer__names { font-size: clamp(1.3rem, 3vw, 2rem); font-weight: 600; }
+.footer__date { font-family: var(--sans); font-size: .95rem; letter-spacing: .16em; color: var(--ink-faint); margin-top: .4rem; }
+.footer__mark {
+  margin-top: 1.6rem;
+  font-family: var(--sans);
+  font-size: .9rem;
+  letter-spacing: .14em;
+  color: rgba(251, 240, 228, .4);
+}
+
+/* ── Scroll cue ─────────────────────────────────────────────────────── */
+.cue {
+  position: absolute;
+  bottom: 4svh; right: 5vw;
+  z-index: 60;
+  font-family: var(--sans);
+  font-size: .74rem;
+  letter-spacing: .28em;
+  text-transform: uppercase;
+  color: var(--ink-faint);
+  display: grid;
+  justify-items: center;
+  gap: .6rem;
+  pointer-events: none;
+}
+.cue::after {
+  content: "";
+  width: 1px; height: 32px;
+  background: linear-gradient(var(--ink-faint), transparent);
+  animation: cueDrop 1.8s var(--ease) infinite;
+}
+@keyframes cueDrop {
+  0%   { transform: scaleY(0); transform-origin: top; }
+  50%  { transform: scaleY(1); transform-origin: top; }
+  51%  { transform-origin: bottom; }
+  100% { transform: scaleY(0); transform-origin: bottom; }
+}
+
+/* ── Gate ───────────────────────────────────────────────────────────── */
+.gate {
+  position: fixed;
+  inset: 0;
+  z-index: 200;
+  display: grid;
+  place-items: center;
+  text-align: center;
+  padding: 8vw;
+  /* Text is nudged toward the right half on desktop, into the open space the
+     shifted artwork leaves. Reset to true centre on phones, where the portrait
+     plate has its own calm middle band. */
+  --gate-shift: 12%;
+  background: var(--night);
+  transition: opacity .8s var(--ease), visibility .8s;
+}
+.gate__art {
+  position: absolute;
+  inset: 0;
+  /* Base layer: shows while the art loads, and carries the gate on its own if
+     the image is ever missing. */
+  background: radial-gradient(120% 120% at 50% 35%, #7A3520 0%, #2E1310 55%, #180A0C 100%);
+  opacity: .95;
+  will-change: transform;
+}
+/* The artwork, faded in once decoded (JS adds .is-ready).
+   Fills the frame (`cover`) and is anchored to the BOTTOM, which drops the
+   seated couple low in the viewport and leaves the upper half for the copy —
+   the same balance the portrait plate gives on phones. `contain` was tried and
+   rejected: it fits the whole plate but letterboxes it, and the dark bands are
+   what read as "unbalanced". */
+.gate__art::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background-image: var(--gate-img, none);
+  background-size: cover;
+  background-position: center 68%;
+  background-repeat: no-repeat;
+  opacity: 0;
+  transition: opacity 1s var(--ease);
+}
+.gate__art.is-ready::after { opacity: 1; }
+/* Scrim: darkest through the middle, where the names and button sit. */
+.gate::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  z-index: 1;
+  pointer-events: none;
+  background:
+    linear-gradient(180deg, rgba(14, 31, 29, .5) 0%, transparent 22%),
+    linear-gradient(0deg,   rgba(14, 31, 29, .5) 0%, transparent 24%);
+}
+.gate__inner { z-index: 2; }
+/* The copy gets its own translucent card. The artwork has no quiet band wide
+   enough for this much text, so rather than fighting the composition the card
+   supplies its own ground — the couple reads clearly behind and beside it. */
+.gate__inner {
+  position: relative;
+  z-index: 1;
+  transform: translateX(var(--gate-shift, 0));
+  padding: clamp(2.4rem, 5vw, 4rem) clamp(2.4rem, 6vw, 5rem);
+  /* The landscape plate is composed for this layout — couple small and low in
+     the left third, open hazy hall across the upper centre and right — so the
+     copy sits slightly right of centre in that clear space, no longer pushed
+     up and out of the way. */
+  margin-bottom: 0;
+}
+/* A soft radial pool rather than a hard card: it darkens just enough behind the
+   words and dissolves completely at the edges, so the ceremony still reads as
+   one continuous image. A visible panel cut the artwork in half. */
+.gate__inner::before {
+  content: "";
+  position: absolute;
+  inset: -16% -22%;
+  z-index: -1;
+  background: radial-gradient(62% 58% at 50% 50%,
+    rgba(22, 9, 11, .52) 0%,
+    rgba(22, 9, 11, .34) 46%,
+    rgba(22, 9, 11, .14) 74%,
+    transparent 100%);
+}
+/* ── Bismillah ──────────────────────────────────────────────────────────
+   Set as REAL TEXT in Amiri (a naskh webfont), not a generated image.
+   Image generators reliably garble Arabic letterforms, and this is sacred
+   text that opens the invitation — a mis-rendered glyph would be worse than
+   no ornament at all. As text it is always correct, scales cleanly, and is
+   readable by a screen reader.
+
+   `lang="ar" dir="rtl"` on the element matters: without dir the shaping and
+   the diacritics land wrong in some browsers. */
+.bismillah {
+  font-family: var(--arabic);
+  font-size: clamp(1.15rem, 2.6vw, 1.9rem);
+  line-height: 1.9;                 /* naskh needs room for its diacritics */
+  color: var(--marigold);
+  opacity: .92;
+  margin: 0 auto 1.4rem;
+  text-align: center;
+  text-shadow: 0 1px 14px rgba(14, 31, 29, .55);
+}
+.bismillah--sm {
+  font-size: clamp(1rem, 1.9vw, 1.4rem);
+  margin: 0 0 .9rem;
+  text-align: inherit;              /* follows its scene's text alignment */
+}
+
+.gate__mark { width: clamp(52px, 8vw, 88px); margin: 0 auto 1.6rem; opacity: .9; }
+.gate__eyebrow {
+  font-family: var(--sans);
+  font-size: clamp(.9rem, 1.25vw, 1.06rem);
+  letter-spacing: .28em;
+  text-transform: uppercase;
+  color: var(--ink-faint);
+  margin-bottom: 1.2rem;
+}
+.gate__names { font-size: clamp(2.4rem, 8vw, 5.4rem); font-weight: 600; line-height: 1; }
+.gate__amp { display: block; font-size: .34em; font-style: italic; color: var(--marigold); margin: .14em 0; font-weight: 400; }
+.gate__date {
+  margin-top: 1.2rem;
+  font-family: var(--sans);
+  font-size: .96rem;
+  letter-spacing: .2em;
+  text-transform: uppercase;
+  color: var(--ink-soft);
+}
+.gate__btn {
+  margin-top: 2.4rem;
+  padding: .9rem 2rem;
+  font-family: var(--sans);
+  font-size: .88rem;
+  letter-spacing: .18em;
+  text-transform: uppercase;
+  color: var(--maroon-d);
+  background: var(--marigold);
+  border: 0;
+  border-radius: 2px;
+  cursor: pointer;
+  transition: background .25s, transform .25s;
+}
+.gate__btn:hover, .gate__btn:focus-visible { background: #F4BC5C; transform: translateY(-2px); }
+.gate.is-open { opacity: 0; visibility: hidden; pointer-events: none; }
+
+/* ── Music toggle ───────────────────────────────────────────────────── */
+.music {
+  position: fixed;
+  right: 4vw; bottom: 3.4svh;
+  z-index: 150;
+  width: 44px; height: 44px;
+  display: grid;
+  place-items: center;
+  border-radius: 50%;
+  border: 1px solid rgba(232, 163, 61, .45);
+  background: rgba(26, 12, 14, .6);
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
+  color: var(--marigold);
+  cursor: pointer;
+  transition: background .25s, transform .25s;
+}
+.music:hover, .music:focus-visible { background: rgba(26, 12, 14, .85); transform: scale(1.06); }
+.music__on { width: 19px; height: 19px; }
+.music__bars { display: none; align-items: flex-end; gap: 2px; height: 15px; }
+.music__bars i { width: 2px; background: var(--marigold); animation: bars .9s ease-in-out infinite; }
+.music__bars i:nth-child(1) { height: 40%; animation-delay: -.2s; }
+.music__bars i:nth-child(2) { height: 90%; animation-delay: -.5s; }
+.music__bars i:nth-child(3) { height: 60%; animation-delay: -.8s; }
+@keyframes bars { 0%, 100% { transform: scaleY(.4); } 50% { transform: scaleY(1); } }
+.music.is-playing .music__on { display: none; }
+.music.is-playing .music__bars { display: flex; }
+
+/* ══════════════════════════════════════════════════════════════════════
+   TABLET — the 16:9 art still fits, only the type and spacing tighten.
+   ═════════════════════════════════════════════════════════════════════ */
+@media (max-width: 1024px) {
+  :root { --pad-x: 7vw; }
+
+  /* A tablet is NOT a narrow desktop. The plates are drawn 16:9; an iPad is
+     ~4:3, so `cover` scales them up and crops the sides — which lifts every
+     foreground band (the mustard hedge, the grass) far higher up the frame
+     than it sits on a wide screen. Figures kept at their desktop height then
+     sink behind that band: the reported issue.
+     Fix is two-part — grow the figures so they clear the raised horizon, and
+     hold the foreground plates down where they were drawn. */
+  .layer.el.fig-center { left: 12%; right: 12%; height: 106%; }
+  .layer.el.fig-left   { left: 4%;  width: 68%; height: 132%; }
+  .layer.el.fig-right  { right: -2%; width: 66%; height: 132%; }
+
+  /* `.panel--tall .layer.el.fig-center` (3 classes) outranks the 2-class rule
+     above no matter the source order, so scene 4's dancers kept their DESKTOP
+     size on every screen — the reported issue.
+     Matching that specificity is what actually makes the breakpoint apply. */
+  .panel--tall .layer.el.fig-center {
+    left: auto; right: -6%;
+    width: 82%;
+    height: 104%;
+  }
+  .layer.el.fig-cl     { left: 0%;  width: 64%; height: 112%; }
+  .layer.el.fig-cr     { right: 2%; width: 68%; height: 120%; }
+  .layer.el.fig-seated { left: 16%; right: 16%; height: 84%; }
+
+  /* Anchor the foreground band to the bottom of the frame instead of letting
+     `cover` float it up the taller viewport. `100% auto` scales it by width,
+     so the hedge keeps its drawn thickness and stays a base, not a wall. */
+  .layer.el.fill:not(.glow) {
+    inset: auto 0 -4% 0;
+    height: 62%;
+    background-size: 100% auto;
+    background-position: center bottom;
+  }
+
+  /* The hanging band is drawn as a top frame. It also needs headroom ABOVE the
+     frame to drift into — anchored flush at `top: 0` the idle motion just
+     slides it under its own mask and the lights look frozen. */
+  .layer.el.toplights {
+    inset: -10% 0 auto 0;
+    height: 52%;
+    background-size: 112% auto;
+  }
+
+  /* Scene 5's close-up is framed tighter so it doesn't crowd the copy below. */
+  .layer.el.hands { inset: 5% 16% 30% 16%; }
+
+  /* The finale couple is deliberately small; on 4:3 it needs a touch more
+     size or it reads as a speck against the raised grass line. */
+  .panel--finale .layer.el.fig-seated { left: 26%; right: 26%; height: 48%; }
+}
+
+/* ══════════════════════════════════════════════════════════════════════
+   TABLET PORTRAIT — an iPad held upright is closer to a phone's framing
+   than a desktop's, but it is wider than the 720px mobile breakpoint so it
+   was falling through every mobile rule. It gets the portrait plates (see
+   script.js TABLET_PORTRAIT_Q) and centred, roomier text.
+   ═════════════════════════════════════════════════════════════════════ */
+@media (min-width: 721px) and (max-width: 1024px) and (orientation: portrait) {
+  /* Portrait art is composed for the frame — drop the wide overscan. */
+  .layer { inset: -6%; }
+
+  .panel__inner { max-width: min(52ch, 78vw); }
+  .panel__inner--wide { max-width: min(680px, 82vw); }
+
+  /* Figures against a 9:16-ish plate: sized to the figure, not the frame. */
+  .layer.el.fig-left   { left: 0%;  width: 82%; height: 124%; }
+  .layer.el.fig-right  { right: -4%; width: 80%; height: 122%; }
+  .layer.el.fig-center { left: 2%;  right: 2%;  height: 112%; }
+  .panel--tall .layer.el.fig-center {
+    left: auto; right: -8%;
+    width: 90%;
+    height: 108%;
+  }
+  .layer.el.fig-cl     { left: -2%; width: 72%; height: 108%; }
+  .layer.el.fig-cr     { right: 0%; width: 74%; height: 112%; }
+  .layer.el.fig-seated { left: 12%; right: 12%; height: 80%; }
+  .layer.el.hands      { inset: 8% 8% 24% 8%; }
+
+  /* Reserve a band for scene 4's couple below the card stack. Without this,
+     `.panel--tall { padding: 3svh 0 8svh; }` further down this file (the
+     mobile block also sets it, but that one is scoped to max-width: 720px
+     and never reaches this iPad-portrait query) leaves only 8svh at the
+     bottom — MEASURED at 820x1180: cards end at y1010, but the couple
+     (bottom-anchored, sized below) started at y176. 40svh reserves enough
+     for the couple's height at every width this query matches (721-1024px)
+     while leaving the cards themselves untouched. */
+  .panel[data-scene="4"] { padding-bottom: 44svh; }
+
+  .layer.el.fill:not(.glow) { height: 54%; }
+  .layer.el.toplights {
+    inset: -12% 0 auto 0;
+    height: 58%;
+    background-size: 120% auto;
+  }
+
+  /* Cards get the full column on a portrait tablet. */
+  .functions { grid-template-columns: 1fr 1fr; }
+  .families  { gap: 2rem; }
+}
+
+/* ══════════════════════════════════════════════════════════════════════
+   MOBILE — portrait.
+   The 16:9 backgrounds get cropped to uselessness on a 9:16 screen, so
+   JS swaps in the `-p` portrait plates here (see script.js pickBackground).
+   Cutouts stay the same PNGs but are re-anchored tighter and centred, since
+   the art brief keeps every face inside the middle 60%.
+   ═════════════════════════════════════════════════════════════════════ */
+@media (max-width: 720px) {
+  :root { --pad-x: 7vw; }
+
+  .panel__inner { margin: 7svh var(--pad-x); max-width: 88vw; }
+  .panel__inner--wide { max-width: 88vw; }
+
+  /* On a narrow screen a right-aligned column reads badly — everything
+     goes left, except the deliberately centred family scene. */
+  /* justify-items is for the know__row GRID only. On .panel__inner (a block)
+     it used to do nothing, but current Chrome applies it to block layout too:
+     every child shrank to its content, so the film frame (no content width of
+     its own) collapsed to ~65px and the hashtag to 0px, which also switched
+     off its fit-to-width. */
+  .panel[data-text$="right"] .panel__inner,
+  .panel[data-text$="right"] .know__row { text-align: left; }
+  .panel[data-text$="right"] .know__row { justify-items: start; }
+  .panel[data-text$="right"] .countdown { justify-content: flex-start; }
+  .panel[data-text$="right"] .crest { margin-left: 0; }
+  .panel[data-text$="right"] { place-items: start start; }
+  .panel[data-text="bottom-right"] { place-items: end start; }
+
+  /* Scene 7 on a phone: the couple is bottom-anchored and the copy was too, so
+     the card landed across their faces while a large empty sky sat unused
+     above. Pull the block to the TOP of the scene — the art then reads in full
+     underneath it, and the sky is doing something. Scene 5 keeps the bottom
+     anchor: its art is a centred close-up high in the frame, so the opposite. */
+  .panel[data-scene="7"] { place-items: start start; }
+  .panel[data-scene="7"] .panel__inner { margin-top: 2svh; margin-bottom: 0; }
+
+  /* Scene 4 carries the function cards and was anchored bottom-left, which put
+     the whole stack low and left the top of the scene empty. Both tall scenes
+     now start their copy at the top, so the art below them reads. */
+  .panel[data-scene="4"] { place-items: start start; }
+  .panel[data-scene="4"] .panel__inner { margin-top: 2svh; margin-bottom: 0; }
+
+  /* MEASURED: `.panel--tall { padding: 14svh 0 }` = 118px on an 844px phone,
+     and that padding — not the card's own 17px margin — was the whole of the
+     135px of empty sky above the card. The padding was
+     there to keep long content off the viewport edges back when the copy was
+     vertically centred; now that both tall scenes anchor their card to the TOP
+     it is dead space. Trim it hard at the top and keep a little at the bottom,
+     where scene 4's cards still need to clear the end of the panel. */
+  .panel--tall { padding: 3svh 0 8svh; }
+
+  /* Both cards a little smaller: tighter type, tighter padding, and a narrower
+     column so the artwork keeps more of the frame. */
+  .panel[data-scene="4"] .panel__inner,
+  .panel[data-scene="7"] .panel__inner {
+    max-width: 80vw;
+    padding: 1.05rem .95rem;
+  }
+  .panel[data-scene="4"] .eyebrow,
+  .panel[data-scene="7"] .eyebrow { font-size: .66rem; letter-spacing: .2em; }
+  .panel[data-scene="4"] .scene-title,
+  .panel[data-scene="7"] .scene-title { font-size: 1.62rem; }
+  /* Keep the `--fit` multiplier that fitText() sets in script.js — a plain
+     font-size here would drop it and let a long tag overrun its column. */
+  .panel[data-scene="7"] .hashtag { font-size: calc(clamp(1rem, 3.6vw, 2.2rem) * var(--fit, 1)); }
+  .panel[data-scene="4"] .lede,
+  .panel[data-scene="7"] .lede { font-size: .84rem; }
+  .panel[data-scene="7"] .btn { margin-top: 1rem; padding: .66rem 1.1rem; font-size: .78rem; }
+  .panel[data-scene="7"] .film__label { font-size: .72rem; margin-bottom: .45rem; }
+
+  /* The function cards themselves — the bulk of scene 4's height. */
+  .panel[data-scene="4"] .functions { gap: .8rem; }
+  .panel[data-scene="4"] .fn { padding: .85rem .8rem; }
+  .panel[data-scene="4"] .fn__name { font-size: 1.06rem; }
+  .panel[data-scene="4"] .fn__when,
+  .panel[data-scene="4"] .fn__meta span,
+  .panel[data-scene="4"] .fn__map { font-size: .8rem; }
+
+  /* The film frame is the whole problem here. At `aspect-ratio: 16/9` across a
+     full-width phone column it renders ~190px tall — and it is the LAST thing
+     in the card, so it drags the card's bottom edge straight down over the
+     couple. (A headless screenshot hides this: the embed never loads and the
+     frame collapses to ~42px, which is why this looked fixed when it wasn't.)
+     Constraining the video's width caps the card height at a known value and
+     keeps it clear of the art below. */
+  /* The film embed's height is the one thing this scene cannot predict — the
+     iframe reports 0 until YouTube loads, then jumps to a real 16:9 box, and
+     it is the LAST element in the card, so its growth pushes the card's bottom
+     edge down over the couple. Rather than guess the number, cap the card and
+     let the video scroll inside it: the art below is then safe at ANY embed
+     height, which is what makes this hold in Safari and not just in a
+     screenshot where the iframe never loaded. */
+  .panel[data-scene="7"] .panel__inner {
+    max-height: 46svh;
+    overflow-y: auto;
+    overscroll-behavior: contain;
+    -webkit-overflow-scrolling: touch;
+  }
+  .panel[data-scene="7"] .film { margin-top: .9rem; }
+  /* Keep the video a sensible size inside the capped card. */
+  .panel[data-scene="7"] .film__frame { max-width: 230px; }
+
+  /* MEASURED: 02-couple-close.webp is 1536x1024 with the pair CENTRED in the
+     middle ~40% — so `contain` fits all that empty canvas and renders them
+     tiny. Scaling past the box width fills the space the text just vacated.
+     This plate is centred (unlike scene 4's, whose couple sits right), so it
+     stays centred and only grows. */
+
+  /* Portrait art is composed for the frame, so drop the wide overscan. */
+  .layer { inset: -6%; }
+
+  /* ALPHA-MEASURED from 02-couple-close.webp: the couple fills 1.2%-98.1% of
+     the plate's HEIGHT (their heads are at the very top edge, no transparent
+     padding to absorb an overlap) and sits at 15.8%-52.5% across, i.e. LEFT of
+     centre, not centred.
+
+     Two consequences, both of which bit earlier attempts:
+      - the box's top edge IS the top of their heads, so the box has to start
+        below the card, not merely end below it;
+      - `center` x-position pushes them right, so the plate is nudged left to
+        put the pair under the open sky rather than behind the copy. */
+  .panel--tall .panel[data-scene="7"] .layer.el.fig-center,
+  .panel[data-scene="7"] .layer.el.fig-center {
+    /* This template's plate is composed differently from the earlier one: the couple is
+       CENTRED in their canvas (x 32-65%) and full-height with feet at the
+       bottom edge, so the fixed-pixel offset used previously does not apply.
+       The card still sits at the top on mobile, so the art starts below it.
+         box width 170%, couple centre 48.5% -> left = 50 - .485*170 = -32.5%
+       Widening past the frame is what makes them read at phone size. */
+    /* MEASURED ON DEVICE: with the real YouTube embed loaded the card runs
+       lower than a headless test shows (the iframe collapses there), so a
+       52svh figure put their heads behind it. Held to 42svh so the couple
+       sits fully below the card on a real phone. */
+    top: auto; bottom: -1svh;
+    left: -32.5%; right: auto;
+    width: 170%;
+    height: 48svh;
+    background-size: contain;
+    background-position: left bottom;
+    -webkit-mask-image: linear-gradient(180deg, #000 0%, #000 90%, transparent 100%);
+            mask-image: linear-gradient(180deg, #000 0%, #000 90%, transparent 100%);
+    z-index: 45;
+  }
+  .panel[data-scene="7"] .layer.el.branch {
+    z-index: 46;
+  }
+
+  /* Figures on a phone. These are deliberately LARGE: a 9:16 screen is narrow,
+     and a cutout scaled to "fit" reads as a tiny distant speck. Overflowing the
+     sides is fine — the feather masks handle the edges — so size them to the
+     figure, not to the frame. */
+  /* Scene 1's cutouts are shown WHOLE on mobile too (see the desktop rule for
+     the full reasoning). A phone is narrow, so a 16:9 plate fitted by `contain`
+     across the screen renders the person tiny — the box therefore has to be
+     WIDER than the screen (200%) and slid so the person lands where we want,
+     with the empty transparency running off both edges.
+       her centre 26% of canvas -> left = 40 - 0.257*200 = -11.3%
+       his centre 79% of canvas -> left = 68 - 0.787*200 = -89.4%
+     Change only the two target percentages (40 and 68) to move them. */
+  .layer.el.fig-left {
+    inset: auto; left: -11.3%; right: auto; bottom: -1svh;
+    width: 200%; height: 52svh;
+    background-size: contain;
+    background-position: left bottom;
+    z-index: 45;
+  }
+  .layer.el.fig-right {
+    inset: auto; left: -89.4%; right: auto; bottom: -1svh;
+    width: 200%; height: 52svh;
+    background-size: contain;
+    background-position: left bottom;
+    z-index: 45;
+  }
+  .layer.el.fig-center { left: -16%; right: -16%; height: 120%; }
+
+  /* Scene 3's couple on a phone. The plate is a wide 16:9 canvas holding a
+     pair that spans 85% of its width, so `contain` across a narrow screen
+     renders them small — the box is widened past the frame edges and given
+     real height so they read at phone size. Kept above the scrim so they
+     stay solid rather than washed out. */
+  .panel[data-scene="3"] .layer.el.fig-center {
+    inset: auto; left: -14%; right: -14%; bottom: 0;
+    height: 46%;
+    background-size: contain;
+    background-position: center bottom;
+    z-index: 45;
+  }
+  .panel[data-scene="3"] .layer.el.branch {
+    width: 48vw;
+    height: 56svh;
+    background-size: contain;
+    -webkit-mask-image: none;
+            mask-image: none;
+    z-index: 46;
+    opacity: 0.92;
+  }
+  .panel[data-scene="3"] .layer.el.branch--left {
+    inset: -3svh auto auto -2vw;
+    background-position: left top;
+  }
+  .panel[data-scene="3"] .layer.el.branch--right {
+    inset: -9svh -2vw auto auto;
+    background-position: right top;
+  }
+  .panel[data-scene="3"] .layer.el.branch.is-ready {
+    opacity: 0.92;
+    transition: opacity 0.5s ease;
+  }
+
+  /* The string lights are anchored `inset: 0 0 auto 0` and the idle drift moves
+     a layer UP, so on a phone the band slid up under its own mask fade and the
+     motion vanished — "in mobile the lights are not moving". Start the band
+     slightly above the frame and make it taller: now there is art above the
+     top edge to travel INTO, so the drift reads instead of disappearing.
+     The mask is pushed down to match, otherwise the fade eats the new height. */
+  /* CRITICAL: svh, NOT %. A percentage inset resolves against the PANEL, and a
+     tall panel is ~1600px on a phone — measured, the band sat 308px above the
+     viewport with a third of it off-screen, which is why the lights looked
+     frozen. Viewport units anchor it to what the guest can actually see. */
+  .layer.el.toplights {
+    inset: -4svh 0 auto 0;
+    height: 34svh;
+    background-size: 132% auto;
+    background-position: center top;
+    -webkit-mask-image: linear-gradient(180deg, #000 0%, #000 72%, transparent 98%);
+            mask-image: linear-gradient(180deg, #000 0%, #000 72%, transparent 98%);
+  }
+  /* Scene 4 again — without matching the 3-class selector the dancers stay at
+     the desktop 62%/88% and read as a distant speck on a phone.
+
+     Same svh lesson as the lights: a height of 104% of a ~1600px TALL PANEL
+     drew the couple 1659px high with most of it above the frame. Pinning to
+     the bottom in svh puts them beside the function cards, where the scene
+     has its empty space, at a size that actually reads. */
+  /* MEASURED: 02-couple-dance.webp is 1536x1024 — a LANDSCAPE 3:2 plate, not
+     the portrait canvas the earlier rules assumed. That is the whole story of
+     "the cutout is small": inside a 390px-wide phone column, `contain` fits it
+     by WIDTH and the couple ends up ~280px tall with the figures a fraction of
+     that. Scaling by width (`auto` height via background-size: <w> auto) and
+     overflowing the sides is what makes them read at phone size. */
+  /* INSPECTED THE PLATE: 1536x1024, and the dancers occupy roughly the RIGHT
+     60% of it — the left third is empty transparency. That is why every
+     "centred" value looked wrong: centring the CANVAS pushes the figures
+     off-frame and crops them. `contain` keeps the pair whole, and anchoring
+     right-bottom drops them into the empty right side of the scene beside the
+     cards, at full height. */
+  .panel--tall .layer.el.fig-center {
+    top: auto; bottom: 0;
+    left: auto; right: -14%;
+    width: 96%;
+    height: 44svh;
+    background-size: contain;
+    background-position: right bottom;
+  }
+
+  /* Scene 4's couple on a phone. The generic tall-panel rule above happens to
+     suit this plate's composition (pair in the right third), but scene 4 and
+     scene 7 have differently-drawn cutouts, so each gets its own numbers
+     rather than sharing one and drifting when the other is retuned. */
+  /* Scene 4's couple on a phone: BOTTOM CENTRE.
+     The plate holds them in its right third (measured centre 77% of canvas),
+     so centring on screen means sliding the box left to compensate rather
+     than anchoring it to an edge:
+       box left = 50 - 0.77 * 128 = -48.6%
+     The plate's empty left half runs off the frame; they land centred. */
+  /* The couple is anchored to the RIGHT EDGE on phones, not centred.
+
+     Centring them (`left: -48.6%; width: 128%`) put them directly under the
+     function-card stack, which is opaque and full-width here — only their feet
+     showed below the last card.
+
+     MEASURED on 02-mehendi-moment.webp (1536x865): the couple occupies
+     x 58-95% of the plate and the left 58% is fully transparent. With
+     `background-position: right bottom` the plate's right edge aligns to the
+     box's right edge, so a box of 110% pushed 4% past the frame lands the
+     figures at roughly x225-384 of a 390px screen — clear of the cards, whole,
+     and not cropped at the edge.
+
+     They sit BELOW the card stack's end (bottom-anchored) so nothing overlaps
+     the text. */
+  /* Reserve the couple's band at the END of the card stack.
+
+     The figure is bottom-anchored, so the last card must finish above it or
+     the Walima card sits across their shoulders. `.panel--tall` already pads
+     14svh top and bottom; this adds the figure's band to the bottom so the
+     stack clears them — and no more than that, so the couple begins directly
+     where the cards end instead of after a gap of empty terrace. */
+  .panel[data-scene="4"] { padding-bottom: calc(14svh + 40svh); }
+
+  .panel[data-scene="4"] .layer.el.fig-center {
+    top: auto; bottom: 0;
+    /* SIZE IS SET BY `width` ALONE — `height` cannot grow this figure.
+
+       MEASURED on 02-mehendi-moment.webp: the plate is 1536x865 (aspect
+       1.776) and `background-size: contain` fits it to the box's WIDTH long
+       before its height, so the old `height: 34svh` only added dead letterbox
+       above the art — 76px of it — and never made the couple larger.
+
+       The second measurement is the one that sets the number: the drawn
+       couple occupies only x 60.4-94.8% of the plate, the left 60% being
+       fully transparent. So the rendered couple is ~34% of whatever the box
+       is. At the old `width: 96%` that was ~129px on a 390px screen — a third
+       of the frame, which is what read as "too small".
+
+       190% puts the couple at ~255px wide and ~409px tall — about 65% of the
+       frame — while the plate's empty left side simply runs off the left
+       edge, costing nothing. */
+    left: auto; right: 3.5%;
+    width: 190%;
+    height: auto;
+    aspect-ratio: 1536 / 865;
+    /* The right inset must still clear GSAP's idle motion: at
+       data-depth="16" the layer gets `scale(1.047)` plus an x-drift of
+       `depth * idle * 1.35 * 0.55` ~ 12px (trap 1 — the CSS box is not what
+       renders). 3.5% of the now-much-wider box is ~26px, the same absolute
+       clearance the old 9% of a 96% box gave. */
+    background-size: contain;
+    background-position: right bottom;
+    z-index: 45;               /* above the scrim, so they stay solid */
+  }
+  .layer.el.fig-seated { left: -4%; right: -4%; height: 76%; }
+  .layer.el.fig-cl     { left: -8%; width: 112%; height: 100%; }
+  .layer.el.fig-cr     { right: -8%; width: 114%; height: 104%; }
+  /* NOTE: the old generic `.layer.el.hands { inset: 10% -6% 18% -6%; }` lived
+     here and silently overrode scene 5's mobile block earlier in this file —
+     later rule, same specificity. Its `%` insets also resolved against the
+     ~1600px TALL PANEL rather than the viewport (see the svh note above).
+     Scene 5 is the only user of `.hands`, so its sizing now lives in ONE place:
+     the `[data-scene="5"]` block in the mobile section above. Do not add a
+     generic `.hands` rule below that block. */
+
+  /* Tall scenes carry long copy, so their art was knocked back to .34 to keep
+     the text readable. That went too far: at a third opacity the scene-7 couple
+     and the scene-4 string lights all but vanished, and the motion on them went
+     with it — the reported issue. The art comes back up near full; readability is handled by the
+     panel scrim and the copy's own backdrop instead of by erasing the artwork.
+
+     The figure stays a little lower than the decorative layers because it sits
+     directly behind the text column, while the lights and arch frame the edges
+     and can run bright. */
+  .panel--tall .layer.el.is-ready { opacity: .9; }
+  .panel--tall .layer.el.fig-seated.is-ready { opacity: .72; }
+  /* Scene 4's dancers now sit low beside the cards rather than behind the text
+     column, so they carry the scene and are held brighter than the .72 that
+     suits a figure directly under copy. */
+  .panel--tall .layer.el.fig-center.is-ready { opacity: .9; }
+  .panel--tall .layer.el.toplights.is-ready,
+  .panel--tall .layer.el.branch.is-ready { opacity: 1; }
+  .panel--tall .layer.el.glow.is-ready { opacity: .6; }
+
+  /* A tall panel is ~1600px on an 844px phone, so its middle third — exactly
+     where the function cards sit — has NO art: the lights are above it and
+     the figures below. That band read as empty even after the cutouts were
+     fixed. The sparkle accent is
+     repeated down the panel at a phone-sized tile so the card region keeps
+     some life behind it, instead of being flat tint. */
+  .panel--tall .layer.el.glow {
+    inset: 0;
+    background-size: 100% 46svh;
+    background-repeat: repeat-y;
+    background-position: center top;
+  }
+
+  /* With the art back up, the copy on a tall scene needs its own ground so it
+     never competes with a bright plate behind it. */
+  .panel--tall .panel__inner {
+    background: linear-gradient(180deg, rgba(14, 31, 29, .34) 0%, rgba(14, 31, 29, .5) 100%);
+    padding: 1.4rem 1.1rem;
+    border-radius: 14px;
+    backdrop-filter: blur(2px);
+    -webkit-backdrop-filter: blur(2px);
+  }
+
+
+  /* A phone gives type far less room to dodge a bright spot in the art, and
+     the portrait plates put their brightest area dead centre — which is
+     exactly where the text column sits. So the scrim goes deeper here than on
+     desktop, and runs the full height rather than only the edges. Without
+     this, marigold text (the hashtag especially) disappears into a glow. */
+  .panel::after,
+  .panel[data-text$="left"]::after,
+  .panel[data-text$="right"]::after,
+  .panel[data-text="center"]::after {
+    background-image:
+      radial-gradient(120% 90% at 50% 50%, transparent 0%, rgba(14, 31, 29, .40) 100%),
+      linear-gradient(180deg, rgba(14, 31, 29, .62) 0%, rgba(14, 31, 29, .18) 38%,
+                              rgba(14, 31, 29, .30) 68%, rgba(14, 31, 29, .72) 100%);
+  }
+  /* The full-panel scrim below was tuned for art at .34 opacity. Now that the
+     copy carries its own ground, stacking both crushes the scene to mud — so
+     tall panels get a lighter scrim and let the artwork through. */
+  .panel--tall::after,
+  .panel--tall[data-text$="left"]::after,
+  .panel--tall[data-text$="right"]::after {
+    background-image:
+      radial-gradient(130% 100% at 50% 42%, transparent 0%, rgba(14, 31, 29, .26) 100%),
+      linear-gradient(180deg, rgba(14, 31, 29, .5) 0%, rgba(14, 31, 29, .06) 34%,
+                              rgba(14, 31, 29, .14) 62%, rgba(14, 31, 29, .58) 100%);
+  }
+
+  /* Scene 2 — the copy sits DIRECTLY on the art, with no card behind it.
+
+     There is no plate, no border and no blur here: the family names read
+     straight off the garden. That removes the last thing standing between the
+     reader and the lantern animation, but it also removes what used to carry
+     the type's contrast, so that job moves to the two layers below.
+
+     1. The PANEL SCRIM does the heavy lifting now. It has to be strong enough
+        to hold the worst pixel — the bright arch mouth behind the middle of
+        the column — above the 4.5:1 floor, while staying weak across the top
+        band where the lanterns swing. Hence the radial: dark where the words
+        are (centre), much clearer at the top and the edges.
+     2. TEXT SHADOWS do the rest, tightened below. A card can be measured once
+        because it is opaque; bare type over moving art cannot, so each line
+        carries its own local ground in the shadow.
+
+     Measured with the text hidden, the scrim's brightest pixel under the
+     column is rgb(86,92,84) — 4.9:1 against the #F3C978 gold and 9.9:1
+     against the white names, both clear of the floor at the WORST pixel. */
+  .panel[data-scene="2"] .panel__inner {
+    background: none;
+    border: 0;
+    border-radius: 0;
+    box-shadow: none;
+    backdrop-filter: none;
+    -webkit-backdrop-filter: none;
+    padding: 1.4rem .9rem;
+  }
+  /* MEASURED (text hidden, worst pixel per line): the first pass held every
+     line above 4.5:1 except two — `.blessing` at 4.09:1 and one sampled
+     `.family__label` glyph at 4.31:1 — both sitting in the upper-middle band
+     where the marble arch is brightest. Deepened the radial's inner stop and
+     moved its centre up (54% -> 46%) to cover that band without darkening
+     the lantern strings above it or the "Two families..." line below. */
+  .panel[data-scene="2"]::after,
+  .panel[data-scene="2"][data-text="center"]::after {
+    background-image:
+      radial-gradient(118% 82% at 50% 46%, rgba(14, 31, 29, .68) 0%,
+                                           rgba(14, 31, 29, .46) 58%,
+                                           rgba(14, 31, 29, .30) 100%),
+      linear-gradient(180deg, rgba(14, 31, 29, .26) 0%, rgba(14, 31, 29, .34) 34%,
+                              rgba(14, 31, 29, .46) 70%, rgba(14, 31, 29, .70) 100%);
+  }
+  .panel[data-scene="2"] .eyebrow {
+    color: #F6EFE2;
+    font-weight: 500;
+    letter-spacing: .24em;
+    text-shadow: 0 1px 2px rgba(0, 0, 0, .95), 0 2px 12px rgba(0, 0, 0, .92);
+  }
+  /* #E8BF70 measured 4.28:1 at its worst pixel against the bright arch behind
+     it — under the 4.5:1 floor, and the only line in the scene that was. It
+     predates the lantern work. Lifted to the same gold `.family__label`
+     already uses here, which clears it at the same spot. */
+  .panel[data-scene="2"] .blessing {
+    color: #F3C978;
+    font-weight: 600;
+    letter-spacing: .18em;
+    text-shadow: 0 1px 2px rgba(0, 0, 0, .95), 0 2px 12px rgba(0, 0, 0, .92);
+  }
+  .panel[data-scene="2"] .family__label {
+    color: #F3C978;
+    font-weight: 600;
+    letter-spacing: .22em;
+    text-shadow: 0 1px 2px rgba(0, 0, 0, .95), 0 2px 12px rgba(0, 0, 0, .92);
+  }
+  .panel[data-scene="2"] .family__name {
+    color: #FFFFFF;
+    font-weight: 600;
+    text-shadow: 0 1px 2px rgba(0, 0, 0, .95), 0 2px 14px rgba(0, 0, 0, .94);
+  }
+  .panel[data-scene="2"] .family__note {
+    color: #F6EFE2;
+    font-weight: 500;
+    text-shadow: 0 1px 2px rgba(0, 0, 0, .95), 0 2px 12px rgba(0, 0, 0, .92);
+  }
+  .panel[data-scene="2"] .lede--story {
+    color: #FFFFFF;
+    font-style: italic;
+    text-shadow: 0 1px 2px rgba(0, 0, 0, .95), 0 2px 14px rgba(0, 0, 0, .92);
+  }
+
+  /* Ceremony details are centred on phones — a single narrow
+     column reads better centred than left-ragged. */
+  .functions { text-align: center; }
+  .fn__when  { justify-content: center; }
+  .fn__meta span { display: block; margin: 0 0 .2rem; }
+  .fn__map { margin-inline: auto; }
+
+  .families { grid-template-columns: 1fr; gap: 1.6rem; }
+  .family__sep { justify-self: center; }
+  .family__sep img { width: 34px; }
+
+  .countdown { gap: 1.1rem; }
+  .functions { grid-template-columns: 1fr; }
+  .field-row { grid-template-columns: 1fr; }
+
+  /* Gate on a phone: the art puts the couple low and the palki high, so the
+     text block sits in the calm middle band. Pull it up slightly so the button
+     clears the groom's turban, and keep the eyebrow on one line. */
+  .gate { padding: 6vw; align-content: center; --gate-shift: 0%; }
+  .gate__inner { transform: translateY(-4svh); margin-bottom: 0; }
+  /* Desktop uses `contain` (the landscape plate is wider than the viewport and
+     has no quiet band for text). The portrait plate is 9:16 like the screen, so
+     it fills properly with `cover` — `contain` would letterbox it. */
+  .gate__art::after { background-size: cover; background-position: center; }
+  .gate::before {
+    background:
+      radial-gradient(86% 46% at 50% 50%, rgba(14, 31, 29, .78) 0%, rgba(14, 31, 29, .36) 64%, transparent 100%),
+      linear-gradient(180deg, rgba(14, 31, 29, .5) 0%, transparent 24%),
+      linear-gradient(0deg,   rgba(14, 31, 29, .5) 0%, transparent 26%);
+  }
+  .gate__eyebrow { font-size: .74rem; letter-spacing: .2em; max-width: 26ch; margin-inline: auto; }
+  .gate__mark { width: 44px; margin-bottom: 1.1rem; }
+  .gate__btn { margin-top: 1.8rem; }
+
+  .cue { right: auto; left: var(--pad-x); }
+  .music { right: 5vw; bottom: 2.6svh; }
+
+  /* ── Finale couple on mobile — MUST STAY LAST ─────────────────────────
+     Scene 8 is both .panel--tall and .panel--finale, so the generic
+     tall-panel rules earlier in this block were winning and hiding it:
+       .layer.el.fig-seated { left:-4%; right:-4%; height:76% }  (geometry)
+       .panel--tall .layer.el.fig-seated.is-ready { opacity:.72 } (faded)
+     Both are later in the file than the scene-8 rules, so they overrode
+     them. These re-assert the finale's own values at the end of the block
+     where nothing can clobber them. Anything added after this must not
+     re-style .fig-seated generically. */
+  .panel--finale .layer.el.fig-seated {
+    /* Bigger now that the parapet is gone — it used to hide their base, so
+       the figure could stay small.
+
+       `bottom: 2svh`, not 0: GSAP scales the layer 1.045 at data-depth="15"
+       and the growth is about the box centre, so a bottom-flush box renders
+       ~27px past the panel edge and their feet were clipped. The small lift
+       absorbs it. */
+    /* Widened -2% -> -30%. The plate is 1536x865 but the DRAWN couple is only
+       54.9% of its width (ink x 23.1-78.1%), so nearly half of it is empty
+       margin — widening past the panel spends that margin rather than
+       cropping the figure. At 390px this takes the couple from ~230px to
+       ~358px, and the footer text still clears their heads by 223px.
+       Past -36% the box turns height-limited and nothing more is gained. */
+    inset: auto; left: -30%; right: -30%; bottom: 4svh;
+    width: auto;
+    height: 42svh;
+    background-size: contain;
+    background-position: center bottom;
+    z-index: 45;
+  }
+  .panel--finale .layer.el.fig-seated.is-ready { opacity: 1; }
+
+  /* ── Small text legibility on a phone ─────────────────────────────────
+     --ink-faint is 58% ivory and --ink-soft 78%. Those read fine on a large
+     desktop stage, but on a phone the same labels are physically tiny AND
+     sit over busy artwork, so they wash out — these become hard to read: the
+     eyebrows, dress-code labels, times and travel notes.
+
+     Raising the tokens themselves inside this breakpoint lifts every faint
+     label at once, rather than chasing them rule by rule. A text-shadow does
+     the rest of the work: it separates the glyphs from whatever is behind
+     them without making the type heavier. */
+  :root {
+    --ink-soft:  rgba(246, 239, 226, .92);
+    --ink-faint: rgba(246, 239, 226, .82);
+  }
+
+  .eyebrow,
+  .know__k,
+  .fn__time,
+  .fn__meta span,
+  .film__label,
+  .footer__date,
+  .footer__mark,
+  .gate__eyebrow {
+    text-shadow: 0 1px 10px rgba(14, 31, 29, .75);
+  }
+
+  /* The dress-code label and the small meta lines are the smallest type on
+     the page — give them a touch more size as well as contrast. */
+  .fn__meta span,
+  .know__k { letter-spacing: .14em; }
+}
+
+/* Very short landscape phones — the scene text would otherwise overflow. */
+@media (max-height: 520px) and (orientation: landscape) {
+  .panel { min-height: 640px; }
+  .panel__inner { margin: 6svh var(--pad-x); }
+}
+
+/* ── Reduced motion ─────────────────────────────────────────────────────
+   Kill the idle drift and the cue; scroll parallax and reveals are handled
+   in JS, which reads the same query. */
+@media (prefers-reduced-motion: reduce) {
+  html { scroll-behavior: auto; }
+  .scroller { scroll-behavior: auto; }
+  .cue::after { animation: none; }
+  .music__bars i { animation: none; }
+  .layer { transition: none; }
+}
+
+/* ── Print ──────────────────────────────────────────────────────────────
+   Guests do print these. Give them a plain readable document. */
+@media print {
+  body { overflow: visible; background: #fff; color: #1a1a1a; }
+  .scroller { height: auto; overflow: visible; }
+  .gate, .music, .cue, .layer, .panel::after, .film { display: none !important; }
+  .panel { min-height: auto; page-break-inside: avoid; padding: 1.5rem 0; background: none !important; }
+  .panel__inner { margin: 0; max-width: 100%; filter: none; }
+  .eyebrow, .family__label, .know__k, .fn__name, .amp, .hashtag { color: #8a5a12; }
+  .lede, .know__v, .fn__addr, .family__note { color: #444; }
+  .card, .fn { border-color: #ccc; background: none; backdrop-filter: none; }
+  .form, .status, .btn { display: none !important; }
+}
+
+/* ══════════════════════════════════════════════════════════════════════
+   TABLET PORTRAIT — TEXT PLACEMENT.
+
+   The tablet-portrait block above re-sizes every ART layer for a 4:3 frame,
+   but it never touches where the COPY sits, so the panels kept their
+   desktop corner anchoring (`data-text="top-left"` / `"bottom-right"` ->
+   `place-items: start start` / `end end`).
+
+   On a wide screen a corner-anchored column reads as a deliberate margin.
+   On an 820px-wide tablet the same column is only ~290-400px of a much
+   squarer frame: the copy jams into one corner, sits over the busiest part
+   of the art — scene 1's block landed on the arch's carved stonework, where
+   the eyebrow and lede are barely legible — and the middle of the frame is
+   left doing nothing.
+
+   The mobile block already solves this (it re-states `place-items` at line
+   ~1579); portrait tablet simply never got the same treatment.
+
+   Centre the column and let it use the width. This is appended at the END of
+   the file because the per-scene and palette rules further up would otherwise
+   win on source order at equal specificity.
+
+   SCOPE: inside the tablet-portrait query only — it cannot match phones
+   (<=720px), desktop (>=1025px) or any landscape viewport.
+   ══════════════════════════════════════════════════════════════════════ */
+@media (min-width: 721px) and (max-width: 1024px) and (orientation: portrait) {
+
+  /* One centred column for every scene, whatever its desktop corner was. */
+  .panel[data-text="top-left"],
+  .panel[data-text="top-right"],
+  .panel[data-text="center-left"],
+  .panel[data-text="bottom-left"],
+  .panel[data-text="bottom-right"] { place-items: center; }
+
+  .panel__inner {
+    text-align: center;
+    max-width: min(60ch, 82vw);
+    margin-inline: auto;
+  }
+
+  /* Rows that were left/right aligned to their corner follow the column. */
+  .panel[data-text$="right"] .panel__inner,
+  .panel[data-text$="left"]  .panel__inner { text-align: center; }
+  .panel[data-text$="right"] .know__row,
+  .panel[data-text$="left"]  .know__row { justify-items: center; text-align: center; }
+  .panel[data-text$="right"] .countdown,
+  .panel[data-text$="left"]  .countdown { justify-content: center; }
+  .panel[data-text$="right"] .crest,
+  .panel[data-text$="left"]  .crest { margin-inline: auto; }
+
+  /* The two tall scenes carry the most copy (function cards, RSVP + wishes).
+     Centring a stack that long pushes its head off the top of the frame, so
+     they anchor to the TOP and keep the full width — the same decision the
+     mobile block makes, and for the same reason. */
+  .panel--tall { place-items: start center; }
+  .panel--tall .panel__inner {
+    margin-top: 4svh;
+    margin-bottom: 0;
+  }
+  .panel[data-scene="4"] .panel__inner,
+  .panel[data-scene="8"] .panel__inner { max-width: min(680px, 86vw); }
+
+  /* Scene 1's block sat over the arch's carved stone. Centred it clears the
+     carving and lands on open sky, where cream type actually reads. */
+  .panel[data-scene="1"] .panel__inner { margin-top: 0; }
+
+  /* Scene 3's couple was too small on a tablet.
+
+     `.panel[data-scene="3"] .layer.el.fig-center` (attribute + 3 classes) sets
+     `left/right: 26%`, and that outranks this breakpoint's 2-class
+     `.layer.el.fig-center` rule no matter the source order — the same
+     specificity trap this file already documents for `.panel--tall`. So the
+     couple kept a 48%-wide box: 425px of an 820px screen.
+
+     The art is 16:9 inside a tall box, so `contain` fits it to WIDTH — the box
+     width IS the couple's size, and height does nothing until the box gets
+     wider. Matching the specificity and widening to 8% takes the drawn figure
+     from 425px to ~690px.
+
+     The text block sits centred and vertically middle on this breakpoint while
+     the couple is bottom-anchored, so a wider figure does not reach the copy. */
+  .panel[data-scene="3"] .layer.el.fig-center {
+    left: 10%; right: 10%;
+    height: 72%;
+  }
+
+  /* Scene 1's balustrade is dropped on a portrait tablet.
+
+     The garden foreground (04-garden-fg) is a near-camera balcony railing drawn for a 16:9
+     frame. On 4:3 the plate scales up and the railing rides high enough to
+     cut both figures at the knee, so the couple reads as standing behind a
+     fence rather than in the garden. There is no crop that fixes it: the
+     railing is a single continuous horizontal band, and anchoring it lower
+     just pushes it off the panel entirely.
+
+     The scene keeps three moving planes without it (plate, bride, groom), so
+     the parallax still reads.
+
+     PHONES ALREADY DO THIS — see "Scene 1 on Mobile: hide balcony /
+     foreground cutout" in the mobile block. This brings portrait tablet in
+     line with a fix that was already made there and simply never applied to
+     this breakpoint. Desktop, where the plate is drawn to fit, keeps it. */
+  /* (superseded by the all-tablet rule at the end of this file) */
+
+  /* THE SCRIM HAS TO MOVE WITH THE TEXT.
+
+     The base scrim darkens the SIDE the copy is anchored to
+     (`.panel[data-text$="left"]::after` etc). Now that the copy is centred on
+     this breakpoint, that darkening sits beside the words instead of under
+     them — scene 1's cream eyebrow landed on a bright sunset sky with almost
+     no ground. Re-centre it: a soft vertical band down the middle, plus the
+     existing top/bottom falloff. */
+  .panel::after,
+  .panel[data-text$="left"]::after,
+  .panel[data-text$="right"]::after,
+  .panel[data-text="center"]::after {
+    background-image:
+      radial-gradient(78% 52% at 50% 46%, rgba(14, 31, 29, .58) 0%,
+                                          rgba(14, 31, 29, .34) 58%, transparent 100%),
+      linear-gradient(180deg, rgba(14, 31, 29, .52) 0%, transparent 30%),
+      linear-gradient(0deg,   rgba(14, 31, 29, .50) 0%, transparent 28%);
+  }
+  /* Tall panels carry cards that bring their own ground; stacking both
+     crushes the art, so they keep a lighter wash — same reasoning as the
+     mobile block. */
+  .panel--tall::after {
+    background-image:
+      radial-gradient(90% 60% at 50% 40%, rgba(14, 31, 29, .40) 0%,
+                                          rgba(14, 31, 29, .22) 62%, transparent 100%),
+      linear-gradient(180deg, rgba(14, 31, 29, .46) 0%, transparent 26%);
+  }
+}
+
+
+/* ══════════════════════════════════════════════════════════════════════
+   SCENE 1 — drop the balcony balustrade on TABLETS, BOTH ORIENTATIONS.
+
+   The garden foreground (04-garden-fg) is a near-camera balcony railing drawn for a 16:9
+   desktop frame. On any tablet the plate scales up and the railing rides high
+   enough to cut both figures at the knee, so the couple read as standing
+   behind a fence. It is one continuous horizontal band, so no crop or anchor
+   fixes it — only removing it does.
+
+   Phones keep only the POOL from this plate, cropped below the railing (see
+   "Scene 1 on PHONES" at the end of this file). Tablets drop it entirely.
+
+   ORIENTATION MATTERS HERE: a first pass scoped this to
+   `(orientation: portrait)` only, which left the railing on screen in iPad
+   LANDSCAPE — and a Safari window 820px wide on a 1470x956 Mac is landscape,
+   so that is exactly the case a reviewer sees. `max-width: 1024px` with no
+   orientation clause covers both.
+
+   Desktop (>=1025px), where the plate is drawn to fit, keeps the railing.
+   ══════════════════════════════════════════════════════════════════════ */
+@media (max-width: 1024px) {
+  .panel[data-scene="1"] .layer.el.fill:not(.glow) { display: none; }
+}
+/* iPad LANDSCAPE is 1180x820 and 1366x1024 — WIDER than the 1024px tablet
+   breakpoint, so the rule above never reached it.
+
+   Targeting it by viewport height alone was WRONG: `max-height: 1030px` also
+   caught 1280x800 and 1366x768, which are ordinary laptops, and desktop is
+   explicitly not to be changed.
+
+   `pointer: coarse` is what actually separates a tablet from a laptop — a
+   touch screen rather than a mouse — and it is true on iPad in either
+   orientation and false on every desktop browser regardless of window size. */
+@media (min-width: 1025px) and (max-width: 1400px) and (orientation: landscape) and (pointer: coarse) {
+  .panel[data-scene="1"] .layer.el.fill:not(.glow) { display: none; }
+}
+
+/* ══════════════════════════════════════════════════════════════════════
+   IPAD PORTRAIT — FIGURE SCALE.                          2026-09-17
+
+   The couple read as small on a tablet. Measured as a share of panel width:
+
+     scene   phone   iPad (before)
+       1      210%       89%
+       3      134%       86%
+       4      100%       82%
+       6      126%       69%
+       7      178%       97%
+       8       88%       52%
+
+   Phones widen every figure PAST the frame (`left: -14%`, `width: 170%`) so
+   the couple fills the view; the tablet block kept them inside it, so at
+   820px the same figures occupy roughly half the frame.
+
+   PLACED AT THE END OF THE FILE, and every selector matches the specificity
+   of the scene rule it replaces (attribute + 3 classes, or `.panel--finale`
+   /`.panel--tall` + 3 classes). The generic `.layer.el.fig-*` rules in the
+   tablet block are outranked by those scene rules no matter the source order
+   — the same trap this file already documents for `.panel--tall`.
+
+   PHONES AND DESKTOP UNTOUCHED: this is inside the tablet-portrait query,
+   which cannot match <=720px, >=1025px, or any landscape viewport.
+   ══════════════════════════════════════════════════════════════════════ */
+@media (min-width: 721px) and (max-width: 1024px) and (orientation: portrait) {
+
+  /* Scene 1 — the couple flank an arch; widen both past the frame edges. */
+  .layer.el.fig-left  { left: -10%; width: 104%; height: 132%; }
+  .layer.el.fig-right { right: -12%; width: 102%; height: 130%; }
+
+  /* Scene 3 — seated in the garden. 86% -> ~122%. */
+  .panel[data-scene="3"] .layer.el.fig-center {
+    inset: auto; left: -11%; right: -11%; bottom: 0;
+    height: 58%;
+    background-size: contain;
+    background-position: center bottom;
+    z-index: 45;
+  }
+
+  /* Scene 6 — the nikah moment, the smallest of the standing scenes at 69%. */
+  .panel[data-scene="6"] .layer.el.fig-center {
+    inset: auto; left: -14%; right: -14%; bottom: 0;
+    height: 62%;
+    background-size: contain;
+    background-position: center bottom;
+    z-index: 45;
+  }
+
+  /* Scene 4 — never got an iPad figure rule; fell through to the base
+     `width: 76%; height: 82%` meant for desktop, which on a top-anchored
+     card stack put the couple's box top well above the cards' end (measured:
+     figure top 176px vs. last card bottom 1010px on an 820x1180 panel — 834px
+     of overlap). The plate is width-limited (contain fits its 1536x865
+     aspect to the box's WIDTH long before its height, same trap as phone),
+     so `width` is still the only lever; 105% renders the couple at ~33% of
+     the frame, matching the visual weight scene 3/6/7 land at here. Bottom-
+     anchored so they sit right where `padding-bottom: 40svh` above now ends
+     the card stack, with no gap and no overlap. */
+  .panel[data-scene="4"] .layer.el.fig-center {
+    inset: auto; left: auto; right: 1%; bottom: 0;
+    width: 105%;
+    height: auto;
+    aspect-ratio: 1536 / 865;
+    background-size: contain;
+    background-position: right bottom;
+    z-index: 45;
+  }
+
+  /* Scene 7 — the couple is centred in their own canvas (x 32-65%), so the
+     box has to be much wider than the frame for them to read at size. The
+     film embed sits above them, so they are anchored to the bottom. */
+  .panel--tall .panel[data-scene="7"] .layer.el.fig-center,
+  .panel[data-scene="7"] .layer.el.fig-center {
+    inset: auto; bottom: 0;
+    left: -22%; right: auto;
+    width: 144%;
+    height: 66%;
+    background-size: contain;
+    background-position: center bottom;
+    z-index: 45;
+  }
+
+  /* Scene 8 — the finale couple, 52% of the frame and the smallest anywhere.
+     They sit BEHIND the terrace parapet, so the band is shortened here too
+     or a bigger figure just meets the railing again. */
+  .panel--finale .layer.el.fig-seated {
+    inset: auto; left: 2%; right: 2%; bottom: 0;
+    width: auto;
+    height: 46%;
+    background-size: contain;
+    background-position: center bottom;
+    z-index: 45;
+  }
+  .panel[data-scene="8"] .layer.el.fill:not(.glow) { height: 22%; }
+
+  /* THE COPY HAS TO MOVE UP WITH THE FIGURES.
+
+     Enlarging bottom-anchored figures pushes them into centred copy — every
+     scene measured an overlap afterwards (scene 6's title landed on the
+     bride's face). The figures own the lower half now, so the text takes the
+     upper half: anchor the column to the TOP of the frame rather than its
+     middle.
+
+     The tall scenes (4, 7, 8) already top-anchor from the earlier placement
+     pass and carry cards that need the room, so they keep what they have. */
+  .panel[data-scene="1"],
+  .panel[data-scene="3"],
+  .panel[data-scene="5"],
+  .panel[data-scene="6"] { place-items: start center; }
+
+  .panel[data-scene="1"] .panel__inner,
+  .panel[data-scene="3"] .panel__inner,
+  .panel[data-scene="5"] .panel__inner,
+  .panel[data-scene="6"] .panel__inner {
+    margin-top: 7svh;
+    margin-bottom: 0;
+  }
+
+  /* Scene 7 — the film block (hashtag + caption + button + a 16:9 iframe) is
+     tall, so the couple cannot share the vertical centre with it: enlarging
+     them put the video straight across their faces. Moving the copy up was
+     not enough either — the block is simply too tall.
+
+     MEASURED on 02-couple-close.webp: the couple sits at x 32-65% of the
+     plate, i.e. centred. Offsetting the box to the RIGHT slides them out from
+     under the film, the same solution scene 4 uses for its card stack:
+       couple centre 48.5% of the plate; box 126% wide
+       left = 62 - 0.485*126 = 0.9%  ->  couple centre lands at ~62% of frame
+     Anchored to the bottom so their feet stay on the path. */
+  .panel--tall .panel[data-scene="7"] .layer.el.fig-center,
+  .panel[data-scene="7"] .layer.el.fig-center {
+    inset: auto; bottom: 0;
+    left: 1%; right: auto;
+    width: 126%;
+    height: 58%;
+    background-size: contain;
+    background-position: center bottom;
+    z-index: 45;
+  }
+  /* The copy column keeps to the LEFT of them rather than the full width. */
+  .panel[data-scene="7"] .panel__inner {
+    margin-top: 3svh;
+    margin-bottom: 0;
+    /* var(--pad-x), NOT 0 — `margin-left: 0` stripped the panel's own side
+       padding and ran "SHARE YOUR PHOTOS WITH" off the left edge. */
+    margin-left: var(--pad-x);
+    margin-right: auto;
+    max-width: min(44ch, 56vw);
+  }
+  .panel[data-scene="7"] .panel__inner,
+  .panel[data-scene="7"] .know__row { text-align: left; }
+  .panel[data-scene="7"] .btn { margin-inline: 0; }
+}
+
+/* ══════════════════════════════════════════════════════════════════════
+   MOBILE-ONLY REFINEMENTS — review round, 2026-09-17.
+   Everything here is inside `max-width: 720px`; iPad and desktop untouched.
+   ══════════════════════════════════════════════════════════════════════ */
+@media (max-width: 720px) {
+
+  /* 1 · Scene 2's hanging lanterns, matched to scene 4's.
+
+     Scene 2 already HAS the same lantern-string layer (04-lanterns.webp), but
+     it was rendering at opacity .44 and 316px tall against scene 4's 1.0 and
+     685px — half as bright, half the size — which is why that scene read as
+     lantern-less while scene 4 glows.
+
+     The cause: scene 4 is `.panel--tall`, so it picks up
+     `.panel--tall .layer.el.toplights.is-ready { opacity: 1 }`. Scene 2 is a
+     normal panel and fell back to the dimmer default. Match both. */
+  /* Scene 2 carries scene 4's lantern string on PHONES.
+
+     The two assets differ: scene 2's own 04-lanterns.webp is a dense band of
+     large ornate lanterns, scene 4's 03-lanternstring.webp is the lighter
+     string of hanging lanterns and fairy lights this scene calls for. The
+     swap is done in CSS, not markup, so iPad and desktop keep the original.
+
+     `background-image` here overrides the inline value script.js sets from
+     data-src, which is why this needs !important — the loader writes the URL
+     to the element's style attribute. */
+  .panel[data-scene="2"] .layer.el.toplights.is-ready {
+    background-image: url("https://api.aamantran.online/r2-proxy/templates/qubool-32426/draft/assets/scene2/04-lanternstring.webp") !important;
+  }
+
+  .panel[data-scene="2"] .layer.el.toplights {
+    /* Scene 4's band renders 685px tall because it is a `.panel--tall` scene;
+       scene 2 is one screen, so the same asset at the same relative height
+       came out half the size and its lanterns read as small ornaments rather
+       than the hanging lanterns scene 4 shows. Sized to match the DRAWN
+       lantern size, which means overscanning the width. */
+    /* Scene 4's plate carries TWO rows of large lanterns across the top ~30%
+       of the frame. Scene 2's layer was drawing only the first row: the band
+       was short and the inherited mask faded everything below 58% away.
+
+       Full height, no mask, and the art overscanned so the lanterns render at
+       scene 4's apparent size rather than half of it. */
+    inset: -6svh 0 auto 0;
+    height: 100svh;
+    background-size: 250% auto;
+    background-position: center top;
+    background-repeat: no-repeat;
+    -webkit-mask-image: none;
+            mask-image: none;
+  }
+  /* The twinkle tween reads its resting opacity from CSS once and breathes
+     `rest - 0.3` below it, so the RESTING value has to be high or the whole
+     range sits dark. Scene 4 rests at 1 (via `.panel--tall`); scene 2 was
+     resting near .48 and breathing down to .18. */
+  .panel[data-scene="2"] .layer.el.toplights,
+  .panel[data-scene="2"] .layer.el.toplights.is-ready { opacity: 1; }
+
+  /* The second row, slightly smaller and hung from the TOP edge like the
+     first, so both strings drop in from the top of the scene. It used to sit
+     at 20svh, which — with the scroll sag and idle drift on top — parked its
+     lanterns a third of the way down, behind the family names. data-depth 18
+     (vs 24) so it drifts a touch less and reads as further away. */
+  .panel[data-scene="2"] .layer.el.toplights--row2 {
+    display: block;
+    inset: 2svh 0 auto 0;
+    height: 100svh;
+    background-size: 200% auto;
+    background-position: center top;
+    background-repeat: no-repeat;
+    -webkit-mask-image: none;
+            mask-image: none;
+  }
+  .panel[data-scene="2"] .layer.el.toplights--row2.is-ready { opacity: .9; }
+
+  /* 2 · Scene 1 — a little daylight between the bride and groom.
+     MEASURED: she occupies x10-45% of her plate, he x65-95% of his, and their
+     drawn figures overlapped by 70-103px across the phone widths.
+
+     The boxes are 132% TALL, so most of each figure is below the fold and only
+     the inner edges meet near the bottom of the view.
+     Inset-only, at the known-good widths: changing `width` moved the drawn
+     art far more than expected and pushed both figures off-frame entirely. */
+  .panel[data-scene="1"] .layer.el.fig-left  { left: -14%; }
+  .panel[data-scene="1"] .layer.el.fig-right { right: -20%; }
+
+  /* 3b · Scene 8's footer sat across the couple — pre-existing, but the
+     enlarged figure makes it obvious.
+     The panel is bottom-padded so the closing lines finish above them. */
+  .panel[data-scene="8"] { padding-bottom: calc(14svh + 34svh); }
+
+  /* 3 · Scene 8 — drop the terrace balustrade and enlarge the couple.
+     The parapet is the "boundary floating in air" from the previous round;
+     removing it outright on phones is cleaner than shortening it, and it
+     frees the whole lower frame for the figures. Same decision scene 1's
+     balcony band already has on this breakpoint. */
+  .panel[data-scene="8"] .layer.el.fill:not(.glow) { display: none; }
+}
+
+/* ══════════════════════════════════════════════════════════════════════
+   iPad PORTRAIT — type scale + scene 5's drum. 2026-09-17.
+
+   LAST in the file on purpose (playbook 1b): unmediated global rules and the
+   per-scene iPad blocks above both sit at equal specificity, so anything
+   earlier is silently overridden. Scoped to portrait tablets, so phone and
+   desktop cannot be reached from here.
+   ══════════════════════════════════════════════════════════════════════ */
+@media (min-width: 721px) and (max-width: 1024px) and (orientation: portrait) {
+
+  /* 1 · THE TYPE WAS PHONE-SIZED IN A TABLET-SIZED FIELD.
+     MEASURED at 820x1180 before this block: every scene bottomed out at
+     12-15px and the tallest line reached 44px only on two scenes; scene 2's
+     whole text block occupied 12.6% of the panel, scene 6's 6.1%.
+
+     Cause is playbook 1b #2 — `vw` sizing with a `rem` ceiling. `vw` is the
+     VIEWPORT, and the cap stops growth early, so an 820px tablet renders a
+     phone's type. These use `cqw` (the panel's own inline size, which is what
+     every measured field derives from) with NO rem cap on this breakpoint. */
+  /* The PANEL is the container, not `.panel__inner`. Putting
+     `container-type: inline-size` on the inner column collapsed its width to
+     zero (measured: every card dropped to 0% of the panel) — an inline-size
+     container establishes its own formatting context and the centred column
+     had nothing left to resolve against. The panel is also the right unit
+     anyway: every measured field derives from panel width. */
+  .panel { container-type: inline-size; }
+
+  .eyebrow          { font-size: clamp(17px, 2.5cqw, 30px); }
+  .blessing         { font-size: clamp(17px, 2.5cqw, 30px); }
+  .blessing__names  { font-size: clamp(21px, 3.3cqw, 40px); }
+  .family__label    { font-size: clamp(16px, 2.3cqw, 28px); }
+  .family__name     { font-size: clamp(21px, 3.2cqw, 38px); }
+  .family__note     { font-size: clamp(17px, 2.5cqw, 30px); }
+  .lede             { font-size: clamp(19px, 2.9cqw, 34px); }
+  .know__row        { font-size: clamp(18px, 2.7cqw, 32px); }
+  .know__label      { font-size: clamp(16px, 2.3cqw, 28px); }
+  .fn__name         { font-size: clamp(20px, 3.0cqw, 36px); }
+  .fn__when,
+  .fn__where,
+  .fn__time         { font-size: clamp(17px, 2.5cqw, 30px); }
+
+  /* The function cards, the countdown and the RSVP form were missed by the
+     list above and were the worst of it — 13px form labels and 13-15px card
+     detail on a 820px tablet. These are the INTERACTIVE parts, so they matter
+     most: a 13px label next to a finger-sized control reads as a mistake. */
+  .fn__addr,
+  .fn__meta,
+  .fn__map,
+  .fn__meta span,
+  .fn__meta--note   { font-size: clamp(16px, 2.3cqw, 28px); }
+  .countdown__l     { font-size: clamp(14px, 2.0cqw, 24px); }
+  .countdown__n     { font-size: clamp(26px, 4.0cqw, 48px); }
+  .know__k          { font-size: clamp(16px, 2.3cqw, 28px); }
+  .film__label      { font-size: clamp(16px, 2.3cqw, 28px); }
+  .btn              { font-size: clamp(17px, 2.4cqw, 28px); }
+  /* `.field label` (class + element) is what sets these at .82rem, so a bare
+     `form label` loses to it. Matched here rather than reached for
+     !important. */
+  .field label,
+  .field--functions label { font-size: clamp(16px, 2.2cqw, 26px); }
+  .rsvp input, .rsvp select, .rsvp textarea,
+  .wishes input, .wishes textarea,
+  form input, form select, form textarea { font-size: clamp(16px, 2.2cqw, 26px); }
+  .rsvp-back,
+  .rsvp-miss-sub,
+  .wish-viewall     { font-size: clamp(16px, 2.2cqw, 26px); }
+  .footer__date     { font-size: clamp(16px, 2.3cqw, 28px); }
+  .footer__mark     { font-size: clamp(15px, 2.1cqw, 24px); }
+  .bismillah--sm    { font-size: clamp(19px, 2.8cqw, 34px); }
+
+  /* 2 · SCENE 5 — the drum sat ON the copy.
+     MEASURED: the dholak rendered 907px tall at z-45 over an 820x1180 panel
+     and covered all 258px of "Things to know" — contact, travel and the note
+     were unreadable through it.
+
+     The generic `.layer.el.hands` rule in the iPad block above never applied:
+     `.panel[data-scene="5"] .layer.el.hands` is attribute + 3 classes and
+     outranks it regardless of source order (playbook: the specificity trap).
+     This rule MATCHES that specificity, so it lands.
+
+     The drum keeps the top of the frame and the copy sits below it. The box
+     is pinned to the panel's own width — it otherwise ran x-76..798 on an 820
+     panel, and with `contain` driving the drawn size from WIDTH the drum came
+     out oversized and left of centre. */
+  .panel[data-scene="5"] .layer.el.hands {
+    inset: 4% 0 auto 0;
+    height: 40%;
+  }
+  /* Scene 5 is top-anchored by the block above, which is what put the copy
+     under the drum. Centred here, with a top margin that clears the
+     instrument, rather than bottom-anchored — pinning it to the floor left a
+     191px hole between the two. */
+  .panel[data-scene="5"] { place-items: center center; }
+  .panel[data-scene="5"] .panel__inner {
+    /* svh, so the clearance tracks the panel's own height: at a fixed value
+       the shorter tablets (mini 1024, standard 1080) closed to -6px and -1px
+       while the Air and Pro sat at 12-22px. 18svh holds a gap on all four. */
+    margin-top: 18svh;
+    margin-bottom: 0;
+  }
+
+  /* 3 · SCENE 3 — the seated couple, bigger.
+
+     The plate is 1536x865 (aspect 1.776) and bottom-anchored `contain`. It is
+     WIDTH-limited at every box size tested, so `height` does not move the
+     drawn figure at all — raising it to 76% left the art at 815x599, pixel for
+     pixel. The box width is the only lever.
+
+     At the previous -11% the box was 1066px against an 820px panel, so the
+     couple drew 1066px wide and the panel showed the middle 77% of it. Going
+     to -32% (1346px) scales the whole plate up, and because the couple is
+     centred, the extra size lands on THEM while the bench and lanterns run off
+     the sides — which reads as a natural crop.
+
+     -42% was tested and is too far: the groom's head reaches the countdown
+     row. -32% is the largest that keeps clear air under the copy. */
+  .panel[data-scene="3"] .layer.el.fig-center {
+    left: -32%;
+    right: -32%;
+  }
+
+  /* 4 · SCENE 8 — the finale couple, bigger.
+
+     Same plate geometry as scene 3 (1536x865, width-limited) but the DRAWN
+     couple is only 54.9% of the plate's width, so widening spends empty
+     margin instead of cropping them: -30% takes the figure from ~458px to
+     ~718px on an Air.
+
+     The closing lines sit LOW on this breakpoint — measured at y1015 against
+     the couple's heads at y897, i.e. the text already crossed the figure at
+     the old size and a bigger one put "Zayan & Alishba" straight across the
+     groom's white sherwani. The panel is bottom-padded so the closing block
+     finishes above them, which is the same fix the phone block already
+     applies to this scene. */
+  .panel--finale .layer.el.fig-seated {
+    left: -30%;
+    right: -30%;
+  }
+  .panel[data-scene="8"] { padding-bottom: 46svh; }
+}
+
+/* ══════════════════════════════════════════════════════════════════════
+   SCENE 3's couple on DESKTOP and LANDSCAPE. 2026-09-17.
+
+   The portrait-tablet block above fixed this scene for iPad portrait only.
+   MEASURED afterwards, the couple still drew at just 51% of panel width on
+   every landscape size — 653px of 1280, 736px of 1440, 601px on an iPad Air
+   in landscape — because the BASE rule's `left/right: 26%` leaves a 48%-wide
+   box and the plate is width-limited, exactly as it was in portrait.
+
+   Scene 3's copy is right-anchored (`data-text="top-right"`), so the box grows
+   mostly LEFTWARD: left 26% -> -4% with right eased 26% -> 24%. The couple
+   lands in the open left two-thirds and the date column keeps its side.
+
+   Capped at 780px of height so the figure cannot outgrow a short landscape
+   window; -10%/22% was tested and crops the bench's base.
+   ══════════════════════════════════════════════════════════════════════ */
+/* The landscape arm needs `min-height: 521px` as well: a phone on its side is
+   844x390, which clears `min-width: 721px` and was picking this up — the file
+   already treats `max-height: 520px and landscape` as the phone-landscape
+   case. */
+@media (min-width: 1025px),
+       (orientation: landscape) and (min-width: 721px) and (min-height: 521px) {
+  .panel[data-scene="3"] .layer.el.fig-center {
+    left: -4%;
+    right: 24%;
+    height: min(70%, 780px);
+  }
+}
+
+/* ══════════════════════════════════════════════════════════════════════
+   Scene 1 on PHONES — the reflecting pool, without the balustrade.
+
+   04-garden-fg.webp is ONE image: a jaali balustrade across the middle and
+   the pool along the bottom. The balustrade was removed on phones because at
+   this width it cut the couple off at the knee; the pool is what gives the
+   scene its fastest parallax plane on desktop, and phones should have it too.
+
+   So the layer is cropped rather than hidden. The plate is width-scaled
+   (430vw, so the water reads on a narrow screen instead of being a 26px
+   strip) and bottom-anchored, and the BOX is only as tall as the plate's
+   lowest ~16.5% — the marble ledge and the water. Background outside the box
+   is never painted, so the railing above the ledge simply does not exist on
+   a phone. Height, bottom and sides are all vw because the plate scales with
+   width: 16.5% of a 430vw plate at 940/1672 is 40vw at any phone size.
+
+   The box also overscans: 10vw below the frame edge and 8vw past each side,
+   so the idle drift (tamed by data-mobile-float in the markup) and GSAP's
+   small scale-up can never open a gap along an edge.
+
+   Specificity matches the tablet rule it overrides — (0,6,0), attribute + 4
+   classes + :not() — and wins on source order by coming last. */
+@media (max-width: 720px) {
+  .panel[data-scene="1"] .layer.el.fill:not(.glow) {
+    display: block;
+    inset: auto -8vw -10vw -8vw;
+    height: 40vw;
+    background-size: 430vw auto;
+    background-position: center bottom;
+    background-repeat: no-repeat;
+    /* Above the panel scrim (40), below the couple (45). The phone scrim is
+       heavy along the bottom edge — it exists for the copy, which is at the
+       top — and under it the water came out murky teal-black instead of the
+       bright pool desktop shows. The couple and the text still sit on top. */
+    z-index: 42;
+  }
+}

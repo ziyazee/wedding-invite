@@ -1,6 +1,7 @@
 import { Navigate, Route, Routes, useParams } from 'react-router-dom'
 import { lazy, Suspense } from 'react'
 import { lazySitePage } from './SiteFonts'
+import InvitationViewport from './invitations/InvitationViewport'
 
 // Route boundaries keep dashboards, editor tools and unrelated designs out of
 // the initial guest-page dependency graph.
@@ -32,8 +33,20 @@ const Design18 = lazySitePage(() => import('./pages/Design18'))
 const MaroonLetter = lazySitePage(() => import('./pages/MaroonLetter'))
 const EmeraldParchment = lazySitePage(() => import('./pages/EmeraldParchment'))
 const ShaadiPathT02 = lazySitePage(() => import('./pages/ShaadiPathT02'))
+const AamantranDestination = lazySitePage(() => import('./pages/AamantranDestination'))
+const AamantranRaabta = lazySitePage(() => import('./pages/AamantranRaabta'))
+const AamantranQubool = lazySitePage(() => import('./pages/AamantranQubool'))
+const BirthdayInvite = lazySitePage(() => import('./pages/BirthdayInvite'))
 const MohadRahma = lazy(() => import('./pages/MohadRahma'))
 const GeneratedInvitation = lazy(() => import('./pages/GeneratedInvitation'))
+
+function getInviteSlug(): string | null {
+  const host = window.location.hostname
+  if (host.endsWith('.shaadiinvites.in') && host !== 'www.shaadiinvites.in') {
+    return host.slice(0, -'.shaadiinvites.in'.length) || null
+  }
+  return new URLSearchParams(window.location.search).get('invite')
+}
 const Login = lazySitePage(() => import('./pages/Login'))
 const ClientDashboard = lazySitePage(() => import('./pages/ClientDashboard'))
 const ClientLivePreview = lazy(() => import('./pages/ClientLivePreview'))
@@ -47,8 +60,16 @@ function SingleSegmentRoute() {
 }
 
 export default function App() {
+  const inviteSlug = getInviteSlug()
+  if (inviteSlug) {
+    return (
+      <InvitationViewport><Suspense fallback={<main role="status" style={{minHeight:'100svh',display:'grid',placeItems:'center',background:'#fffaf2',color:'#75664c',font:'14px Arial,sans-serif'}}>Loading…</main>}>
+        <GeneratedInvitation overrideSlug={inviteSlug} />
+      </Suspense></InvitationViewport>
+    )
+  }
   return (
-    <Suspense fallback={<main role="status" style={{minHeight:'100svh',display:'grid',placeItems:'center',background:'#fffaf2',color:'#75664c',font:'14px Arial,sans-serif'}}>Loading…</main>}><Routes>
+    <InvitationViewport><Suspense fallback={<main role="status" style={{minHeight:'100svh',display:'grid',placeItems:'center',background:'#fffaf2',color:'#75664c',font:'14px Arial,sans-serif'}}>Loading…</main>}><Routes>
       <Route path="/" element={<Landing />} />
       <Route path="/login" element={<Login />} />
       <Route path="/client/dashboard" element={<ClientDashboard />} />
@@ -106,11 +127,19 @@ export default function App() {
       <Route path="/emerald-parchment" element={<EmeraldParchment />} />
       <Route path="/design21" element={<ShaadiPathT02 />} />
       <Route path="/royal-jodhpur" element={<ShaadiPathT02 />} />
+      <Route path="/design22" element={<AamantranDestination />} />
+      <Route path="/destination-wedding" element={<AamantranDestination />} />
+      <Route path="/design23" element={<AamantranRaabta />} />
+      <Route path="/raabta" element={<AamantranRaabta />} />
+      <Route path="/design24" element={<AamantranQubool />} />
+      <Route path="/qubool" element={<AamantranQubool />} />
+      <Route path="/birthday" element={<BirthdayInvite />} />
       <Route path="/royal-grace" element={<MohadRahma />} />
       <Route path="/mohadrahm" element={<Navigate to="/mohadrahma" replace />} />
       <Route path="/mohadrahma" element={<MohadRahma />} />
       <Route path="/:orderNumber/:slug" element={<GeneratedInvitation />} />
       <Route path="/:slug" element={<SingleSegmentRoute />} />
-    </Routes></Suspense>
+    </Routes></Suspense></InvitationViewport>
   )
 }
+

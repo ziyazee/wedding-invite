@@ -1,0 +1,17 @@
+.invitation-portrait-stage {
+  position: fixed;
+  inset: 0;
+  display: grid;
+  place-items: center;
+  overflow: hidden;
+  background: #f7f4ee;
+}
+
+.invitation-portrait-frame {
+  display: block;
+  width: min(100vw, 56.25svh);
+  height: min(100svh, 177.7778vw);
+  border: 0;
+  background: #fffaf2;
+  box-shadow: 0 0 32px #40352512;
+}

@@ -197,7 +197,7 @@ export default function OrderTextEditor({ template, value, onChange, draftStatus
   }
   if (!host) return null
   const entry = selection ? current.current.elements[selection.id] || {} : {}
-  const supported = template >= 1 && template <= 11
+  const supported = template >= 1 && template <= 14
   return createPortal(<section className="order-text-editor" aria-label="Text layout editor">
     <div className="ote-heading"><span className="ote-brand-icon"><EditorIcon name="text"/></span><div className="ote-title"><span>MAKE IT YOURS</span><strong>{preview ? 'Invitation preview' : 'Text studio'}</strong></div><button className="ote-preview" type="button" aria-label={preview ? 'Back to editing' : 'Preview invitation'} onClick={() => { setPreview(!preview); setSelection(null); setNearCenter(false) }}><EditorIcon name={preview ? 'text' : 'eye'}/>{preview ? 'Edit' : 'Preview'}</button></div>
     {!preview && <>

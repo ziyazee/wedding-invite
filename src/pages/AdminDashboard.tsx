@@ -1,6 +1,6 @@
 import { useCallback, useEffect, useMemo, useState } from 'react'
 import type { FormEvent, ReactNode } from 'react'
-import { designs, nameSlug, validateDetails } from '../invitations/model'
+import { designs, slugVariants, inviteUrl, validateDetails } from '../invitations/model'
 import type { InvitationData } from '../invitations/model'
 import InvitationRenderer from '../invitations/InvitationRenderer'
 import { isSupabaseConfigured, supabase } from '../lib/supabase'
@@ -65,20 +65,42 @@ function AdminWorkspace() {
 
   function openOrder(order:Order){setSelected(order);setNotes(order.admin_notes||'');setExpiresOn(order.expires_at?order.expires_at.slice(0,10):'');setEditingPublished(false);setDraft(null);setNotice('')}
 
-  async function changeOrder(patch:Partial<Order>, success:string) {
+  async function changeOrder(patch:Partial<Order>, success:string, silent=false) {
     if(!supabase||!selected)return false
-    setBusy(true);setError('');setNotice('')
+    setBusy(true);if(!silent){setError(‘’);setNotice(‘’)}
     try {
-      const {data,error:saveError}=await supabase.from('orders').update(patch).eq('id',selected.id).select('*, companies(company_name)').single()
-      if(saveError){setError(saveError.code==='23505'?'That couple’s name path is already in use. Resolve the published invitation conflict before publishing this order.':saveError.message);return false}
+      const {data,error:saveError}=await supabase.from(‘orders’).update(patch).eq(‘id’,selected.id).select(‘*, companies(company_name)’).single()
+      if(saveError){if(!silent)setError(saveError.message);return false}
       const updated=data as Order
       setSelected(updated);setOrders(old=>old.map(o=>o.id===selected.id?updated:o));setNotice(success);return true
-    } catch(cause) { setError(cause instanceof Error?cause.message:'Unable to update the order. Please retry.');return false }
+    } catch(cause) { if(!silent)setError(cause instanceof Error?cause.message:’Unable to update the order. Please retry.’);return false }
     finally { setBusy(false) }
   }
   function startProcessing(){void changeOrder({status:'IN_PROGRESS',rejection_reason:null},'Order moved into processing.')}
   function rejectOrder(){const reason=window.prompt('Share a reason with the client.');if(!reason?.trim())return;void changeOrder({status:'REJECTED',rejection_reason:reason.trim()},'Order rejected and the client will see the reason.')}
-  async function publish(){if(!selected)return;const path=selected.published_path||`${selected.id}/${nameSlug(selected.groom_name,selected.bride_name)}`;const publishedAt=selected.published_at||new Date().toISOString();const expiresAt=expiresOn?new Date(`${expiresOn}T23:59:59`).toISOString():null;if(expiresAt&&new Date(expiresAt)<=new Date(publishedAt)){setError('Choose an expiry date after the publication date.');return}void changeOrder({status:'READY',published_path:path,published_url:`${location.origin}/${path}`,published_at:publishedAt,expires_at:expiresAt,admin_notes:notes},'Invitation published. The public URL is ready to share.')}
+  async function publish(){
+    if(!selected)return
+    if(selected.published_path){
+      const publishedAt=selected.published_at||new Date().toISOString()
+      const expiresAt=expiresOn?new Date(`${expiresOn}T23:59:59`).toISOString():null
+      if(expiresAt&&new Date(expiresAt)<=new Date(publishedAt)){setError('Choose an expiry date after the publication date.');return}
+      void changeOrder({status:'READY',published_path:selected.published_path,published_url:inviteUrl(selected.published_path),published_at:publishedAt,expires_at:expiresAt,admin_notes:notes},'Invitation published. The public URL is ready to share.')
+      return
+    }
+    const publishedAt=new Date().toISOString()
+    const expiresAt=expiresOn?new Date(`${expiresOn}T23:59:59`).toISOString():null
+    if(expiresAt&&new Date(expiresAt)<=new Date(publishedAt)){setError('Choose an expiry date after the publication date.');return}
+    const variants=slugVariants(selected.groom_name,selected.bride_name)
+    const tryPublish=async(slug:string)=>changeOrder({status:'READY',published_path:slug,published_url:inviteUrl(slug),published_at:publishedAt,expires_at:expiresAt,admin_notes:notes},'Invitation published. The public URL is ready to share.',true)
+    const ok=await tryPublish(variants[0])
+    if(ok)return
+    // Unique constraint hit — find first available variant
+    const {data:taken}=await supabase.from('orders').select('published_path').in('published_path',variants)
+    const takenSet=new Set((taken||[]).map((r:{published_path:string|null})=>r.published_path))
+    const available=variants.find(v=>!takenSet.has(v))
+    if(!available){setError('All slug variants for this couple name are taken.');return}
+    void tryPublish(available)
+  }
   function saveNotes(){void changeOrder({admin_notes:notes},'Internal notes saved.')}
   function saveExpiry(){if(!selected)return;const expiresAt=expiresOn?new Date(`${expiresOn}T23:59:59`).toISOString():null;if(expiresAt&&selected.published_at&&new Date(expiresAt)<=new Date(selected.published_at)){setError('Choose an expiry date after the publication date.');return}void changeOrder({expires_at:expiresAt},expiresAt?'Invitation expiry date saved.':'Invitation expiry removed.')}
   async function savePublishedCorrection(event:FormEvent<HTMLFormElement>){event.preventDefault();if(!selected||!draft)return;try{const valid=validateDetails({...draft,template:selected.form_data.template});const saved=await changeOrder({form_data:valid,groom_name:valid.groom,bride_name:valid.bride},'Invitation details updated. Its public URL has stayed the same.');if(saved){setEditingPublished(false);setDraft(null)}}catch(cause){setError(cause instanceof Error?cause.message:'Please review the invitation details.') }}

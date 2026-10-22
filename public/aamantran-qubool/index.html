@@ -1,0 +1,439 @@
+Remaining CDN refs: 0
+Remaining media refs: 0
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+<title>Zayan &amp; Alishba — Nikah Invitation</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@400;600;700&family=Jost:wght@300;400;500&family=Amiri:ital,wght@0,400;0,700;1,400&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="/aamantran-qubool/styles.css" />
+<script>
+  /* guide.md 7.2 — browsers restore the previous scroll position even on a
+     hard reload, which drops the guest mid-invite behind a closed gate. This
+     runs before first paint; script.js re-pins on pageshow and load. */
+  if ("scrollRestoration" in history) history.scrollRestoration = "manual";
+  window.scrollTo(0, 0);
+</script>
+<link rel="icon" href="/favicon.ico" type="image/x-icon" sizes="any"><link rel="shortcut icon" href="/favicon.ico" type="image/x-icon"></head>
+<body>
+
+<!-- Values JS needs, passed through the DOM (never through an inline script —
+     see guide.md §3 rule 3). -->
+<div id="js-data"
+     data-date="2027-02-14"
+     data-person1="Zayan"
+     data-person2="Alishba"
+     hidden></div>
+
+<!-- Tap-to-enter cover. One-time; JS removes it and starts the music. -->
+<div class="gate" id="gate">
+  <div class="gate__art" aria-hidden="true"
+       data-bg="/aamantran-qubool/assets/gate/00-gate.webp" data-bg-p="/aamantran-qubool/assets/gate/00-gate-p.webp"></div>
+  <div class="gate__inner">
+    <p class="bismillah" lang="ar" dir="rtl">&#1576;&#1616;&#1587;&#1618;&#1605;&#1616; &#1575;&#1604;&#1604;&#1617;&#1607;&#1616; &#1575;&#1604;&#1585;&#1617;&#1614;&#1581;&#1618;&#1605;&#1614;&#1606;&#1616; &#1575;&#1604;&#1585;&#1617;&#1614;&#1581;&#1616;&#1610;&#1605;&#1616;</p>
+    <p class="gate__eyebrow">You are invited to the Nikah of</p>
+    <h1 class="gate__names">Zayan<span class="gate__amp">&amp;</span>Alishba</h1>
+    <p class="gate__date">14 February 2027</p>
+    <button class="gate__btn" id="gate-btn" type="button">Open the invitation</button>
+  </div>
+</div>
+
+<main class="scroller" id="scroller">
+
+  <!-- ══════════ SCENE 1 — Jaali arch at dawn · couple names ══════════ -->
+  <section class="panel" data-scene="1" data-text="top-left" data-tint="warm">
+    <div class="layer bg"          data-depth="0" data-bg="/aamantran-qubool/assets/scene1/01-jaali-dawn.webp" data-bg-p="/aamantran-qubool/assets/scene1/01-jaali-dawn-p.webp"></div>
+    <div class="layer el fig-left" data-depth="16" data-src="/aamantran-qubool/assets/scene1/02-her.webp"></div>
+    <div class="layer el fig-right" data-depth="20" data-src="/aamantran-qubool/assets/scene1/03-him.webp"></div>
+    <div class="layer el fill"     data-depth="30" data-src="/aamantran-qubool/assets/scene1/04-garden-fg.webp" data-mobile-float=".2" data-mobile-parallax="1.15"></div>
+
+    <div class="panel__inner">
+      <p class="bismillah bismillah--sm" lang="ar" dir="rtl">&#1576;&#1616;&#1587;&#1618;&#1605;&#1616; &#1575;&#1604;&#1604;&#1617;&#1607;&#1616; &#1575;&#1604;&#1585;&#1617;&#1614;&#1581;&#1618;&#1605;&#1614;&#1606;&#1616; &#1575;&#1604;&#1585;&#1617;&#1614;&#1581;&#1616;&#1610;&#1605;&#1616;</p>
+      <p class="eyebrow">In the name of God, the Most Gracious, the Most Merciful</p>
+      <h1 class="names">
+        Zayan
+        <span class="amp">&amp;</span>
+        Alishba
+      </h1>
+        <p class="lede">are getting married</p>
+    </div>
+    <div class="cue" aria-hidden="true">Scroll</div>
+  </section>
+
+  <!-- ══════════ SCENE 2 — Marble courtyard · the families ══════════ -->
+  <section class="panel" data-scene="2" data-text="center" data-tint="warm">
+    <div class="layer bg"           data-depth="0" data-bg="/aamantran-qubool/assets/scene2/01-marble-court.webp" data-bg-p="/aamantran-qubool/assets/scene2/01-marble-court-p.webp"></div>
+    <div class="layer el toplights" data-depth="24" data-src="/aamantran-qubool/assets/scene2/04-lanterns.webp"
+         data-mobile-drop-in="23" data-mobile-float=".25"></div>
+    <!-- A SECOND lantern row, so scene 2 matches scene 4. Scene 4 gets two
+         rows: one from its toplights layer and one painted into its own
+         background plate. Scene 2's plate is a daytime garden with no
+         lanterns, so the second row is supplied as a layer. CSS shows it on
+         phones only. -->
+    <div class="layer el toplights toplights--row2" data-depth="18" data-src="/aamantran-qubool/assets/scene2/04-lanternstring.webp"
+         data-mobile-drop-in="21" data-mobile-float=".25"></div>
+    <div class="layer el fill glow" data-depth="8"  data-src="/aamantran-qubool/assets/scene2/05-bokeh.webp"></div>
+
+    <div class="panel__inner panel__inner--wide">
+      <p class="eyebrow">Together with our families</p>
+
+        <p class="blessing">With the blessings of our elders</p>
+        <p class="blessing__names">
+          Mr. Abdul Ahmed &amp; Mrs. Zubaida Begum
+        </p>
+      
+
+      <!-- Each side exists only once at least one parent is named — guarded on
+           the names themselves, not *_has_parents, which stays true for a row
+           whose name was later cleared. The label comes from the couple's
+           Groom/Bride pick (guide §2.1a); either side can be the bride, and
+           with no pick yet it reads "Parents of <name>". -->
+      <div class="families">
+        <div class="family">
+          <p class="family__label">Son of</p>
+          <p class="family__name">Mr. Iqbal Ahmed</p>
+          <p class="family__name">Mrs. Farhana Ahmed</p>
+        </div>
+        
+
+        <div class="family__sep" aria-hidden="true">
+          <img src="/aamantran-qubool/assets/jaali-motif.webp" alt="" />
+        </div>
+
+        <div class="family">
+          <p class="family__label">Daughter of</p>
+          <p class="family__name">Mr. Sohail Rahman</p>
+          <p class="family__name">Mrs. Nusrat Rahman</p>
+        </div>
+        
+      </div>
+
+        <p class="lede lede--story">We are both so happy that you will be with us as we begin our life together. Since our mangni, the love and duas we have received from our families and friends have touched us more deeply than we can say. We would like to thank each of you sincerely for your kindness, your warmth and your prayers. We would be honoured to have you with us at our Nikah, and we look forward to celebrating with you, InshaAllah.</p>
+    </div>
+  </section>
+
+  <!-- ══════════ SCENE 3 — Twilight · the date + countdown ══════════ -->
+  <section class="panel" data-scene="3" data-text="top-right" data-tint="cool">
+    <div class="layer bg"            data-depth="0" data-bg="/aamantran-qubool/assets/scene3/01-lantern-night.webp" data-bg-p="/aamantran-qubool/assets/scene3/01-lantern-night-p.webp"></div>
+    <div class="layer el fill glow"  data-depth="7"  data-src="/aamantran-qubool/assets/scene3/05-lampglow.webp"></div>
+    <div class="layer el fig-center" data-depth="16" data-src="/aamantran-qubool/assets/scene3/02-couple-seated.webp"></div>
+    <div class="layer el branch branch--left"  data-depth="14" data-src="/aamantran-qubool/assets/scene3/03-arch.webp"></div>
+    <div class="layer el branch branch--right" data-depth="11" data-src="/aamantran-qubool/assets/scene3/03-arch-right.webp"></div>
+
+    <div class="panel__inner">
+      <!-- The eyebrow introduces the date, so it goes when the date does —
+           a full-screen scene reading only "Save the date" is worse than one
+           carrying the venue alone (guide.md 8). -->
+        <p class="eyebrow">Save the date</p>
+        <h2 class="date-big">14 February 2027</h2>
+        <p class="lede">Gulmohar Courtyard</p>
+
+      <!-- Countdown. JS fills it; hidden entirely if the date is missing or past. -->
+      <div class="countdown" id="countdown" hidden>
+        <div class="countdown__unit"><span class="countdown__n" data-cd="days">0</span><span class="countdown__l">days</span></div>
+        <div class="countdown__unit"><span class="countdown__n" data-cd="hours">0</span><span class="countdown__l">hrs</span></div>
+        <div class="countdown__unit"><span class="countdown__n" data-cd="mins">0</span><span class="countdown__l">min</span></div>
+        <div class="countdown__unit"><span class="countdown__n" data-cd="secs">0</span><span class="countdown__l">sec</span></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ══════════ SCENE 4 — Mehendi courtyard · the functions ══════════ -->
+  <!-- data-lantern: the floating-lantern art. The URL lives here, not in
+       script.js, because the platform's asset rewriter only rewrites HTML and
+       CSS — a './assets/…' literal in JS ships verbatim and 404s (guide.md 6.1). -->
+  <section class="panel panel--tall" data-scene="4" data-text="bottom-left" data-tint="warm"
+           data-lantern="/aamantran-qubool/assets/lantern-float.webp">
+    <div class="layer bg"            data-depth="0" data-bg="/aamantran-qubool/assets/scene4/01-mehendi-terrace.webp" data-bg-p="/aamantran-qubool/assets/scene4/01-mehendi-terrace-p.webp"></div>
+    <div class="layer el fill glow"  data-depth="6"  data-src="/aamantran-qubool/assets/scene4/05-sparkle.webp"></div>
+    <div class="layer el fig-center" data-depth="16" data-src="/aamantran-qubool/assets/scene4/02-mehendi-moment.webp"></div>
+    <div class="layer el toplights"  data-depth="24" data-src="/aamantran-qubool/assets/scene4/03-lanternstring.webp"></div>
+
+    <div class="panel__inner panel__inner--wide">
+      <p class="eyebrow">The celebrations</p>
+      <h2 class="scene-title">Join us</h2>
+
+      <div class="functions">
+          <article class="fn">
+            <h3 class="fn__name">Mehendi</h3>
+            <div class="fn__when">
+              <span class="fn__date">2027-02-12</span>
+              <span class="fn__time">4:00 PM Onwards</span>
+            </div>
+              <p class="fn__venue">
+                Gulmohar Courtyard<span class="fn__addr">Road No. 12, Banjara Hills, Hyderabad</span>
+              </p>
+            <p class="fn__meta"><span>Dress code</span> Festive / Ethnic Wear</p>
+            
+              <a class="fn__map" href="https://www.google.com/maps" target="_blank" rel="noopener noreferrer">See the route</a>
+          </article>
+          <article class="fn">
+            <h3 class="fn__name">Nikah</h3>
+            <div class="fn__when">
+              <span class="fn__date">2027-02-13</span>
+              <span class="fn__time">1:30 PM Onwards</span>
+            </div>
+              <p class="fn__venue">
+                Gulmohar Courtyard<span class="fn__addr">Road No. 12, Banjara Hills, Hyderabad</span>
+              </p>
+            <p class="fn__meta"><span>Dress code</span> Formal / Modest Attire</p>
+            
+              <a class="fn__map" href="https://www.google.com/maps" target="_blank" rel="noopener noreferrer">See the route</a>
+          </article>
+          <article class="fn">
+            <h3 class="fn__name">Rukhsati</h3>
+            <div class="fn__when">
+              <span class="fn__date">2027-02-13</span>
+              <span class="fn__time">7:00 PM</span>
+            </div>
+              <p class="fn__venue">
+                Gulmohar Courtyard<span class="fn__addr">Road No. 12, Banjara Hills, Hyderabad</span>
+              </p>
+            <p class="fn__meta"><span>Dress code</span> Traditional</p>
+            
+              <a class="fn__map" href="https://www.google.com/maps" target="_blank" rel="noopener noreferrer">See the route</a>
+          </article>
+          <article class="fn">
+            <h3 class="fn__name">Walima</h3>
+            <div class="fn__when">
+              
+              <span class="fn__time">7:00 PM Onwards</span>
+            </div>
+              <p class="fn__venue">
+                Gulmohar Courtyard<span class="fn__addr">Road No. 12, Banjara Hills, Hyderabad</span>
+              </p>
+            <p class="fn__meta"><span>Dress code</span> Formal</p>
+            
+              <a class="fn__map" href="https://www.google.com/maps" target="_blank" rel="noopener noreferrer">See the route</a>
+          </article>
+      </div>
+    </div>
+  </section>
+
+  <!-- ══════════ SCENE 5 — Dholki night · things to know ══════════ -->
+  <section class="panel" data-scene="5" data-text="bottom-right" data-tint="warm">
+    <div class="layer bg"       data-depth="0" data-bg="/aamantran-qubool/assets/scene5/01-rose-blur.webp" data-bg-p="/aamantran-qubool/assets/scene5/01-rose-blur-p.webp"></div>
+    <div class="layer el hands" data-depth="15" data-src="/aamantran-qubool/assets/scene5/02-dholak.webp"></div>
+    <div class="layer el fill"  data-depth="34" data-src="/aamantran-qubool/assets/scene5/05-rose-petals.webp"></div>
+
+    <div class="panel__inner">
+      <!-- The heading only exists if at least one row below it does, otherwise
+           this scene is a full screen reading "Things to know" over nothing
+           (guide.md 8). There is no `or` helper, hence the nest. -->
+      <p class="eyebrow">Things to know</p>
+      
+      <div class="know">
+          <div class="know__row">
+            <span class="know__k">Contact</span>
+            <span class="know__v">
+              Mustafa Rahman
+                <a href="tel:9999999999">9999999999</a>
+            </span>
+          </div>
+          <div class="know__row">
+            <span class="know__k">Note</span>
+            <span class="know__v">Don't miss the dessert counter.</span>
+          </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ══════════ SCENE 6 — The Nikah · the ceremony moment ══════════ -->
+  <section class="panel" data-scene="6" data-text="top-left" data-tint="warm">
+    <div class="layer bg"            data-depth="0" data-bg="/aamantran-qubool/assets/scene6/01-nikah-pavilion.webp" data-bg-p="/aamantran-qubool/assets/scene6/01-nikah-pavilion-p.webp"></div>
+    <div class="layer el fill glow"  data-depth="6"  data-src="/aamantran-qubool/assets/scene6/05-glow.webp"></div>
+    <div class="layer el fig-center" data-depth="16" data-src="/aamantran-qubool/assets/scene6/02-nikah-moment.webp"></div>
+
+    <div class="panel__inner">
+      <img class="crest crest--sm" src="/aamantran-qubool/assets/crescent-star.webp" alt="" aria-hidden="true" />
+      <p class="eyebrow">The Nikah</p>
+      <h2 class="scene-title">
+          Two souls, one light
+      </h2>
+      <p class="lede">Road No. 12, Banjara Hills, Hyderabad</p>
+    </div>
+  </section>
+
+  <!-- ══════════ SCENE 7 — Dusk village · hashtag, Instagram, film ══════════ -->
+  <!-- Both the extra height and the frame key off the HELPER, not the raw URL:
+       youtube_embed_src returns '' for links it can't parse (a youtube.com URL
+       with no https://, a /live/ link), which would otherwise leave an iframe
+       with an empty src inside a scene stretched to hold it (guide.md 6.3). -->
+  <section class="panel panel--tall" data-scene="7" data-text="bottom-right" data-tint="warm">
+    <div class="layer bg"            data-depth="0" data-bg="/aamantran-qubool/assets/scene7/01-dusk-garden.webp" data-bg-p="/aamantran-qubool/assets/scene7/01-dusk-garden-p.webp"></div>
+    <div class="layer el fill glow"  data-depth="6"  data-src="/aamantran-qubool/assets/scene7/05-bokeh.webp"></div>
+    <div class="layer el fig-center" data-depth="16" data-src="/aamantran-qubool/assets/scene7/02-couple-close.webp"></div>
+    <div class="layer el branch"     data-depth="26" data-src="/aamantran-qubool/assets/scene7/03-rose-arch.webp"></div>
+
+    <div class="panel__inner">
+        <p class="eyebrow">Share your photos with</p>
+        <p class="hashtag">#ZayanFoundHisAlishba</p>
+
+
+        <a class="btn btn--ghost" href="https://www.instagram.com/aamantran_online/" target="_blank" rel="noopener noreferrer">
+          <svg class="btn__ico" viewBox="0 0 24 24" aria-hidden="true" focusable="false">
+            <rect x="3" y="3" width="18" height="18" rx="5" fill="none" stroke="currentColor" stroke-width="1.6"/>
+            <circle cx="12" cy="12" r="4" fill="none" stroke="currentColor" stroke-width="1.6"/>
+            <circle cx="17.2" cy="6.8" r="1.2" fill="currentColor"/>
+          </svg>
+          Follow our journey
+        </a>
+
+        <div class="film">
+          <p class="film__label">Our film</p>
+          <div class="film__frame">
+            <iframe src="https://www.youtube.com/embed/IGAgkuzlJic?rel=0"
+                    title="Pre-wedding film" loading="lazy" allowfullscreen
+                    allow="accelerometer; clipboard-write; encrypted-media; gyroscope; picture-in-picture"></iframe>
+          </div>
+        </div>
+    </div>
+  </section>
+
+  <!-- ══════════ SCENE 8 — Night field · RSVP + wishes (finale) ══════════ -->
+  <section class="panel panel--tall panel--finale" data-scene="8" data-text="top-left" data-tint="warm">
+    <div class="layer bg"            data-depth="0" data-bg="/aamantran-qubool/assets/scene8/01-starlit-terrace.webp" data-bg-p="/aamantran-qubool/assets/scene8/01-starlit-terrace-p.webp"></div>
+    <div class="layer el fill glow"  data-depth="6"  data-src="/aamantran-qubool/assets/scene8/05-starlight.webp"></div>
+    <div class="layer el fig-seated" data-depth="15" data-src="/aamantran-qubool/assets/scene8/02-couple-sit.webp"></div>
+    <div class="layer el fill"       data-depth="28" data-src="/aamantran-qubool/assets/scene8/04-terrace-fg.webp"></div>
+
+    <div class="panel__inner panel__inner--wide">
+
+      <div class="card">
+        <p class="eyebrow">Will you join us?</p>
+        <h2 class="scene-title">RSVP</h2>
+        <!-- Three-part shape: ask first, then show either the form
+             or a kind note. The decline sits OUTSIDE the form, so `attending` is
+             simply always "yes" — only guests who are coming ever submit. -->
+        <div class="rsvp-choice" data-rsvp="choice">
+          <p class="rsvp-ask">Will you be joining us?</p>
+          <div class="rsvp-actions">
+            <button class="btn btn--solid" type="button" data-rsvp-choice="yes">Yes, with joy</button>
+            <button class="btn btn--ghost" type="button" data-rsvp-choice="no">Sorry, I can&rsquo;t</button>
+          </div>
+        </div>
+
+        <div class="rsvp-step" data-rsvp="decline" hidden>
+          <p class="rsvp-miss">We will miss you.</p>
+          <p class="rsvp-miss-sub">Thank you for letting us know &mdash; you will be in our duas on the day.</p>
+          <button class="rsvp-back" type="button" data-rsvp-back>Change my answer</button>
+        </div>
+
+        <div class="rsvp-step" data-rsvp="accept" hidden>
+          <form class="form" data-aamantran="rsvp">
+            <input type="hidden" data-field="attending" value="yes" />
+            <div class="field">
+              <label for="rsvp-name">Your name</label>
+              <input id="rsvp-name" data-field="guestName" type="text" required autocomplete="name" />
+            </div>
+            <div class="field-row">
+              <div class="field">
+                <label for="rsvp-phone">Phone</label>
+                <input id="rsvp-phone" data-field="phone" type="tel" autocomplete="tel" />
+              </div>
+              <div class="field">
+                <label for="rsvp-email">Email</label>
+                <input id="rsvp-email" data-field="email" type="email" autocomplete="email" />
+              </div>
+            </div>
+            <div class="field-row">
+              <div class="field">
+                <label for="rsvp-plus">Guests with you</label>
+                <input id="rsvp-plus" data-field="plusCount" type="number" min="0" step="1" value="0" />
+              </div>
+              <div class="field">
+                <label for="rsvp-meal">Meal preference</label>
+                <input id="rsvp-meal" data-field="mealPreference" type="text" placeholder="Veg / Jain / no preference" />
+              </div>
+            </div>
+
+            <!-- The platform runtime fills this with one checkbox per ceremony. -->
+            <div class="field field--functions" data-field="functions"></div>
+
+            <div class="field">
+              <label for="rsvp-msg">A note for us</label>
+              <textarea id="rsvp-msg" data-field="message" rows="3"></textarea>
+            </div>
+
+            <button class="btn btn--solid" type="submit">Send RSVP</button>
+            <p class="status" data-aamantran="rsvp-status" role="status" aria-live="polite"></p>
+          </form>
+          <button class="rsvp-back" type="button" data-rsvp-back>Change my answer</button>
+        </div>
+      </div>
+
+      <div class="card">
+        <p class="eyebrow">Duas for the couple</p>
+        <h2 class="scene-title">Wishes</h2>
+        <form class="form" data-aamantran="wish">
+          <div class="field">
+            <label for="wish-name">Your name</label>
+            <input id="wish-name" data-field="guestName" type="text" required autocomplete="name" />
+          </div>
+          <div class="field">
+            <label for="wish-msg">Your wish</label>
+            <textarea id="wish-msg" data-field="message" rows="3" required></textarea>
+          </div>
+          <button class="btn btn--solid" type="submit">Send your wish</button>
+          <p class="status" data-aamantran="wish-status" role="status" aria-live="polite"></p>
+        </form>
+
+        <!-- Runtime empties and rebuilds this; style only, never seed children.
+             script.js keeps four on the wall and cycles the rest through them. -->
+        <div class="wishwall" data-aamantran="wish-wall"></div>
+        <button class="wish-viewall" type="button" data-wish="view-all" hidden>View all wishes</button>
+      </div>
+
+      <footer class="footer">
+        <img class="footer__orn" src="/aamantran-qubool/assets/footer-ornament.webp" alt="" aria-hidden="true" />
+        <p class="footer__names">Zayan &amp; Alishba</p>
+        <p class="footer__date">14 February 2027</p>
+        <p class="footer__mark">Made with &#10084; Aamantran</p>
+      </footer>
+    </div>
+  </section>
+
+</main>
+
+<!-- Full list of wishes. Lives outside .scroller so it can be fixed to the
+     viewport; script.js fills it from the wall's own nodes on open, so it always
+     matches whatever the runtime last rendered. -->
+<div class="wishmodal" data-wish="modal" hidden>
+  <div class="wishmodal__scrim" data-wish="close"></div>
+  <div class="wishmodal__panel" role="dialog" aria-modal="true" aria-labelledby="wishmodal-title">
+    <div class="wishmodal__head">
+      <h3 class="wishmodal__title" id="wishmodal-title">Wishes for the couple</h3>
+      <button class="wishmodal__close" type="button" data-wish="close" aria-label="Close all wishes">&times;</button>
+    </div>
+    <div class="wishmodal__list" data-wish="list"></div>
+  </div>
+</div>
+
+<button class="music" id="music-btn" type="button" aria-label="Toggle background music" aria-pressed="false">
+  <svg class="music__on" viewBox="0 0 24 24" aria-hidden="true" focusable="false">
+    <path d="M9 18V6l10-2v12" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"/>
+    <circle cx="6.5" cy="18" r="2.5" fill="none" stroke="currentColor" stroke-width="1.7"/>
+    <circle cx="16.5" cy="16" r="2.5" fill="none" stroke="currentColor" stroke-width="1.7"/>
+  </svg>
+  <span class="music__bars" aria-hidden="true"><i></i><i></i><i></i></span>
+</button>
+<audio id="music" src="/aamantran-qubool/music.mp3" loop preload="none" muted playsinline></audio>
+
+<!-- GSAP is self-hosted, not pulled from cdnjs. The platform's CSP script-src
+     allows only 'self' and the media CDN, so a cdnjs <script> is blocked outright
+     and every scroll animation silently no-ops — the page loads, but nothing
+     moves. Loaded from here rather than injected by script.js, because relative
+     asset paths are rewritten to the CDN in HTML but NOT in JS (guide.md 6.1).
+     `defer` keeps document order, so both have run before script.js does. -->
+<script src="/aamantran-qubool/assets/vendor/gsap.min.js" defer></script>
+<script src="/aamantran-qubool/assets/vendor/ScrollTrigger.min.js" defer></script>
+<script src="/aamantran-qubool/script.js" defer></script>
+
+
+
+
+</body>
+</html>

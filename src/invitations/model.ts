@@ -14,7 +14,8 @@ export const designs = [
   { id: 10, name: 'Emerald Parchment', description: 'Forest green parchment with a cinematic opening.', route: '/emerald-parchment', image: '/emerald-parchment/demo.webp', color: '#0f1e16' },
   { id: 11, name: 'Royal Jodhpur', description: 'Midnight blue and gold palace celebrations.', route: '/royal-jodhpur', image: '/shaadipath-t02/assets/layers/Herp Palace.webp', color: '#0d1b3e' },
 ] as const
-export interface Celebration { id?: string; title: string; date: string; time: string; venue: string; address: string; map: string }
+export interface WeddingMoment { id: string; time: string; title: string; description: string; location: string }
+export interface Celebration { id?: string; title: string; date: string; time: string; venue: string; address: string; map: string; schedule?: WeddingMoment[] }
 export function nameTextLimit(template: number, field: string): number | undefined {
   return [2,3,5,6,7].includes(template) && (field==='groom'||field==='bride') ? 40 : undefined
 }
@@ -22,6 +23,7 @@ export function cardTextLimit(template: number, field: string): number | undefin
   return [2,3,5,6,7].includes(template) ? ({ title: 40, venue: 60, address: 100 } as Record<string, number>)[field] : undefined
 }
 export interface InvitationData {
+  layoutVersion?: 1 | 2;
   textOverrides?: TextLayout;
   showCoupleIllustrations?: boolean;
   template: number; groom: string; bride: string; date: string; time: string; offset: string;
@@ -35,6 +37,27 @@ export const formatTime = (time: string) => new Date(`2000-01-01T${time}:00Z`).t
 export const mapURL = (venue: string, address: string, url = '') => url || `https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(`${venue}, ${address}`)}`
 export function nameSlug(groom: string, bride: string) {
   return `${groom}${bride}`.normalize('NFKD').replace(/[\u0300-\u036f]/g, '').toLowerCase().replace(/[^a-z0-9]/g, '').slice(0, 80) || 'wedding'
+}
+function normName(s: string) {
+  return s.normalize('NFKD').replace(/[\u0300-\u036f]/g, '').toLowerCase().replace(/[^a-z0-9]/g, '').slice(0, 35)
+}
+export function slugVariants(groom: string, bride: string): string[] {
+  const g = normName(groom)
+  const b = normName(bride)
+  const base = g && b ? `${g}${b}` : g || b || 'wedding'
+  return [
+    base,
+    `${g}weds${b}`,
+    `${g}-${b}`,
+    `${g}marries${b}`,
+    `${g}and${b}`,
+    `${g}.${b}`,
+    `${base}forever`,
+    `${base}wedding`,
+  ]
+}
+export function inviteUrl(slug: string): string {
+  return `https://${slug}.shaadiinvites.in`
 }
 export const reservedSlugs = new Set(['assets','images','fonts','dashboard','client','admin','login','create','preview','invite','newdesign','mohadrahma','api','arjunmeera','rohankavya','aarongrace','danielsarah','vikramananya','nikhiladiti',...Array.from({ length: 16 }, (_, index) => `design${index + 3}`)])
 export function validateDetails(value: unknown, allowRetired = false): InvitationData {
@@ -62,13 +85,25 @@ export function validateDetails(value: unknown, allowRetired = false): Invitatio
   }
   if (typeof d.offset !== 'string' || !/^[+-](0\d|1[0-4]):(00|15|30|45)$/.test(d.offset)) throw new Error('Choose a valid time zone offset.')
   if (!Array.isArray(d.events) || d.events.length < 1 || d.events.length > 10) throw new Error('Add between one and ten celebrations.')
+  if (d.layoutVersion !== undefined && d.layoutVersion !== 1 && d.layoutVersion !== 2) throw new Error('Choose a valid invitation layout.')
+  const schedule = (items: unknown): WeddingMoment[] => {
+    if (items === undefined) return []
+    if (!Array.isArray(items) || items.length > 12) throw new Error('Add up to twelve wedding day moments.')
+    const ids = new Set<string>()
+    return items.map(item => {
+      if (!item || typeof item !== 'object' || typeof item.id !== 'string' || !/^[a-zA-Z0-9_-]{1,80}$/.test(item.id) || ids.has(item.id)) throw new Error('Invalid wedding day moment. Remove it and add it again.')
+      ids.add(item.id)
+      return { id: item.id, time: time(item.time), title: text(item.title, 'schedule title', 80, true), description: text(item.description ?? '', 'schedule description', 300), location: text(item.location ?? '', 'schedule location', 160) }
+    })
+  }
   return {
+    ...(d.layoutVersion !== undefined ? { layoutVersion: d.layoutVersion } : {}),
     textOverrides: readTextLayout(d.textOverrides),
     showCoupleIllustrations:d.showCoupleIllustrations !== false,
     template:d.template, groom:text(d.groom,'groom name',nameTextLimit(d.template,'groom') ?? 80,true), bride:text(d.bride,'bride name',nameTextLimit(d.template,'bride') ?? 80,true), date:date(d.date), time:time(d.time), offset:d.offset,
     venue:text(d.venue,'venue',cardTextLimit(d.template,'venue') ?? 160,true),address:text(d.address,'address',cardTextLimit(d.template,'address') ?? 300,true),map:url(d.map,'map link'),
     message:text(d.message,'welcome message',2000),groomFamily:text(d.groomFamily,'groom family',200),brideFamily:text(d.brideFamily,'bride family',200),
     dressCode:text(d.dressCode,'dress code',600),giftNote:text(d.giftNote,'gift note',600),music:url(d.music,'music link'),gallery:url(d.gallery,'gallery link'),
-    events:d.events.map(e=>({...(typeof e.id==='string'&&/^[a-zA-Z0-9_-]{1,80}$/.test(e.id)?{id:e.id}:{}),title:text(e.title,'celebration name',cardTextLimit(d.template,'title') ?? 100,true),date:date(e.date),time:time(e.time),venue:text(e.venue,'celebration venue',cardTextLimit(d.template,'venue') ?? 160,true),address:text(e.address,'celebration address',cardTextLimit(d.template,'address') ?? 300,true),map:url(e.map,'map link')})),
+    events:d.events.map(e=>({...(typeof e.id==='string'&&/^[a-zA-Z0-9_-]{1,80}$/.test(e.id)?{id:e.id}:{}),...(e.schedule !== undefined ? { schedule: schedule(e.schedule) } : {}),title:text(e.title,'celebration name',cardTextLimit(d.template,'title') ?? 100,true),date:date(e.date),time:time(e.time),venue:text(e.venue,'celebration venue',cardTextLimit(d.template,'venue') ?? 160,true),address:text(e.address,'celebration address',cardTextLimit(d.template,'address') ?? 300,true),map:url(e.map,'map link')})),
   }
 }

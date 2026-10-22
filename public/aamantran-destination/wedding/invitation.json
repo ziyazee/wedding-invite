@@ -1,0 +1,75 @@
+{
+  "_note": "This file is used ONLY in local dev (npm start). In production (live + demo routes) all data comes from window.__AAMANTRAN_INVITE__ injected by the Handlebars backend — this file is never fetched.",
+
+  "groom_name": "Rahul",
+  "bride_name": "Priya",
+  "groom_grandfather_name": "Sm. Kamal Kapoor",
+  "groom_grandmother_name": "Smt. Lata Devi",
+  "groom_father_name": "Mr. Rajesh Kapoor",
+  "groom_mother_name": "Mrs. Meera",
+  "bride_grandfather_name": "",
+  "bride_grandmother_name": "",
+  "bride_father_name": "Mr. Aakash Mittal",
+  "bride_mother_name": "Mrs. Shalini",
+
+  "hashtag": "PriyaWedsRahul",
+  "instagram_url": "https://www.instagram.com/",
+  "instagram_invite_text": "The mandap is only the beginning—timelines, teasers, and last-minute notes will flutter by on our Instagram before the dhol does. Follow along so the celebration doesn't slip past your feed.",
+  "hashtag_invite_text": "When your stories go live, tuck our day into the caption—tag your reels and candids with our wedding hashtag so every toast you raise can boomerang back to us.",
+  "youtube_url": "https://youtu.be/ZlDB438QGOE?si=J7AQ6AMcBzbz-shP",
+  "wedding_date": "May 13, 2026",
+  "couple_message": "We are both so delighted that you are able to join us in celebrating what we hope will be one of the happiest days of our lives. The affection shown to us by so many people since our roka has been incredibly moving, and has touched us both deeply. We would like to take this opportunity to thank everyone most sincerely for their kindness. We are looking forward to seeing you at the wedding.",
+
+  "venue_name": "Rambagh Palace",
+  "venue_address": "Bhawani Singh Rd, Rambagh, Jaipur, Rajasthan 302005",
+  "venue_map_url": "https://www.google.com/maps/search/?api=1&query=Rambagh+Palace+Jaipur",
+  "contact_name": "Rajesh Kapoor",
+  "contact_number": "+91 98765 43210",
+
+  "_note_events": "LOCAL DEV ONLY — flat event keys (event1..eventN). In production the backend sends a functions[] array instead; buildSaveDatePanelEvents() handles both formats.",
+  "event1": "MEHENDI",
+  "event1_datetime": "Friday, March 9th 2026\n6pm Onwards",
+  "event1_venue": "Rambagh, Jaipur",
+  "event_1_map_loc": "https://www.google.com/maps/search/?api=1&query=Rambagh%2C%20Jaipur%2C%20Rajasthan",
+  "event1_dress_code": "Ethnic Wear",
+
+  "event2": "HALDI",
+  "event2_datetime": "Saturday, March 10th 2026\n9am Onwards",
+  "event2_venue": "Rambagh, Jaipur",
+  "event_2_map_loc": "https://www.google.com/maps/search/?api=1&query=Rambagh%2C%20Jaipur%2C%20Rajasthan",
+  "event2_dress_code": "Yellow & White",
+
+  "event3": "COCKTAIL",
+  "event3_datetime": "Saturday, March 10th 2026\n7pm Onwards",
+  "event3_venue": "Rambagh, Jaipur",
+  "event_3_map_loc": "https://www.google.com/maps/search/?api=1&query=Rambagh%2C%20Jaipur%2C%20Rajasthan",
+  "event3_dress_code": "Cocktail Attire",
+
+  "event4": "ENGAGEMENT",
+  "event4_datetime": "Wednesday, March 8th 2026\n5pm Onwards",
+  "event4_venue": "Rambagh, Jaipur",
+  "event_4_map_loc": "https://www.google.com/maps/search/?api=1&query=Rambagh%2C%20Jaipur%2C%20Rajasthan",
+  "event4_dress_code": "Formal Wear",
+
+  "event5": "SHADI",
+  "event5_datetime": "Sunday, March 11th 2026\n4pm Onwards",
+  "event5_venue": "Rambagh, Jaipur",
+  "event_5_map_loc": "https://www.google.com/maps/search/?api=1&query=Rambagh%2C%20Jaipur%2C%20Rajasthan",
+  "event5_dress_code": "Traditional Indian",
+
+  "event6": "RECEPTION",
+  "event6_datetime": "Sunday, March 11th 2026\n8pm Onwards",
+  "event6_venue": "Rambagh, Jaipur",
+  "event_6_map_loc": "https://www.google.com/maps/search/?api=1&query=Rambagh%2C%20Jaipur%2C%20Rajasthan",
+  "event6_dress_code": "Black Tie Optional",
+
+  "_note_couple_photos": "LOCAL DEV ONLY — bare filenames resolved against the wedding/ folder. In production the backend sends media_slots.couple_carousel with full CDN URLs instead.",
+  "couple_photos": ["couple_1.webp", "couple_2.webp"],
+
+  "_note_music_url": "LOCAL DEV ONLY — paste any direct audio URL here to test the music player. In production the URL comes from the background_music media slot stored on R2.",
+  "music_url": "https://www.soundhelix.com/examples/mp3/SoundHelix-Song-1.mp3",
+
+  "_note_toggles": "LOCAL DEV ONLY — set either to false here to hide the RSVP or Wishes section while developing. In production these come from the couple's event settings via the Handlebars injection.",
+  "rsvp_enabled": true,
+  "guest_notes_enabled": true
+}

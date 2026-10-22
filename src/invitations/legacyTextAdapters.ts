@@ -1,4 +1,5 @@
 import type { InvitationData } from './model'
+import { markNewOrderText } from './newOrderTemplates'
 
 type Root = HTMLElement
 type Rules = Record<string, string>
@@ -7,6 +8,7 @@ const eventKey = (details: InvitationData, index: number) => details.events[inde
 /** Explicit semantic mappings, not text matching or generated DOM paths.
  * Keep these IDs and section boundaries when replacing a template with React. */
 export function markLegacyText(root: Root, d: InvitationData) {
+  markNewOrderText(root, d)
   const mark = (scope: Element, section: string, rules: Rules) => {
     if (scope.getAttribute('data-invite-section') !== section) scope.setAttribute('data-invite-section', section)
     for (const [field, selector] of Object.entries(rules)) {

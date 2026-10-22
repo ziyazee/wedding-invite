@@ -13,6 +13,9 @@ const templateIntroVideos: Record<string, string> = {
   9: '/maroon-letter/cover.mp4',
   10: '/emerald-parchment/intro.mp4',
   11: '/shaadipath-t02/assets/layers/Hero background.webp',
+  12: '/aamantran-destination/wedding/background_main.webp',
+  13: '/aamantran-raabta/assets/mosque-scene.webp',
+  14: '/aamantran-qubool/assets/scene1/01-jaali-dawn.webp',
 }
 
 const templates: Template[] = [
@@ -27,6 +30,9 @@ const templates: Template[] = [
   { id: 9, name: 'Maroon Letter', mood: 'Cinematic · Maroon · Nikkah', image: '/maroon-letter/demo.webp', path: '/maroon-letter' },
   { id: 10, name: 'Emerald Parchment', mood: 'Parchment · Forest · Nikkah', image: '/emerald-parchment/demo.webp', path: '/emerald-parchment' },
   { id: 11, name: 'Royal Jodhpur', mood: 'Midnight · Gold · Royal Hindu', image: '/shaadipath-t02/assets/layers/Herp Palace.webp', path: '/royal-jodhpur' },
+  { id: 12, name: 'Destination', mood: 'Elegant · Palace · Grand Hindu', image: '/aamantran-destination/wedding/background_main.webp', path: '/destination-wedding' },
+  { id: 13, name: 'Raabta', mood: 'Moonlit · Mosque · Nikkah', image: '/aamantran-raabta/assets/mosque-scene.webp', path: '/raabta' },
+  { id: 14, name: 'Qubool', mood: 'Cinematic · Garden · Nikkah', image: '/aamantran-qubool/assets/scene1/01-jaali-dawn.webp', path: '/qubool' },
 ]
 
 const categories = ['All Templates', 'Hindu', 'Muslim', 'Christian', 'Traditional', 'Modern', 'Floral', 'Royal']
@@ -37,6 +43,9 @@ const tags: Record<string, string[]> = {
   4: ['Hindu', 'Royal'], 1: ['Muslim', 'Royal'], 9: ['Muslim', 'Royal', 'Modern'],
   10: ['Muslim', 'Traditional', 'Modern'],
   11: ['Hindu', 'Traditional', 'Royal'],
+  12: ['Hindu', 'Traditional', 'Royal'],
+  13: ['Muslim', 'Royal', 'Traditional'],
+  14: ['Muslim', 'Modern', 'Floral'],
 }
 const contact = 'https://wa.me/917975948093?text=Hey%20I%20need%20an%20invitation%21'
 function LineIcon({ name }: { name: string }) {

@@ -39,9 +39,9 @@
 .d18-heart-section{padding:54px 18% 64px;text-align:center}
 .d18-page .rg-heart-reveal{position:relative;color:#54251f}
 .d18-page .rg-heart-title{font-size:31px!important;line-height:1.2!important;color:#723229;margin:0 0 12px!important;font-family:'Great Vibes','Dancing Script',cursive;font-weight:400}
-.d18-page .rg-heart-card{position:relative;width:min(300px,80vw);aspect-ratio:15/14;margin:10px auto 12px;filter:drop-shadow(0 10px 14px #54251f30)}
-.d18-page .rg-heart-inner{position:absolute;inset:0;background:radial-gradient(ellipse at 35% 25%,#f3e5c9,#b27655 58%,#682d29)}
-.d18-page .rg-heart-date{position:absolute;inset:0;display:flex;flex-direction:column;justify-content:center;align-items:center;gap:4px;padding-bottom:2%;color:#54251f;background-image:repeating-linear-gradient(45deg,transparent 0 7px,#ba873710 7px 8px)}
+.d18-page .rg-heart-card{position:relative;width:min(270px,100%);aspect-ratio:15/14;margin:10px auto 12px;border-radius:24px;filter:drop-shadow(0 10px 14px #54251f30)}
+.d18-page .rg-heart-inner{position:absolute;inset:0;border-radius:24px;overflow:hidden;background:radial-gradient(ellipse at 35% 25%,#f3e5c9,#b27655 58%,#682d29)}
+.d18-page .rg-heart-date{position:absolute;inset:50% 0 auto;aspect-ratio:1120/740;transform:translateY(-50%);display:flex;flex-direction:column;justify-content:center;align-items:center;gap:4px;padding-bottom:2%;border-radius:24px;overflow:hidden;color:#54251f;background-image:repeating-linear-gradient(45deg,transparent 0 7px,#ba873710 7px 8px)}
 .d18-page .rg-heart-date>.rg-script{font-family:'Great Vibes','Dancing Script',cursive;font-size:clamp(20px,5vw,30px);margin-bottom:4px}
 .d18-page .rg-heart-date strong{font-size:clamp(14px,3.5vw,21px);font-weight:600}
 .d18-page .rg-heart-date>span:not(.rg-script){font-size:16px;font-style:italic}

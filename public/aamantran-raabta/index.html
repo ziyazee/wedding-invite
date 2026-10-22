@@ -1,0 +1,482 @@
+Remaining CDN refs: 0
+Remaining media refs: 0
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+  <title>Mustafa &amp; Zoya — Wedding Invitation</title>
+  <link rel="stylesheet" href="/aamantran-raabta/styles.css">
+  <!-- The gate art is a CSS background, so it is found late; the hero mosque
+       is an <img> found immediately. Without this hint the gate is the last
+       thing to arrive — exactly the wrong order. -->
+  <link rel="preload" as="image" href="/aamantran-raabta/assets/gate-closed.webp">
+  <!-- Runs before the browser can restore the last scroll offset, so a
+       refresh cannot drop the guest mid-invite behind the closed gate. -->
+  <script>
+    if ('scrollRestoration' in history) history.scrollRestoration = 'manual';
+    window.scrollTo(0, 0);
+  </script>
+<link rel="icon" href="/favicon.ico" type="image/x-icon" sizes="any"><link rel="shortcut icon" href="/favicon.ico" type="image/x-icon"></head>
+<body>
+
+  <!-- Hidden: ISO from 2027-02-12 -->
+  <div id="js-wedding-date" data-date="2027-02-12" style="display:none"></div>
+
+  <audio id="bgMusic" src="/aamantran-raabta/music.mp3" loop preload="auto" playsinline webkit-playsinline style="display:none"></audio>
+
+  <!-- ── Arch Gate — full-screen entry overlay, tap to open ───────────────
+       A tall mihrab-style pointed arch splits open like double doors carved
+       with geometric lattice. Same symmetric-halves-via-background-position
+       technique as jaisalmer's gate so the seam always lines up. Unlike
+       jaisalmer, this is a ONE-TIME entrance only — no scroll-zoom sequence
+       follows it; the content starts straight away once it opens, with no
+       cinematic hero sequence in between. ─── -->
+  <div class="gate-overlay" id="gateOverlay" role="button" tabindex="0" aria-label="Tap to open">
+    <div class="gate-leaf gate-leaf-left" id="gateLeafLeft"></div>
+    <div class="gate-leaf gate-leaf-right" id="gateLeafRight"></div>
+    <div class="gate-flare" id="gateFlare"></div>
+    <div class="gate-cta" id="gateCta">
+      <div class="gate-cta-bismillah">بِسْمِ اللَّهِ الرَّحْمَٰنِ الرَّحِيمِ</div>
+      <div class="gate-cta-names">Mustafa Siddiqui &amp; Zoya Rahman</div>
+      <div class="gate-cta-tap">Tap to Enter</div>
+    </div>
+  </div>
+
+  <!-- ═══════════════════════════════════════════════════════════════════
+       STORYBOOK SECTIONS — each one is a full-width scene with its own
+       background image/tone, stacked top-to-bottom, no shared card wrapper.
+       Content starts immediately, one scene at a time, with hard cuts
+       between moods rather than one continuous palette.
+       ═══════════════════════════════════════════════════════════════ -->
+
+  <!-- ── Scene 1: Names over the mosque + moon ─────────────────────────── -->
+  <div class="scene scene-hero">
+    <img src="/aamantran-raabta/assets/mosque-scene.webp" alt="" class="scene-hero-mosque">
+    <div class="stars" aria-hidden="true">
+      <div class="star star-a" style="left:6%;  width:14px; animation-duration:12s; animation-delay:-2s;"></div>
+      <div class="star star-b" style="left:16%; width:10px; animation-duration:9s;  animation-delay:-6s;"></div>
+      <div class="star star-c" style="left:27%; width:12px; animation-duration:14s; animation-delay:-1s;"></div>
+      <div class="star star-a" style="left:38%; width:11px; animation-duration:10s; animation-delay:-8s;"></div>
+      <div class="star star-b" style="left:49%; width:15px; animation-duration:13s; animation-delay:-4s;"></div>
+      <div class="star star-c" style="left:59%; width:10px; animation-duration:11s; animation-delay:-9s;"></div>
+      <div class="star star-a" style="left:69%; width:13px; animation-duration:15s; animation-delay:-3s;"></div>
+      <div class="star star-b" style="left:78%; width:9px;  animation-duration:9.5s;animation-delay:-7s;"></div>
+      <div class="star star-c" style="left:87%; width:14px; animation-duration:12.5s;animation-delay:-5s;"></div>
+    </div>
+    <div class="scene-hero-content">
+      <!-- The crescent crowns the names rather than separating them. Used as a
+           separator it read as punctuation sitting where the "&" belongs, and
+           its asymmetry left the two names visually unbalanced. Above the pair
+           it works as sky, the couple reads as one unit, and everything stays
+           on open night rather than the lit mosque facade. -->
+      <img src="/aamantran-raabta/assets/crescent-moon.webp" alt="" class="scene-hero-moon">
+      <!-- Groom first, matching <title> and the jaisalmer/royal themes. With a
+           symmetric "&" the order read either way; "weds" is directional, so
+           it has to agree with the tab title. -->
+      <div class="hero-names-row" id="heroNamesRow">
+        <span class="hero-name" id="heroGroom" data-person1="Mustafa Siddiqui">Mustafa Siddiqui</span>
+        <span class="hero-join" id="heroJoin">weds</span>
+        <span class="hero-name" id="heroBride" data-person2="Zoya Rahman">Zoya Rahman</span>
+      </div>
+      <div class="hero-rule" aria-hidden="true"></div>
+      <div class="hero-blessing">Together with our families, we joyfully invite you</div>
+    </div>
+  </div>
+
+  <!-- ── Scene 2: Blessings + parents' names, on the fretwork/lattice tone ── -->
+  <div class="scene scene-blessing scene-crowned">
+    <div class="scene-inner">
+     <div class="vessel reveal">
+      <img src="/aamantran-raabta/assets/corner-spray.webp" alt="" class="vessel-corner vessel-corner-tl">
+      <img src="/aamantran-raabta/assets/corner-spray.webp" alt="" class="vessel-corner vessel-corner-tr">
+      <img src="/aamantran-raabta/assets/corner-spray.webp" alt="" class="vessel-corner vessel-corner-bl">
+      <img src="/aamantran-raabta/assets/corner-spray.webp" alt="" class="vessel-corner vessel-corner-br">
+      <img id="bismillah" src="/aamantran-raabta/assets/bismillah-medallion.webp" data-dynamic-src="" alt="Bismillah" class="scene-medallion reveal">
+
+      <div class="invite-blessing reveal">With the blessings of Almighty Allah</div>
+
+      <div class="invite-couple-line reveal">Hajra Bibi &nbsp;&amp;&nbsp; Haji Abdul Karim Siddiqui</div>
+
+      <div class="invite-divider reveal"></div>
+
+      <div class="invite-couple-line reveal">Mrs. Farida &nbsp;&amp;&nbsp; Mr. Iqbal Siddiqui</div>
+      <div class="invite-couple-line reveal">Mrs. Nasreen &nbsp;&amp;&nbsp; Mr. Aslam Rahman</div>
+     </div>
+    </div>
+  </div>
+
+  <!-- ── Scene 3: The Nikah invite — single scratch-card date reveal ──────
+       A genuine drag-to-scratch canvas (destination-out compositing), not a
+       canned animation — same real-scratch principle as jaisalmer's, just
+       one box instead of three. Confetti bursts once fully scratched. ─── -->
+  <div class="scene scene-invite">
+    <div class="scene-inner">
+      <img src="/aamantran-raabta/assets/lattice-arch.webp" alt="" class="scene-arch reveal">
+      <h1 class="invite-title reveal">Nikah</h1>
+      <div class="invite-join reveal">request the honour of your presence at the wedding of</div>
+      <div class="invite-person reveal" id="p1Name">Mustafa Siddiqui</div>
+      <div class="invite-amp reveal">&amp;</div>
+      <div class="invite-person reveal" id="p2Name">Zoya Rahman</div>
+      <div class="invite-divider reveal"></div>
+
+      <div class="scratch-date-wrap reveal" id="scratchDateWrap">
+        <div class="scratch-date-box" id="scratchDateBox">
+          <span class="scratch-date-text" id="inviteDateText"></span>
+          <canvas class="scratch-date-canvas" id="scratchDateCanvas" aria-hidden="true"></canvas>
+        </div>
+        <button class="scratch-date-fallback" id="scratchDateFallback" type="button">Tap to reveal the date</button>
+      </div>
+      <div class="confetti-burst" id="confettiBurst" aria-hidden="true"></div>
+    </div>
+  </div>
+
+  <!-- ── Function scenes (Nikah, Walima, Mehendi, etc.) — stacked full-width
+       arch cards, one per ceremony, not a grid — one card, full attention,
+       then the next. ─── -->
+  <!-- Wrapper is load-bearing: the tone rotation uses :nth-of-type, which
+       counts siblings of the same TAG, not elements matching the class. At
+       body level the function scenes are just some of many sibling <div>s, so
+       the count was offset by everything above them and the rotation did not
+       start at the first function. Inside this wrapper they are the only
+       children, so nth-of-type counts functions and nothing else. -->
+  <div class="functions-run">
+  <div class="scene scene-function">
+    <div class="function-card reveal">
+      <img src="/aamantran-raabta/assets/corner-spray.webp" alt="" class="fn-corner fn-corner-tl">
+      <img src="/aamantran-raabta/assets/corner-spray.webp" alt="" class="fn-corner fn-corner-tr">
+      <img src="/aamantran-raabta/assets/corner-spray.webp" alt="" class="fn-corner fn-corner-bl">
+      <img src="/aamantran-raabta/assets/corner-spray.webp" alt="" class="fn-corner fn-corner-br">
+      <h3 class="fn-name">Mehendi</h3>
+      <div class="invite-divider fn-divider"></div>
+      <p class="fn-row">2027-02-10</p>
+      <p class="fn-row">4:00 PM Onwards</p>
+      <p class="fn-row">Gulmohar Courtyard<br>Road No. 12, Banjara Hills, Hyderabad</p>
+      <a href="https://www.google.com/maps" target="_blank" rel="noopener noreferrer" class="fn-map">See the route</a>
+      <p class="fn-dress">Festive / Ethnic Wear</p>
+      
+    </div>
+  </div>
+  <div class="scene scene-function">
+    <div class="function-card reveal">
+      <img src="/aamantran-raabta/assets/corner-spray.webp" alt="" class="fn-corner fn-corner-tl">
+      <img src="/aamantran-raabta/assets/corner-spray.webp" alt="" class="fn-corner fn-corner-tr">
+      <img src="/aamantran-raabta/assets/corner-spray.webp" alt="" class="fn-corner fn-corner-bl">
+      <img src="/aamantran-raabta/assets/corner-spray.webp" alt="" class="fn-corner fn-corner-br">
+      <h3 class="fn-name">Nikah</h3>
+      <div class="invite-divider fn-divider"></div>
+      <p class="fn-row">2027-02-12</p>
+      <p class="fn-row">1:30 PM Onwards</p>
+      <p class="fn-row">Gulmohar Courtyard<br>Road No. 12, Banjara Hills, Hyderabad</p>
+      <a href="https://www.google.com/maps" target="_blank" rel="noopener noreferrer" class="fn-map">See the route</a>
+      <p class="fn-dress">Formal / Modest Attire</p>
+      
+    </div>
+  </div>
+  <div class="scene scene-function">
+    <div class="function-card reveal">
+      <img src="/aamantran-raabta/assets/corner-spray.webp" alt="" class="fn-corner fn-corner-tl">
+      <img src="/aamantran-raabta/assets/corner-spray.webp" alt="" class="fn-corner fn-corner-tr">
+      <img src="/aamantran-raabta/assets/corner-spray.webp" alt="" class="fn-corner fn-corner-bl">
+      <img src="/aamantran-raabta/assets/corner-spray.webp" alt="" class="fn-corner fn-corner-br">
+      <h3 class="fn-name">Rukhsati</h3>
+      <div class="invite-divider fn-divider"></div>
+      <p class="fn-row">2027-02-12</p>
+      <p class="fn-row">7:00 PM</p>
+      <p class="fn-row">Gulmohar Courtyard<br>Road No. 12, Banjara Hills, Hyderabad</p>
+      <a href="https://www.google.com/maps" target="_blank" rel="noopener noreferrer" class="fn-map">See the route</a>
+      <p class="fn-dress">Traditional</p>
+      
+    </div>
+  </div>
+  <div class="scene scene-function">
+    <div class="function-card reveal">
+      <img src="/aamantran-raabta/assets/corner-spray.webp" alt="" class="fn-corner fn-corner-tl">
+      <img src="/aamantran-raabta/assets/corner-spray.webp" alt="" class="fn-corner fn-corner-tr">
+      <img src="/aamantran-raabta/assets/corner-spray.webp" alt="" class="fn-corner fn-corner-bl">
+      <img src="/aamantran-raabta/assets/corner-spray.webp" alt="" class="fn-corner fn-corner-br">
+      <h3 class="fn-name">Walima</h3>
+      <div class="invite-divider fn-divider"></div>
+      <p class="fn-row">2027-02-13</p>
+      <p class="fn-row">7:00 PM Onwards</p>
+      <p class="fn-row">Gulmohar Courtyard<br>Road No. 12, Banjara Hills, Hyderabad</p>
+      <a href="https://www.google.com/maps" target="_blank" rel="noopener noreferrer" class="fn-map">See the route</a>
+      <p class="fn-dress">Formal</p>
+      
+    </div>
+  </div>
+  </div>
+  <!-- /.functions-run -->
+
+  <!-- ── Meet the couple ─────────────────────────────────────────────── -->
+  <div class="scene scene-couple">
+    <div class="scene-inner">
+      <h2 class="meet-title reveal">Meet the<br>Bride &amp; Groom</h2>
+      <div class="invite-divider reveal"></div>
+      <p class="meet-story reveal" id="coupleStory">We are both so delighted that you are able to join us in celebrating what we hope will be one of the happiest days of our lives. The affection shown to us by so many people since our roka has been incredibly moving, and has touched us both deeply. We would like to take this opportunity to thank everyone most sincerely for their kindness. We are looking forward to seeing you at the wedding.</p>
+
+      <div class="carousel-wrapper reveal">
+        <img src="/aamantran-raabta/assets/photo-frame.webp" alt="" class="carousel-frame">
+        <button class="carousel-btn carousel-prev" id="carouselPrev" aria-label="Previous photo">&#8249;</button>
+        <div class="couple-carousel" id="coupleCarousel" aria-label="Couple photos">
+          <div class="carousel-track" id="carouselTrack">
+            <div class="carousel-slide">
+              <img src="/aamantran-raabta/assets/couple-1.webp" alt="" loading="lazy">
+            </div>
+            <div class="carousel-slide">
+              <img src="/aamantran-raabta/assets/couple-2.webp" alt="" loading="lazy">
+            </div>
+            <div class="carousel-slide">
+              <img src="/aamantran-raabta/assets/couple-3.webp" alt="" loading="lazy">
+            </div>
+          </div>
+        </div>
+        <button class="carousel-btn carousel-next" id="carouselNext" aria-label="Next photo">&#8250;</button>
+      </div>
+      <div class="carousel-dots" id="carouselDots"></div>
+    </div>
+  </div>
+
+  <!-- ── Instagram ────────────────────────────────────────────────────── -->
+  <div class="scene scene-insta">
+    <div class="scene-inner">
+      <h2 class="insta-title reveal">Let's Make It Insta Official</h2>
+      <div class="invite-divider reveal"></div>
+      <p class="insta-caption reveal">As you share the joy of our special day, we'd love to be part of your memories too. Tag your photos with our wedding hashtag so every smile finds its way back to us.</p>
+      <a class="insta-link reveal" href="https://www.instagram.com/aamantran_online/" target="_blank" rel="noopener noreferrer" aria-label="Instagram">
+        <img src="/aamantran-raabta/assets/insta-icon.svg" alt="Instagram" class="insta-icon">
+      </a>
+      <div class="insta-hashtag-wrap reveal">
+        <!-- hashtag_raw is the bare tag (no leading #), so the "#" below is ours.
+             It comes from the Instagram hashtag field under "Links & guest
+             features" — the backend re-applies it after custom fields, so
+             defining hashtag/hashtag_raw as a custom field has no effect. -->
+        <span class="insta-hashtag">#MustafaWedsZoya</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- ── Pre-wedding Video — shown only when youtube_url is set ─────────── -->
+  <div class="scene scene-video">
+    <div class="scene-inner">
+      <h2 class="video-title reveal">On Screen</h2>
+      <p class="video-caption reveal">Take a moment to watch our pre-wedding film — a little piece of our story before we begin this new chapter.</p>
+      <div class="video-embed-wrap reveal">
+        <iframe
+          id="preWeddingVideo"
+          src="https://www.youtube.com/embed/IGAgkuzlJic?rel=0"
+          title="Pre-wedding film"
+          allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
+          allowfullscreen
+          loading="lazy"
+          referrerpolicy="strict-origin-when-cross-origin"
+        ></iframe>
+      </div>
+    </div>
+  </div>
+
+  <!-- ── Lantern divider ──────────────────────────────────────────────────
+       Three SEPARATE hanging lanterns rather than the old single flat
+       image: each gets its own chain length, sway speed/phase and flame
+       flicker, so they drift independently instead of the whole strip
+       tilting as one rigid block. ─────────────────────────────────────── -->
+  <div class="lantern-divider">
+    <div class="hang-row reveal">
+      <div class="hang" style="--drop: 8px;  --dur: 4.1s; --delay: -0.9s; --tilt: 5deg;   --w: 62px;">
+        <img src="/aamantran-raabta/assets/lantern-float.webp" alt="" class="hang-img">
+        <span class="hang-glow" aria-hidden="true"></span>
+      </div>
+      <div class="hang hang-mid" style="--drop: 36px; --dur: 5.3s; --delay: -2.4s; --tilt: 3.4deg; --w: 84px;">
+        <img src="/aamantran-raabta/assets/lantern-float.webp" alt="Lanterns" class="hang-img">
+        <span class="hang-glow" aria-hidden="true"></span>
+      </div>
+      <div class="hang" style="--drop: 4px;  --dur: 4.7s; --delay: -1.7s; --tilt: 5.6deg; --w: 58px;">
+        <img src="/aamantran-raabta/assets/lantern-float.webp" alt="" class="hang-img">
+        <span class="hang-glow" aria-hidden="true"></span>
+      </div>
+    </div>
+  </div>
+
+  <!-- ── Things to know — plain vertical stack, no bordered cards ────────── -->
+  <div class="scene scene-things scene-crowned">
+    <div class="scene-inner">
+     <div class="vessel reveal">
+      <img src="/aamantran-raabta/assets/corner-spray.webp" alt="" class="vessel-corner vessel-corner-tl">
+      <img src="/aamantran-raabta/assets/corner-spray.webp" alt="" class="vessel-corner vessel-corner-tr">
+      <img src="/aamantran-raabta/assets/corner-spray.webp" alt="" class="vessel-corner vessel-corner-bl">
+      <img src="/aamantran-raabta/assets/corner-spray.webp" alt="" class="vessel-corner vessel-corner-br">
+      <h2 class="things-title reveal">Things to Know</h2>
+      <div class="invite-divider reveal"></div>
+
+      
+      <div class="thing-row reveal">
+        <div class="thing-sub">Venue</div>
+        <div class="thing-val">Gulmohar Courtyard</div>
+        <div class="thing-desc">Road No. 12, Banjara Hills, Hyderabad</div>
+      </div>
+      
+
+      <div class="thing-row reveal">
+        <div class="thing-sub">Contact</div>
+        <div class="thing-val">Hussain Siddiqui</div>
+        <div class="thing-desc">9999999999</div>
+      </div>
+
+      <div class="thing-row reveal">
+        <div class="thing-sub">A Friendly Reminder</div>
+        <div class="thing-val thing-italic">Don't miss the dessert counter.</div>
+      </div>
+     </div>
+    </div>
+  </div>
+
+  <!-- ── Countdown — boxed tiles, one per unit ────────────────────────────── -->
+  <div class="scene scene-countdown" id="countdownSection">
+    <div class="scene-inner">
+      <div class="countdown-sub">Counting down</div>
+      <h2 class="countdown-title reveal">Until the Nikah</h2>
+      <div class="countdown-date" id="countdownDateDisplay"></div>
+      <div class="countdown-timer">
+        <div class="countdown-box">
+          <span class="countdown-val" id="cdDays">00</span>
+          <span class="countdown-lbl">Days</span>
+        </div>
+        <div class="countdown-box">
+          <span class="countdown-val" id="cdHours">00</span>
+          <span class="countdown-lbl">Hours</span>
+        </div>
+        <div class="countdown-box">
+          <span class="countdown-val" id="cdMins">00</span>
+          <span class="countdown-lbl">Mins</span>
+        </div>
+        <div class="countdown-box">
+          <span class="countdown-val" id="cdSecs">00</span>
+          <span class="countdown-lbl">Secs</span>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ── RSVP + Wishes ────────────────────────────────────────────────── -->
+  <div class="scene scene-rsvp" id="rsvpSection">
+    <div class="scene-inner">
+
+      <div class="rsvp-block">
+        <h2 class="rsvp-title reveal">Will you join us?</h2>
+        <p class="rsvp-text reveal">Let us know you're coming so we can celebrate together.</p>
+
+        <div class="rsvp-action-area">
+          <div id="rsvpButtons" class="rsvp-buttons">
+            <button class="rsvp-btn rsvp-yes" id="btnRsvpYes">Yes, I'll be there</button>
+            <button class="rsvp-btn rsvp-no" id="btnRsvpNo">No, I can't make it</button>
+          </div>
+          <div class="confetti-burst" id="rsvpConfettiBurst" aria-hidden="true"></div>
+
+          <div id="rsvpFormContainer" style="display: none;">
+            <form data-aamantran="rsvp" class="rsvp-form">
+              <input type="hidden" data-field="attending" value="yes" />
+              <div class="rsvp-field">
+                <label class="rsvp-field-label">Your Name *</label>
+                <input data-field="guestName" type="text" required class="rsvp-input" />
+              </div>
+              <div class="rsvp-field">
+                <label class="rsvp-field-label">Phone Number</label>
+                <input data-field="phone" type="tel" class="rsvp-input" />
+              </div>
+              <div class="rsvp-field">
+                <label class="rsvp-field-label">Email Address</label>
+                <input data-field="email" type="email" class="rsvp-input" />
+              </div>
+              <div class="rsvp-field">
+                <label class="rsvp-field-label">Guests accompanying you</label>
+                <input data-field="plusCount" type="number" min="0" class="rsvp-input" />
+              </div>
+              <div class="rsvp-field">
+                <label class="rsvp-field-label">Meal preference / Dietary notes</label>
+                <input data-field="mealPreference" type="text" class="rsvp-input" />
+              </div>
+              <div data-field="functions" class="rsvp-functions"></div>
+              <div class="rsvp-field">
+                <label class="rsvp-field-label">Leave a message for the couple...</label>
+                <textarea data-field="message" class="rsvp-input rsvp-textarea"></textarea>
+              </div>
+              <button type="submit" class="rsvp-submit">Send RSVP</button>
+              <p data-aamantran="rsvp-status"></p>
+            </form>
+          </div>
+
+          <div id="rsvpNoContainer" style="display: none;">
+            <div class="rsvp-thank-you">
+              <p>Thank you for letting us know!</p>
+              <p class="rsvp-miss">You'll be deeply missed.</p>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="rsvp-block" style="margin-top: 8vh;">
+        <h2 class="rsvp-title reveal">Wishes for the couple</h2>
+
+        <div class="rsvp-action-area">
+          <form data-aamantran="wish" class="wishes-form">
+            <div class="rsvp-field">
+              <label class="rsvp-field-label">Your Name *</label>
+              <input data-field="guestName" type="text" required class="rsvp-input" />
+            </div>
+            <div class="rsvp-field">
+              <label class="rsvp-field-label">Your wish *</label>
+              <textarea data-field="message" required class="rsvp-input rsvp-textarea"></textarea>
+            </div>
+            <button type="submit" class="rsvp-submit">Send wish</button>
+            <p data-aamantran="wish-status"></p>
+          </form>
+
+          <div data-aamantran="wish-wall" class="wish-wall"></div>
+          <button type="button" class="wish-view-all" id="wishViewAll" hidden>View all wishes</button>
+        </div>
+      </div>
+
+      <!-- ── Footer ─────────────────────────────────────────────────── -->
+      <div class="footer-ending">
+        <img src="/aamantran-raabta/assets/footer-ornament.webp" alt="" class="footer-ornament">
+        <div class="watermark">
+          Made with <span style="color:red;">&hearts;</span> <a href="https://www.aamantran.online" target="_blank" rel="noopener noreferrer">Aamantran</a>
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+  <button class="music-btn" id="musicBtn" aria-label="Toggle background music" title="Toggle music">
+    <svg class="music-icon-note" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
+      <path d="M12 3v10.55A4 4 0 1 0 14 17V7h4V3h-6z"/>
+    </svg>
+    <svg class="music-icon-pause" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true" style="display:none">
+      <path d="M6 19h4V5H6v14zm8-14v14h4V5h-4z"/>
+    </svg>
+  </button>
+
+  <!-- All wishes — the wall only ever shows 3 (phone) or 4 (desktop) and
+       rotates the rest through, so nothing is trapped behind the rotation.
+       Lives at body level, not inside .scene-rsvp, so the fixed overlay is
+       not trapped in that scene's stacking context. -->
+  <div class="wish-all-overlay" id="wishAllOverlay">
+    <div class="wish-all-dialog" role="dialog" aria-modal="true" aria-labelledby="wishAllTitle">
+      <div class="wish-all-header">
+        <h2 class="wish-all-title" id="wishAllTitle">All wishes</h2>
+        <button type="button" class="wish-all-close" id="wishAllClose" aria-label="Close wishes">Close</button>
+      </div>
+      <div class="wish-all-list" id="wishAllList"></div>
+    </div>
+  </div>
+
+  <!-- Interaction only. All invitation data is injected server-side by
+       Handlebars and read back out of the DOM — do NOT load demo-data.js or
+       demo-helpers.js here, they overwrite the real values. -->
+  <script src="/aamantran-raabta/script.js"></script>
+
+
+
+
+</body>
+</html>
