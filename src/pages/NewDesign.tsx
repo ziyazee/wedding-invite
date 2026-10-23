@@ -402,7 +402,7 @@ export default function NewDesign() {
               Two Souls, One Destiny
             </p>
             <p style={{ fontFamily: F.script, fontSize: 'clamp(1.6rem, 5vw, 2.2rem)', color: C.rose, lineHeight: 1.5 }}>
-              A Lifetime written by Allah
+              A Lifetime written by God
             </p>
           </div>
         </FadeIn>

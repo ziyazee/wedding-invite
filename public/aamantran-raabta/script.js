@@ -911,7 +911,7 @@ if (inviteDateEl && prettyDate) inviteDateEl.textContent = prettyDate;
   // so the rotation and the "View all wishes" button are both demonstrated.
   const SAMPLE = [
     ['Wishing you both a lifetime of love, barakah, and quiet joy.', 'Ayesha'],
-    ['May Allah bless this union and fill your home with light.',    'The Qureshis'],
+    ['May God bless this union and fill your home with light.',    'The Qureshis'],
     ['So happy for you two — save us a seat at the walima!',         'Imran & Sana'],
     ['From classmates to this. Could not be happier for you both.',  'Hina'],
     ['Sending all our love from Hyderabad. Have the most beautiful day.', 'Faisal & Nadia'],

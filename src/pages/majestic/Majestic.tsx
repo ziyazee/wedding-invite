@@ -24,6 +24,7 @@ function AmbientVideo({ src, poster, className }: { src: string; poster?: string
   useEffect(() => {
     const element = video.current
     if (!element) return
+    element.muted = true
     const motion = window.matchMedia('(prefers-reduced-motion: reduce)')
     let visible = true
     const sync = () => { if (visible && !motion.matches && !document.hidden) void element.play().catch(() => {}); else element.pause() }

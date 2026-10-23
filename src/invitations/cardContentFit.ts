@@ -61,7 +61,7 @@ export function installCardContentFit(doc: Document) {
   const introduction=doc.querySelector<HTMLElement>('.atelier-embroidered-introduction')
   if(introduction){
    const defaults=[
-    'With the blessings of Allah and the love of our families, we invite you to celebrate the beginning of our forever.',
+    'With the blessings of God and the love of our families, we invite you to celebrate the beginning of our forever.',
     'Your presence, your prayers, and your love will make our day complete.',
    ]
    const fitIntroduction=()=>{

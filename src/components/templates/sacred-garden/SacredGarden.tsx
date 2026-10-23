@@ -79,7 +79,7 @@ export default function SacredGarden({ details, slug, showSplash = true, preview
             className="text-3xl md:text-4xl leading-snug"
             style={{ fontFamily: SG.fontScript, color: SG.gold }}
           >
-            {details.tagline || 'Two Souls One Destiny\nA Lifetime written by Allah'}
+            {details.tagline || 'Two Souls One Destiny\nA Lifetime written by God'}
           </p>
         </section>
 

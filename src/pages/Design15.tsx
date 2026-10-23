@@ -14,7 +14,7 @@ const demo: InvitationData = {
   venue: 'TMA Pai Convention Centre',
   address: 'Mangalore, Karnataka',
   map: 'https://maps.app.goo.gl/1xf3k59k9QEaoQ717',
-  message: 'With the blessings of Allah and the love of our families, we invite you to celebrate the beginning of our forever.',
+  message: 'With the blessings of God and the love of our families, we invite you to celebrate the beginning of our forever.',
   groomFamily: '',
   brideFamily: '',
   dressCode: 'Modest festive attire is warmly welcomed.',

@@ -66,7 +66,7 @@ export default function AnimatedInvitation({details:d,rsvpTarget}:{details:Invit
     const paragraphs=welcomeCopy?.querySelectorAll('p')
     if(paragraphs?.length){
      paragraphs[0].innerHTML='Two souls.<br>One beautiful journey.'
-     paragraphs[1].textContent='With the blessings of Allah and the love of our families, we invite you to celebrate the beginning of our forever.'
+     paragraphs[1].textContent='With the blessings of God and the love of our families, we invite you to celebrate the beginning of our forever.'
      const closing=document.createElement('p')
      closing.className=paragraphs[1].className
      closing.textContent='Your presence, your prayers, and your love will make our day complete.'

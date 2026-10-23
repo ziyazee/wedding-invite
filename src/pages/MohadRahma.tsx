@@ -152,7 +152,7 @@ export default function MohadRahma() {
         <EditableText as="p" {...text('welcome','caption','An invitation from the heart')} className="rg-eyebrow">An invitation from the heart</EditableText>
         <Divider symbol="♥" />
         <EditableText as="h2" {...text('welcome','heading','Two souls. One beautiful journey.')} className="rg-script">Two souls. One beautiful journey.</EditableText>
-        <EditableText as="p" {...text('welcome', 'message', 'Welcome message')}>{details?.message || "With the blessings of Allah and the love of our families, we invite you to celebrate the beginning of our forever."}</EditableText>
+        <EditableText as="p" {...text('welcome', 'message', 'Welcome message')}>{details?.message || "With the blessings of God and the love of our families, we invite you to celebrate the beginning of our forever."}</EditableText>
         <EditableText as="p" {...text('welcome','blessing','Your presence, your prayers…')}>Your presence, your prayers, and your love will make our day complete.</EditableText>
         <Divider />
         <span className="rg-signature rg-script"><EditableText {...text('welcome', 'groom', 'Groom’s name · welcome')} style={{display:'inline-block'}}>{groom}</EditableText> <EditableText {...text('welcome','separator','Ampersand · welcome')} style={{display:'inline-block'}}>&amp;</EditableText> <EditableText {...text('welcome', 'bride', 'Bride’s name · welcome')} style={{display:'inline-block'}}>{bride}</EditableText></span>

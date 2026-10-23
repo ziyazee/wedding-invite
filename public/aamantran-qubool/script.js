@@ -506,7 +506,7 @@
   /* Sample wishes for the storefront demo. Written for a Nikah — duas and
      walima rather than the generic wedding lines a shared preview would use. */
   const DEMO_WISHES = [
-    ["Barakallahu lakuma wa baraka alaykuma. May Allah bless you both and join you in goodness.", "Ayesha"],
+    ["Barakallahu lakuma wa baraka alaykuma. May God bless you both and join you in goodness.", "Ayesha"],
     ["So happy for you two. Save me a seat at the walima!", "Rehan"],
     ["May your home always be full of light, laughter and barakah.", "The Qureshis"],
     ["Been waiting for this day for years. Mubarak ho to both families!", "Sana"],
