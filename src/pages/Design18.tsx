@@ -20,7 +20,7 @@ const demo: InvitationData = {
   brideFamily: 'With love from the Iyer family',
   dressCode: 'Traditional Indian attire in warm jewel tones is welcome.',
   giftNote: 'Your blessings and presence are the greatest gifts.',
-  music: '/bisara.mp3',
+  music: '/design18/inkem.mp3',
   gallery: '',
   events: [
     { title: 'Haldi & Mehendi', date: '2027-02-20', time: '11:00', venue: 'The Garden Pavilion', address: 'Jaipur, Rajasthan, India', map: '' },
@@ -104,7 +104,7 @@ export default function Design18() {
   ]
 
   return <main ref={root} className={`d18-page d18-${phase}`}>
-    <audio ref={audio} src={details.music || '/bisara.mp3'} loop preload="none" onPlay={() => setMusic(true)} onPause={() => setMusic(false)} />
+    <audio ref={audio} src={details.music || '/design18/inkem.mp3'} loop preload="none" onPlay={() => setMusic(true)} onPause={() => setMusic(false)} />
     <section className="d18-entry" aria-label="Wedding invitation entry">
       <video ref={video} className="d18-entry-video" src="/design18/entry.mp4" poster="/design18/entry-poster.jpg" muted playsInline disablePictureInPicture preload="auto" onLoadedMetadata={() => { if (skipIntro.current && video.current) { video.current.currentTime = 1.95; skipIntro.current = false } }} onEnded={finish} onError={() => { if (phase === 'playing') finish() }} />
       <div className="d18-entry-shade" />

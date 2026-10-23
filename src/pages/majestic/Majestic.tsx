@@ -64,7 +64,7 @@ function EventCard({ event, eventKey, details: d }: { event: Celebration; eventK
   const prefix = `event-${eventKey}`
   useMajesticCard(root, JSON.stringify([event, d.textOverrides]))
   return <Section as="article" data-invite-section={prefix} className="mj-event">
-    <AmbientVideo className="mj-event-video" src="/design6/assets/celebrations.mov" />
+    <AmbientVideo className="mj-event-video" src="/design6/assets/celebrations.mp4" />
     <div ref={root} className="mj-event-copy">
       <Copy as="p" field={`${prefix}.weekday`} className="mj-eyebrow">{formatDate(event.date, { weekday: 'long' })}</Copy>
       <Copy as="h2" field={`${prefix}.title`}>{wrapCardText(event.title, 18)}</Copy>

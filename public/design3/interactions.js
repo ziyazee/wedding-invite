@@ -131,4 +131,20 @@
   document.addEventListener('click', closeMenu);
   document.addEventListener('keydown', e => { if (e.key === 'Escape' && activeMenu) { const button = activeMenu.button; closeMenu(); button.focus(); } });
 
+  const musicTrack = document.getElementById('music-track');
+  const musicBtn = document.getElementById('music-btn');
+  if (musicTrack && musicBtn) {
+    musicTrack.volume = 0.45;
+    function updateMusicBtn() {
+      const playing = !musicTrack.paused;
+      musicBtn.setAttribute('aria-label', playing ? 'Mute music' : 'Play music');
+      musicBtn.setAttribute('aria-pressed', String(playing));
+      document.getElementById('eg-sound-waves').style.opacity = playing ? '1' : '.25';
+    }
+    musicTrack.addEventListener('play', updateMusicBtn);
+    musicTrack.addEventListener('pause', updateMusicBtn);
+    musicBtn.addEventListener('click', () => { if (musicTrack.paused) musicTrack.play().catch(updateMusicBtn); else musicTrack.pause(); });
+    cover.addEventListener('click', () => { musicBtn.hidden = false; musicTrack.play().catch(updateMusicBtn); }, { once: true });
+  }
+
 })();
