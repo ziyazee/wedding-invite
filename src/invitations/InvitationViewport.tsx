@@ -15,7 +15,7 @@ export default function InvitationViewport({ children }: { children: ReactNode }
   const location = useLocation()
   const largeScreen = useSyncExternalStore(subscribe, isLargeScreen, () => false)
   const path = location.pathname.replace(/\/+$/, '') || '/'
-  const applicationRoute = /^\/(?:client|admin|login|dashboard|create|newDesign)(?:\/|$)/.test(path)
+  const applicationRoute = /^\/(?:client|admin|login|dashboard|create|newDesign|testing567)(?:\/|$)/.test(path)
   const managementRoute = /^\/\d+-[A-Za-z0-9_-]{16}$/.test(path)
   const embeddedSection = path === '/design14/celebrations'
   const publicRoute = path !== '/' && !applicationRoute && !managementRoute && !embeddedSection

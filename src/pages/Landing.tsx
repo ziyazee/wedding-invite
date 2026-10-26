@@ -29,12 +29,6 @@ const templates: Template[] = [
   { id: 6, name: 'Embroidered Garden', mood: 'Wisteria · Swans · Romance', image: '/design3/assets/embroidered-swans-hero-v2.png' },
   { id: 3, name: 'A Timeless Union', mood: 'Traditional · Hindu · Floral', image: '/landing/timeless-union-opening.jpg', path: '/arjunbhavana' },
   { id: 8, name: 'The Artful Love Story', mood: 'Ornate · Indian · Romantic', image: '/landing/artful-love-story-opening.jpg' },
-  { id: 9, name: 'Maroon Letter', mood: 'Cinematic · Maroon · Nikkah', image: '/maroon-letter/demo.webp', path: '/maroon-letter' },
-  { id: 10, name: 'Emerald Parchment', mood: 'Parchment · Forest · Nikkah', image: '/emerald-parchment/demo.webp', path: '/emerald-parchment' },
-  { id: 11, name: 'Royal Jodhpur', mood: 'Midnight · Gold · Royal Hindu', image: '/shaadipath-t02/assets/layers/Herp Palace.webp', path: '/royal-jodhpur' },
-  { id: 12, name: 'Destination', mood: 'Elegant · Palace · Grand Hindu', image: '/aamantran-destination/wedding/background_main.webp', path: '/destination-wedding' },
-  { id: 13, name: 'Raabta', mood: 'Moonlit · Mosque · Nikkah', image: '/aamantran-raabta/assets/mosque-scene.webp', path: '/raabta' },
-  { id: 14, name: 'Qubool', mood: 'Cinematic · Garden · Nikkah', image: '/aamantran-qubool/assets/scene1/01-jaali-dawn.webp', path: '/qubool' },
 ]
 
 const categories = ['All Templates', 'Hindu', 'Muslim', 'Christian', 'Traditional', 'Modern', 'Floral', 'Royal']
@@ -136,7 +130,7 @@ export default function Landing() {
   }
   return <div className="showcase-page">
     <header className="studio-header">
-      <a className="studio-brand" href="/" aria-label="Shaadi Invites home"><Lotus/><span>SHAADI INVITES<small>— THE WEDDING STUDIO —</small></span></a>
+      <a className="studio-brand" href="/" aria-label="Shaadi Invites home"><img src="/logo-landing.png" alt="Shaadi Invites"/></a>
       <nav aria-label="Main navigation"><a className="active" href="#templates">Templates</a>{['How It Works', 'Pricing', 'About'].map(label => <button key={label} onClick={() => setInfo(label)}>{label}</button>)}<a href={contact} target="_blank" rel="noreferrer">Contact</a></nav>
       <div className="studio-header-actions"><button className="search-toggle" aria-label="Search templates" aria-expanded={searchOpen} onClick={() => { setSearchOpen(!searchOpen); document.getElementById('templates')?.scrollIntoView({ behavior: 'smooth' }) }}><SearchIcon/></button><a className="gold-button" href="/dashboard">Create Invite <ButtonArrow/></a></div>
     </header>

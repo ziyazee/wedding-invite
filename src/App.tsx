@@ -38,6 +38,7 @@ const AamantranRaabta = lazySitePage(() => import('./pages/AamantranRaabta'))
 const AamantranQubool = lazySitePage(() => import('./pages/AamantranQubool'))
 const BirthdayInvite = lazySitePage(() => import('./pages/BirthdayInvite'))
 const HousewarmingInvite = lazySitePage(() => import('./pages/HousewarmingInvite'))
+const Design3D = lazySitePage(() => import('./pages/Design3D'))
 const MohadRahma = lazy(() => import('./pages/MohadRahma'))
 const GeneratedInvitation = lazy(() => import('./pages/GeneratedInvitation'))
 
@@ -50,6 +51,7 @@ function getInviteSlug(): string | null {
 }
 const Login = lazySitePage(() => import('./pages/Login'))
 const ClientDashboard = lazySitePage(() => import('./pages/ClientDashboard'))
+const ClientDashboardTesting = lazySitePage(() => import('./pages/ClientDashboard').then(m => ({ default: m.ClientDashboardTesting })))
 const ClientLivePreview = lazy(() => import('./pages/ClientLivePreview'))
 const AdminDashboard = lazySitePage(() => import('./pages/AdminDashboard'))
 const OrderManagement = lazySitePage(() => import('./pages/OrderManagement'))
@@ -74,6 +76,7 @@ export default function App() {
       <Route path="/" element={<Landing />} />
       <Route path="/login" element={<Login />} />
       <Route path="/client/dashboard" element={<ClientDashboard />} />
+      <Route path="/testing567" element={<ClientDashboardTesting />} />
       <Route path="/client/live-preview" element={<ClientLivePreview />} />
       <Route path="/admin/dashboard" element={<AdminDashboard />} />
       <Route path="/dashboard" element={<Navigate to="/" replace />} />
@@ -134,6 +137,8 @@ export default function App() {
       <Route path="/raabta" element={<AamantranRaabta />} />
       <Route path="/design24" element={<AamantranQubool />} />
       <Route path="/qubool" element={<AamantranQubool />} />
+      <Route path="/3d-invite" element={<Design3D />} />
+      <Route path="/clay-invite" element={<Design3D />} />
       <Route path="/birthday" element={<BirthdayInvite />} />
       <Route path="/housewarming" element={<HousewarmingInvite />} />
       <Route path="/royal-grace" element={<MohadRahma />} />

@@ -3,7 +3,7 @@
 .login-page:before{top:-39%;left:-23%}.login-page:after{bottom:-45%;right:-25%;width:min(66vw,750px)}
 .login-ornament{position:absolute;top:8%;left:50%;transform:translateX(-50%);color:#af9258;font:34px Georgia,serif}
 .login-card{position:relative;z-index:1;width:min(100%,440px);padding:44px 48px 34px;border:1px solid #d9cfb9;background:#fffdf9ed;box-shadow:0 24px 70px #51452b14,0 3px 12px #51452b08;text-align:center}
-.login-brand{display:block;width:180px;height:80px;margin:0 auto 14px}.login-brand img{width:100%;height:100%;object-fit:contain}
+.login-brand{display:block;width:180px;height:80px;margin:0 auto 14px}.login-brand img{width:100%;height:100%;object-fit:contain;mix-blend-mode:multiply}
 .login-kicker{color:#927644;font-size:10px;font-weight:600;letter-spacing:.23em}
 .login-card h1{margin:15px 0 10px;font:400 42px/1.12 'Playfair Display',Georgia,serif;letter-spacing:-.04em}.login-card h1 em{color:#8b784e;font-weight:400}
 .login-intro{margin:0 auto 30px;max-width:300px;color:#73756b;font-size:13px;line-height:1.7}
