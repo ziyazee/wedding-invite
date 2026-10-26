@@ -1,24 +1,9 @@
 import { useLayoutEffect, useRef, useState } from 'react'
 import { invitationExample } from '../invitations/templateData'
+import { TEMPLATE_INTRO_VIDEOS, TEMPLATE_INTRO_IMAGES } from '../lib/templateCardData'
 import './Landing.css'
 
 type Template = { id: number | string; name: string; mood: string; image: string; path?: string }
-const templateIntroVideos: Record<string, string> = {
-  1: '/images/royal-grace/opening-mobile.mp4',
-  6: '/design3/assets/intro-doors-trimmed.mp4',
-  5: '/design5/assets/hero-video.mp4',
-  2: '/design6/assets/hero-bg-l-slFnvE.mp4',
-  7: '/design7/assets/intro-video-2-a-H3NxSy.mp4',
-  4: '/design18/entry.mp4',
-  9: '/maroon-letter/cover.mp4',
-  10: '/emerald-parchment/intro.mp4',
-}
-const templateIntroImages: Record<string, string> = {
-  11: '/shaadipath-t02/assets/layers/Hero background.webp',
-  12: '/aamantran-destination/wedding/background_main.webp',
-  13: '/aamantran-raabta/assets/mosque-scene.webp',
-  14: '/aamantran-qubool/assets/scene1/01-jaali-dawn.webp',
-}
 
 const templates: Template[] = [
   { id: 5, name: 'Secret Garden', mood: 'Garden · Ivory · Romantic', image: '/design5/assets/opened.jpg' },
@@ -146,7 +131,7 @@ export default function Landing() {
           {searchOpen && <label className="template-search"><SearchIcon/><input autoFocus value={query} onChange={e => setQuery(e.target.value)} placeholder="Find your invitation…" aria-label="Search templates"/><button onClick={() => { setQuery(''); setSearchOpen(false) }} aria-label="Close search">×</button></label>}
           <div className="template-heading"><h2 id="template-title">Explore Our Templates</h2><div><span>{filtered.length} Beautiful Designs</span><select aria-label="Sort templates" value={sort} onChange={e => setSort(e.target.value)}><option value="featured">Featured</option><option value="name">Name: A–Z</option><option value="favorites">Your Favourites</option></select></div></div>
           <div className="template-list">{filtered.map(template => <article className={`template-card${selected === template.id ? ' is-selected' : ''}`} key={template.id}>
-            <div className="template-image-wrap">{templateIntroVideos[String(template.id)] ? <video className="template-intro-video" src={templateIntroVideos[String(template.id)]} poster={template.image} autoPlay muted loop playsInline aria-hidden="true" ref={el => { if (el) { el.muted = true; el.setAttribute('muted', ''); el.play().catch(() => {}) } }}/> : <img src={templateIntroImages[String(template.id)] ?? template.image} alt={`${template.name} invitation artwork`} loading="lazy"/>}<button className="template-select" aria-label={`Preview ${template.name}`} aria-pressed={selected === template.id} onClick={() => chooseTemplate(template.id)}/><button className={`card-favorite${favorites.includes(template.id) ? ' saved' : ''}`} aria-label={`Favourite ${template.name}`} aria-pressed={favorites.includes(template.id)} onClick={() => setFavorites(prev => prev.includes(template.id) ? prev.filter(id => id !== template.id) : [...prev, template.id])}><LineIcon name="heart"/></button></div>
+            <div className="template-image-wrap">{TEMPLATE_INTRO_VIDEOS[Number(template.id)] ? <video className="template-intro-video" src={TEMPLATE_INTRO_VIDEOS[Number(template.id)]} poster={template.image} autoPlay muted loop playsInline aria-hidden="true" ref={el => { if (el) { el.muted = true; el.setAttribute('muted', ''); el.play().catch(() => {}) } }}/> : <img src={TEMPLATE_INTRO_IMAGES[Number(template.id)] ?? template.image} alt={`${template.name} invitation artwork`} loading="lazy"/>}<button className="template-select" aria-label={`Preview ${template.name}`} aria-pressed={selected === template.id} onClick={() => chooseTemplate(template.id)}/><button className={`card-favorite${favorites.includes(template.id) ? ' saved' : ''}`} aria-label={`Favourite ${template.name}`} aria-pressed={favorites.includes(template.id)} onClick={() => setFavorites(prev => prev.includes(template.id) ? prev.filter(id => id !== template.id) : [...prev, template.id])}><LineIcon name="heart"/></button></div>
             <button className="template-name" onClick={() => chooseTemplate(template.id)}>{template.name}</button><p className="template-mood">{template.mood}</p>
           </article>)}</div>
           {filtered.length === 0 && <div className="template-empty"><h3>A beautiful beginning is on its way.</h3><p>No templates match this selection yet.</p><button onClick={() => { setCategory('All Templates'); setQuery(''); setSort('featured') }}>Explore all templates <ButtonArrow/></button></div>}
