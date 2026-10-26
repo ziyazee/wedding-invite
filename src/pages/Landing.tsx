@@ -68,7 +68,6 @@ function LineIcon({ name }: { name: string }) {
 }
 function SearchIcon() { return <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" aria-hidden="true"><circle cx="10" cy="10" r="7"/><path d="m15 15 6 6"/></svg> }
 function ButtonArrow() { return <svg className="button-arrow" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.6" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true"><path d="M4 12h15M13 5l7 7-7 7"/></svg> }
-function Lotus() { return <svg viewBox="0 0 48 48" fill="none" stroke="currentColor" strokeWidth="1.4" aria-hidden="true"><path d="M24 42C9 33 12 17 24 5c12 12 15 28 0 37ZM24 42C8 42 3 31 3 20c12 0 20 8 21 22Zm0 0c16 0 21-11 21-22-12 0-20 8-21 22Z"/><path d="M24 42C11 39 8 25 12 13m12 29c13-3 16-17 12-29"/></svg> }
 function scrollToTemplates() {
   const target = document.getElementById('templates')
   if (!target) return

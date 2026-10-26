@@ -1,5 +1,5 @@
 import { createContext, useContext, useCallback, useEffect, useLayoutEffect, useMemo, useRef, useState, lazy, Suspense } from 'react'
-import type { FormEvent } from 'react'
+import type { FormEvent, ReactElement } from 'react'
 import { createPortal } from 'react-dom'
 import { cardTextLimit, nameTextLimit, designs, slugVariants, inviteUrl, validateDetails } from '../invitations/model'
 import type { Celebration, InvitationData } from '../invitations/model'
@@ -416,7 +416,7 @@ function ClientWorkspace({ showHiddenTemplates = false }: { showHiddenTemplates?
     finally { setBusy(false) }
   }
 
-  const categoryChipIcons: Record<string, JSX.Element> = {
+  const categoryChipIcons: Record<string, ReactElement> = {
     Classic:      <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round"><path d="M2 20h20"/><path d="M5 20V10l3.5 4L12 4l3.5 10L19 10v10"/><circle cx="12" cy="4" r="1.2" fill="currentColor"/><circle cx="5.5" cy="10" r="1" fill="currentColor"/><circle cx="18.5" cy="10" r="1" fill="currentColor"/></svg>,
     'Royal Hindu':<svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round"><path d="M12 21c-4-3-7-6.5-7-10a7 7 0 0 1 14 0c0 3.5-3 7-7 10z"/><path d="M12 21V8"/><path d="M8 13c1.5-1 2.5-3 4-5"/><path d="M16 13c-1.5-1-2.5-3-4-5"/></svg>,
     Hindu:        <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round"><path d="M12 21c-4-3-7-6.5-7-10a7 7 0 0 1 14 0c0 3.5-3 7-7 10z"/><path d="M12 21V8"/><path d="M8 13c1.5-1 2.5-3 4-5"/><path d="M16 13c-1.5-1-2.5-3-4-5"/></svg>,
@@ -425,7 +425,7 @@ function ClientWorkspace({ showHiddenTemplates = false }: { showHiddenTemplates?
     Garden:       <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round"><path d="M12 22V12"/><path d="M5 12a7 7 0 0 1 7-7c0 4-3 7-7 7z"/><path d="M19 12a7 7 0 0 0-7-7c0 4 3 7 7 7z"/><path d="M9 18a5 5 0 0 1 3-4"/><path d="M15 18a5 5 0 0 0-3-4"/></svg>,
     Indian:       <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round"><circle cx="12" cy="12" r="3"/><path d="M12 2v3M12 19v3M2 12h3M19 12h3M5.6 5.6l2.1 2.1M16.3 16.3l2.1 2.1M5.6 18.4l2.1-2.1M16.3 7.7l2.1-2.1"/></svg>,
   }
-  const navIcons: Record<string, JSX.Element> = {
+  const navIcons: Record<string, ReactElement> = {
     Overview: <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg>,
     Templates: <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round"><rect x="3" y="3" width="7" height="7" rx="1"/><rect x="14" y="3" width="7" height="7" rx="1"/><rect x="14" y="14" width="7" height="7" rx="1"/><rect x="3" y="14" width="7" height="7" rx="1"/></svg>,
     Orders: <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round"><path d="M9 5H7a2 2 0 0 0-2 2v12a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2V7a2 2 0 0 0-2-2h-2"/><rect x="9" y="3" width="6" height="4" rx="1"/><line x1="9" y1="12" x2="15" y2="12"/><line x1="9" y1="16" x2="13" y2="16"/></svg>,
