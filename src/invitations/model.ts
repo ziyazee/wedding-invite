@@ -57,9 +57,10 @@ export function slugVariants(groom: string, bride: string): string[] {
   ]
 }
 export function inviteUrl(slug: string): string {
-  const host = typeof window !== 'undefined' ? window.location.hostname : ''
+  const w = globalThis as any
+  const host: string = w.location?.hostname ?? ''
   if (host && !host.endsWith('.shaadiinvites.in') && host !== 'shaadiinvites.in') {
-    return `${window.location.origin}/${slug}`
+    return `${w.location.origin}/${slug}`
   }
   return `https://${slug}.shaadiinvites.in`
 }
