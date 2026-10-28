@@ -57,6 +57,10 @@ export function slugVariants(groom: string, bride: string): string[] {
   ]
 }
 export function inviteUrl(slug: string): string {
+  const host = typeof location !== 'undefined' ? location.hostname : ''
+  if (host && !host.endsWith('.shaadiinvites.in') && host !== 'shaadiinvites.in') {
+    return `${location.origin}/${slug}`
+  }
   return `https://${slug}.shaadiinvites.in`
 }
 export const reservedSlugs = new Set(['assets','images','fonts','dashboard','client','admin','login','create','preview','invite','newdesign','mohadrahma','api','arjunmeera','rohankavya','aarongrace','danielsarah','vikramananya','nikhiladiti',...Array.from({ length: 16 }, (_, index) => `design${index + 3}`)])
