@@ -397,30 +397,6 @@ Rules:
     return JSON.parse(raw)
   }
 
-  async function callGemini(base64: string): Promise<PdfExtracted> {
-    const key = import.meta.env.VITE_GEMINI_KEY as string
-    const models = ['gemini-3.8-flash', 'gemini-2.5-flash']
-    const payload = JSON.stringify({ contents: [{ parts: [
-      { inlineData: { mimeType: 'application/pdf', data: base64 } },
-      { text: pdfExtractPrompt },
-    ] }] })
-    let lastError = ''
-    for (const model of models) {
-      for (let attempt = 0; attempt < 3; attempt++) {
-        if (attempt > 0) await new Promise(r => setTimeout(r, 1000 * 2 ** attempt))
-        const res = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/${model}:generateContent?key=${key}`, {
-          method: 'POST', headers: { 'Content-Type': 'application/json' }, body: payload,
-        })
-        if (res.status === 503) { lastError = 'Model temporarily unavailable'; continue }
-        const result = await res.json()
-        if (!res.ok) { lastError = result?.error?.message ?? 'Gemini API request failed.'; continue }
-        const raw = (result?.candidates?.[0]?.content?.parts?.[0]?.text || '').replace(/```json\n?|```/g, '').trim()
-        try { return JSON.parse(raw) } catch { lastError = 'Failed to parse AI response.'; continue }
-      }
-    }
-    throw new Error(lastError || 'All Gemini models unavailable.')
-  }
-
   async function handlePdfUpload(file: File) {
     setPdfExtracting(true); setPdfError(''); setPdfResult(null)
     try {
