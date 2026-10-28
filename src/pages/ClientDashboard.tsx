@@ -387,21 +387,13 @@ Rules:
 - CRITICAL for groomFamily and brideFamily: Include EVERYTHING written about each family — parent names with titles (Mr./Mrs./Marhoom), relation labels (S/o, D/o, Grand D/o), house names, village/town names, grandparent names, and any other family details. Copy the full text as-is from the invitation, preserving all details. Do NOT shorten or summarize — include every word related to each family.`
 
   async function callOpenAI(base64: string, filename: string): Promise<PdfExtracted> {
-    const key = import.meta.env.VITE_OPENAI_KEY as string
-    const res = await fetch('https://api.openai.com/v1/responses', {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json', Authorization: `Bearer ${key}` },
-      body: JSON.stringify({
-        model: 'gpt-4.1-mini',
-        input: [{ role: 'user', content: [
-          { type: 'input_file', filename, file_data: `data:application/pdf;base64,${base64}` },
-          { type: 'input_text', text: pdfExtractPrompt },
-        ] }],
-      }),
+    if (!supabase) throw new Error('Supabase client not available.')
+    const { data, error: fnError } = await supabase.functions.invoke('openai-extract', {
+      body: { pdf: base64, filename, prompt: pdfExtractPrompt },
     })
-    const result = await res.json()
-    if (!res.ok) throw new Error(result?.error?.message ?? 'OpenAI API request failed.')
-    const raw = (result?.output?.find((o: any) => o.type === 'message')?.content?.find((c: any) => c.type === 'output_text')?.text || '').replace(/```json\n?|```/g, '').trim()
+    if (fnError) throw fnError
+    if (data?.error) throw new Error(data.error)
+    const raw = (data?.text || '').trim()
     return JSON.parse(raw)
   }
 
@@ -438,18 +430,8 @@ Rules:
         reader.onerror = () => reject(new Error('Failed to read file.'))
         reader.readAsDataURL(file)
       })
-      if (import.meta.env.VITE_OPENAI_KEY) {
-        setPdfResult(await callOpenAI(base64, file.name))
-      } else if (import.meta.env.VITE_GEMINI_KEY) {
-        setPdfResult(await callGemini(base64))
-      } else if (supabase) {
-        const { data, error: fnError } = await supabase.functions.invoke('extract-pdf', { body: { pdf: base64, filename: file.name } })
-        if (fnError) throw fnError
-        if (data?.error) throw new Error(data.error)
-        setPdfResult(data?.text || '(No text extracted)')
-      } else {
-        throw new Error('No AI key configured. Set VITE_OPENAI_KEY or VITE_GEMINI_KEY in .env')
-      }
+      if (!supabase) throw new Error('No Supabase client available.')
+      setPdfResult(await callOpenAI(base64, file.name))
     } catch (err) {
       setPdfError(err instanceof Error ? err.message : 'Failed to extract text from PDF.')
       setPdfResult(null)
