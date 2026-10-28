@@ -5,8 +5,6 @@ import type { RsvpTarget } from './rsvp'
 
 export type ThemeConfig = { names: string[]; floral: string; frame: string; bg: string; ink: string }
 
-const escape = (value: string) => value.replace(/[&<>"']/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]!))
-
 const cardinalWords = (value: number) => {
  const small = ['zero','one','two','three','four','five','six','seven','eight','nine','ten','eleven','twelve','thirteen','fourteen','fifteen','sixteen','seventeen','eighteen','nineteen']
  const tens = ['','','twenty','thirty','forty','fifty','sixty','seventy','eighty','ninety']
@@ -28,7 +26,7 @@ export async function personalizeBloom(
  doc: Document,
  personal: HTMLElement,
  d: InvitationData,
- theme: ThemeConfig,
+ _theme: ThemeConfig,
  events: typeof d.events,
  rsvpTarget: RsvpTarget | undefined,
  signal: AbortSignal,

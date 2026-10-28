@@ -1,5 +1,4 @@
 import type { InvitationData } from './model'
-import { mapURL } from './model'
 import type { ThemeConfig } from './personalizeBloom'
 
 const escape = (value: string) => value.replace(/[&<>"']/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]!))
@@ -8,7 +7,7 @@ export function personalizeEG(
  doc: Document,
  personal: HTMLElement,
  d: InvitationData,
- theme: ThemeConfig,
+ _theme: ThemeConfig,
 ): void {
  personal.classList.add('atelier-card-content-fit', 'atelier-embroidered-fit')
  const welcome = personal.querySelector('.atelier-welcome')
