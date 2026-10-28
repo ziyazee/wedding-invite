@@ -263,11 +263,14 @@ function ClientWorkspace({ showHiddenTemplates = false }: { showHiddenTemplates?
       events: [{ title: weddingEventTitle, date: details.date, time: details.time, venue: details.venue, address: details.address, map: details.map }, ...extraEvents],
     }
   }, [details, extraEvents, previewTemplate?.id, selected, weddingEventTitle])
-  const previewSrc = showDetails ? '/client/live-preview?editor=1' : previewTemplate?.preview_url || '/client/live-preview'
+  const browsePreviewData = !showDetails && previewTemplate ? invitationExample(previewTemplate.id) : undefined
+  const previewSrc = showDetails ? '/client/live-preview?editor=1' : browsePreviewData ? '/client/live-preview' : previewTemplate?.preview_url || '/client/live-preview'
   useLayoutEffect(() => {
-    if (tab !== 'Templates' || !showDetails) return
-    try { sessionStorage.setItem('shaadi-client-live-preview', JSON.stringify(livePreviewDetails)) } catch { return }
-  }, [livePreviewDetails, showDetails, tab])
+    if (tab !== 'Templates') return
+    const data = showDetails ? livePreviewDetails : browsePreviewData
+    if (!data) return
+    try { sessionStorage.setItem('shaadi-client-live-preview', JSON.stringify(data)) } catch { return }
+  }, [livePreviewDetails, browsePreviewData, showDetails, tab])
   useEffect(() => {
     setWaPhone('')
     setWaSent(false)

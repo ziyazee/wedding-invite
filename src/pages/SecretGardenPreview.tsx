@@ -1,5 +1,9 @@
-import Design5 from './Design5'
+import InvitationRenderer from '../invitations/InvitationRenderer'
+import { invitationExample } from '../invitations/templateData'
+
+const details = invitationExample(5)
 
 export default function SecretGardenPreview() {
-  return <Design5 />
+  if (!details) return null
+  return <InvitationRenderer details={details} />
 }

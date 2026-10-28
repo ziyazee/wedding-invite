@@ -55,7 +55,7 @@ function EventCard({ event, eventKey, details: d }: { event: Celebration; eventK
   const prefix = `event-${eventKey}`
   useSecretGardenCard(root, JSON.stringify([event, d.textOverrides]))
   return <Section as="article" data-invite-section={prefix} className="sg-event">
-    <AmbientVideo className="sg-event-video" src="/design6/assets/celebrations.mov" />
+    <AmbientVideo className="sg-event-video" src="/templates/majestic/assets/celebrations.mov" />
     <div ref={root} className="sg-event-copy">
       <Copy as="p" field={`${prefix}.weekday`} className="sg-eyebrow">{formatDate(event.date, { weekday: 'long' })}</Copy>
       <Copy as="h2" field={`${prefix}.title`}>{wrapCardText(event.title, 18)}</Copy>
@@ -107,7 +107,7 @@ export default function SecretGarden({ details: d, rsvpTarget }: { details: Invi
 
     {/* ── Opening Hero ── */}
     <Section data-invite-section="opening" className="sg-hero" onClick={openInvitation}>
-      <InvitationMedia kind="video" className="sg-hero-video" ref={heroVideo} src="/design5/assets/hero-video.mp4" poster="/design5/assets/cover.jpg" muted playsInline preload="metadata" onEnded={() => setNamesVisible(true)} onError={() => { if (opened) setNamesVisible(true) }} />
+      <InvitationMedia kind="video" className="sg-hero-video" ref={heroVideo} src="/templates/secret-garden/assets/hero-video.mp4" poster="/templates/secret-garden/assets/cover.jpg" muted playsInline preload="metadata" onEnded={() => setNamesVisible(true)} onError={() => { if (opened) setNamesVisible(true) }} />
       <div className="sg-hero-copy">
         <Copy as="p" field="opening.caption" className="sg-eyebrow">We're getting married</Copy>
         <Names details={d} section="opening" />
@@ -117,19 +117,19 @@ export default function SecretGarden({ details: d, rsvpTarget }: { details: Invi
     </Section>
 
     {opened && <>
-      <PersonalMusic src={d.music || '/design5/assets/autumn-wind.mp3'} />
+      <PersonalMusic src={d.music || '/templates/secret-garden/assets/autumn-wind.mp3'} />
 
       {/* ── Pearl Clock Countdown ── */}
       <PearlClock weddingDate={weddingISO(d)} />
 
       {/* ── Lights ── */}
-      <InvitationMedia className="sg-intro-lights" src="/design5/assets/lights.png" alt="" />
+      <InvitationMedia className="sg-intro-lights" src="/templates/secret-garden/assets/lights.webp" alt="" />
 
       {/* ── Welcome ── */}
       <Section data-invite-section="welcome" className="sg-welcome">
         <Copy as="p" field="welcome.caption" className="sg-eyebrow">Together with our families</Copy>
         <Names details={d} section="welcome" family />
-        {d.showCoupleIllustrations !== false && <InvitationMedia className="sg-couple-illustration" src="/design5/assets/couple.png" alt="Illustrated bride and groom holding hands" />}
+        {d.showCoupleIllustrations !== false && <InvitationMedia className="sg-couple-illustration" src="/templates/secret-garden/assets/couple.webp" alt="Illustrated bride and groom holding hands" />}
       </Section>
 
       {/* ── Details / Venue ── */}
@@ -140,7 +140,7 @@ export default function SecretGarden({ details: d, rsvpTarget }: { details: Invi
           {d.message.trim() && <Copy as="p" field="venue.message" className="sg-details-message">{d.message}</Copy>}
         </div>
         <div className="sg-venue-card">
-          <InvitationMedia className="sg-venue-frame" src="/design6/assets/ornate-badge-2PyCLI0e.png" alt="" width={1080} height={1080} />
+          <InvitationMedia className="sg-venue-frame" src="/templates/majestic/assets/ornate-badge-2PyCLI0e.png" alt="" width={1080} height={1080} />
           <div className="sg-venue-copy">
             <Copy as="h3" field="venue.location">Location</Copy>
             <Copy as="p" field="venue.name" className="sg-venue-name">{d.venue}</Copy>
@@ -157,7 +157,7 @@ export default function SecretGarden({ details: d, rsvpTarget }: { details: Invi
 
       {/* ── Programme ── */}
       <Section data-invite-section="programme" className="sg-programme">
-        <InvitationMedia src="/design6/assets/food.png" alt="" />
+        <InvitationMedia src="/templates/majestic/assets/food.webp" alt="" />
         <Copy as="h2" field="programme.heading">The programme</Copy>
       </Section>
 
@@ -168,7 +168,7 @@ export default function SecretGarden({ details: d, rsvpTarget }: { details: Invi
       {d.dressCode.trim() && <Section data-invite-section="dress" className="sg-dress">
         <Copy as="h2" field="dress.heading">Dress Code</Copy>
         <Copy as="p" field="dress.caption" className="sg-eyebrow">what to wear</Copy>
-        {d.showCoupleIllustrations !== false && <InvitationMedia src="/design5/assets/dress-code-new.png" alt="Wedding attire illustration" />}
+        {d.showCoupleIllustrations !== false && <InvitationMedia src="/templates/secret-garden/assets/dress-code-new.webp" alt="Wedding attire illustration" />}
         <div className="sg-dress-card"><Copy as="h3" field="dress.text">{d.dressCode}</Copy></div>
       </Section>}
 
@@ -179,7 +179,7 @@ export default function SecretGarden({ details: d, rsvpTarget }: { details: Invi
       <Section data-invite-section="closing" className="sg-closing">
         <Copy as="h2" field="closing.couple">{couple}</Copy>
         <Copy as="p" field="closing.date" className="sg-eyebrow">{formatDate(d.date)}</Copy>
-        <InvitationMedia className="sg-footer-flowers" src="/design5/assets/footer-flowers.png" alt="An embroidered arrangement of white roses and greenery" />
+        <InvitationMedia className="sg-footer-flowers" src="/templates/secret-garden/assets/footer-flowers.png" alt="An embroidered arrangement of white roses and greenery" />
       </Section>
 
       {/* ── WhatsApp Contact ── */}

@@ -109,7 +109,7 @@ function eventCard(doc: Document, event: Celebration, d: InvitationData) {
       card.querySelectorAll(selector).forEach(el => { el.textContent = value })
     }
     const icon = card.querySelector<HTMLImageElement>('.ev-icon')
-    if (icon) { icon.src = '/shaadipath-t02/assets/icons/icon-shaadi.webp'; icon.alt = '' }
+    if (icon) { icon.src = '/templates/shaadipath-t02/assets/icons/icon-shaadi.webp'; icon.alt = '' }
     if (d.template === 10) { const address = doc.createElement('p'); address.textContent = event.address; card.querySelector('.tl-content')?.append(address) }
   } else {
     for (const [tag, value] of [['h3', event.title], ['p', `${formatDate(event.date)} · ${formatTime(event.time)}`], ['p', event.venue], ['p', event.address]]) {

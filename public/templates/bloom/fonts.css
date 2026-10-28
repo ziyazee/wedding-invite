@@ -1,0 +1,137 @@
+/*
+ * The Typekit service used to deliver this font or fonts for use on websites
+ * is provided by Adobe and is subject to these Terms of Use
+ * http://www.adobe.com/products/eulas/tou_typekit. For font license
+ * information, see the list below.
+ *
+ * caprizant:
+ *   - http://typekit.com/eulas/00000000000000007735a9f9
+ * dickens-tale-script:
+ *   - http://typekit.com/eulas/000000000000000077572fd4
+ * freight-text-pro:
+ *   - http://typekit.com/eulas/00000000000000007735d61f
+ *   - http://typekit.com/eulas/00000000000000007735d626
+ *   - http://typekit.com/eulas/00000000000000007735d62a
+ *   - http://typekit.com/eulas/00000000000000007735d630
+ * freighttextcmp-pro:
+ *   - http://typekit.com/eulas/000000000000000077359fde
+ *   - http://typekit.com/eulas/000000000000000077359fdf
+ *   - http://typekit.com/eulas/000000000000000077359fe4
+ *   - http://typekit.com/eulas/000000000000000077359fe5
+ * otta-pe:
+ *   - http://typekit.com/eulas/0000000000000000775d818f
+ *   - http://typekit.com/eulas/0000000000000000775d8191
+ *   - http://typekit.com/eulas/0000000000000000775d8193
+ *   - http://typekit.com/eulas/0000000000000000775d8194
+ * otta-pe-display:
+ *   - http://typekit.com/eulas/0000000000000000775d8190
+ *   - http://typekit.com/eulas/0000000000000000775d8192
+ *
+ * © 2009-2026 Adobe Systems Incorporated. All Rights Reserved.
+ */
+/*{"last_published":"2026-05-21 19:09:19 UTC"}*/
+
+
+
+@font-face {
+font-family:"freight-text-pro";
+src:url("/templates/bloom/assets/font-0.woff2") format("woff2"),url("/templates/bloom/assets/font-1.woff") format("woff"),url("/templates/bloom/assets/font-2.otf") format("opentype");
+font-display:swap;font-style:normal;font-weight:400;font-stretch:normal;
+}
+
+@font-face {
+font-family:"freight-text-pro";
+src:url("/templates/bloom/assets/font-3.woff2") format("woff2"),url("/templates/bloom/assets/font-4.woff") format("woff"),url("/templates/bloom/assets/font-5.otf") format("opentype");
+font-display:swap;font-style:italic;font-weight:400;font-stretch:normal;
+}
+
+@font-face {
+font-family:"freight-text-pro";
+src:url("/templates/bloom/assets/font-6.woff2") format("woff2"),url("/templates/bloom/assets/font-7.woff") format("woff"),url("/templates/bloom/assets/font-8.otf") format("opentype");
+font-display:swap;font-style:normal;font-weight:700;font-stretch:normal;
+}
+
+@font-face {
+font-family:"freight-text-pro";
+src:url("/templates/bloom/assets/font-9.woff2") format("woff2"),url("/templates/bloom/assets/font-10.woff") format("woff"),url("/templates/bloom/assets/font-11.otf") format("opentype");
+font-display:swap;font-style:italic;font-weight:700;font-stretch:normal;
+}
+
+@font-face {
+font-family:"caprizant";
+src:url("/templates/bloom/assets/font-12.woff2") format("woff2"),url("/templates/bloom/assets/font-13.woff") format("woff"),url("/templates/bloom/assets/font-14.otf") format("opentype");
+font-display:swap;font-style:normal;font-weight:400;font-stretch:normal;
+}
+
+@font-face {
+font-family:"freighttextcmp-pro";
+src:url("/templates/bloom/assets/font-15.woff2") format("woff2"),url("/templates/bloom/assets/font-16.woff") format("woff"),url("/templates/bloom/assets/font-17.otf") format("opentype");
+font-display:swap;font-style:normal;font-weight:400;font-stretch:normal;
+}
+
+@font-face {
+font-family:"freighttextcmp-pro";
+src:url("/templates/bloom/assets/font-18.woff2") format("woff2"),url("/templates/bloom/assets/font-19.woff") format("woff"),url("/templates/bloom/assets/font-20.otf") format("opentype");
+font-display:swap;font-style:italic;font-weight:400;font-stretch:normal;
+}
+
+@font-face {
+font-family:"freighttextcmp-pro";
+src:url("/templates/bloom/assets/font-21.woff2") format("woff2"),url("/templates/bloom/assets/font-22.woff") format("woff"),url("/templates/bloom/assets/font-23.otf") format("opentype");
+font-display:swap;font-style:normal;font-weight:700;font-stretch:normal;
+}
+
+@font-face {
+font-family:"freighttextcmp-pro";
+src:url("/templates/bloom/assets/font-24.woff2") format("woff2"),url("/templates/bloom/assets/font-25.woff") format("woff"),url("/templates/bloom/assets/font-26.otf") format("opentype");
+font-display:swap;font-style:italic;font-weight:700;font-stretch:normal;
+}
+
+@font-face {
+font-family:"dickens-tale-script";
+src:url("/templates/bloom/assets/font-27.woff2") format("woff2"),url("/templates/bloom/assets/font-28.woff") format("woff"),url("/templates/bloom/assets/font-29.otf") format("opentype");
+font-display:swap;font-style:normal;font-weight:400;font-stretch:normal;
+}
+
+@font-face {
+font-family:"otta-pe";
+src:url("/templates/bloom/assets/font-30.woff2") format("woff2"),url("/templates/bloom/assets/font-31.woff") format("woff"),url("/templates/bloom/assets/font-32.otf") format("opentype");
+font-display:swap;font-style:italic;font-weight:400;font-stretch:normal;
+}
+
+@font-face {
+font-family:"otta-pe";
+src:url("/templates/bloom/assets/font-33.woff2") format("woff2"),url("/templates/bloom/assets/font-34.woff") format("woff"),url("/templates/bloom/assets/font-35.otf") format("opentype");
+font-display:swap;font-style:italic;font-weight:700;font-stretch:normal;
+}
+
+@font-face {
+font-family:"otta-pe";
+src:url("/templates/bloom/assets/font-36.woff2") format("woff2"),url("/templates/bloom/assets/font-37.woff") format("woff"),url("/templates/bloom/assets/font-38.otf") format("opentype");
+font-display:swap;font-style:normal;font-weight:400;font-stretch:normal;
+}
+
+@font-face {
+font-family:"otta-pe";
+src:url("/templates/bloom/assets/font-39.woff2") format("woff2"),url("/templates/bloom/assets/font-40.woff") format("woff"),url("/templates/bloom/assets/font-41.otf") format("opentype");
+font-display:swap;font-style:normal;font-weight:700;font-stretch:normal;
+}
+
+@font-face {
+font-family:"otta-pe-display";
+src:url("/templates/bloom/assets/font-42.woff2") format("woff2"),url("/templates/bloom/assets/font-43.woff") format("woff"),url("/templates/bloom/assets/font-44.otf") format("opentype");
+font-display:swap;font-style:italic;font-weight:700;font-stretch:normal;
+}
+
+@font-face {
+font-family:"otta-pe-display";
+src:url("/templates/bloom/assets/font-45.woff2") format("woff2"),url("/templates/bloom/assets/font-46.woff") format("woff"),url("/templates/bloom/assets/font-47.otf") format("opentype");
+font-display:swap;font-style:normal;font-weight:700;font-stretch:normal;
+}
+
+.tk-freight-text-pro { font-family: "freight-text-pro",serif; }
+.tk-caprizant { font-family: "caprizant",sans-serif; }
+.tk-freighttextcmp-pro { font-family: "freighttextcmp-pro",serif; }
+.tk-dickens-tale-script { font-family: "dickens-tale-script",sans-serif; }
+.tk-otta-pe { font-family: "otta-pe",sans-serif; }
+.tk-otta-pe-display { font-family: "otta-pe-display",sans-serif; }

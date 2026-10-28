@@ -48,6 +48,6 @@ function isPublicInvitationRoute(): boolean {
   if (path === '/') return false
   if (/^\/(?:client|admin|login|dashboard|create|newDesign|testing567|edits)(?:\/|$)/.test(path)) return false
   if (/^\/\d+-[A-Za-z0-9_-]{16}$/.test(path)) return false
-  if (path === '/design14/celebrations') return false
+  if (path === '/templates/a-timeless-union/celebrations') return false
   return true
 }

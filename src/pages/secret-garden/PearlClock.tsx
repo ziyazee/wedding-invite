@@ -41,7 +41,7 @@ export function PearlClock({ weddingDate }: { weddingDate: string }) {
   return <div ref={root} className="sg-clock-countdown">
     <p className="sg-clock-heading">Until our forever</p>
     <div className="sg-clock-face">
-      <InvitationMedia className="sg-clock-art" src="/design5/assets/pearl-clock.png" alt="" priority />
+      <InvitationMedia className="sg-clock-art" src="/templates/secret-garden/assets/pearl-clock.webp" alt="" priority />
       <svg className="sg-clock-dial" viewBox="0 0 300 300" aria-hidden="true">
         <path ref={sector} className="sg-clock-sector" />
         <path ref={hand} className="sg-clock-hand" d="M150 83V30" />

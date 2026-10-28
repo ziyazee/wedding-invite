@@ -8,7 +8,7 @@ export default function EmeraldParchment() {
   }, [])
 
   return <iframe
-    src="/emerald-parchment/index.html"
+    src="/templates/emerald-parchment/index.html"
     title="Ayisha and Shafi — Emerald Parchment Nikkah invitation"
     style={{ position: 'fixed', inset: 0, width: '100%', height: '100%', border: 0, background: '#0f1e16' }}
     allow="autoplay"

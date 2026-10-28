@@ -15,12 +15,12 @@
 .d18-ending-copy h1 i{display:block;font:italic 35px 'Playfair Display',Georgia,serif;letter-spacing:0;text-transform:none;color:#c28a35;margin:2px 0}
 .d18-ending-date{margin-top:16px}
 .d18-seam-florals{position:relative;z-index:5;width:100%;max-width:720px;height:0;margin:0 auto;pointer-events:none}
-.d18-seam-florals::before{content:"";position:absolute;inset:0 0 auto;aspect-ratio:3 / 1;transform:translateY(-50%);background:url('/design16/seam-garland.png') center/100% 100% no-repeat}
+.d18-seam-florals::before{content:"";position:absolute;inset:0 0 auto;aspect-ratio:3 / 1;transform:translateY(-50%);background:url('/templates/deprecated/design16/seam-garland.png') center/100% 100% no-repeat}
 .d18-discover-wrap{max-width:720px;margin:auto;padding:26px 16px;background:var(--d18-paper);text-align:center;border-bottom:1px solid #b58a4355}
 .d18-discover{display:inline-flex;align-items:center;gap:12px;border:1px solid #b58a43;border-radius:24px;background:#fff6e7;color:#722e25;padding:10px 20px;font:10px Georgia,serif;letter-spacing:1.5px;text-transform:uppercase;cursor:pointer}
 .d18-discover span{font:17px Georgia,serif}
 .d18-paper{position:relative;isolation:isolate;max-width:720px;margin:auto;background:var(--d18-paper);box-shadow:0 0 90px #5a241218;scroll-margin-top:0}
-.d18-paper::before{content:"";position:absolute;z-index:0;inset:0;pointer-events:none;background-image:url('/design16/border2.png');background-size:100% auto;background-position:center top;background-repeat:repeat-y;opacity:.96}
+.d18-paper::before{content:"";position:absolute;z-index:0;inset:0;pointer-events:none;background-image:url('/templates/deprecated/design16/border2.png');background-size:100% auto;background-position:center top;background-repeat:repeat-y;opacity:.96}
 .d18-paper>section,.d18-paper>footer{position:relative;z-index:1}
 .d18-intro,.d18-countdown,.d18-notes,.d18-footer{text-align:center;padding:82px 19%}
 .d18-intro{padding-top:104px}
@@ -67,8 +67,8 @@
 .d18-section-heading{text-align:center;margin:0 auto 36px}
 .d18-section-heading h2 em{font-weight:400;color:#a25b2f}
 .d18-event{position:relative;isolation:isolate;display:flex;flex-direction:column;justify-content:center;box-sizing:border-box;width:100%;max-width:470px;aspect-ratio:2/3;margin:0 auto 30px;padding:82px 16% 72px;text-align:center;border:0;background:none;border-radius:0;box-shadow:none;filter:drop-shadow(0 8px 8px #514b3020);color:#5c3029}
-.d18-event::before{content:"";position:absolute;z-index:-1;inset:0;pointer-events:none;background:url('/images/royal-grace/ivory-stationery-unframed.png') center/100% 100% no-repeat;mask:url('/images/royal-grace/stationery-silhouette.svg') center/100% 100% no-repeat;-webkit-mask:url('/images/royal-grace/stationery-silhouette.svg') center/100% 100% no-repeat}
-.d18-main-event::before{background-image:url('/design16/burgundy-stationery.png')}
+.d18-event::before{content:"";position:absolute;z-index:-1;inset:0;pointer-events:none;background:url('/templates/royal-grace/ivory-stationery-unframed.png') center/100% 100% no-repeat;mask:url('/templates/royal-grace/stationery-silhouette.svg') center/100% 100% no-repeat;-webkit-mask:url('/templates/royal-grace/stationery-silhouette.svg') center/100% 100% no-repeat}
+.d18-main-event::before{background-image:url('/templates/deprecated/design16/burgundy-stationery.png')}
 .d18-main-event{color:#fff5d9}
 .d18-event-index{font:8px Georgia,serif;letter-spacing:2px;color:#9a7840}
 .d18-main-event .d18-event-index,.d18-main-event .d18-flourish{color:#f1d59c}
