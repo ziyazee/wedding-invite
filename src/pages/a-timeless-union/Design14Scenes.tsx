@@ -176,7 +176,7 @@ function EngagementCard({ duplicate = false, event }: { duplicate?: boolean; eve
   const date = eventDateParts(event.date)
   return (
     <section data-carousel-clone={duplicate ? "" : undefined} aria-hidden={duplicate || undefined} inert={duplicate} className={"d14-engagement-section"} data-d14-name={"Engagement Ceremony"} id={"d14-engagement-slide" + (duplicate ? "-loop" : "")} aria-labelledby={"d14-engagement-title" + (duplicate ? "-loop" : "")} aria-roledescription={"slide"}>
-      <img className={"d14-engagement-art"} src={"/templates/a-timeless-union/assets/engagement.png"} width={"962"} height={"1634"} alt={""} loading={"lazy"} decoding={"async"} />
+      <img className={"d14-engagement-art"} src={"/templates/a-timeless-union/assets/engagement.webp"} width={"962"} height={"1634"} alt={""} loading={"lazy"} decoding={"async"} />
       <article className={"d14-engagement-content"}>
         <h2 className={"d14-engagement-heading"} id={"d14-engagement-title" + (duplicate ? "-loop" : "")}>
           <span className={"d14-engagement-sr-only"}>
@@ -234,7 +234,7 @@ function SangeethCard({ duplicate = false, event }: { duplicate?: boolean; event
   const date = eventDateParts(event.date)
   return (
     <section data-carousel-clone={duplicate ? "" : undefined} aria-hidden={duplicate || undefined} inert={duplicate} className={"d14-engagement-section d14-sangeet-section"} data-d14-name={"Sangeeth Celebration"} id={"d14-sangeet-slide" + (duplicate ? "-loop" : "")} aria-labelledby={"d14-sangeet-title" + (duplicate ? "-loop" : "")} aria-roledescription={"slide"}>
-      <img className={"d14-engagement-art"} src={"/templates/a-timeless-union/assets/sangeet.png"} width={"962"} height={"1635"} alt={""} loading={"lazy"} decoding={"async"} />
+      <img className={"d14-engagement-art"} src={"/templates/a-timeless-union/assets/sangeet.webp"} width={"962"} height={"1635"} alt={""} loading={"lazy"} decoding={"async"} />
       <article className={"d14-engagement-content"}>
         <h2 className={"d14-engagement-heading"} id={"d14-sangeet-title" + (duplicate ? "-loop" : "")}>
           <span className={"d14-engagement-sr-only"}>
@@ -292,7 +292,7 @@ function MarriageCard({ duplicate = false, event }: { duplicate?: boolean; event
   const date = eventDateParts(event.date)
   return (
     <section data-carousel-clone={duplicate ? "" : undefined} aria-hidden={duplicate || undefined} inert={duplicate} className={"d14-engagement-section d14-wedding-section"} data-d14-name={"Marriage Ceremony"} id={"d14-wedding-slide" + (duplicate ? "-loop" : "")} aria-labelledby={"d14-wedding-title" + (duplicate ? "-loop" : "")} aria-roledescription={"slide"}>
-      <img className={"d14-engagement-art"} src={"/templates/a-timeless-union/assets/wedding.png"} width={"962"} height={"1635"} alt={""} loading={"lazy"} decoding={"async"} />
+      <img className={"d14-engagement-art"} src={"/templates/a-timeless-union/assets/wedding.webp"} width={"962"} height={"1635"} alt={""} loading={"lazy"} decoding={"async"} />
       <article className={"d14-engagement-content"}>
         <h2 className={"d14-engagement-heading"} id={"d14-wedding-title" + (duplicate ? "-loop" : "")}>
           <span className={"d14-engagement-sr-only"}>
@@ -350,7 +350,7 @@ function ReceptionCard({ duplicate = false, event }: { duplicate?: boolean; even
   const date = eventDateParts(event.date)
   return (
     <section data-carousel-clone={duplicate ? "" : undefined} aria-hidden={duplicate || undefined} inert={duplicate} className={"d14-engagement-section d14-reception-section"} data-d14-name={"Reception Celebration"} id={"d14-reception-slide" + (duplicate ? "-loop" : "")} aria-labelledby={"d14-reception-title" + (duplicate ? "-loop" : "")} aria-roledescription={"slide"}>
-      <img className={"d14-engagement-art"} src={"/templates/a-timeless-union/assets/reception.png"} width={"962"} height={"1635"} alt={""} loading={"lazy"} decoding={"async"} />
+      <img className={"d14-engagement-art"} src={"/templates/a-timeless-union/assets/reception.webp"} width={"962"} height={"1635"} alt={""} loading={"lazy"} decoding={"async"} />
       <article className={"d14-engagement-content"}>
         <h2 className={"d14-engagement-heading"} id={"d14-reception-title" + (duplicate ? "-loop" : "")}>
           <span className={"d14-engagement-sr-only"}>
@@ -443,8 +443,8 @@ export function ClosingScene({ showIllustrations = true }: { showIllustrations?:
         <img className={"d14-end-cloud d14-end-cloud--middle"} src={"/templates/a-timeless-union/assets/CZscgvlYOVQHkdN9UbKXk28.webp"} alt={""} loading={"lazy"} decoding={"async"} />
         <img className={"d14-end-cloud d14-end-cloud--low"} src={"/templates/a-timeless-union/assets/UeasMBu07jHUk5ch5onj5OD9f4.webp"} alt={""} loading={"lazy"} decoding={"async"} />
       </div>
-      <img className={"d14-end-scene-art"} src={"/templates/a-timeless-union/assets/end-scene.png"} width={"1024"} height={"1536"} alt={"An ornate temple decorated with flowers and saffron flags"} loading={"lazy"} decoding={"async"} />
-      <img hidden={!showIllustrations} data-couple-illustration="" className="d14-end-couple" src="/templates/a-timeless-union/assets/brideandgrrom.png" width="1024" height="1536" alt="Bride and groom exchanging wedding garlands" loading="lazy" decoding="async" />
+      <img className={"d14-end-scene-art"} src={"/templates/a-timeless-union/assets/end-scene.webp"} width={"1024"} height={"1536"} alt={"An ornate temple decorated with flowers and saffron flags"} loading={"lazy"} decoding={"async"} />
+      <img hidden={!showIllustrations} data-couple-illustration="" className="d14-end-couple" src="/templates/a-timeless-union/assets/brideandgrrom.webp" width="1024" height="1536" alt="Bride and groom exchanging wedding garlands" loading="lazy" decoding="async" />
       <div className={"d14-end-gratitude"}>
         <p className={"d14-end-gratitude-intro"}>
           {"With hearts full of gratitude"}

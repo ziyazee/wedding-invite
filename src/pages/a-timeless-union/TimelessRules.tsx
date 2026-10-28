@@ -114,7 +114,7 @@ function TimelessCard({event,eventKey,index,duplicate=false,cloneSide='',offset,
   return()=>{active=false;observer.disconnect();document.fonts.removeEventListener('loadingdone',fit)}
  },[event.title,event.venue,event.address,event.date,event.time,event.map,showIllustrations,art.top,art.bottom])
  return <section ref={root} id={id} data-invite-event-key={eventKey} className={`d14-engagement-section d14-rules-card${showIllustrations?'':' d14-rules-plain-card'}`} data-d14-name={`event-${index}`} data-carousel-clone={duplicate?'':undefined} aria-hidden={duplicate||undefined} inert={duplicate} aria-label={event.title} aria-roledescription="slide">
-  {showIllustrations&&<img className="d14-engagement-art" data-couple-illustration="" src={`/templates/a-timeless-union/assets/${art.file}.png`} alt="" loading="lazy"/>}
+  {showIllustrations&&<img className="d14-engagement-art" data-couple-illustration="" src={`/templates/a-timeless-union/assets/${art.file}.webp`} alt="" loading="lazy"/>}
   <article className="d14-engagement-content" style={showIllustrations?{top:`${art.top*100}%`,bottom:`${art.bottom*100}%`}:undefined}>
    <h2 className="d14-engagement-heading">{wrapCardText(event.title,18)}</h2>
    <time className="d14-engagement-date" dateTime={event.date}>{formatDate(event.date)}</time>

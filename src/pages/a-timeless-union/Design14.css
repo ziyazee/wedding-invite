@@ -790,21 +790,21 @@ html:where(.d14-document), :where(html.d14-document) body {
 
 @font-face {
   font-family: 'D14 Event Cinzel';
-  src: url('/templates/a-timeless-union/assets/cinzel-decorative-400.ttf') format('truetype');
+  src: url('/templates/a-timeless-union/assets/cinzel-decorative-400.woff2') format('woff2');
   font-style: normal;
   font-weight: 400;
   font-display: swap;
 }
 @font-face {
   font-family: 'D14 Event Cormorant';
-  src: url('/templates/a-timeless-union/assets/cormorant-garamond-500.ttf') format('truetype');
+  src: url('/templates/a-timeless-union/assets/cormorant-garamond-500.woff2') format('woff2');
   font-style: normal;
   font-weight: 500;
   font-display: swap;
 }
 @font-face {
   font-family: 'D14 Event Montserrat';
-  src: url('/templates/a-timeless-union/assets/montserrat-500.ttf') format('truetype');
+  src: url('/templates/a-timeless-union/assets/montserrat-500.woff2') format('woff2');
   font-style: normal;
   font-weight: 500;
   font-display: swap;
@@ -813,7 +813,7 @@ html:where(.d14-document), :where(html.d14-document) body {
 /* The artwork supplies the illustration and title; event details remain editable. */
 @font-face {
   font-family: 'D14 Event Cinzel Regular';
-  src: url('/templates/a-timeless-union/assets/cinzel-400.ttf') format('truetype');
+  src: url('/templates/a-timeless-union/assets/cinzel-400.woff2') format('woff2');
   font-style: normal;
   font-weight: 400;
   font-display: swap;
