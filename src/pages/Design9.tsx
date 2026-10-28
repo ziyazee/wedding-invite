@@ -2,6 +2,7 @@ import { useEffect, useRef, useState } from 'react'
 import { useInvitationDetails } from '../invitations/context'
 import { formatDate, formatTime, mapURL, weddingISO, type InvitationData } from '../invitations/model'
 import { downloadCalendar } from '../invitations/calendar'
+import useGoogleFonts from '../hooks/useGoogleFonts'
 import './Design9.css'
 
 const sample: InvitationData = {
@@ -16,6 +17,7 @@ const sample: InvitationData = {
 }
 function Ornament(){return <div className="sv-ornament" aria-hidden="true"><span/>❧<span/></div>}
 export default function Design9(){
+ useGoogleFonts('https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,500;0,600;1,400;1,500&family=Great+Vibes&display=swap')
  const personal=useInvitationDetails();const d=personal||sample
  const audio=useRef<HTMLAudioElement>(null);const root=useRef<HTMLElement>(null)
  const phase = 'open';const [playing,setPlaying]=useState(false);const [now,setNow]=useState(Date.now())

@@ -1,0 +1,194 @@
+import { useEffect, useRef, useState } from 'react'
+import type { ComponentProps } from 'react'
+import type { Celebration, InvitationData } from '../../invitations/model'
+import { formatDate, formatTime, mapURL, weddingISO } from '../../invitations/model'
+import { downloadCalendar } from '../../invitations/calendar'
+import type { RsvpTarget } from '../../invitations/rsvp'
+import { EditableText, InvitationLayoutProvider } from '../../invitations/components/EditableText'
+import { InvitationSection as Section } from '../../invitations/components/InvitationSection'
+import { InvitationMedia } from '../../invitations/components/InvitationMedia'
+import { InvitationRsvp } from '../../invitations/components/InvitationRsvp'
+import PersonalMusic from '../../invitations/PersonalMusic'
+import { wrapCardText } from '../../invitations/cardContentFit'
+import { PearlClock } from './PearlClock'
+import { useSecretGardenCard, useSecretGardenNames } from './useSecretGardenFit'
+import './SecretGarden.css'
+
+type CopyProps = Omit<ComponentProps<typeof EditableText>, 'textId'> & { field: string }
+function Copy({ field, label, ...props }: CopyProps) {
+  return <EditableText {...props} textId={`t5.${field}`} label={label || field.replaceAll('.', ' · ')} />
+}
+
+function AmbientVideo({ src, poster, className }: { src: string; poster?: string; className: string }) {
+  const video = useRef<HTMLVideoElement>(null)
+  const [failed, setFailed] = useState(false)
+  useEffect(() => {
+    const element = video.current
+    if (!element) return
+    element.muted = true
+    const motion = window.matchMedia('(prefers-reduced-motion: reduce)')
+    let visible = true
+    const sync = () => { if (visible && !motion.matches && !document.hidden) void element.play().catch(() => {}); else element.pause() }
+    const observer = new IntersectionObserver(entries => { visible = entries[0].isIntersecting; sync() })
+    observer.observe(element)
+    document.addEventListener('visibilitychange', sync)
+    motion.addEventListener('change', sync)
+    sync()
+    return () => { observer.disconnect(); document.removeEventListener('visibilitychange', sync); motion.removeEventListener('change', sync); element.pause() }
+  }, [])
+  return failed && poster ? <InvitationMedia className={className} src={poster} priority alt="" /> : <InvitationMedia kind="video" className={className} ref={video} src={src} poster={poster} muted loop playsInline onError={() => setFailed(true)} aria-hidden="true" />
+}
+
+function Names({ details: d, section, family = false }: { details: InvitationData; section: string; family?: boolean }) {
+  const root = useRef<HTMLDivElement>(null)
+  const stacked = family && !!(d.groomFamily.trim() || d.brideFamily.trim())
+  useSecretGardenNames(root, JSON.stringify([d.groom, d.bride, d.textOverrides]), stacked)
+  return <div ref={root} role={section === 'opening' ? 'heading' : undefined} aria-level={section === 'opening' ? 1 : undefined} className={`sg-names ${stacked ? 'sg-stacked' : ''}`}>
+    <div><Copy as="span" field={`${section}.groom`} label={`Groom · ${section}`} data-sg-name="">{d.groom}</Copy>{family && d.groomFamily.trim() && <Copy as="p" field={`${section}.groomFamily`} className="sg-family">{d.groomFamily}</Copy>}</div>
+    <Copy field={`${section}.separator`} className="sg-ampersand">&amp;</Copy>
+    <div><Copy as="span" field={`${section}.bride`} label={`Bride · ${section}`} data-sg-name="">{d.bride}</Copy>{family && d.brideFamily.trim() && <Copy as="p" field={`${section}.brideFamily`} className="sg-family">{d.brideFamily}</Copy>}</div>
+  </div>
+}
+
+function EventCard({ event, eventKey, details: d }: { event: Celebration; eventKey: string; details: InvitationData }) {
+  const root = useRef<HTMLDivElement>(null)
+  const prefix = `event-${eventKey}`
+  useSecretGardenCard(root, JSON.stringify([event, d.textOverrides]))
+  return <Section as="article" data-invite-section={prefix} className="sg-event">
+    <AmbientVideo className="sg-event-video" src="/design6/assets/celebrations.mov" />
+    <div ref={root} className="sg-event-copy">
+      <Copy as="p" field={`${prefix}.weekday`} className="sg-eyebrow">{formatDate(event.date, { weekday: 'long' })}</Copy>
+      <Copy as="h2" field={`${prefix}.title`}>{wrapCardText(event.title, 18)}</Copy>
+      <div className="sg-event-date" aria-label={formatDate(event.date)}><Copy field={`${prefix}.day`}>{event.date.slice(8)}</Copy><Copy field={`${prefix}.month`}>{formatDate(event.date, { month: 'short' }).toUpperCase()}</Copy><Copy field={`${prefix}.year`}>{event.date.slice(0, 4)}</Copy></div>
+      <Copy as="p" field={`${prefix}.time`}>{formatTime(event.time)}</Copy>
+      <Copy as="h3" field={`${prefix}.venue`}>{wrapCardText(event.venue, 24)}</Copy>
+      <Copy as="p" field={`${prefix}.address`}>{wrapCardText(event.address, 32)}</Copy>
+      <div className="sg-event-links">{event.map.trim() && <Copy as="a" field={`${prefix}.directions`} href={event.map} target="_blank" rel="noreferrer">Directions ↗</Copy>}<Copy as="button" type="button" field={`${prefix}.calendar`} onClick={() => downloadCalendar(event, d.offset, `${d.groom} & ${d.bride}`)}>Add to calendar</Copy></div>
+    </div>
+  </Section>
+}
+
+export default function SecretGarden({ details: d, rsvpTarget }: { details: InvitationData; rsvpTarget?: RsvpTarget }) {
+  const root = useRef<HTMLElement>(null)
+  const heroVideo = useRef<HTMLVideoElement>(null)
+  const couple = `${d.groom} & ${d.bride}`
+  const wedding = { title: 'Wedding', date: d.date, time: d.time, venue: d.venue, address: d.address, map: d.map }
+  const events = d.events.map((event, index) => ({ event, key: event.id || `legacy-${index}` })).sort((a, b) => `${a.event.date}T${a.event.time}`.localeCompare(`${b.event.date}T${b.event.time}`))
+
+  const [opened, setOpened] = useState(false)
+  const [namesVisible, setNamesVisible] = useState(false)
+
+  useEffect(() => { const previous = document.title; document.title = `${couple} — Secret Garden`; return () => { document.title = previous } }, [couple])
+
+  // Scroll reveal
+  const structure = JSON.stringify([events.map(e => e.key), !!d.dressCode.trim()])
+  useEffect(() => {
+    if (!root.current || !opened || window.matchMedia('(prefers-reduced-motion: reduce)').matches || new URLSearchParams(window.location.search).has('editor')) return
+    const elements = [...root.current.querySelectorAll<HTMLElement>('[data-invite-section]:not(.sg-hero)')]
+    const observer = new IntersectionObserver(entries => {
+      entries.forEach(entry => { if (entry.isIntersecting) { entry.target.classList.add('sg-visible'); observer.unobserve(entry.target) } })
+    }, { threshold: .08 })
+    elements.forEach(element => { element.classList.add('sg-reveal'); observer.observe(element) })
+    return () => { observer.disconnect(); elements.forEach(element => element.classList.remove('sg-reveal')) }
+  }, [structure, opened])
+
+  function openInvitation() {
+    if (opened) return
+    setOpened(true)
+    const video = heroVideo.current
+    const reducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches
+    if (reducedMotion || !video) { setNamesVisible(true); return }
+    video.currentTime = 0
+    video.play().catch(() => { setNamesVisible(true) })
+    window.setTimeout(() => setNamesVisible(true), 4000)
+  }
+
+  return <InvitationLayoutProvider layout={d.textOverrides}><main ref={root} className={`secret-garden${opened ? ' sg-opened' : ''}${namesVisible ? ' sg-names-visible' : ''}`} style={opened ? undefined : { overflow: 'hidden', height: '100svh' }}>
+
+    {/* ── Opening Hero ── */}
+    <Section data-invite-section="opening" className="sg-hero" onClick={openInvitation}>
+      <InvitationMedia kind="video" className="sg-hero-video" ref={heroVideo} src="/design5/assets/hero-video.mp4" poster="/design5/assets/cover.jpg" muted playsInline preload="metadata" onEnded={() => setNamesVisible(true)} onError={() => { if (opened) setNamesVisible(true) }} />
+      <div className="sg-hero-copy">
+        <Copy as="p" field="opening.caption" className="sg-eyebrow">We're getting married</Copy>
+        <Names details={d} section="opening" />
+        <Copy as="p" field="opening.date" className="sg-eyebrow">{formatDate(d.date)}</Copy>
+      </div>
+      <button type="button" className="sg-open-btn" tabIndex={opened ? -1 : 0}>Tap to open</button>
+    </Section>
+
+    {opened && <>
+      <PersonalMusic src={d.music || '/design5/assets/autumn-wind.mp3'} />
+
+      {/* ── Pearl Clock Countdown ── */}
+      <PearlClock weddingDate={weddingISO(d)} />
+
+      {/* ── Lights ── */}
+      <InvitationMedia className="sg-intro-lights" src="/design5/assets/lights.png" alt="" />
+
+      {/* ── Welcome ── */}
+      <Section data-invite-section="welcome" className="sg-welcome">
+        <Copy as="p" field="welcome.caption" className="sg-eyebrow">Together with our families</Copy>
+        <Names details={d} section="welcome" family />
+        {d.showCoupleIllustrations !== false && <InvitationMedia className="sg-couple-illustration" src="/design5/assets/couple.png" alt="Illustrated bride and groom holding hands" />}
+      </Section>
+
+      {/* ── Details / Venue ── */}
+      <Section data-invite-section="venue" className="sg-details">
+        <div className="sg-details-heading">
+          <Copy as="h2" field="venue.heading">Details</Copy>
+          <Copy as="p" field="venue.caption" className="sg-eyebrow">when &amp; where</Copy>
+          {d.message.trim() && <Copy as="p" field="venue.message" className="sg-details-message">{d.message}</Copy>}
+        </div>
+        <div className="sg-venue-card">
+          <InvitationMedia className="sg-venue-frame" src="/design6/assets/ornate-badge-2PyCLI0e.png" alt="" width={1080} height={1080} />
+          <div className="sg-venue-copy">
+            <Copy as="h3" field="venue.location">Location</Copy>
+            <Copy as="p" field="venue.name" className="sg-venue-name">{d.venue}</Copy>
+            <Copy as="p" field="venue.address">{d.address}</Copy>
+            <Copy as="p" field="venue.date" className="sg-venue-date">{formatDate(d.date)}</Copy>
+            <p className="sg-venue-time"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" aria-hidden="true"><circle cx="12" cy="12" r="10"/><path d="M12 6v6l4 2"/></svg>{formatTime(d.time)}</p>
+          </div>
+        </div>
+        <div className="sg-actions">
+          {d.map.trim() && <Copy as="a" field="venue.directions" href={mapURL(d.venue, d.address, d.map)} target="_blank" rel="noreferrer">Google Maps</Copy>}
+          <Copy as="button" type="button" field="venue.calendar" onClick={() => downloadCalendar(wedding, d.offset, couple)}>Add to calendar</Copy>
+        </div>
+      </Section>
+
+      {/* ── Programme ── */}
+      <Section data-invite-section="programme" className="sg-programme">
+        <InvitationMedia src="/design6/assets/food.png" alt="" />
+        <Copy as="h2" field="programme.heading">The programme</Copy>
+      </Section>
+
+      {/* ── Event Cards ── */}
+      <div className="sg-events">{events.map(({ event, key }) => <EventCard key={key} event={event} eventKey={key} details={d} />)}</div>
+
+      {/* ── Dress Code ── */}
+      {d.dressCode.trim() && <Section data-invite-section="dress" className="sg-dress">
+        <Copy as="h2" field="dress.heading">Dress Code</Copy>
+        <Copy as="p" field="dress.caption" className="sg-eyebrow">what to wear</Copy>
+        {d.showCoupleIllustrations !== false && <InvitationMedia src="/design5/assets/dress-code-new.png" alt="Wedding attire illustration" />}
+        <div className="sg-dress-card"><Copy as="h3" field="dress.text">{d.dressCode}</Copy></div>
+      </Section>}
+
+      {/* ── RSVP ── */}
+      <InvitationRsvp template={5} couple={couple} target={rsvpTarget} countOnly />
+
+      {/* ── Closing ── */}
+      <Section data-invite-section="closing" className="sg-closing">
+        <Copy as="h2" field="closing.couple">{couple}</Copy>
+        <Copy as="p" field="closing.date" className="sg-eyebrow">{formatDate(d.date)}</Copy>
+        <InvitationMedia className="sg-footer-flowers" src="/design5/assets/footer-flowers.png" alt="An embroidered arrangement of white roses and greenery" />
+      </Section>
+
+      {/* ── WhatsApp Contact ── */}
+      <div className="sg-contact">
+        <p>For invitations</p>
+        <a href="https://wa.me/917975948093?text=Hey%20I%20need%20an%20invitation%21" target="_blank" rel="noopener noreferrer" aria-label="Contact us on WhatsApp for an invitation">
+          <svg viewBox="0 0 24 24" width="25" height="25" fill="currentColor" aria-hidden="true"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.654-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413z"/></svg>
+        </a>
+      </div>
+    </>}
+  </main></InvitationLayoutProvider>
+}

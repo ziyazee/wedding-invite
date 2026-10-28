@@ -1,0 +1,17 @@
+{
+  "version": 1,
+  "elements": {
+    "t4.event-legacy-0.title": {
+      "fontSize": 32
+    },
+    "t4.event-legacy-2.title": {
+      "fontSize": 34,
+      "x": 0.000003558429674042733,
+      "y": 0.006062931554848873
+    },
+    "t4.event-legacy-2.venue": {
+      "x": 5.607222516673628e-7,
+      "y": -0.07944853455383302
+    }
+  }
+}

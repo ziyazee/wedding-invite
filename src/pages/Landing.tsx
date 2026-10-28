@@ -1,33 +1,9 @@
-import { useLayoutEffect, useRef, useState } from 'react'
+import { useEffect, useLayoutEffect, useRef, useState } from 'react'
 import { invitationExample } from '../invitations/templateData'
+import { loadTemplateCatalog } from '../invitations/templateCatalog'
+import type { InvitationTemplate } from '../invitations/templateCatalog'
 import { TEMPLATE_INTRO_VIDEOS, TEMPLATE_INTRO_IMAGES } from '../lib/templateCardData'
 import './Landing.css'
-
-type Template = { id: number | string; name: string; mood: string; image: string; path?: string }
-
-const templates: Template[] = [
-  { id: 5, name: 'Secret Garden', mood: 'Garden · Ivory · Romantic', image: '/design5/assets/opened.jpg' },
-  { id: 7, name: 'Bloom', mood: 'Garden · Ivory · Romantic', image: '/design7/assets/hero-bg-RvVOmFvi.png' },
-  { id: 1, name: 'Royal Grace', mood: 'Royal Grace · Nikah · Celebration', image: '/images/royal-grace/opening-poster.jpg', path: '/mohadrahma' },
-  { id: 4, name: 'Mandap at Dusk', mood: 'Sunset · Rose · Regal', image: '/design18/preview.jpg' },
-  { id: 2, name: 'Majestic', mood: 'Pearl · Chandeliers · Garden', image: '/design6/assets/hero-poster-DkA1j00-.jpg', path: '/design6' },
-  { id: 6, name: 'Embroidered Garden', mood: 'Wisteria · Swans · Romance', image: '/design3/assets/embroidered-swans-hero-v2.png' },
-  { id: 3, name: 'A Timeless Union', mood: 'Traditional · Hindu · Floral', image: '/landing/timeless-union-opening.jpg', path: '/arjunbhavana' },
-  { id: 8, name: 'The Artful Love Story', mood: 'Ornate · Indian · Romantic', image: '/landing/artful-love-story-opening.jpg' },
-]
-
-const categories = ['All Templates', 'Hindu', 'Muslim', 'Christian', 'Traditional', 'Modern', 'Floral', 'Royal']
-const categoryIcons = ['grid', 'lotus', 'moon', 'cross', 'ornament', 'leaf', 'flower', 'crown']
-const tags: Record<string, string[]> = {
-  5: ['Floral', 'Modern'], 2: ['Royal', 'Traditional'], 6: ['Floral', 'Traditional'],
-  7: ['Floral', 'Modern'], 3: ['Hindu', 'Traditional', 'Floral'], 8: ['Hindu', 'Traditional', 'Royal'],
-  4: ['Hindu', 'Royal'], 1: ['Muslim', 'Royal'], 9: ['Muslim', 'Royal', 'Modern'],
-  10: ['Muslim', 'Traditional', 'Modern'],
-  11: ['Hindu', 'Traditional', 'Royal'],
-  12: ['Hindu', 'Traditional', 'Royal'],
-  13: ['Muslim', 'Royal', 'Traditional'],
-  14: ['Muslim', 'Modern', 'Floral'],
-}
 const contact = 'https://wa.me/917975948093?text=Hey%20I%20need%20an%20invitation%21'
 function LineIcon({ name }: { name: string }) {
   const paths: Record<string, string> = {
@@ -50,6 +26,14 @@ function LineIcon({ name }: { name: string }) {
     next: 'm9 5 7 7-7 7',
   }
   return <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.25" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true"><path d={paths[name] || paths.flower}/></svg>
+}
+function categoryIconFor(category: string) {
+  if (/hindu/i.test(category)) return 'lotus'
+  if (/muslim/i.test(category)) return 'moon'
+  if (/christian/i.test(category)) return 'cross'
+  if (/garden|floral/i.test(category)) return 'flower'
+  if (/royal/i.test(category)) return 'crown'
+  return 'ornament'
 }
 function SearchIcon() { return <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" aria-hidden="true"><circle cx="10" cy="10" r="7"/><path d="m15 15 6 6"/></svg> }
 function ButtonArrow() { return <svg className="button-arrow" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.6" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true"><path d="M4 12h15M13 5l7 7-7 7"/></svg> }
@@ -79,7 +63,10 @@ function scrollToTemplates() {
   requestAnimationFrame(animate)
 }
 export default function Landing() {
-  const [selected, setSelected] = useState<number | string>(1)
+  const [templates, setTemplates] = useState<InvitationTemplate[]>([])
+  const [selected, setSelected] = useState<number | null>(null)
+  const [catalogLoading, setCatalogLoading] = useState(true)
+  const [catalogError, setCatalogError] = useState('')
   const [category, setCategory] = useState('All Templates')
   const [query, setQuery] = useState('')
   const [searchOpen, setSearchOpen] = useState(false)
@@ -89,12 +76,23 @@ export default function Landing() {
   const phoneScreen = useRef<HTMLDivElement>(null)
   const [screenScale, setScreenScale] = useState(0.42)
   const [previewLoaded, setPreviewLoaded] = useState(false)
+  const categories = ['All Templates', ...new Set(templates.map(template => template.category).filter(Boolean))]
   const currentTemplate = templates.find(template => template.id === selected) ?? templates[0]
-  const templateId = Number(selected)
-  const previewData = invitationExample(templateId)
-  const path = previewData ? '/client/live-preview' : currentTemplate.path ?? `/design${selected}`
-  const filtered = templates.filter(t => (category === 'All Templates' || tags[t.id]?.includes(category)) && `${t.name} ${t.mood}`.toLowerCase().includes(query.toLowerCase()) && (sort !== 'favorites' || favorites.includes(t.id)))
+  const previewData = currentTemplate ? invitationExample(currentTemplate.id) : undefined
+  const path = previewData ? '/client/live-preview' : currentTemplate?.preview_url ?? '/client/live-preview'
+  const filtered = templates.filter(t => (category === 'All Templates' || t.category === category) && `${t.name} ${t.category}`.toLowerCase().includes(query.toLowerCase()) && (sort !== 'favorites' || favorites.includes(t.id)))
   if (sort === 'name') filtered.sort((a, b) => a.name.localeCompare(b.name))
+  useEffect(() => {
+    let cancelled = false
+    loadTemplateCatalog(true).then(items => {
+      if (cancelled) return
+      setTemplates(items)
+      setSelected(current => current !== null && items.some(template => template.id === current) ? current : items[0]?.id ?? null)
+    }).catch(error => {
+      if (!cancelled) setCatalogError(error instanceof Error ? error.message : 'Could not load templates.')
+    }).finally(() => { if (!cancelled) setCatalogLoading(false) })
+    return () => { cancelled = true }
+  }, [])
   useLayoutEffect(() => {
     const screen = phoneScreen.current
     if (!screen) return
@@ -108,7 +106,7 @@ export default function Landing() {
     if (!previewData) return
     try { sessionStorage.setItem('shaadi-client-live-preview', JSON.stringify(previewData)) } catch { /* Preview can still open with the template defaults. */ }
   }, [previewData])
-  function chooseTemplate(id: number | string) {
+  function chooseTemplate(id: number) {
     if (id !== selected) { setSelected(id); setPreviewLoaded(false) }
     if (window.matchMedia('(max-width: 760px)').matches) document.getElementById('live-preview')?.scrollIntoView({ behavior: window.matchMedia('(prefers-reduced-motion: reduce)').matches ? 'auto' : 'smooth' })
   }
@@ -127,21 +125,23 @@ export default function Landing() {
           <p className="hero-note">Invitations<br/>that feel like<br/>your story</p>
         </section>
         <section className="template-section" id="templates" aria-labelledby="template-title">
-          <div className="template-filters" role="group" aria-label="Template categories">{categories.map((label, i) => <button key={label} className={category === label ? 'active' : ''} aria-pressed={category === label} onClick={() => setCategory(label)}><span aria-hidden="true"><LineIcon name={categoryIcons[i]}/></span>{label}</button>)}</div>
+          <div className="template-filters" role="group" aria-label="Template categories">{categories.map(label => <button key={label} className={category === label ? 'active' : ''} aria-pressed={category === label} onClick={() => setCategory(label)}><span aria-hidden="true"><LineIcon name={categoryIconFor(label)}/></span>{label}</button>)}</div>
           {searchOpen && <label className="template-search"><SearchIcon/><input autoFocus value={query} onChange={e => setQuery(e.target.value)} placeholder="Find your invitation…" aria-label="Search templates"/><button onClick={() => { setQuery(''); setSearchOpen(false) }} aria-label="Close search">×</button></label>}
           <div className="template-heading"><h2 id="template-title">Explore Our Templates</h2><div><span>{filtered.length} Beautiful Designs</span><select aria-label="Sort templates" value={sort} onChange={e => setSort(e.target.value)}><option value="featured">Featured</option><option value="name">Name: A–Z</option><option value="favorites">Your Favourites</option></select></div></div>
-          <div className="template-list">{filtered.map(template => <article className={`template-card${selected === template.id ? ' is-selected' : ''}`} key={template.id}>
-            <div className="template-image-wrap">{TEMPLATE_INTRO_VIDEOS[Number(template.id)] ? <video className="template-intro-video" src={TEMPLATE_INTRO_VIDEOS[Number(template.id)]} poster={template.image} autoPlay muted loop playsInline aria-hidden="true" ref={el => { if (el) { el.muted = true; el.setAttribute('muted', ''); el.play().catch(() => {}) } }}/> : <img src={TEMPLATE_INTRO_IMAGES[Number(template.id)] ?? template.image} alt={`${template.name} invitation artwork`} loading="lazy"/>}<button className="template-select" aria-label={`Preview ${template.name}`} aria-pressed={selected === template.id} onClick={() => chooseTemplate(template.id)}/><button className={`card-favorite${favorites.includes(template.id) ? ' saved' : ''}`} aria-label={`Favourite ${template.name}`} aria-pressed={favorites.includes(template.id)} onClick={() => setFavorites(prev => prev.includes(template.id) ? prev.filter(id => id !== template.id) : [...prev, template.id])}><LineIcon name="heart"/></button></div>
-            <button className="template-name" onClick={() => chooseTemplate(template.id)}>{template.name}</button><p className="template-mood">{template.mood}</p>
+          <div className="template-list">{!catalogLoading && !catalogError && filtered.map(template => <article className={`template-card${selected === template.id ? ' is-selected' : ''}`} key={template.id}>
+            <div className="template-image-wrap">{TEMPLATE_INTRO_VIDEOS[template.id] ? <video className="template-intro-video" src={TEMPLATE_INTRO_VIDEOS[template.id]} poster={template.thumbnail_url} autoPlay muted loop playsInline aria-hidden="true" ref={el => { if (el) { el.muted = true; el.setAttribute('muted', ''); el.play().catch(() => {}) } }}/> : <img src={TEMPLATE_INTRO_IMAGES[template.id] ?? template.thumbnail_url} alt={`${template.name} invitation artwork`} loading="lazy"/>}<button className="template-select" aria-label={`Preview ${template.name}`} aria-pressed={selected === template.id} onClick={() => chooseTemplate(template.id)}/><button className={`card-favorite${favorites.includes(template.id) ? ' saved' : ''}`} aria-label={`Favourite ${template.name}`} aria-pressed={favorites.includes(template.id)} onClick={() => setFavorites(prev => prev.includes(template.id) ? prev.filter(id => id !== template.id) : [...prev, template.id])}><LineIcon name="heart"/></button></div>
+            <button className="template-name" onClick={() => chooseTemplate(template.id)}>{template.name}</button><p className="template-mood">{template.category}</p>
           </article>)}</div>
-          {filtered.length === 0 && <div className="template-empty"><h3>A beautiful beginning is on its way.</h3><p>No templates match this selection yet.</p><button onClick={() => { setCategory('All Templates'); setQuery(''); setSort('featured') }}>Explore all templates <ButtonArrow/></button></div>}
+          {catalogLoading && <div className="template-empty"><h3>Loading templates…</h3></div>}
+          {catalogError && <div className="template-empty"><h3>Templates could not be loaded.</h3><p>{catalogError}</p></div>}
+          {!catalogLoading && !catalogError && filtered.length === 0 && <div className="template-empty"><h3>A beautiful beginning is on its way.</h3><p>No templates match this selection yet.</p><button onClick={() => { setCategory('All Templates'); setQuery(''); setSort('featured') }}>Explore all templates <ButtonArrow/></button></div>}
           <footer className="showcase-footer">SHAADI INVITES <span>·</span> A celebration begins with an invitation</footer>
         </section>
       </div>
       <aside id="live-preview" className="showcase-preview" aria-label="Live invitation preview">
         <div className="phone-stage"><div className="iphone-frame"><div className="iphone-screen" ref={phoneScreen}>
-          {!previewLoaded && <img className="phone-placeholder" src={currentTemplate.image} alt="Loading invitation preview"/>}
-          <iframe key={selected} src={path} title={`${currentTemplate.name}: interactive wedding invitation`} allow="autoplay; fullscreen" style={{ transform: `scale(${screenScale})`, opacity: previewLoaded ? 1 : 0 }} onLoad={() => setPreviewLoaded(true)} allowFullScreen/>
+          {!previewLoaded && currentTemplate && <img className="phone-placeholder" src={currentTemplate.thumbnail_url} alt="Loading invitation preview"/>}
+          {currentTemplate && <iframe key={selected} src={path} title={`${currentTemplate.name}: interactive wedding invitation`} allow="autoplay; fullscreen" style={{ transform: `scale(${screenScale})`, opacity: previewLoaded ? 1 : 0 }} onLoad={() => setPreviewLoaded(true)} allowFullScreen/>}
           <div className="dynamic-island" aria-hidden="true"><span/></div>
         </div></div></div>
       </aside>

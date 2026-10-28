@@ -52,6 +52,7 @@ function getInviteSlug(): string | null {
 const Login = lazySitePage(() => import('./pages/Login'))
 const ClientDashboard = lazySitePage(() => import('./pages/ClientDashboard'))
 const ClientDashboardTesting = lazySitePage(() => import('./pages/ClientDashboard').then(m => ({ default: m.ClientDashboardTesting })))
+const Edits = lazySitePage(() => import('./pages/Edits'))
 const ClientLivePreview = lazy(() => import('./pages/ClientLivePreview'))
 const AdminDashboard = lazySitePage(() => import('./pages/AdminDashboard'))
 const OrderManagement = lazySitePage(() => import('./pages/OrderManagement'))
@@ -77,6 +78,7 @@ export default function App() {
       <Route path="/login" element={<Login />} />
       <Route path="/client/dashboard" element={<ClientDashboard />} />
       <Route path="/testing567" element={<ClientDashboardTesting />} />
+      <Route path="/edits" element={<Edits />} />
       <Route path="/client/live-preview" element={<ClientLivePreview />} />
       <Route path="/admin/dashboard" element={<AdminDashboard />} />
       <Route path="/dashboard" element={<Navigate to="/" replace />} />
@@ -99,18 +101,12 @@ export default function App() {
       <Route path="/maitri" element={<Design11 />} />
       <Route path="/design12" element={<Design12 />} />
       <Route path="/kiran" element={<Design12 />} />
-      <Route path="/design4" element={<Design4 />} />
       <Route path="/design5" element={<Design5 />} />
       <Route path="/secret-garden" element={<SecretGardenPreview />} />
       <Route path="/design6" element={<Design6 />} />
       <Route path="/majestic" element={<Design6 />} />
       <Route path="/design7" element={<Design7 />} />
       <Route path="/bloom" element={<BloomPreview />} />
-      <Route path="/design8" element={<Design8 />} />
-      <Route path="/design9" element={<Design9 />} />
-      <Route path="/design10" element={<Design10 />} />
-      <Route path="/design11" element={<Design11 />} />
-      <Route path="/design12" element={<Design12 />} />
       <Route path="/design13" element={<Design13 />} />
       <Route path="/the-artful-love-story" element={<Design13 />} />
       <Route path="/design14/celebrations" element={<CelebrationsEmbed />} />

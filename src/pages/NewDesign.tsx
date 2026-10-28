@@ -144,7 +144,7 @@ function Splash({ onOpen }: { onOpen: () => void }) {
           src="/images/envelope-open.mp4"
           muted
           playsInline
-          preload="auto"
+          preload="metadata"
           onEnded={handleVideoEnd}
           style={{
             width: '100%', maxWidth: '440px',

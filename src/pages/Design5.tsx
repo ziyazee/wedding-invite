@@ -1,16 +1,25 @@
-import { useEffect } from 'react'
+import { lazy, Suspense } from 'react'
+import type { InvitationData } from '../invitations/model'
+
+const SecretGarden = lazy(() => import('./secret-garden/SecretGarden'))
+
+const demo: InvitationData = {
+  template: 5,
+  groom: 'Clara', bride: 'Nour',
+  date: '2026-10-03', time: '15:15', offset: '+02:00',
+  venue: 'Mairie de Vauréal', address: 'Vauréal, France', map: 'https://maps.google.com/?q=Mairie+de+Vaureal',
+  message: '',
+  groomFamily: '', brideFamily: '',
+  dressCode: 'Formal — Black tie',
+  giftNote: '', music: '/design5/assets/autumn-wind.mp3', gallery: '',
+  events: [
+    { title: 'Wedding Ceremony', date: '2026-10-03', time: '15:15', venue: 'Mairie de Vauréal', address: 'Vauréal, France', map: 'https://maps.google.com/?q=Mairie+de+Vaureal' },
+    { title: 'Reception', date: '2026-10-03', time: '18:00', venue: 'Château de Vauréal', address: 'Vauréal, France', map: '' },
+  ],
+}
 
 export default function Design5() {
-  useEffect(() => {
-    const previousTitle = document.title
-    document.title = 'Clara & Nour — Secret Garden'
-    return () => { document.title = previousTitle }
-  }, [])
-
-  return <iframe
-    src="/design5/index.html"
-    title="Clara and Nour — Secret Garden wedding invitation"
-    style={{ position: 'fixed', inset: 0, width: '100%', height: '100%', border: 0, background: '#f6f3ea' }}
-    allow="autoplay"
-  />
+  return <Suspense fallback={<div style={{ minHeight: '100svh', background: '#EFE8DA' }} />}>
+    <SecretGarden details={demo} />
+  </Suspense>
 }

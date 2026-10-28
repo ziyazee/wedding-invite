@@ -4,6 +4,7 @@ import { defineConfig } from 'vite'
 import { fileURLToPath } from 'node:url'
 import { applicationAPI } from './server/applications.ts'
 import { invitationAPI } from './server/invitations.ts'
+import { editsAPI } from './server/edits.ts'
 
 export default defineConfig({
   build: {
@@ -44,6 +45,6 @@ export default defineConfig({
         })
       },
     },
-    react(), tailwindcss(), invitationAPI(), applicationAPI(),
+    react(), tailwindcss(), invitationAPI(), applicationAPI(), editsAPI(),
   ],
 })

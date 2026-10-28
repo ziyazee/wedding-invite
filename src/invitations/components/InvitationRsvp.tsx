@@ -7,7 +7,7 @@ import { InvitationSection } from './InvitationSection'
 import { InvitationMedia } from './InvitationMedia'
 
 /** Native form shared by migrated invitations; only published orders submit. */
-export function InvitationRsvp({ template, couple, target }: { template: number; couple: string; target?: RsvpTarget }) {
+export function InvitationRsvp({ template, couple, target, countOnly }: { template: number; couple: string; target?: RsvpTarget; countOnly?: boolean }) {
   const [opened, setOpened] = useState(false)
   const [attendance, setAttendance] = useState<'yes' | 'no'>('yes')
   const [count, setCount] = useState(1)
@@ -45,7 +45,7 @@ export function InvitationRsvp({ template, couple, target }: { template: number;
       </fieldset>
       <label><Text textId={id('name')} label="Guest name label">Full name</Text><input name="fullName" autoComplete="name" required maxLength={120} /></label>
       {attendance === 'yes' && <><label><Text textId={id('count')} label="Guest count label">Number of guests</Text><input type="number" min={1} max={10} required value={count} onChange={event => setCount(Math.max(1, Math.min(10, Number(event.target.value) || 1)))} /></label>
-        {Array.from({ length: count - 1 }, (_, i) => <label key={i}><Text textId={id(`guest-${i}`)} label={`Guest ${i + 2} label`}>Guest {i + 2} name</Text><input name={`guest-${i}`} required maxLength={120} /></label>)}</>}
+        {!countOnly && Array.from({ length: count - 1 }, (_, i) => <label key={i}><Text textId={id(`guest-${i}`)} label={`Guest ${i + 2} label`}>Guest {i + 2} name</Text><input name={`guest-${i}`} required maxLength={120} /></label>)}</>}
       <label><Text textId={id('message')} label="RSVP message label">Message (optional)</Text><textarea name="message" rows={4} maxLength={1000} /></label>
       <button type="submit" disabled={!target || busy}><Text textId={id('submit')} label="Send RSVP label">{busy ? 'Sending…' : 'Send RSVP'}</Text></button>
       <p role="status" aria-live="polite">{status || (!target ? 'RSVP is available on the published invitation.' : '')}</p>
