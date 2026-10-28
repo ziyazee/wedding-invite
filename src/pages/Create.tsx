@@ -1,6 +1,7 @@
 import { useRef, useState, type FormEvent } from 'react'
 import { Link } from 'react-router-dom'
 import { formatDate, validateDetails, type Celebration } from '../invitations/model'
+import useGoogleFonts from '../hooks/useGoogleFonts'
 import './Create.css'
 
 function ArrowIcon() {
@@ -8,6 +9,7 @@ function ArrowIcon() {
 }
 
 export default function Create() {
+ useGoogleFonts('https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,500;0,600;1,400;1,500&family=Dancing+Script:wght@400;500&family=DM+Sans:wght@400;500&display=swap')
  const [groom,setGroom]=useState('');const [bride,setBride]=useState('')
  const [date,setDate]=useState('');const [time,setTime]=useState('')
  const [venue,setVenue]=useState('');const [events,setEvents]=useState<Celebration[]>([])

@@ -115,7 +115,6 @@ export default function MohadRahma() {
     setOpened(true)
     if (videoFailed || window.matchMedia('(prefers-reduced-motion: reduce)').matches) { setNamesVisible(true); return }
     video.current?.play().catch(() => { setVideoFailed(true); setNamesVisible(true) })
-    timer.current = setTimeout(() => setNamesVisible(true), 6000)
   }
 
   return <InvitationLayoutProvider layout={details?.textOverrides}><main className="royal-grace mohad-rahma">
@@ -129,7 +128,10 @@ export default function MohadRahma() {
         } else {
           requestAnimationFrame(() => requestAnimationFrame(() => setVideoFrameReady(true)))
         }
-      }} onError={() => { setVideoFailed(true); if (opened) setNamesVisible(true) }} onEnded={() => setNamesVisible(true)} />}
+      }} onError={() => { setVideoFailed(true); if (opened) setNamesVisible(true) }} onTimeUpdate={event => {
+        const v = event.currentTarget
+        if (v.duration && v.duration - v.currentTime <= 3) setNamesVisible(true)
+      }} onEnded={() => setNamesVisible(true)} />}
       <InvitationMedia priority className={`mr-opening-poster ${videoFrameReady || namesVisible ? 'mr-opening-poster-hidden' : ''}`} src={`${ASSETS}opening-poster.jpg`} alt="" aria-hidden="true" />
       <div className="rg-hero-shade" />
       {!opened && <button className="rg-open" onClick={openInvitation} aria-label="Open your invitation" />}

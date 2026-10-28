@@ -106,7 +106,7 @@ export default function Design18() {
   return <main ref={root} className={`d18-page d18-${phase}`}>
     <audio ref={audio} src={details.music || '/design18/inkem.mp3'} loop preload="none" onPlay={() => setMusic(true)} onPause={() => setMusic(false)} />
     <section className="d18-entry" aria-label="Wedding invitation entry">
-      <video ref={video} className="d18-entry-video" src="/design18/entry.mp4" poster="/design18/entry-poster.jpg" muted playsInline disablePictureInPicture preload="auto" onLoadedMetadata={() => { if (skipIntro.current && video.current) { video.current.currentTime = 1.95; skipIntro.current = false } }} onEnded={finish} onError={() => { if (phase === 'playing') finish() }} />
+      <video ref={video} className="d18-entry-video" src="/design18/entry.mp4" poster="/design18/entry-poster.jpg" muted playsInline disablePictureInPicture preload="metadata" onLoadedMetadata={() => { if (skipIntro.current && video.current) { video.current.currentTime = 1.95; skipIntro.current = false } }} onEnded={finish} onError={() => { if (phase === 'playing') finish() }} />
       <div className="d18-entry-shade" />
       <button className={`d18-enter${phase !== 'closed' ? ' d18-enter-dismissed' : ''}`} aria-label="Open invitation" onClick={openInvitation} disabled={phase !== 'closed'} aria-hidden={phase !== 'closed'} tabIndex={phase === 'closed' ? 0 : -1}>
         <img src="/design18/open-invitation-button.png" alt="" width="1080" height="360" draggable={false} />

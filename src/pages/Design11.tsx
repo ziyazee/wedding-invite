@@ -2,6 +2,7 @@ import { useEffect, useRef, useState, useCallback } from 'react'
 import { useInvitationDetails } from '../invitations/context'
 import { formatDate, formatTime, mapURL, weddingISO, type InvitationData } from '../invitations/model'
 import { downloadCalendar } from '../invitations/calendar'
+import useGoogleFonts from '../hooks/useGoogleFonts'
 import './Design11.css'
 
 const demo: InvitationData = {
@@ -19,6 +20,7 @@ function ClockIcon() { return <svg viewBox="0 0 24 24"><circle cx="12" cy="12" r
 function MapPin() { return <svg viewBox="0 0 24 24"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 1 1 18 0z" /><circle cx="12" cy="10" r="3" /></svg> }
 
 export default function Design11() {
+  useGoogleFonts('https://fonts.googleapis.com/css2?family=Asul&family=Elsie+Swash+Caps&family=Instrument+Serif&family=Jost:wght@300;400;500&family=Lusitana&family=Luxurious+Script&family=Philosopher&family=Open+Sans:wght@400;600&display=swap')
   const personal = useInvitationDetails()
   const d = personal || demo
   const audio = useRef<HTMLAudioElement>(null)

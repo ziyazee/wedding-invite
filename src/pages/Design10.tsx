@@ -1,11 +1,13 @@
 import { useEffect, useRef, useState } from 'react'
 import { useInvitationDetails } from '../invitations/context'
 import { formatDate, formatTime, mapURL, type InvitationData } from '../invitations/model'
+import useGoogleFonts from '../hooks/useGoogleFonts'
 import './Design10.css'
 const demo:InvitationData={template:10,groom:'Mohad',bride:'Rahma',date:'2026-12-20',time:'11:00',offset:'+05:30',venue:'TMA Pai Convention Centre',address:'Mangalore',map:'',message:'With the blessings of Allah and the love of our families, we invite you to celebrate the beginning of our forever.',groomFamily:'',brideFamily:'',dressCode:'',giftNote:'',music:'/bisara.mp3',gallery:'',events:[{title:'Mehendi',date:'2026-12-19',time:'17:00',venue:'Royal Garden Beach Resort',address:'Ullal, Mangalore',map:'https://maps.app.goo.gl/43ui6W3Hn6N2cbui8'},{title:'Nikah & Wedding',date:'2026-12-20',time:'11:00',venue:'TMA Pai Convention Centre',address:'Mangalore',map:'https://maps.app.goo.gl/1xf3k59k9QEaoQ717'},{title:'Wedding Reception',date:'2026-12-21',time:'19:00',venue:'Shoolin Palace',address:'Airport Road, Mangalore',map:'https://maps.app.goo.gl/ARcdN5shsLC5og2f8'}]}
 function Flourish(){return <div className="iy-flourish" aria-hidden="true"><span/>❧<span/></div>}
 function Arrow(){return <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.3" aria-hidden="true"><path d="M5 19 19 5M5 5h14v14"/></svg>}
 export default function Design10(){
+ useGoogleFonts('https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,500;0,600;1,400&family=Great+Vibes&display=swap')
  const d=useInvitationDetails()||demo;const video=useRef<HTMLVideoElement>(null);const audio=useRef<HTMLAudioElement>(null);const root=useRef<HTMLElement>(null)
  const [phase,setPhase]=useState<'closed'|'playing'|'open'>('closed');const [music,setMusic]=useState(false)
  const finish=()=>{video.current?.pause();setPhase('open')}
@@ -17,7 +19,7 @@ export default function Design10(){
  {phase!=='closed'&&<button className="iy-music" aria-label={music?'Pause music':'Play music'} onClick={()=>music?audio.current?.pause():void audio.current?.play().catch(()=>{})}>{music?'Ⅱ':'♫'}</button>}
  <section className="iy-opening" aria-label="Open your wedding invitation">
  <img className="iy-open-still" src="/design10/open.jpg" alt="Ivory wedding arch surrounded by white flowers"/>
- {phase!=='open'&&<video ref={video} src="/video2.mp4" poster="/design10/poster.jpg" muted playsInline preload="auto" onEnded={finish} onError={()=>{if(phase==='playing')finish()}}/>}
+ {phase!=='open'&&<video ref={video} src="/video2.mp4" poster="/design10/poster.jpg" muted playsInline preload="metadata" onEnded={finish} onError={()=>{if(phase==='playing')finish()}}/>}
  {phase==='closed'&&<button className="iy-enter" onClick={open}><span className="iy-eyebrow">YOU ARE INVITED</span><span className="iy-seal">{d.groom.trim().charAt(0)}<i>&</i>{d.bride.trim().charAt(0)}</span><span className="iy-enter-label">A beautiful beginning</span><span className="iy-enter-tap">TAP TO UNFOLD <span>↓</span></span></button>}
  {phase==='playing'&&<button className="iy-skip" onClick={finish}>Skip opening</button>}
  {phase==='open'&&<div className="iy-open-caption"><p className="iy-eyebrow">IN THE NAME OF ALLAH</p><p className="iy-hero-names"><span>{d.groom}</span><i>&</i><span>{d.bride}</span></p><p className="iy-hero-date">{formatDate(d.date)}</p><button onClick={()=>document.getElementById('iy-invitation')?.scrollIntoView({behavior:matchMedia('(prefers-reduced-motion: reduce)').matches?'auto':'smooth'})}>DISCOVER THE INVITATION <span>↓</span></button></div>}

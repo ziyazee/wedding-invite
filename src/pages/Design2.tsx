@@ -5,6 +5,7 @@ import HeartDateReveal from './HeartDateReveal'
 import FlowerTrail from './FlowerTrail'
 import { useInvitationDetails } from '../invitations/context'
 import { formatDate, formatTime, mapURL, weddingISO } from '../invitations/model'
+import useGoogleFonts from '../hooks/useGoogleFonts'
 
 const ASSETS = '/images/royal-grace/'
 const eventDate = new Date('2026-09-27T17:00:00-04:00')
@@ -23,6 +24,7 @@ function Countdown({ target = eventDate }: { target?: Date }) {
 }
 
 export default function Design2() {
+  useGoogleFonts('https://fonts.googleapis.com/css2?family=Dancing+Script:wght@400;500;600;700&family=Cormorant+Garamond:ital,wght@0,400;0,500;0,600;1,400&display=swap')
   const details = useInvitationDetails()
   const video = useRef<HTMLVideoElement>(null)
   const timer = useRef<ReturnType<typeof setTimeout> | undefined>(undefined)
@@ -51,7 +53,7 @@ export default function Design2() {
     <FlowerTrail />
     <PersonalMusic src={details?.music || `${ASSETS}music.mp3`} />
     <section className={`rg-hero ${namesVisible ? 'rg-is-open' : ''}`} aria-label="Wedding invitation">
-      {!videoFailed && <video ref={video} src={`${ASSETS}opening.mp4`} muted playsInline preload="auto" onError={() => { setVideoFailed(true); if (opened) setNamesVisible(true) }} onEnded={() => setNamesVisible(true)} />}
+      {!videoFailed && <video ref={video} src={`${ASSETS}opening.mp4`} muted playsInline preload="metadata" onError={() => { setVideoFailed(true); if (opened) setNamesVisible(true) }} onEnded={() => setNamesVisible(true)} />}
       <div className="rg-hero-shade" />
       {!opened && <button className="rg-open" onClick={openInvitation} aria-label="Open your invitation" />}
       <div className="rg-names" aria-hidden={!namesVisible}>

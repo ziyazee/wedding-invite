@@ -91,7 +91,7 @@ export default function Design4() {
     </div>}
     <div className="bo-content" inert={phase !== 'open'}>
       <section className="bo-hero">
-        <video ref={hero} src={`${A}hero.mp4`} poster={`${A}hero-poster.jpg`} muted playsInline loop preload="auto" aria-hidden="true" />
+        <video ref={hero} src={`${A}hero.mp4`} poster={`${A}hero-poster.jpg`} muted playsInline loop preload="metadata" aria-hidden="true" />
         <div className="bo-couple"><h1 className="bo-script"><span>{details?.groom || "Amira"}</span><i>&</i><span>{details?.bride || "Yusuf"}</span></h1><p>{details ? formatDate(details.date) : "20 Mai 2027"}<br />{details ? formatTime(details.time) : "à partir de 16h"}</p></div>
       </section>
       <section className="bo-arabic" lang="ar" dir="rtl">

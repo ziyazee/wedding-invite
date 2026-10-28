@@ -1,0 +1,25 @@
+.edits-workspace .edits-topbar-title { display: flex; flex-direction: column; gap: 2px; }
+.edits-workspace .edits-topbar-title strong { font: 500 14px Inter, Arial, sans-serif; color: #1a2b1e; }
+.edits-workspace .edits-topbar-title span { font-size: 11px; color: #6e786f; }
+.edits-workspace .edits-save-bar { display: flex; align-items: center; gap: 12px; margin-left: auto; }
+.edits-save-status { font-size: 11px; font-weight: 500; padding: 5px 10px; border-radius: 5px; }
+.edits-save-status.is-saved { background: #e2f5e9; color: #267a42; }
+.edits-save-status.is-error { background: #fde8e6; color: #b44940; }
+.edits-save-btn { padding: 8px 20px; border: 0; border-radius: 6px; background: #405842; color: #fff; font: 500 12px Inter, Arial, sans-serif; cursor: pointer; transition: background .15s; }
+.edits-save-btn:hover { background: #344a36; }
+.edits-save-btn:disabled { opacity: .5; cursor: wait; }
+
+.edits-template-list { display: flex; flex-direction: column; gap: 4px; overflow-y: auto; max-height: calc(100vh - 200px); padding: 0 6px; }
+.edits-template-item { display: flex; align-items: center; gap: 10px; width: 100%; padding: 8px 10px; border: 1px solid transparent; border-radius: 7px; background: transparent; color: #536071; text-align: left; font-size: 11px; cursor: pointer; transition: background .12s; }
+.edits-template-item:hover { background: #f6f7f6; }
+.edits-template-item.active { border-color: #e7dcc5; background: #f7f3ea; color: #5f4b29; }
+.edits-template-item img { width: 44px; height: 58px; object-fit: cover; border-radius: 4px; border: 1px solid #e5dece; flex: none; }
+.edits-template-item span { display: flex; flex-direction: column; gap: 2px; min-width: 0; }
+.edits-template-item strong { font: 500 11px Inter, Arial, sans-serif; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.edits-template-item small { font-size: 9px; color: #8a9580; }
+
+@media (max-width: 760px) {
+  .edits-template-list { flex-direction: row; overflow-x: auto; max-height: none; }
+  .edits-template-item { flex: none; }
+  .edits-template-item img { width: 36px; height: 48px; }
+}

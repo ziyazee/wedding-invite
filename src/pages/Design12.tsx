@@ -2,6 +2,7 @@ import { useEffect, useRef, useState, useCallback } from 'react'
 import { useInvitationDetails } from '../invitations/context'
 import { formatDate, formatTime, mapURL, weddingISO, type InvitationData } from '../invitations/model'
 import { downloadCalendar } from '../invitations/calendar'
+import useGoogleFonts from '../hooks/useGoogleFonts'
 import './Design12.css'
 
 const demo: InvitationData = {
@@ -57,6 +58,7 @@ function MapPin() {
 }
 
 export default function Design12() {
+  useGoogleFonts('https://fonts.googleapis.com/css2?family=Abhaya+Libre:wght@400;700;800&family=Amethysta&family=Asul&family=EB+Garamond:wght@700&family=Elsie+Swash+Caps&family=Instrument+Serif&family=Jost:wght@300;400;500;600&family=Junge&family=Lunasima&family=Lusitana&family=Luxurious+Script&family=Philosopher:wght@400;700&family=Open+Sans:wght@400;600&display=swap')
   const personal = useInvitationDetails()
   const d = personal || demo
   const audio = useRef<HTMLAudioElement>(null)

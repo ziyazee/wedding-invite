@@ -102,7 +102,7 @@ export default function Design17() {
   return <main ref={root} className={`d17-page d17-${phase}`}>
     <audio ref={audio} src={details.music || '/bisara.mp3'} loop preload="none" onPlay={() => setMusic(true)} onPause={() => setMusic(false)} />
     <section className="d17-entry" aria-label="Wedding invitation entry">
-      <video ref={video} className="d17-entry-video" src="/design17/entry.mp4" poster="/design17/entry-poster.jpg" muted playsInline preload="auto" onEnded={finish} onError={() => { if (phase === 'playing') finish() }} />
+      <video ref={video} className="d17-entry-video" src="/design17/entry.mp4" poster="/design17/entry-poster.jpg" muted playsInline preload="metadata" onEnded={finish} onError={() => { if (phase === 'playing') finish() }} />
       <div className="d17-entry-shade" />
       {phase === 'closed' && <button className="d17-enter" onClick={openInvitation}>
         <span aria-hidden="true">✧</span> Open invitation
