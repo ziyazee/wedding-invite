@@ -8,25 +8,25 @@
       ]
     },
     {
-      "source": "/(.*)\\.(?:js|css)$",
+      "source": "/(.*)\\.(js|css)$",
       "headers": [
         { "key": "Cache-Control", "value": "public, max-age=31536000, immutable" }
       ]
     },
     {
-      "source": "/(.*)\\.(?:woff2?|ttf|otf)$",
+      "source": "/(.*)\\.(woff2|woff|ttf|otf)$",
       "headers": [
         { "key": "Cache-Control", "value": "public, max-age=31536000, immutable" }
       ]
     },
     {
-      "source": "/(.*)\\.(?:png|jpg|jpeg|webp|avif|svg|gif)$",
+      "source": "/(.*)\\.(png|jpg|jpeg|webp|avif|svg|gif)$",
       "headers": [
         { "key": "Cache-Control", "value": "public, max-age=2592000" }
       ]
     },
     {
-      "source": "/(.*)\\.(?:mp4|mov|webm|mp3)$",
+      "source": "/(.*)\\.(mp4|mov|webm|mp3)$",
       "headers": [
         { "key": "Cache-Control", "value": "public, max-age=2592000" }
       ]
