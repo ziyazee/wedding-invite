@@ -23,6 +23,7 @@ const Design17 = lazy(() => import('../pages/Design17'))
 const MandapAtDusk = lazy(() => import('../pages/MandapAtDusk'))
 const TextLayoutLayer = lazy(() => import('./TextLayoutLayer'))
 const OrderFrameInvitation = lazy(() => import('./OrderFrameInvitation'))
+const DesignedByFooter = lazy(() => import('./components/DesignedByFooter'))
 
 const templateComponent: Record<number, React.LazyExoticComponent<React.ComponentType<any>>> = {
   1: MohadRahma,
@@ -48,6 +49,7 @@ export default function InvitationRenderer({ details, rsvpTarget }: { details: I
 
   return <InvitationContext.Provider value={details}><Suspense fallback={fallback}>
     {renderTemplate(details, animatedDetails, rsvpTarget)}
+    <DesignedByFooter />
   </Suspense></InvitationContext.Provider>
 }
 

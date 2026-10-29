@@ -57,7 +57,7 @@ function ClientWorkspace({ showHiddenTemplates = false }: { showHiddenTemplates?
   const [orders, setOrders] = useState<Order[]>([])
   const [viewOrder, setViewOrder] = useState<Order | null>(null)
   const [allTemplates, setAllTemplates] = useState<Template[]>([])
-  const [company, setCompany] = useState<{ id: number; company_name: string; contact_name: string | null } | null>(null)
+  const [company, setCompany] = useState<{ id: number; company_name: string; contact_name: string | null; logo_path: string | null } | null>(null)
   const [templateSettings, setTemplateSettings] = useState<Record<number, TemplateSettings>>({})
   const [companyLogo, setCompanyLogo] = useState('/logo.png')
   const [details, setDetails] = useState(initial)
@@ -138,7 +138,7 @@ function ClientWorkspace({ showHiddenTemplates = false }: { showHiddenTemplates?
     if (firstTemplate) { setSelected(current => current ?? firstTemplate.id); setPreviewId(current => current ?? firstTemplate.id) }
     setOrders((ordersResult.data || []) as Order[])
     if (data.user.email) {
-      const { data: companyData } = await supabase.from('companies').select('id,company_name,contact_name').ilike('email', data.user.email).maybeSingle()
+      const { data: companyData } = await supabase.from('companies').select('id,company_name,contact_name,logo_path').ilike('email', data.user.email).maybeSingle()
       setCompany(companyData)
       if (companyData?.id) {
         const [{ data: settingsData, error: settingsError }, { data: defaultsData, error: defaultsError }] = await Promise.all([
@@ -264,14 +264,19 @@ function ClientWorkspace({ showHiddenTemplates = false }: { showHiddenTemplates?
     observer.observe(screen)
     return () => observer.disconnect()
   }, [tab, previewTemplate?.id, loading])
+  const companyBranding = useMemo(() => ({
+    ...(companyLogo !== '/logo.png' ? { companyLogo } : company?.logo_path ? { companyLogo: company.logo_path } : {}),
+    ...(company?.company_name ? { companyName: company.company_name } : {}),
+  }), [companyLogo, company?.logo_path, company?.company_name])
   const livePreviewDetails = useMemo<InvitationData>(() => {
     return {
       ...details,
+      ...companyBranding,
       template: selected ?? previewTemplate?.id ?? details.template,
       events: [{ title: weddingEventTitle, date: details.date, time: details.time, venue: details.venue, address: details.address, map: details.map }, ...extraEvents],
     }
-  }, [details, extraEvents, previewTemplate?.id, selected, weddingEventTitle])
-  const browsePreviewData = !showDetails && previewTemplate ? (templateDefaults[previewTemplate.id] ? { ...invitationExample(previewTemplate.id), ...templateDefaults[previewTemplate.id], template: previewTemplate.id } : invitationExample(previewTemplate.id)) : undefined
+  }, [details, companyBranding, extraEvents, previewTemplate?.id, selected, weddingEventTitle])
+  const browsePreviewData = !showDetails && previewTemplate ? (templateDefaults[previewTemplate.id] ? { ...invitationExample(previewTemplate.id), ...templateDefaults[previewTemplate.id], ...companyBranding, template: previewTemplate.id } : { ...invitationExample(previewTemplate.id), ...companyBranding }) : undefined
   const previewSrc = showDetails ? '/client/live-preview?editor=1' : browsePreviewData ? '/client/live-preview' : previewTemplate?.preview_url || '/client/live-preview'
   useLayoutEffect(() => {
     if (tab !== 'Templates') return
@@ -413,28 +418,14 @@ Additional rules:
 - events: additional ceremonies beyond the main wedding (reception, mehendi, sangeet). Empty array if only one event.
 - Empty string for any field not found.`
 
-  async function callExtract(base64: string, _filename: string): Promise<PdfExtracted> {
-    const res = await fetch('https://api.anthropic.com/v1/messages', {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-        'x-api-key': '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',
-        'anthropic-version': '2023-06-01',
-        'anthropic-dangerous-direct-browser-access': 'true',
-      },
-      body: JSON.stringify({
-        model: 'claude-sonnet-5-5',
-        max_tokens: 4096,
-        messages: [{ role: 'user', content: [
-          { type: 'document', source: { type: 'base64', media_type: 'application/pdf', data: base64 } },
-          { type: 'text', text: pdfExtractPrompt },
-        ] }],
-      }),
+  async function callExtract(base64: string, filename: string): Promise<PdfExtracted> {
+    if (!supabase) throw new Error('Supabase client not available.')
+    const { data, error: fnError } = await supabase.functions.invoke('openai-extract', {
+      body: { pdf: base64, filename, prompt: pdfExtractPrompt },
     })
-    const result = await res.json()
-    if (!res.ok) throw new Error(result?.error?.message ?? 'Claude API request failed.')
-    const raw = (result?.content?.find((c: any) => c.type === 'text')?.text || '')
-      .replace(/```json\n?|```/g, '').trim()
+    if (fnError) throw fnError
+    if (data?.error) throw new Error(data.error)
+    const raw = (data?.text || '').trim()
     return JSON.parse(raw)
   }
 
@@ -469,11 +460,11 @@ Additional rules:
     try {
       const { data: { user } } = await supabase.auth.getUser()
       if (!user) throw new Error('Your session expired. Please sign in again.')
-      const { data: company, error: companyError } = await supabase.from('companies').select('id').ilike('email', user.email || '').maybeSingle()
-      if (companyError || !company) throw new Error('Your account is not linked to a company yet.')
-      const companyId = company.id
+      const { data: companyRow, error: companyError } = await supabase.from('companies').select('id').ilike('email', user.email || '').maybeSingle()
+      if (companyError || !companyRow) throw new Error('Your account is not linked to a company yet.')
+      const companyId = companyRow.id
       if (!phoneNumber.trim()) throw new Error('Please enter a phone number for this order.')
-      const formData = validateDetails({ ...details, template: selected, events: [{ title: weddingEventTitle, date: details.date, time: details.time, venue: details.venue, address: details.address, map: details.map }, ...extraEvents] })
+      const formData = validateDetails({ ...details, template: selected, events: [{ title: weddingEventTitle, date: details.date, time: details.time, venue: details.venue, address: details.address, map: details.map }, ...extraEvents], companyLogo: companyLogo !== '/logo.png' ? companyLogo : (company?.logo_path || undefined), companyName: company?.company_name || undefined })
       const templateCode = templates.find(template => template.id === selected)?.template_code
       if (!templateCode) throw new Error('That design is no longer available. Choose another template.')
       const { data, error: insertError } = await supabase.from('orders').insert({ company_id: companyId, template_code: templateCode, created_by: user.id, groom_name: formData.groom, bride_name: formData.bride, phone_number: phoneNumber.trim(), form_data: formData }).select('*').single()

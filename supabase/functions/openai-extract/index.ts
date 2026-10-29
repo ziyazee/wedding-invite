@@ -26,7 +26,13 @@ Deno.serve(async (req) => {
     return new Response(JSON.stringify({ error: 'Unauthorised.' }), { status: 401, headers: CORS })
   }
 
-  const anthropicKey = Deno.env.get('ANTHROPIC_KEY') || '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'
+  const anthropicKey = Deno.env.get('ANTHROPIC_KEY')
+  if (!anthropicKey) {
+    return new Response(
+      JSON.stringify({ error: 'Anthropic API key is not configured.' }),
+      { status: 500, headers: CORS },
+    )
+  }
 
   let body: { pdf: string; filename?: string; prompt?: string }
   try {
@@ -48,7 +54,7 @@ Deno.serve(async (req) => {
         'anthropic-version': '2023-06-01',
       },
       body: JSON.stringify({
-        model: 'claude-sonnet-4-20250514',
+        model: 'claude-sonnet-5-5',
         max_tokens: 4096,
         messages: [{ role: 'user', content: [
           { type: 'document', source: { type: 'base64', media_type: 'application/pdf', data: body.pdf }, cache_control: { type: 'ephemeral' } },

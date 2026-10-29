@@ -9,9 +9,12 @@ alter table public.companies
   add column if not exists hero_image_path text,
   add column if not exists logo_path text;
 
-alter table public.companies
-  add constraint companies_slug_format
-    check (slug is null or slug ~ '^[a-z][a-z0-9-]{1,60}$');
+do $$ begin
+  alter table public.companies
+    add constraint companies_slug_format
+      check (slug is null or slug ~ '^[a-z][a-z0-9-]{1,60}$');
+exception when duplicate_object then null;
+end $$;
 
 create unique index if not exists companies_slug_unique_idx
   on public.companies (lower(slug))
@@ -31,10 +34,12 @@ drop policy if exists "active templates visible publicly" on public.invitation_t
 drop policy if exists "all templates visible to signed-in users" on public.invitation_templates;
 drop policy if exists "active templates visible to signed in users" on public.invitation_templates;
 
+drop policy if exists "active global templates visible publicly" on public.invitation_templates;
 create policy "active global templates visible publicly"
   on public.invitation_templates for select to anon
   using (is_active and company_id is null);
 
+drop policy if exists "templates visible to signed-in users" on public.invitation_templates;
 create policy "templates visible to signed-in users"
   on public.invitation_templates for select to authenticated
   using (
@@ -57,16 +62,19 @@ create table if not exists public.company_template_defaults (
   primary key (company_id, template_id)
 );
 
+drop trigger if exists company_template_defaults_touch_updated_at on public.company_template_defaults;
 create trigger company_template_defaults_touch_updated_at
   before update on public.company_template_defaults
   for each row execute function public.touch_updated_at();
 
 alter table public.company_template_defaults enable row level security;
 
+drop policy if exists "template defaults readable by everyone" on public.company_template_defaults;
 create policy "template defaults readable by everyone"
   on public.company_template_defaults for select to anon, authenticated
   using (true);
 
+drop policy if exists "clients manage their template defaults" on public.company_template_defaults;
 create policy "clients manage their template defaults"
   on public.company_template_defaults for insert to authenticated
   with check (
@@ -74,6 +82,7 @@ create policy "clients manage their template defaults"
     or company_id = public.current_user_company_id()
   );
 
+drop policy if exists "clients update their template defaults" on public.company_template_defaults;
 create policy "clients update their template defaults"
   on public.company_template_defaults for update to authenticated
   using (
@@ -85,6 +94,7 @@ create policy "clients update their template defaults"
     or company_id = public.current_user_company_id()
   );
 
+drop policy if exists "clients delete their template defaults" on public.company_template_defaults;
 create policy "clients delete their template defaults"
   on public.company_template_defaults for delete to authenticated
   using (

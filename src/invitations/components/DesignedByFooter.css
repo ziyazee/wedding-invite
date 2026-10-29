@@ -1,0 +1,30 @@
+.designed-by-footer {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  padding: 14px 16px;
+  background: rgba(0, 0, 0, 0.03);
+  border-top: 1px solid rgba(0, 0, 0, 0.06);
+  font-family: system-ui, -apple-system, sans-serif;
+}
+
+.designed-by-label {
+  font-size: 11px;
+  letter-spacing: 0.04em;
+  color: rgba(0, 0, 0, 0.4);
+  text-transform: uppercase;
+}
+
+.designed-by-logo {
+  max-height: 22px;
+  width: auto;
+  object-fit: contain;
+  opacity: 0.7;
+}
+
+.designed-by-name {
+  font-size: 13px;
+  font-weight: 600;
+  color: rgba(0, 0, 0, 0.5);
+}

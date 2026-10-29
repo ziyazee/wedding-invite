@@ -115,6 +115,5 @@ export default function Majestic({ details: d, rsvpTarget }: { details: Invitati
     {(d.giftNote.trim() || d.gallery.trim()) && <Section data-invite-section="notes" className="mj-notes">{d.giftNote.trim() && <><Copy as="h2" field="notes.heading">A little note</Copy><Copy as="p" field="notes.gift">{d.giftNote}</Copy></>}{d.gallery.trim() && <Copy as="a" field="notes.gallery" href={d.gallery} target="_blank" rel="noreferrer">Our photo gallery ↗</Copy>}</Section>}
     <InvitationRsvp template={2} couple={couple} target={rsvpTarget} />
     <Section as="footer" data-invite-section="closing" className="mj-closing"><Names details={d} section="closing" /><Copy as="p" field="closing.date">{formatDate(d.date)}</Copy><InvitationMedia src="/templates/secret-garden/assets/footer-flowers.png" alt="An embroidered arrangement of white roses and greenery" /></Section>
-    <Section as="footer" data-invite-section="contact" className="mj-contact"><Copy as="p" field="contact.heading">For invitations</Copy><Copy as="a" field="contact.link" href="https://wa.me/917975948093?text=Hey%20I%20need%20an%20invitation%21" target="_blank" rel="noreferrer">Contact us on WhatsApp</Copy></Section>
   </main></InvitationLayoutProvider>
 }
