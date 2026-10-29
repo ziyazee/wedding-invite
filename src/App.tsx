@@ -43,6 +43,7 @@ const Design17 = lazySitePage(() => import('./pages/Design17'))
 const MohadRahma = lazy(() => import('./pages/MohadRahma'))
 const GeneratedInvitation = lazy(() => import('./pages/GeneratedInvitation'))
 const StoreLanding = lazy(() => import('./pages/StoreLanding'))
+const Privacy = lazy(() => import('./pages/Privacy'))
 
 function getInviteSlug(): string | null {
   const host = window.location.hostname
@@ -102,6 +103,7 @@ export default function App() {
   return (
     <InvitationViewport><Suspense fallback={<main role="status" style={{minHeight:'100svh',display:'grid',placeItems:'center',background:'#fffaf2',color:'#75664c',font:'14px Arial,sans-serif'}}>Loading…</main>}><Routes>
       <Route path="/" element={<Landing />} />
+      <Route path="/privacy" element={<Privacy />} />
       <Route path="/login" element={<Login />} />
       <Route path="/client/dashboard" element={<ClientDashboard />} />
       <Route path="/testing567" element={<ClientDashboardTesting />} />
