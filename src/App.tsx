@@ -42,7 +42,7 @@ const Design16 = lazySitePage(() => import('./pages/Design16'))
 const Design17 = lazySitePage(() => import('./pages/Design17'))
 const MohadRahma = lazy(() => import('./pages/MohadRahma'))
 const GeneratedInvitation = lazy(() => import('./pages/GeneratedInvitation'))
-const StoreLanding = lazySitePage(() => import('./pages/StoreLanding'))
+const StoreLanding = lazy(() => import('./pages/StoreLanding'))
 
 function getInviteSlug(): string | null {
   const host = window.location.hostname
