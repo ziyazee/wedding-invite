@@ -1,0 +1,31 @@
+/*
+ * The Typekit service used to deliver this font or fonts for use on websites
+ * is provided by Adobe and is subject to these Terms of Use
+ * http://www.adobe.com/products/eulas/tou_typekit. For font license
+ * information, see the list below.
+ *
+ * classic-script-mn:
+ *   - http://typekit.com/eulas/00000000000000007755955c
+ * span:
+ *   - http://typekit.com/eulas/00000000000000007735c8d2
+ *
+ * © 2009-2026 Adobe Systems Incorporated. All Rights Reserved.
+ */
+/*{"last_published":"2026-03-06 22:18:14 UTC"}*/
+
+
+
+@font-face {
+font-family:"span";
+src:url("/templates/majestic/assets/font-0.woff2") format("woff2"),url("/templates/majestic/assets/font-1.woff") format("woff"),url("/templates/majestic/assets/font-2.otf") format("opentype");
+font-display:swap;font-style:normal;font-weight:200;font-stretch:normal;
+}
+
+@font-face {
+font-family:"classic-script-mn";
+src:url("/templates/majestic/assets/font-3.woff2") format("woff2"),url("/templates/majestic/assets/font-4.woff") format("woff"),url("/templates/majestic/assets/font-5.otf") format("opentype");
+font-display:swap;font-style:normal;font-weight:400;font-stretch:normal;
+}
+
+.tk-span { font-family: "span",serif; }
+.tk-classic-script-mn { font-family: "classic-script-mn",sans-serif; }

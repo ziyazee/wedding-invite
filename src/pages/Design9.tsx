@@ -28,7 +28,7 @@ export default function Design9(){
  return <main ref={root} className={`sv-invitation sv-${phase}`}>
  {d.music&&<><audio ref={audio} src={d.music} preload="none" loop onPlay={()=>setPlaying(true)} onPause={()=>setPlaying(false)}/>{<button className="sv-music" aria-label={playing?'Pause music':'Play music'} onClick={()=>playing?audio.current?.pause():void audio.current?.play().catch(()=>{})}>{playing?'Ⅱ':'♫'}</button>}</>}
  <section className="sv-hero" aria-label="Wedding invitation">
- <img className="sv-open-still" src="/design9/curtain-open.jpg" alt="An embroidered ivory and gold wedding arch"/>
+ <img className="sv-open-still" src="/templates/deprecated/design9/curtain-open.jpg" alt="An embroidered ivory and gold wedding arch"/>
  {phase==='open'&&<div className="sv-hero-copy"><p className="sv-eyebrow">TOGETHER, BY THE GRACE OF ALLAH</p><h1><span>{d.groom}</span><i>&</i><span>{d.bride}</span></h1><Ornament/><p className="sv-hero-date">{formatDate(d.date)}</p><p>{d.address}</p><button className="sv-scroll" onClick={()=>document.getElementById('sv-story')?.scrollIntoView({behavior:matchMedia('(prefers-reduced-motion: reduce)').matches?'auto':'smooth'})}>THE INVITATION <span>↓</span></button></div>}
  </section>
  {phase==='open'&&<div className="sv-body">

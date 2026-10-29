@@ -15,23 +15,68 @@ const Design9 = lazy(() => import('../pages/Design9'))
 const Design10 = lazy(() => import('../pages/Design10'))
 const Design11 = lazy(() => import('../pages/Design11'))
 const Design12 = lazy(() => import('../pages/Design12'))
-const Design13 = lazy(() => import('../pages/Design13'))
-const Design14 = lazy(() => import('../pages/Design14'))
+const ArtfulLoveStory = lazy(() => import('../pages/ArtfulLoveStory'))
+const ATimelessUnion = lazy(() => import('../pages/ATimelessUnion'))
 const Design15 = lazy(() => import('../pages/Design15'))
 const Design16 = lazy(() => import('../pages/Design16'))
 const Design17 = lazy(() => import('../pages/Design17'))
-const Design18 = lazy(() => import('../pages/Design18'))
+const MandapAtDusk = lazy(() => import('../pages/MandapAtDusk'))
 const TextLayoutLayer = lazy(() => import('./TextLayoutLayer'))
 const OrderFrameInvitation = lazy(() => import('./OrderFrameInvitation'))
+const DesignedByFooter = lazy(() => import('./components/DesignedByFooter'))
+
+const templateComponent: Record<number, React.LazyExoticComponent<React.ComponentType<any>>> = {
+  1: MohadRahma,
+  3: ATimelessUnion,
+  4: MandapAtDusk,
+  8: ArtfulLoveStory,
+  101: NewDesign,
+  104: Design4,
+  108: Design8,
+  109: Design9,
+  110: Design10,
+  111: Design11,
+  112: Design12,
+  115: Design15,
+  116: Design16,
+  117: Design17,
+}
+
+const fallback = <div role="status" style={{ minHeight: '100svh', display: 'grid', placeItems: 'center', background: '#fffaf2', color: '#75664c', font: '14px Arial,sans-serif' }}>Opening your invitation…</div>
 
 export default function InvitationRenderer({ details, rsvpTarget }: { details: InvitationData; rsvpTarget?: RsvpTarget }) {
-  const animatedTemplateId = details.template === 2 ? 6 : details.template === 6 ? 3 : details.template
-  const animatedDetails = useMemo(() => ({ ...details, template: animatedTemplateId }), [details, animatedTemplateId])
-  const content = <>
-    {(details.template === 101 || details.template === 108) && details.music && <PersonalMusic src={details.music} />}
-    {details.template === 1 ? <MohadRahma /> : details.template === 3 ? <Design14 /> : details.template === 4 ? <Design18 /> : details.template === 8 ? <Design13 /> : details.template === 101 ? <NewDesign /> : details.template === 104 ? <Design4 /> : details.template === 108 ? <Design8 /> : details.template === 109 ? <Design9 /> : details.template === 110 ? <Design10 /> : details.template === 111 ? <Design11 /> : details.template === 112 ? <Design12 /> : details.template === 115 ? <Design15 /> : details.template === 116 ? <Design16 /> : details.template === 117 ? <Design17 /> : <InvitationContext.Provider value={animatedDetails}><AnimatedInvitation details={animatedDetails} rsvpTarget={rsvpTarget} /></InvitationContext.Provider>}
-  </>
-  return <InvitationContext.Provider value={details}><Suspense fallback={<div role="status" style={{minHeight:'100svh',display:'grid',placeItems:'center',background:'#fffaf2',color:'#75664c',font:'14px Arial,sans-serif'}}>Opening your invitation…</div>}>
-    {[9, 10, 11, 12, 13, 14].includes(details.template) ? <TextLayoutLayer details={details} layout={details.textOverrides}><OrderFrameInvitation key={details.template} details={details} rsvpTarget={rsvpTarget}/></TextLayoutLayer> : details.template === 2 ? <Majestic details={details} rsvpTarget={rsvpTarget}/> : details.template === 5 ? <SecretGarden details={details} rsvpTarget={rsvpTarget}/> : details.template === 1 ? content : <><SiteFonts/><TextLayoutLayer details={details} layout={details.textOverrides}>{content}</TextLayoutLayer></>}
+  const animatedDetails = useMemo(() => details, [details])
+
+  return <InvitationContext.Provider value={details}><Suspense fallback={fallback}>
+    {renderTemplate(details, animatedDetails, rsvpTarget)}
+    <DesignedByFooter />
   </Suspense></InvitationContext.Provider>
+}
+
+function renderTemplate(details: InvitationData, animatedDetails: InvitationData, rsvpTarget: RsvpTarget | undefined) {
+  const { template } = details
+
+  // Iframe-based templates with text overlay editing
+  if ([9, 10, 11, 12, 13, 14].includes(template)) {
+    return <TextLayoutLayer details={details} layout={details.textOverrides}><OrderFrameInvitation key={template} details={details} rsvpTarget={rsvpTarget} /></TextLayoutLayer>
+  }
+
+  // Native React components with their own layout
+  if (template === 2) return <Majestic details={details} rsvpTarget={rsvpTarget} />
+  if (template === 5) return <SecretGarden details={details} rsvpTarget={rsvpTarget} />
+
+  // Standalone page component (no SiteFonts or TextLayoutLayer)
+  if (template === 1) return <MohadRahma />
+
+  // Page components or AnimatedInvitation, wrapped in SiteFonts + TextLayoutLayer
+  const Component = templateComponent[template]
+  const content = Component
+    ? <Component />
+    : <InvitationContext.Provider value={animatedDetails}><AnimatedInvitation details={animatedDetails} rsvpTarget={rsvpTarget} /></InvitationContext.Provider>
+
+  return <>
+    {(template === 101 || template === 108) && details.music && <PersonalMusic src={details.music} />}
+    <SiteFonts />
+    <TextLayoutLayer details={details} layout={details.textOverrides}>{content}</TextLayoutLayer>
+  </>
 }

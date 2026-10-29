@@ -103,7 +103,7 @@ export default function Design16() {
   return <main ref={root} className={`d16-page d16-${phase}`}>
     <audio ref={audio} src={details.music || '/bisara.mp3'} loop preload="none" onPlay={() => setMusic(true)} onPause={() => setMusic(false)} />
     <section className="d16-entry" aria-label="Wedding invitation entry">
-      <video ref={video} className="d16-entry-video" src="/design16/entry-trimmed.mp4" poster="/design16/entry-poster.jpg" muted playsInline preload="metadata" onEnded={finish} onError={() => { if (phase === 'playing') finish() }} />
+      <video ref={video} className="d16-entry-video" src="/templates/deprecated/design16/entry-trimmed.mp4" poster="/templates/deprecated/design16/entry-poster.jpg" muted playsInline preload="metadata" onEnded={finish} onError={() => { if (phase === 'playing') finish() }} />
       <div className="d16-entry-shade" />
       {phase === 'closed' && <button className="d16-enter" onClick={openInvitation}>
         <span aria-hidden="true">✧</span> Open invitation
@@ -127,7 +127,7 @@ export default function Design16() {
           {details.brideFamily && <p><small>BRIDE’S FAMILY</small>{details.brideFamily}</p>}
         </div>}
         <Flourish /><span className="d16-signature d16-script">{details.groom} & {details.bride}</span>
-        <img className="d16-couple-art" src="/design16/couple-watercolor.png" alt="" aria-hidden="true" loading="lazy" />
+        <img className="d16-couple-art" src="/templates/deprecated/design16/couple-watercolor.png" alt="" aria-hidden="true" loading="lazy" />
       </section>
 
       <section className="d16-heart-section d16-reveal" aria-label="Scratch to reveal the wedding date">

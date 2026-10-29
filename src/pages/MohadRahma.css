@@ -14,7 +14,7 @@
 /* Bespoke embossed stationery: the frame is artwork, the content remains accessible HTML. */
 .mohad-rahma .mr-events{max-width:470px;width:91%;gap:38px;margin-top:40px}
 .mohad-rahma .mr-event{position:relative;isolation:isolate;padding:100px 18% 95px;min-height:680px;display:flex;flex-direction:column;justify-content:center;background:none;border:0;border-radius:0;box-shadow:none;filter:drop-shadow(0 8px 8px #514b3020)}
-.mr-stationery-art{position:absolute;inset:0;width:100%;height:100%;z-index:-1;pointer-events:none;object-fit:fill;mask-image:url('/images/royal-grace/stationery-silhouette.svg');mask-size:100% 100%;mask-repeat:no-repeat;-webkit-mask-image:url('/images/royal-grace/stationery-silhouette.svg');-webkit-mask-size:100% 100%;-webkit-mask-repeat:no-repeat}
+.mr-stationery-art{position:absolute;inset:0;width:100%;height:100%;z-index:-1;pointer-events:none;object-fit:fill;mask-image:url('/templates/royal-grace/stationery-silhouette.svg');mask-size:100% 100%;mask-repeat:no-repeat;-webkit-mask-image:url('/templates/royal-grace/stationery-silhouette.svg');-webkit-mask-size:100% 100%;-webkit-mask-repeat:no-repeat}
 .mr-stationery-heading{font-family:'Dancing Script',cursive;font-size:23px;letter-spacing:4px;color:#a18a50;line-height:1;margin-bottom:23px}.mr-stationery-heading>span{font-size:14px;letter-spacing:0;margin:0 4px}
 .mr-event-heading{flex-direction:column-reverse}
 .mohad-rahma .mr-weekday{font-size:9px;letter-spacing:2px;color:#8e805b;margin-bottom:15px}
@@ -140,7 +140,7 @@
  z-index:-1;
  inset:0;
  pointer-events:none;
- background:#e4d5b8 url('/images/royal-grace/general.jpg') center top / 155% auto repeat-y;
+ background:#e4d5b8 url('/templates/royal-grace/general.jpg') center top / 155% auto repeat-y;
  -webkit-mask-image:linear-gradient(to bottom,transparent,#000 40px);
  mask-image:linear-gradient(to bottom,transparent,#000 40px);
 }
@@ -154,7 +154,7 @@
  width:100%;
  max-width:none;
  padding-inline:15%;
- background:url('/images/royal-grace/general.jpg') center top / 100% auto repeat-y;
+ background:url('/templates/royal-grace/general.jpg') center top / 100% auto repeat-y;
 }
 .mohad-rahma .mr-celebrations + .mr-gallery>h2,
 .mohad-rahma .mr-celebrations + .mr-gallery>p{

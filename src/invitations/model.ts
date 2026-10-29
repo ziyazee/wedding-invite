@@ -2,17 +2,20 @@ import { readTextLayout } from './textLayout.ts'
 import type { TextLayout } from './textLayout.ts'
 
 export const designs = [
-  { id: 1, name: 'Royal Grace', description: 'Sage and ivory stationery with pearls and delicate botanical relief.', route: '/mohadrahma', image: '/images/royal-grace/opening-poster.jpg', color: '#8b9274' },
-  { id: 2, name: 'Majestic', description: 'Pearl accents, chandeliers and grand garden scenes.', route: '/design6', image: '/design6/assets/hero-poster-DkA1j00-.jpg', color: '#e9dfca' },
-  { id: 3, name: 'A Timeless Union', description: 'A traditional Hindu wedding invitation with family blessings, a mehendi celebration, and a photo story.', route: '/arjunbhavana', image: '/landing/timeless-union-opening.jpg', color: '#f8f2e9' },
-  { id: 4, name: 'Mandap at Dusk', description: 'A sunset mandap reveal with a cinematic curtain opening and a personal name reveal.', route: '/design18', image: '/design18/preview.jpg', color: '#d19b72' },
-  { id: 5, name: 'Secret Garden', description: 'Romantic garden scenery and delicate floral details.', route: '/design5', image: '/design5/assets/opened.jpg', color: '#d6d8c3' },
-  { id: 6, name: 'Embroidered Garden', description: 'Garden illustrations and soft embroidered textures.', route: '/design3', image: '/design3/assets/footer-chateau.png', color: '#dce2cd' },
-  { id: 7, name: 'Bloom', description: 'Expressive florals and a beautifully animated welcome.', route: '/design7', image: '/design7/assets/welcome-flowers-Dy0evJgO.png', color: '#e9c9bd' },
-  { id: 8, name: 'The Artful Love Story', description: 'An ornate Indian wedding invitation with a photo story, celebration details, and a countdown.', route: '/design13', image: '/design13/assets/zBRd2fZShor1nxxKvdVKhKU.png', color: '#fbf5ed' },
-  { id: 9, name: 'Maroon Letter', description: 'Cinematic maroon stationery and lanterns.', route: '/maroon-letter', image: '/maroon-letter/demo.webp', color: '#31090e' },
-  { id: 10, name: 'Emerald Parchment', description: 'Forest green parchment with a cinematic opening.', route: '/emerald-parchment', image: '/emerald-parchment/demo.webp', color: '#0f1e16' },
-  { id: 11, name: 'Royal Jodhpur', description: 'Midnight blue and gold palace celebrations.', route: '/royal-jodhpur', image: '/shaadipath-t02/assets/layers/Herp Palace.webp', color: '#0d1b3e' },
+  { id: 1, name: 'Royal Grace', description: 'Sage and ivory stationery with pearls and delicate botanical relief.', route: '/mohadrahma', image: '/templates/royal-grace/opening-poster.jpg', color: '#8b9274' },
+  { id: 2, name: 'Majestic', description: 'Pearl accents, chandeliers and grand garden scenes.', route: '/majestic', image: '/templates/majestic/assets/hero-poster-DkA1j00-.jpg', color: '#e9dfca' },
+  { id: 3, name: 'A Timeless Union', description: 'A traditional Hindu wedding invitation with family blessings, a mehendi celebration, and a photo story.', route: '/arjunbhavana', image: '/templates/a-timeless-union/timeless-union-opening.jpg', color: '#f8f2e9' },
+  { id: 4, name: 'Mandap at Dusk', description: 'A sunset mandap reveal with a cinematic curtain opening and a personal name reveal.', route: '/mandap-at-dusk', image: '/templates/mandap-at-dusk/preview.jpg', color: '#d19b72' },
+  { id: 5, name: 'Secret Garden', description: 'Romantic garden scenery and delicate floral details.', route: '/secret-garden', image: '/templates/secret-garden/assets/opened.jpg', color: '#d6d8c3' },
+  { id: 6, name: 'Embroidered Garden', description: 'Garden illustrations and soft embroidered textures.', route: '/embroidered-garden', image: '/templates/embroidered-garden/assets/footer-chateau.png', color: '#dce2cd' },
+  { id: 7, name: 'Bloom', description: 'Expressive florals and a beautifully animated welcome.', route: '/bloom', image: '/templates/bloom/assets/welcome-flowers-Dy0evJgO.webp', color: '#e9c9bd' },
+  { id: 8, name: 'The Artful Love Story', description: 'An ornate Indian wedding invitation with a photo story, celebration details, and a countdown.', route: '/the-artful-love-story', image: '/templates/the-artful-love-story/assets/zBRd2fZShor1nxxKvdVKhKU.png', color: '#fbf5ed' },
+  { id: 9, name: 'Maroon Letter', description: 'Cinematic maroon stationery and lanterns.', route: '/maroon-letter', image: '/templates/maroon-letter/demo.webp', color: '#31090e' },
+  { id: 10, name: 'Emerald Parchment', description: 'Forest green parchment with a cinematic opening.', route: '/emerald-parchment', image: '/templates/emerald-parchment/demo.webp', color: '#0f1e16' },
+  { id: 11, name: 'Royal Jodhpur', description: 'Midnight blue and gold palace celebrations.', route: '/royal-jodhpur', image: '/templates/shaadipath-t02/assets/layers/Herp Palace.webp', color: '#0d1b3e' },
+  { id: 12, name: 'Destination Wedding', description: 'A cinematic destination wedding invitation with couple photos and travel details.', route: '/destination-wedding', image: '/templates/destination-wedding/wedding/background_gate.webp', color: '#1a3a2a' },
+  { id: 13, name: 'Raabta', description: 'Moonlit mosque scenery with floating lanterns and ornate arches.', route: '/raabta', image: '/templates/raabta/assets/mosque-scene.webp', color: '#1b2838' },
+  { id: 14, name: 'Qubool', description: 'Ornate jaali patterns with a cinematic gate reveal.', route: '/qubool', image: '/templates/qubool/assets/gate/00-gate.webp', color: '#2a1f1a' },
 ] as const
 export interface WeddingMoment { id: string; time: string; title: string; description: string; location: string }
 export interface Celebration { id?: string; title: string; date: string; time: string; venue: string; address: string; map: string; schedule?: WeddingMoment[] }
@@ -29,6 +32,7 @@ export interface InvitationData {
   template: number; groom: string; bride: string; date: string; time: string; offset: string;
   venue: string; address: string; map: string; message: string; groomFamily: string; brideFamily: string;
   dressCode: string; giftNote: string; music: string; gallery: string; events: Celebration[];
+  companyLogo?: string; companyName?: string;
 }
 export interface SavedInvitation { slug: string; details: InvitationData; createdAt: string; orderId?: string }
 export const weddingISO = (d: InvitationData) => `${d.date}T${d.time}:00${d.offset}`
@@ -60,11 +64,11 @@ export function inviteUrl(slug: string): string {
   const w = globalThis as any
   const host: string = w.location?.hostname ?? ''
   if (host && !host.endsWith('.shaadiinvites.in') && host !== 'shaadiinvites.in') {
-    return `${w.location.origin}/${slug}`
+    return `${w.location.origin}/?invite=${slug}`
   }
   return `https://${slug}.shaadiinvites.in`
 }
-export const reservedSlugs = new Set(['assets','images','fonts','dashboard','client','admin','login','create','preview','invite','newdesign','mohadrahma','api','arjunmeera','rohankavya','aarongrace','danielsarah','vikramananya','nikhiladiti',...Array.from({ length: 16 }, (_, index) => `design${index + 3}`)])
+export const reservedSlugs = new Set(['assets','images','fonts','dashboard','client','admin','login','create','preview','invite','newdesign','mohadrahma','api','arjunmeera','rohankavya','aarongrace','danielsarah','vikramananya','nikhiladiti','embroidered-garden','secret-garden','majestic','bloom','the-artful-love-story','arjunbhavana','a-timeless-union','mandap-at-dusk','maroon-letter','emerald-parchment','royal-jodhpur','destination-wedding','raabta','qubool','blossom-and-oud','noor','sunehri','yasmin','maitri','kiran','ivory-arch','sacred-mandap','gulabi-mandap','birthday','housewarming'])
 export function validateDetails(value: unknown, allowRetired = false): InvitationData {
   if (!value || typeof value !== 'object') throw new Error('Invitation details are required.')
   const d = value as InvitationData
@@ -110,5 +114,7 @@ export function validateDetails(value: unknown, allowRetired = false): Invitatio
     message:text(d.message,'welcome message',2000),groomFamily:text(d.groomFamily,'groom family',200),brideFamily:text(d.brideFamily,'bride family',200),
     dressCode:text(d.dressCode,'dress code',600),giftNote:text(d.giftNote,'gift note',600),music:url(d.music,'music link'),gallery:url(d.gallery,'gallery link'),
     events:d.events.map(e=>({...(typeof e.id==='string'&&/^[a-zA-Z0-9_-]{1,80}$/.test(e.id)?{id:e.id}:{}),...(e.schedule !== undefined ? { schedule: schedule(e.schedule) } : {}),title:text(e.title,'celebration name',cardTextLimit(d.template,'title') ?? 100,true),date:date(e.date),time:time(e.time),venue:text(e.venue,'celebration venue',cardTextLimit(d.template,'venue') ?? 160,true),address:text(e.address,'celebration address',cardTextLimit(d.template,'address') ?? 300,true),map:url(e.map,'map link')})),
+    ...(typeof d.companyLogo === 'string' && d.companyLogo ? { companyLogo: d.companyLogo } : {}),
+    ...(typeof d.companyName === 'string' && d.companyName ? { companyName: d.companyName } : {}),
   }
 }

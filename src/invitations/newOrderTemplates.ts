@@ -10,16 +10,16 @@ export function destinationConfig(d: InvitationData) {
     venue_name: d.venue, venue_address: d.address, venue_map_url: d.map, couple_message: d.message || '\u200b',
     contact_name: '', contact_number: '', instagram_url: '', social_youtube_url: '', website_url: '', youtube_url: '',
     hashtag: `${d.groom.replace(/\s/g, '')}Weds${d.bride.replace(/\s/g, '')}`, instagram_invite_text: '', hashtag_invite_text: '',
-    music_url: d.music || '/aamantran-destination/music.mp3',
+    music_url: d.music || '/templates/destination-wedding/music.mp3',
     rsvp_enabled: false, guest_notes_enabled: false,
     functions: d.events.map((event, index) => ({ id: event.id || `legacy-${index}`, name: event.title, date: event.date, time: formatTime(event.time), venue_name: event.venue, venue_address: event.address, venue_map_url: event.map, dress_code: d.dressCode })),
-    media_slots: { couple_carousel: [], background_music: [{ url: d.music || '/aamantran-destination/music.mp3' }] }, couple_photos: [],
+    media_slots: { couple_carousel: [], background_music: [{ url: d.music || '/templates/destination-wedding/music.mp3' }] }, couple_photos: [],
   }
 }
 
 export function destinationHTML(html: string, d: InvitationData) {
   const doc = new DOMParser().parseFromString(html, 'text/html')
-  const base = doc.createElement('base'); base.href = new URL('/aamantran-destination/', window.location.origin).href; doc.head.prepend(base)
+  const base = doc.createElement('base'); base.href = new URL('/templates/destination-wedding/', window.location.origin).href; doc.head.prepend(base)
   const config = [...doc.scripts].find(script => script.textContent?.includes('window.__AAMANTRAN_INVITE__ ='))
   if (!config) throw new Error('Destination configuration is missing.')
   config.textContent = `window.__AAMANTRAN_INVITE__=${JSON.stringify(destinationConfig(d)).replace(/</g, '\\u003c')};`

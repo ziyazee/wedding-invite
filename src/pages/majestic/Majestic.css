@@ -1,5 +1,5 @@
-@import url('/design6/fonts.css');
-@font-face{font-family:MajesticClosingCormorant;src:url('/design5/assets/cormorant-garamond-latin-300-italic-qkwBXYHn.woff2') format('woff2');font-weight:300;font-style:italic;font-display:swap}
+@import url('/templates/majestic/fonts.css');
+@font-face{font-family:MajesticClosingCormorant;src:url('/templates/secret-garden/assets/cormorant-garamond-latin-300-italic-qkwBXYHn.woff2') format('woff2');font-weight:300;font-style:italic;font-display:swap}
 .majestic-native{background:#efe8da;color:#61533f;min-height:100svh;font-family:span,Georgia,serif;text-align:center;isolation:isolate;overflow-x:clip}
 .majestic-native *{box-sizing:border-box}
 .majestic-native :where(h1,h2,h3,p){margin:0;font-weight:400}
@@ -88,7 +88,7 @@
 .majestic-native .invitation-rsvp textarea{min-height:116px;resize:vertical}
 .majestic-native .invitation-rsvp button[type=submit]{width:100%}
 .majestic-native .invitation-rsvp [role=status]{text-align:center;font-size:15px;margin-top:12px}
-.majestic-native .invitation-rsvp-lights{position:absolute;z-index:0;bottom:0;left:0;width:100%;height:340px;background:url('/design6/assets/string-lights-DfoJYed-.png') center bottom/100% auto no-repeat;pointer-events:none}
+.majestic-native .invitation-rsvp-lights{position:absolute;z-index:0;bottom:0;left:0;width:100%;height:340px;background:url('/templates/majestic/assets/string-lights-DfoJYed-.webp') center bottom/100% auto no-repeat;pointer-events:none}
 .majestic-native .mj-closing{max-width:860px;margin:0 auto 60px;padding:72px 24px 12px;color:#5d6241}
 .majestic-native .mj-closing .mj-names{font-family:MajesticClosingCormorant,Georgia,serif;font-size:clamp(54px,20vw,90px);font-weight:300;font-style:italic;line-height:1.05}
 .majestic-native .mj-closing>p{margin:8px 0 70px;font-size:clamp(16px,4vw,24px);letter-spacing:.04em;text-transform:uppercase}

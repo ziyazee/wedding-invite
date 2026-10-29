@@ -1,0 +1,24 @@
+<!-- Original Design 7 RSVP layout, with event-specific demo copy removed. -->
+<section id="rsvp" class="section-padding bg-ivory py-16 md:py-20 pt-[4px]">
+  <div class="max-w-xl mx-auto">
+    <div class="text-center mb-12" data-reveal style="transform: none;">
+      <h2 class="section-heading pt-[30px]">RSVP</h2>
+      <span class="section-rule"></span>
+      <p class="section-eyebrow">Kindly let us know if you can join us</p>
+    </div>
+    <div class="card-refined relative" data-reveal style="transform: none;">
+      <img src="/templates/bloom/assets/floral-top-right-CS2uPFt2.png" alt="" aria-hidden="true" class="pointer-events-none select-none absolute -top-8 -right-2 w-56 md:w-72 z-10">
+      <img src="/templates/bloom/assets/floral-bottom-left-_kTL5SSX.png" alt="" aria-hidden="true" class="pointer-events-none select-none absolute -bottom-16 -left-10 w-56 md:w-72 z-10">
+      <form id="rsvp-form" class="space-y-6 font-body">
+        <div><label for="guest-name">Full name *</label><input id="guest-name" name="name" required maxlength="120" autocomplete="name" placeholder="Your full name"></div>
+        <fieldset><legend>Will you be attending? *</legend><div class="radio-row"><label><input type="radio" name="attendance" value="yes" checked required> Joyfully accepts</label><label><input type="radio" name="attendance" value="no"> Regretfully declines</label></div></fieldset>
+        <div data-attending><label for="guest-count">Number of guests attending *</label><div class="guest-counter"><button id="minus" type="button" aria-label="Remove one guest">−</button><output id="guest-count" aria-live="polite">1</output><button id="plus" type="button" aria-label="Add one guest">+</button></div><div id="guest-names"></div></div>
+        <input type="hidden" name="transport" value="">
+        <div><label for="message">A personal message for the couple</label><textarea id="message" name="message" maxlength="1000" rows="4" placeholder="Share a wish, a memory, or anything you'd like us to read…"></textarea></div>
+        <p class="form-note">Your reply is saved on this device only and is not sent to the couple.</p>
+        <button type="submit" class="save-rsvp">Save RSVP</button>
+        <p id="rsvp-status" role="status" aria-live="polite"></p>
+      </form>
+    </div>
+  </div>
+</section>

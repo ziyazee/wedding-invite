@@ -70,11 +70,11 @@ export default function Design12() {
   const [framePhoto, setFramePhoto] = useState(0)
 
   const slideImages = [
-    '/design12/couple1.jpg', '/design12/couple2.jpg', '/design12/couple3.jpg',
-    '/design12/slide1.webp', '/design12/slide2.webp',
+    '/templates/deprecated/design12/couple1.jpg', '/templates/deprecated/design12/couple2.jpg', '/templates/deprecated/design12/couple3.jpg',
+    '/templates/deprecated/design12/slide1.webp', '/templates/deprecated/design12/slide2.webp',
   ]
   const framePhotos = [
-    '/design12/couple1.jpg', '/design12/couple2.jpg', '/design12/couple3.jpg',
+    '/templates/deprecated/design12/couple1.jpg', '/templates/deprecated/design12/couple2.jpg', '/templates/deprecated/design12/couple3.jpg',
   ]
 
   useEffect(() => { const id = setInterval(() => setNow(Date.now()), 1000); return () => clearInterval(id) }, [])
@@ -122,9 +122,9 @@ export default function Design12() {
 
       {/* ═══════════════ PAGE 1 — Hero Temple ═══════════════ */}
       <section className="d12-p1">
-        <img className="d12-p1-sky" src="/design12/sky-bg.webp" alt="" />
-        <img className="d12-p1-temple" src="/design12/temple.webp" alt="" />
-        <img className="d12-p1-tree" src="/design12/tree.webp" alt="" />
+        <img className="d12-p1-sky" src="/templates/deprecated/design12/sky-bg.webp" alt="" />
+        <img className="d12-p1-temple" src="/templates/deprecated/design12/temple.webp" alt="" />
+        <img className="d12-p1-tree" src="/templates/deprecated/design12/tree.webp" alt="" />
         <div className="d12-p1-groom-name">{d.groom.split(' ')[0]}</div>
         <div className="d12-p1-weds">WEDS</div>
         <div className="d12-p1-bride-name">{d.bride.split(' ')[0]}</div>
@@ -145,9 +145,9 @@ export default function Design12() {
 
         {/* ═══════════════ PAGE 2 — Invite / Ganesh / Family / Names ═══════════════ */}
         <section className="d12-p2" id="d12-invite">
-          <img className="d12-p2-bg" src="/design12/page2-bg.webp" alt="" />
+          <img className="d12-p2-bg" src="/templates/deprecated/design12/page2-bg.webp" alt="" />
           <div className="d12-p2-content">
-            <img className="d12-p2-ganesh d12-anim" src="/design12/ganesh.webp" alt="Ganesh ji" />
+            <img className="d12-p2-ganesh d12-anim" src="/templates/deprecated/design12/ganesh.webp" alt="Ganesh ji" />
             <p className="d12-p2-sanskrit d12-anim d12-anim-d1">||ॐ श्री गणेशाय नमः||</p>
 
             <div className="d12-p2-eb-garamond d12-anim d12-anim-d1">शुभ विवाह</div>
@@ -179,7 +179,7 @@ export default function Design12() {
 
         {/* ═══════════════ PAGE 3 — Event Slideshow (exact Framer component) ═══════════════ */}
         <section className="d12-p3 d12-anim">
-          <div className="d12-p3-bg-img" style={{ backgroundImage: `url(/design12/page2-bg.webp)` }} />
+          <div className="d12-p3-bg-img" style={{ backgroundImage: `url(/templates/deprecated/design12/page2-bg.webp)` }} />
           <div className="d12-p3-bg-overlay" />
           <div className="d12-p3-inner">
             {/* Corner star decorations */}
@@ -253,12 +253,12 @@ export default function Design12() {
 
         {/* ═══════════════ PAGE 4 — Sky / Clouds / Temple / Couple / Countdown ═══════════════ */}
         <section className="d12-p4">
-          <img className="d12-p4-sky" src="/design12/sky-bg.webp" alt="" />
-          <img className="d12-p4-cloud d12-p4-cloud1" src="/design12/clouds.webp" alt="" />
-          <img className="d12-p4-cloud d12-p4-cloud2" src="/design12/clouds.webp" alt="" />
-          <img className="d12-p4-cloud d12-p4-cloud3" src="/design12/clouds.webp" alt="" />
-          <img className="d12-p4-temple" src="/design12/temple.webp" alt="" />
-          <img className="d12-p4-couple" src="/design12/couple1.jpg" alt={`${d.groom} & ${d.bride}`} />
+          <img className="d12-p4-sky" src="/templates/deprecated/design12/sky-bg.webp" alt="" />
+          <img className="d12-p4-cloud d12-p4-cloud1" src="/templates/deprecated/design12/clouds.webp" alt="" />
+          <img className="d12-p4-cloud d12-p4-cloud2" src="/templates/deprecated/design12/clouds.webp" alt="" />
+          <img className="d12-p4-cloud d12-p4-cloud3" src="/templates/deprecated/design12/clouds.webp" alt="" />
+          <img className="d12-p4-temple" src="/templates/deprecated/design12/temple.webp" alt="" />
+          <img className="d12-p4-couple" src="/templates/deprecated/design12/couple1.jpg" alt={`${d.groom} & ${d.bride}`} />
           <div className="d12-p4-countdown d12-anim">
             <div className="d12-p4-count-label">{remaining > 0 ? 'Counting the Days' : 'Our Beautiful Beginning'}</div>
             <div className="d12-p4-grid">
@@ -274,7 +274,7 @@ export default function Design12() {
 
         {/* ═══════════════ PAGE 5 — Meet Bride & Groom / Our Story ═══════════════ */}
         <section className="d12-p5">
-          <img className="d12-p5-bg" src="/design12/page5-bg.webp" alt="" />
+          <img className="d12-p5-bg" src="/templates/deprecated/design12/page5-bg.webp" alt="" />
           <span className="d12-p5-meet d12-anim">Meet The</span>
           <h2 className="d12-p5-bride-groom d12-anim d12-anim-d1">Bride &amp; Groom</h2>
 
@@ -282,7 +282,7 @@ export default function Design12() {
             <div className="d12-p5-slideshow">
               <img src={framePhotos[framePhoto]} alt={`${d.groom} & ${d.bride}`} />
             </div>
-            <img className="d12-p5-frame-border" src="/design12/golden-frame.png" alt="" />
+            <img className="d12-p5-frame-border" src="/templates/deprecated/design12/golden-frame.png" alt="" />
           </div>
 
           <p className="d12-p5-story d12-anim d12-anim-d3">{d.message || demo.message}</p>
@@ -300,7 +300,7 @@ export default function Design12() {
 
         {/* ═══════════════ PAGE 6 — RSVP (landscape 1.6:1) ═══════════════ */}
         <section className="d12-p6">
-          <img className="d12-p6-bg" src="/design12/rsvp-bg.webp" alt="" />
+          <img className="d12-p6-bg" src="/templates/deprecated/design12/rsvp-bg.webp" alt="" />
           <div className="d12-p6-will-join d12-anim">
             <p className="d12-p6-will">Will You</p>
             <p className="d12-p6-join">Join Us?</p>
@@ -319,14 +319,14 @@ export default function Design12() {
 
         {/* ═══════════════ PAGE 7 — Instagram (landscape 1.6:1) ═══════════════ */}
         <section className="d12-p7">
-          <img className="d12-p7-bg" src="/design12/page7-bg.webp" alt="" />
+          <img className="d12-p7-bg" src="/templates/deprecated/design12/page7-bg.webp" alt="" />
           <div className="d12-p7-insta-header d12-anim">
             <div className="d12-p7-insta-label">Tag us on Instagram</div>
             <div className="d12-p7-hashtag">#{d.groom.split(' ')[0].toLowerCase()}weds{d.bride.split(' ')[0].toLowerCase()}</div>
           </div>
 
           <div className="d12-p7-cards d12-anim d12-anim-d1">
-            {['/design12/insta1.jpg', '/design12/insta2.jpg', '/design12/insta3.jpg'].map((src, i) => (
+            {['/templates/deprecated/design12/insta1.jpg', '/templates/deprecated/design12/insta2.jpg', '/templates/deprecated/design12/insta3.jpg'].map((src, i) => (
               <div className="d12-p7-card" key={i}>
                 <img className="d12-p7-card-img" src={src} alt="" loading="lazy" />
                 <div className="d12-p7-card-icons">

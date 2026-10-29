@@ -7,7 +7,7 @@ import { useEffect, useRef, useState } from 'react'
 import type { ReactNode } from 'react'
 import './Design4.css'
 
-const A = '/design4/assets/'
+const A = '/templates/deprecated/design4/assets/'
 const MAP = 'https://www.google.com/maps/search/?api=1&query=Beldi+Country+Club+Marrakech+Morocco'
 const wedding = new Date('2027-05-20T16:00:00+01:00').getTime()
 

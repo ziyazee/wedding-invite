@@ -8,7 +8,7 @@ export default function BirthdayInvite() {
   }, [])
   return (
     <iframe
-      src="/birthday/index.html"
+      src="/templates/birthday/index.html"
       title="Aarya's First Birthday Invitation"
       style={{ position: 'fixed', inset: 0, width: '100%', height: '100%', border: 0, background: '#FFF6EE' }}
       allow="autoplay"

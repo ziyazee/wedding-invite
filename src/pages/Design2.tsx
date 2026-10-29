@@ -7,7 +7,7 @@ import { useInvitationDetails } from '../invitations/context'
 import { formatDate, formatTime, mapURL, weddingISO } from '../invitations/model'
 import useGoogleFonts from '../hooks/useGoogleFonts'
 
-const ASSETS = '/images/royal-grace/'
+const ASSETS = '/templates/royal-grace/'
 const eventDate = new Date('2026-09-27T17:00:00-04:00')
 const venue = 'Islamic Center of Melville'
 const address = '118 Old East Neck Road, Melville, NY 11747'

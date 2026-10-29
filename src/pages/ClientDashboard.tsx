@@ -57,7 +57,7 @@ function ClientWorkspace({ showHiddenTemplates = false }: { showHiddenTemplates?
   const [orders, setOrders] = useState<Order[]>([])
   const [viewOrder, setViewOrder] = useState<Order | null>(null)
   const [allTemplates, setAllTemplates] = useState<Template[]>([])
-  const [company, setCompany] = useState<{ id: number; company_name: string; contact_name: string | null } | null>(null)
+  const [company, setCompany] = useState<{ id: number; company_name: string; contact_name: string | null; logo_path: string | null } | null>(null)
   const [templateSettings, setTemplateSettings] = useState<Record<number, TemplateSettings>>({})
   const [companyLogo, setCompanyLogo] = useState('/logo.png')
   const [details, setDetails] = useState(initial)
@@ -89,9 +89,12 @@ function ClientWorkspace({ showHiddenTemplates = false }: { showHiddenTemplates?
   const [waError, setWaError] = useState('')
   const pdfInputRef = useRef<HTMLInputElement>(null)
   const [pdfExtracting, setPdfExtracting] = useState(false)
-  type PdfExtracted = { groom?: string; bride?: string; groomFamily?: string; brideFamily?: string; date?: string; time?: string; venue?: string; address?: string; message?: string; dressCode?: string; events?: { title?: string; date?: string; time?: string; venue?: string; address?: string }[] }
+  type PdfExtracted = { groom?: string; groomFullName?: string; bride?: string; brideFullName?: string; groomFamily?: string; brideFamily?: string; date?: string; time?: string; venue?: string; address?: string; message?: string; dressCode?: string; events?: { title?: string; date?: string; time?: string; venue?: string; address?: string }[] }
   const [pdfResult, setPdfResult] = useState<PdfExtracted | null>(null)
   const [pdfError, setPdfError] = useState('')
+  const [templateDefaults, setTemplateDefaults] = useState<Record<number, Record<string, unknown>>>({})
+  const [editingDemo, setEditingDemo] = useState<number | null>(null)
+  const [demoSaving, setDemoSaving] = useState(false)
 
   const refresh = useCallback(async () => {
     if (!supabase || !isSupabaseConfigured) { setError('Connect Supabase to load your company dashboard.'); setLoading(false); return }
@@ -135,13 +138,18 @@ function ClientWorkspace({ showHiddenTemplates = false }: { showHiddenTemplates?
     if (firstTemplate) { setSelected(current => current ?? firstTemplate.id); setPreviewId(current => current ?? firstTemplate.id) }
     setOrders((ordersResult.data || []) as Order[])
     if (data.user.email) {
-      const { data: companyData } = await supabase.from('companies').select('id,company_name,contact_name').ilike('email', data.user.email).maybeSingle()
+      const { data: companyData } = await supabase.from('companies').select('id,company_name,contact_name,logo_path').ilike('email', data.user.email).maybeSingle()
       setCompany(companyData)
       if (companyData?.id) {
-        const { data: settingsData, error: settingsError } = await supabase.from('company_template_settings').select('template_id,price,sale_type,sale_value,is_premium').eq('company_id', companyData.id)
+        const [{ data: settingsData, error: settingsError }, { data: defaultsData, error: defaultsError }] = await Promise.all([
+          supabase.from('company_template_settings').select('template_id,price,sale_type,sale_value,is_premium').eq('company_id', companyData.id),
+          supabase.from('company_template_defaults').select('template_id,demo_data').eq('company_id', companyData.id),
+        ])
         if (settingsError) setError(settingsError.message)
         else setTemplateSettings(Object.fromEntries((settingsData || []).map(setting => [setting.template_id, { price: Number(setting.price), sale_type: setting.sale_type, sale_value: Number(setting.sale_value), is_premium: setting.is_premium }])) as Record<number, TemplateSettings>)
-      } else setTemplateSettings({})
+        if (defaultsError) setError(defaultsError.message)
+        else setTemplateDefaults(Object.fromEntries((defaultsData || []).map(row => [row.template_id, row.demo_data as Record<string, unknown>])))
+      } else { setTemplateSettings({}); setTemplateDefaults({}) }
       const logoFile = companyData?.company_name
         ? companyLogoFiles[companyData.company_name.trim().replace(/\s+/g, ' ').toLowerCase()]
         : undefined
@@ -256,18 +264,26 @@ function ClientWorkspace({ showHiddenTemplates = false }: { showHiddenTemplates?
     observer.observe(screen)
     return () => observer.disconnect()
   }, [tab, previewTemplate?.id, loading])
+  const companyBranding = useMemo(() => ({
+    ...(companyLogo !== '/logo.png' ? { companyLogo } : company?.logo_path ? { companyLogo: company.logo_path } : {}),
+    ...(company?.company_name ? { companyName: company.company_name } : {}),
+  }), [companyLogo, company?.logo_path, company?.company_name])
   const livePreviewDetails = useMemo<InvitationData>(() => {
     return {
       ...details,
+      ...companyBranding,
       template: selected ?? previewTemplate?.id ?? details.template,
       events: [{ title: weddingEventTitle, date: details.date, time: details.time, venue: details.venue, address: details.address, map: details.map }, ...extraEvents],
     }
-  }, [details, extraEvents, previewTemplate?.id, selected, weddingEventTitle])
-  const previewSrc = showDetails ? '/client/live-preview?editor=1' : previewTemplate?.preview_url || '/client/live-preview'
+  }, [details, companyBranding, extraEvents, previewTemplate?.id, selected, weddingEventTitle])
+  const browsePreviewData = !showDetails && previewTemplate ? (templateDefaults[previewTemplate.id] ? { ...invitationExample(previewTemplate.id), ...templateDefaults[previewTemplate.id], ...companyBranding, template: previewTemplate.id } : { ...invitationExample(previewTemplate.id), ...companyBranding }) : undefined
+  const previewSrc = showDetails ? '/client/live-preview?editor=1' : browsePreviewData ? '/client/live-preview' : previewTemplate?.preview_url || '/client/live-preview'
   useLayoutEffect(() => {
-    if (tab !== 'Templates' || !showDetails) return
-    try { sessionStorage.setItem('shaadi-client-live-preview', JSON.stringify(livePreviewDetails)) } catch { return }
-  }, [livePreviewDetails, showDetails, tab])
+    if (tab !== 'Templates') return
+    const data = showDetails ? livePreviewDetails : browsePreviewData
+    if (!data) return
+    try { sessionStorage.setItem('shaadi-client-live-preview', JSON.stringify(data)) } catch { return }
+  }, [livePreviewDetails, browsePreviewData, showDetails, tab])
   useEffect(() => {
     setWaPhone('')
     setWaSent(false)
@@ -298,7 +314,9 @@ function ClientWorkspace({ showHiddenTemplates = false }: { showHiddenTemplates?
     setSelected(category === 'ALL' ? allTemplates[0]?.id || null : allTemplates.find(template => template.category === category)?.id || null)
   }
   async function chooseTemplate(id: number) {
-    const example = invitationExample(id)
+    const base = invitationExample(id)
+    const demo = templateDefaults[id]
+    const example = base && demo ? { ...base, ...demo, template: id } : base
     setSelected(id)
     setPreviewId(id)
     let textOverrides: TextLayout | undefined
@@ -307,7 +325,10 @@ function ClientWorkspace({ showHiddenTemplates = false }: { showHiddenTemplates?
       if (resp.ok) textOverrides = readTextLayout(await resp.json())
     } catch { /* no defaults for this template */ }
     if (example) {
-      const [wedding, ...celebrations] = example.events
+      const demoEvents = (demo?.events as { title: string; date: string; time: string; venue: string; address: string }[] | undefined) || []
+      const baseEvents = example.events || []
+      const allEvents = demoEvents.length ? demoEvents.map(ev => ({ ...ev, map: '' })) : baseEvents
+      const [wedding, ...celebrations] = allEvents
       setDetails({ ...example, events: [], textOverrides })
       if (wedding) setWeddingEventTitle(wedding.title)
       setExtraEvents(celebrations)
@@ -377,16 +398,27 @@ function ClientWorkspace({ showHiddenTemplates = false }: { showHiddenTemplates?
       setWaError(err instanceof Error ? err.message : 'Failed to send. Please try again.')
     } finally { setWaSending(false) }
   }
-  const pdfExtractPrompt = `You are a wedding invitation data extractor. Analyze this PDF and extract structured details. Return ONLY valid JSON, no markdown fences, matching this exact shape:
-{"groom":"full name","bride":"full name","groomFamily":"COMPLETE family description","brideFamily":"COMPLETE family description","date":"YYYY-MM-DD","time":"HH:MM","venue":"venue name","address":"full address","message":"any special message or religious text from the invite","dressCode":"if mentioned","events":[{"title":"event name","date":"YYYY-MM-DD","time":"HH:MM","venue":"venue","address":"address"}]}
-Rules:
-- Use ISO date format (YYYY-MM-DD). Use 24h time (HH:MM).
-- If a field is not found, use empty string.
-- The events array is for additional ceremonies (mehendi, sangeet, reception) beyond the main wedding — leave empty if only one event.
-- Extract groom and bride FULL names as written on the invitation.
-- CRITICAL for groomFamily and brideFamily: Include EVERYTHING written about each family — parent names with titles (Mr./Mrs./Marhoom), relation labels (S/o, D/o, Grand D/o), house names, village/town names, grandparent names, and any other family details. Copy the full text as-is from the invitation, preserving all details. Do NOT shorten or summarize — include every word related to each family.`
+  const pdfExtractPrompt = `You are analyzing a wedding invitation PDF. Follow these steps carefully, then output JSON.
 
-  async function callOpenAI(base64: string, filename: string): Promise<PdfExtracted> {
+STEP 1 — Find the couple getting married:
+Look for two names displayed prominently, connected by "weds", "with", "&", or similar. These are the BRIDE and GROOM. They are usually styled in large or decorative text.
+WARNING: The names at the very top of the invitation (before phrases like "request the pleasure of your presence" or "cordially invite you") are the HOSTS — usually parents. Do NOT put hosts in the groom/bride fields. Hosts go in the family fields.
+
+STEP 2 — Determine which host belongs to which side:
+Look for clues: "their beloved daughter" means hosts are bride's parents. "their beloved son" means groom's parents. "S/o" (son of) links to groom. "D/o" (daughter of) links to bride. If no explicit clue, the host name that appears closest to the bride's name is likely bride's family.
+
+STEP 3 — Pick calling names:
+For each person in the couple, pick the one distinctive name people would use to call them — not a common prefix, not a surname. If unsure, use the last word of the given name (not surname).
+
+Now return ONLY valid JSON (no markdown, no explanation) in this shape:
+{"groom":"calling name","groomFullName":"full name as written","bride":"calling name","brideFullName":"full name as written","groomFamily":"parents and grandparents with relation labels","brideFamily":"parents and grandparents with relation labels","date":"YYYY-MM-DD","time":"HH:MM (24h)","venue":"venue name","address":"full address","message":"blessing or religious text from the invite","dressCode":"if mentioned","events":[{"title":"event name","date":"YYYY-MM-DD","time":"HH:MM","venue":"venue","address":"address"}]}
+
+Additional rules:
+- Family fields: include relation labels (S/o, D/o, Grand D/o, etc.) for both sides. If one side has a label but the other does not, infer and add it. Exclude addresses, house names, and location details.
+- events: additional ceremonies beyond the main wedding (reception, mehendi, sangeet). Empty array if only one event.
+- Empty string for any field not found.`
+
+  async function callExtract(base64: string, filename: string): Promise<PdfExtracted> {
     if (!supabase) throw new Error('Supabase client not available.')
     const { data, error: fnError } = await supabase.functions.invoke('openai-extract', {
       body: { pdf: base64, filename, prompt: pdfExtractPrompt },
@@ -407,7 +439,7 @@ Rules:
         reader.readAsDataURL(file)
       })
       if (!supabase) throw new Error('No Supabase client available.')
-      setPdfResult(await callOpenAI(base64, file.name))
+      setPdfResult(await callExtract(base64, file.name))
     } catch (err) {
       setPdfError(err instanceof Error ? err.message : 'Failed to extract text from PDF.')
       setPdfResult(null)
@@ -428,11 +460,11 @@ Rules:
     try {
       const { data: { user } } = await supabase.auth.getUser()
       if (!user) throw new Error('Your session expired. Please sign in again.')
-      const { data: company, error: companyError } = await supabase.from('companies').select('id').ilike('email', user.email || '').maybeSingle()
-      if (companyError || !company) throw new Error('Your account is not linked to a company yet.')
-      const companyId = company.id
+      const { data: companyRow, error: companyError } = await supabase.from('companies').select('id').ilike('email', user.email || '').maybeSingle()
+      if (companyError || !companyRow) throw new Error('Your account is not linked to a company yet.')
+      const companyId = companyRow.id
       if (!phoneNumber.trim()) throw new Error('Please enter a phone number for this order.')
-      const formData = validateDetails({ ...details, template: selected, events: [{ title: weddingEventTitle, date: details.date, time: details.time, venue: details.venue, address: details.address, map: details.map }, ...extraEvents] })
+      const formData = validateDetails({ ...details, template: selected, events: [{ title: weddingEventTitle, date: details.date, time: details.time, venue: details.venue, address: details.address, map: details.map }, ...extraEvents], companyLogo: companyLogo !== '/logo.png' ? companyLogo : (company?.logo_path || undefined), companyName: company?.company_name || undefined })
       const templateCode = templates.find(template => template.id === selected)?.template_code
       if (!templateCode) throw new Error('That design is no longer available. Choose another template.')
       const { data, error: insertError } = await supabase.from('orders').insert({ company_id: companyId, template_code: templateCode, created_by: user.id, groom_name: formData.groom, bride_name: formData.bride, phone_number: phoneNumber.trim(), form_data: formData }).select('*').single()
@@ -470,7 +502,7 @@ Rules:
     <header className="client-topbar"><label className="client-top-search"><span aria-hidden="true">⌕</span><input value={templateSearch} onChange={event=>{setTemplateSearch(event.target.value);setTab('Templates');setSelected(null)}} placeholder="Search templates by name, category or style…" aria-label="Search invitation designs"/></label>
     <div className="workspace-account"><span className="client-account-name">{company?.company_name || 'Company'}</span><span className="client-account-avatar" aria-hidden="true"><svg viewBox="0 0 24 24"><circle cx="12" cy="8" r="4"/><path d="M4.5 21a7.5 7.5 0 0 1 15 0"/></svg></span></div></header>
     <aside className="workspace-sidebar"><a href="/" className="client-brand"><img src={showHiddenTemplates ? '/logo-landing.png' : companyLogo} alt={company?.company_name || 'Shaadi Invites'} onError={()=>setCompanyLogo('/logo.png')}/></a><nav className="client-section-nav" aria-label="Client dashboard">{(['Overview','Templates','Orders','Settings'] as const).map(item=><button type="button" key={item} className={tab===item?'active':''} onClick={()=>{setTab(item);setSelected(item==='Templates'?(chosen?.id||allTemplates[0]?.id||null):null);setError('')}}><span aria-hidden="true">{navIcons[item]}</span>{item==='Overview'?'Dashboard':item}</button>)}</nav><section className="client-sidebar-note"><span>♕ CLIENT SUPPORT</span><h2>Need a hand?</h2><p>Our team can help you create a beautiful invitation.</p><a href="https://wa.me/917975948093?text=Hey%20I%20need%20an%20invitation%21" target="_blank" rel="noreferrer">Contact support <b>↗</b></a></section><button className="workspace-logout" aria-label="Log out" onClick={() => void signOutToLogin()}><span aria-hidden="true"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/><polyline points="16 17 21 12 16 7"/><line x1="21" y1="12" x2="9" y2="12"/></svg></span><span>Log out</span></button></aside>
-    <section className={`workspace-main ${tab==='Orders'?'orders-page':''}`}><header className="workspace-top"><div><span className="workspace-kicker">{tab==='Orders'?'ORDERS':tab==='Templates'?(showDetails?'PERSONALISE YOUR INVITATION':'THE ART OF A BEAUTIFUL BEGINNING'):`${company?.company_name||'Company'} · PRIVATE STUDIO`}</span><h1>{tab==='Templates'?(showDetails?'Create your invitation':'Choose a Template'):tab==='Overview'?'Your invitation studio':tab}</h1></div>{tab==='Orders'&&<button type="button" className="orders-new-order" onClick={()=>{setTab('Templates');setSelected(chosen?.id||allTemplates[0]?.id||null)}}><span aria-hidden="true">＋</span> New Order</button>}{tab==='Templates'&&showDetails&&workflowHost&&createPortal(<div className="client-workflow-controls"><span className="client-workflow-progress" aria-hidden="true"></span><button type="button" className="client-workflow-back" disabled={review?false:formStep===0} onClick={()=>review?setReview(false):setFormStep(step=>Math.max(0,step-1))}>{review?<><ReviewActionIcon edit/>Edit details</>:'← Back'}</button><button type="button" className="client-workflow-next" hidden={review} onClick={advanceFormStep}>Continue →</button></div>,workflowHost)}{tab==='Templates'&&showDetails&&<><input ref={pdfInputRef} type="file" accept=".pdf,application/pdf" hidden onChange={e=>{const f=e.target.files?.[0];if(f)void handlePdfUpload(f);e.target.value=''}}/><button type="button" className={`client-upload-pdf-ai${pdfExtracting?' ai-extracting':''}`} disabled={pdfExtracting} onClick={()=>pdfInputRef.current?.click()}><span className="ai-icon-wrap"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><path d="M9 15l3-3 3 3"/><path d="M12 12v6"/></svg></span><span className="ai-label"><strong>{pdfExtracting?'Extracting…':<>Upload PDF <i>AI</i></>}</strong><small>{pdfExtracting?'Gemini is reading your PDF':'Auto-fill invitation details from any PDF'}</small></span><span className="ai-sparkle" aria-hidden="true">✦</span></button></>}{tab==='Templates'&&showDetails&&<button type="button" className="client-form-back" onClick={()=>{setShowDetails(false);setReview(false)}}>← Back to templates</button>}{tab==='Templates'&&<span className="client-design-count">{allTemplates.length} carefully curated invitations</span>}</header>
+    <section className={`workspace-main ${tab==='Orders'?'orders-page':''}`}><header className="workspace-top"><div><span className="workspace-kicker">{tab==='Orders'?'ORDERS':tab==='Templates'?(showDetails?'PERSONALISE YOUR INVITATION':'THE ART OF A BEAUTIFUL BEGINNING'):`${company?.company_name||'Company'} · PRIVATE STUDIO`}</span><h1>{tab==='Templates'?(showDetails?'Create your invitation':'Choose a Template'):tab==='Overview'?'Your invitation studio':tab}</h1></div>{tab==='Orders'&&<button type="button" className="orders-new-order" onClick={()=>{setTab('Templates');setSelected(chosen?.id||allTemplates[0]?.id||null)}}><span aria-hidden="true">＋</span> New Order</button>}{tab==='Templates'&&showDetails&&workflowHost&&createPortal(<div className="client-workflow-controls"><span className="client-workflow-progress" aria-hidden="true"></span><button type="button" className="client-workflow-back" disabled={review?false:formStep===0} onClick={()=>review?setReview(false):setFormStep(step=>Math.max(0,step-1))}>{review?<><ReviewActionIcon edit/>Edit details</>:'← Back'}</button><button type="button" className="client-workflow-next" hidden={review} onClick={advanceFormStep}>Continue →</button></div>,workflowHost)}{tab==='Templates'&&showDetails&&<><input ref={pdfInputRef} type="file" accept=".pdf,application/pdf" hidden onChange={e=>{const f=e.target.files?.[0];if(f)void handlePdfUpload(f);e.target.value=''}}/><button type="button" className={`client-upload-pdf-ai${pdfExtracting?' ai-extracting':''}`} disabled={pdfExtracting} onClick={()=>pdfInputRef.current?.click()}><span className="ai-icon-wrap"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><path d="M9 15l3-3 3 3"/><path d="M12 12v6"/></svg></span><span className="ai-label"><strong>{pdfExtracting?'Extracting…':<>Upload PDF <i>AI</i></>}</strong></span><span className="ai-sparkle" aria-hidden="true">✦</span></button></>}{tab==='Templates'&&showDetails&&<button type="button" className="client-form-back" onClick={()=>{setShowDetails(false);setReview(false)}}>← Back to templates</button>}{tab==='Templates'&&<span className="client-design-count">{allTemplates.length} carefully curated invitations</span>}</header>
       {tab==='Templates'&&<div className="client-catalog-controls"><div className="client-filter-chips"><button type="button" className={categoryFilter==='ALL'?'active':''} onClick={()=>selectCategory('ALL')}>All <span className="category-chip-count">{allTemplates.length}</span></button>{categories.map(category=><button type="button" key={category} className={categoryFilter===category?'active':''} onClick={()=>selectCategory(category)}><span className="category-chip-icon" aria-hidden="true">{categoryChipIcons[category] ?? <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round"><circle cx="12" cy="12" r="3"/><path d="M12 2v3M12 19v3M2 12h3M19 12h3"/></svg>}</span>{category}</button>)}</div><label className="client-sort-control">Sort by<select value={templateSort} onChange={event=>setTemplateSort(event.target.value as 'CURATED'|'NAME')}><option value="CURATED">Curated</option><option value="NAME">Name</option></select></label></div>}
       {tab==='Templates'&&chosen&&<div className="client-selected-gallery"><div className="client-selected-gallery-title"><span className="workspace-kicker">THE COLLECTION</span><button type="button" onClick={()=>setShowDetails(false)}>{showDetails?'Hide details':'Choose a template'}</button></div><div key={categoryFilter} className={`client-selected-card-grid category-slide-from-${categoryDirection}`}>{templates.map(template=><article key={template.id} className={`client-selected-card ${template.id===previewTemplate?.id?'active':''}`}><button type="button" className="client-card-preview-trigger" onClick={()=>setPreviewId(template.id)} aria-label={`Preview ${template.name} on the mobile screen`}><span className="client-selected-thumb">{TEMPLATE_INTRO_VIDEOS[template.id]?<video src={TEMPLATE_INTRO_VIDEOS[template.id]} poster={TEMPLATE_THUMBNAIL_OVERRIDES[template.id]??template.thumbnail_url} autoPlay muted loop playsInline aria-label={`${template.name} intro preview`}/>:<img src={TEMPLATE_THUMBNAIL_OVERRIDES[template.id]??TEMPLATE_INTRO_IMAGES[template.id]??template.thumbnail_url} alt=""/>}{templateSettings[template.id]?.is_premium&&<span className="client-template-premium-badge">PREMIUM</span>}</span><span className="client-template-card-meta"><span className="client-template-card-copy"><strong>{template.name}</strong><small>{template.category}</small></span><TemplatePrice setting={templateSettings[template.id]}/></span></button><button type="button" className="client-selected-card-order" onClick={()=>chooseTemplate(template.id)}>Get this design <span aria-hidden="true">→</span></button></article>)}</div></div>}
       {tab !== 'Settings' && error && <p className="workspace-alert" role="alert">{error}</p>}{tab === 'Templates' && notice && <p className="workspace-success" role="status">{notice}</p>}
@@ -483,13 +515,39 @@ Rules:
       ].map(metric=><article className={`metric-card metric-${metric.tone}`} key={metric.label}><span>{metric.label}</span><strong>{metric.value}</strong><i aria-hidden="true">{metric.icon}</i><small className={metric.change.startsWith('↑')?'metric-change-up':metric.change.startsWith('↓')?'metric-change-down':'metric-change-neutral'}>{metric.change.includes(' from ')?<><b>{metric.change.slice(0,metric.change.indexOf(' from '))}</b>{metric.change.slice(metric.change.indexOf(' from '))}</>:metric.change}</small></article>)}</div><div className="client-overview-columns"><section className="client-recent-orders"><div className="section-heading recent-orders-heading"><h2>Recent orders</h2><button className="text-action" onClick={() => setTab('Orders')}>View all →</button></div><OrderTable orders={orders.slice(0,5)} onSelect={setViewOrder} variant="overview"/><div className="recent-orders-footer">Showing {orders.length===0?'0':`1–${Math.min(5,orders.length)}`} of {orders.length} orders<button type="button" onClick={()=>setTab('Orders')}>View all orders →</button></div></section><aside className="client-overview-side-card"><h2>Orders by status</h2><div className="client-status-breakdown"><div className="client-status-donut" style={{ background: `conic-gradient(#557260 0 ${orders.length ? orders.filter(order=>order.status==='READY').length/orders.length*100 : 0}%, #e3a05b 0 ${orders.length ? (orders.filter(order=>order.status==='READY').length+orders.filter(order=>order.status==='IN_PROGRESS').length)/orders.length*100 : 0}%, #a87592 0 ${orders.length ? (orders.filter(order=>order.status==='READY').length+orders.filter(order=>order.status==='IN_PROGRESS').length+orders.filter(order=>order.status==='CREATED').length)/orders.length*100 : 0}%, #db7f8e 0 100%)` }}><span><strong>{orders.length}</strong><small>Orders</small></span></div><ul><li><i className="status-dot status-dot-published"/>Published <b>{orders.filter(order=>order.status==='READY').length}</b></li><li><i className="status-dot status-dot-progress"/>In progress <b>{orders.filter(order=>order.status==='IN_PROGRESS').length}</b></li><li><i className="status-dot status-dot-new"/>New <b>{orders.filter(order=>order.status==='CREATED').length}</b></li><li><i className="status-dot status-dot-changes"/>Needs changes <b>{orders.filter(order=>order.status==='REJECTED').length}</b></li></ul></div></aside></div><section className="client-popular-templates"><div className="section-heading"><h2>Popular templates</h2><button className="text-action" onClick={()=>setTab('Templates')}>View all templates →</button></div><div className="client-popular-grid">{allTemplates.slice(0,7).map(template=><button type="button" className="client-popular-template" key={template.id} onClick={()=>chooseTemplate(template.id)}><img src={template.thumbnail_url} alt=""/><strong>{template.name}</strong><small>{template.category}</small></button>)}</div></section></div>}
       {tab === 'Templates' && <>{chosen ? <div className="order-create"><div className="order-template-rail"><button className="back-action" onClick={() => setSelected(null)}>← All templates</button>{templates.map(template => <button key={template.id} className={`rail-template ${selected === template.id ? 'selected' : ''}`} onClick={() => chooseTemplate(template.id)}><img src={template.thumbnail_url} alt=""/><span>{template.name}<small>{template.category}</small></span></button>)}</div><form className="order-form" onSubmit={submitOrder}><div className="form-heading"><span className="workspace-kicker">NEW INVITATION ORDER</span><h2>{chosen.name}</h2></div><fieldset style={{display:review?'none':undefined}}><legend>01 · The couple</legend><div className="form-grid"><Field label="Groom’s name" required value={details.groom} onChange={v => setField('groom',v)}/><Field label="Bride’s name" required value={details.bride} onChange={v => setField('bride',v)}/><Field label="Groom’s family" value={details.groomFamily} onChange={v => setField('groomFamily',v)}/><Field label="Bride’s family" value={details.brideFamily} onChange={v => setField('brideFamily',v)}/><Field label="Phone number" type="tel" required value={phoneNumber} onChange={setPhoneNumber}/></div></fieldset><fieldset style={{display:review?'none':undefined}}><legend>02 · Wedding details</legend><div className="form-grid"><Field label="Wedding celebration name" required value={weddingEventTitle} onChange={setWeddingEventTitle}/><Field label="Wedding date" type="date" required value={details.date} onChange={v => setField('date',v)}/><Field label="Ceremony time" type="time" required value={details.time} onChange={v => setField('time',v)}/><Field label="Venue" required value={details.venue} onChange={v => setField('venue',v)}/><Field label="Address" required value={details.address} onChange={v => setField('address',v)}/><Field label="Map link" type="url" value={details.map} onChange={v => setField('map',v)}/></div></fieldset><fieldset style={{display:review?'none':undefined}}><legend>03 · Celebrations</legend><p className="form-note">The wedding celebration is included from the details above.</p>{extraEvents.map((item,index)=><div className="celebration-editor" key={index}><div className="section-heading"><h3>Additional celebration {index+1}</h3><button type="button" className="text-action" onClick={()=>setExtraEvents(events=>events.filter((_,i)=>i!==index))}>Remove</button></div><div className="form-grid"><Field label="Event name" required value={item.title} onChange={v=>setExtraEvents(events=>events.map((event,i)=>i===index?{...event,title:v}:event))}/><Field label="Date" type="date" required value={item.date} onChange={v=>setExtraEvents(events=>events.map((event,i)=>i===index?{...event,date:v}:event))}/><Field label="Time" type="time" required value={item.time} onChange={v=>setExtraEvents(events=>events.map((event,i)=>i===index?{...event,time:v}:event))}/><Field label="Venue" required value={item.venue} onChange={v=>setExtraEvents(events=>events.map((event,i)=>i===index?{...event,venue:v}:event))}/><Field label="Address" required value={item.address} onChange={v=>setExtraEvents(events=>events.map((event,i)=>i===index?{...event,address:v}:event))}/><Field label="Map link" type="url" value={item.map} onChange={v=>setExtraEvents(events=>events.map((event,i)=>i===index?{...event,map:v}:event))}/></div></div>)}<button type="button" className="secondary-action" disabled={extraEvents.length>=9} onClick={()=>setExtraEvents(events=>[...events,{title:'',date:details.date,time:'17:00',venue:'',address:'',map:''}])}>+ Add celebration</button></fieldset><fieldset style={{display:review?'none':undefined}}><legend>04 · Personal touches</legend><div className="form-grid"><Field label="Dress code" value={details.dressCode} onChange={v => setField('dressCode',v)}/></div><label>Welcome message<textarea rows={4} value={details.message} onChange={e => setField('message',e.target.value)}/></label><label>Short note<textarea rows={2} value={details.giftNote} onChange={e => setField('giftNote',e.target.value)}/></label></fieldset>{review&&<InvitationReview sellingPrice={templateSellingPrice(templateSettings[chosen.id])} details={details} phone={phoneNumber} title={weddingEventTitle} events={extraEvents} template={chosen.name}/>}<p className="form-note">Your order will be submitted for review before an invitation is created or published.</p><button type="submit" className="primary-action" disabled={busy}>{busy ? 'Submitting order…' : review ? <><ReviewActionIcon/>Create invitation</> : 'Review order →'}</button></form></div> : <><section className="client-collection-intro"><div><span className="workspace-kicker">THE ART OF A BEAUTIFUL BEGINNING</span><h2>Choose a design that tells their story.</h2><p>Preview the collection and prepare a personal invitation order for your couple.</p></div><div className="client-collection-art" aria-hidden="true"><span>Shaadi Invites</span><i>✧</i></div></section><div className="client-collection-heading"><div><span className="workspace-kicker">THE COLLECTION</span><h2>Invitation designs <small>{templates.length} curated styles</small></h2></div><span className="client-collection-note">Select a design to begin an order <b>↓</b></span></div><div className="template-grid">{templates.map((template,index)=><article className="template-tile" key={template.id}><a className="template-image" href={template.preview_url} target="_blank" rel="noreferrer">{TEMPLATE_INTRO_VIDEOS[template.id]?<video src={TEMPLATE_INTRO_VIDEOS[template.id]} poster={TEMPLATE_THUMBNAIL_OVERRIDES[template.id]??template.thumbnail_url} autoPlay muted loop playsInline ref={el=>{if(el){el.muted=true;el.setAttribute('muted','');el.play().catch(()=>{})}}}/>:<img src={TEMPLATE_INTRO_IMAGES[template.id]??template.thumbnail_url} alt={`${template.name} preview`} loading="lazy"/>}<span>PREVIEW ↗</span></a><div><small>{String(index+1).padStart(2,'0')} · {template.category}</small><h2>{template.name}</h2><button className="text-action" onClick={() => chooseTemplate(template.id)}>Choose this design <b>→</b></button></div></article>)}</div></>}</>}
       {tab === 'Orders' && <><p className="workspace-lede orders-description">View and manage all invitation orders submitted by your customers.</p><div className="orders-filters"><label className="orders-search"><span aria-hidden="true">⌕</span><input value={orderSearch} onChange={e => {setOrderSearch(e.target.value);setOrdersPage(0)}} placeholder="Search by order ID, couple name, or phone number…" aria-label="Search orders"/></label><div className="orders-date-filter"><span aria-hidden="true">▦</span><input type="date" value={orderDateFrom} onChange={e=>{setOrderDateFrom(e.target.value);setOrdersPage(0)}} aria-label="Submitted from"/><span className="orders-date-separator">to</span><input type="date" value={orderDateTo} onChange={e=>{setOrderDateTo(e.target.value);setOrdersPage(0)}} aria-label="Submitted to"/></div></div><OrderTable orders={filtered.slice(ordersPage*20,ordersPage*20+20)} onSelect={setViewOrder} onCreate={orders.length===0?()=>{setTab('Templates');setSelected(chosen?.id||allTemplates[0]?.id||null)}:undefined}/>{filtered.length>20&&<div className="pagination"><button disabled={ordersPage===0} onClick={()=>setOrdersPage(p=>p-1)}>← Previous</button><span>Page {ordersPage+1} of {Math.max(1,Math.ceil(filtered.length/20))}</span><button disabled={(ordersPage+1)*20>=filtered.length} onClick={()=>setOrdersPage(p=>p+1)}>Next →</button></div>}</>}
-      {tab === 'Settings' && <TemplateSettingsPanel companyName={company?.company_name || 'your company'} templates={allTemplates} settings={templateSettings} error={error} canSave={Boolean(company)} onChange={editTemplateSetting} onSaveAll={saveAllTemplateSettings}/>}
+      {tab === 'Settings' && <TemplateSettingsPanel companyName={company?.company_name || 'your company'} templates={allTemplates} settings={templateSettings} defaults={templateDefaults} error={error} canSave={Boolean(company)} onChange={editTemplateSetting} onSaveAll={saveAllTemplateSettings} onCustomizeDemo={setEditingDemo}/>}
     </section>
-    {tab === 'Templates' && <aside className="client-preview-panel"><div className="client-preview-heading"><div><span className="workspace-kicker">LIVE PREVIEW</span><h2>{previewTemplate?.name || 'Invitation preview'}</h2></div><span className="preview-live-dot" aria-label="Live preview"/></div>{previewTemplate ? <><div className="client-device-frame"><div className="client-device-screen" ref={previewScreen}><iframe key={`${previewTemplate.id}-${showDetails}`} title={`${previewTemplate.name} mobile invitation preview`} src={previewSrc} allow="autoplay; fullscreen" allowFullScreen style={{ transform: `scale(${previewScale})` }} onLoad={() => { const screen = previewScreen.current; if (screen) setPreviewScale(Math.min(screen.clientWidth / 402, screen.clientHeight / 874)) }}/></div></div><div className="client-preview-thumbs" aria-label="Choose a design to preview">{templates.map(template=><button type="button" key={template.id} className={previewTemplate.id === template.id ? 'active' : ''} onClick={()=>setPreviewId(template.id)} aria-label={`Preview ${template.name}`}><img src={template.thumbnail_url} alt=""/></button>)}</div><a className="client-preview-open" href={previewTemplate.preview_url} target="_blank" rel="noreferrer">Preview Full Invitation <span>↗</span></a><button type="button" className="client-preview-choose" onClick={()=>chooseTemplate(previewTemplate.id)}>Get this design <span>→</span></button></> : <p className="form-note">Your invitation previews will appear here.</p>}</aside>}
+    {tab === 'Templates' && <aside className="client-preview-panel"><div className="client-preview-heading"><div><span className="workspace-kicker">LIVE PREVIEW</span><h2>{previewTemplate?.name || 'Invitation preview'}</h2></div><span className="preview-live-dot" aria-label="Live preview"/></div>{previewTemplate ? <><div className="client-device-frame"><div className="client-device-screen" ref={previewScreen}><iframe key={`${previewTemplate.id}-${showDetails}-${JSON.stringify(templateDefaults[previewTemplate.id] || '')}`} title={`${previewTemplate.name} mobile invitation preview`} src={previewSrc} allow="autoplay; fullscreen" allowFullScreen style={{ transform: `scale(${previewScale})` }} onLoad={() => { const screen = previewScreen.current; if (screen) setPreviewScale(Math.min(screen.clientWidth / 402, screen.clientHeight / 874)) }}/></div></div><div className="client-preview-thumbs" aria-label="Choose a design to preview">{templates.map(template=><button type="button" key={template.id} className={previewTemplate.id === template.id ? 'active' : ''} onClick={()=>setPreviewId(template.id)} aria-label={`Preview ${template.name}`}><img src={template.thumbnail_url} alt=""/></button>)}</div><a className="client-preview-open" href={previewTemplate.preview_url} target="_blank" rel="noreferrer">Preview Full Invitation <span>↗</span></a><button type="button" className="client-preview-choose" onClick={()=>chooseTemplate(previewTemplate.id)}>Get this design <span>→</span></button></> : <p className="form-note">Your invitation previews will appear here.</p>}</aside>}
     {tab === 'Templates' && showDetails && chosen && !loading && <Suspense fallback={null}><OrderTextEditor key={chosen.id} template={chosen.id} value={details.textOverrides} onChange={textOverrides => setDetails(previous => ({ ...previous, textOverrides }))} draftStatus={draftStatus}/></Suspense>}
+    {editingDemo !== null && company && <TemplateDemoEditor
+      templateId={editingDemo}
+      templateName={allTemplates.find(t => t.id === editingDemo)?.name || 'Template'}
+      companyId={company.id}
+      existing={templateDefaults[editingDemo] || null}
+      saving={demoSaving}
+      onSave={async (demoData) => {
+        if (!supabase) return
+        setDemoSaving(true)
+        const { error: saveError } = await supabase.from('company_template_defaults').upsert({ company_id: company.id, template_id: editingDemo, demo_data: demoData }, { onConflict: 'company_id,template_id' })
+        setDemoSaving(false)
+        if (saveError) { setError(saveError.message); return }
+        setTemplateDefaults(prev => ({ ...prev, [editingDemo]: demoData }))
+        setEditingDemo(null)
+      }}
+      onReset={async () => {
+        if (!supabase) return
+        setDemoSaving(true)
+        await supabase.from('company_template_defaults').delete().eq('company_id', company.id).eq('template_id', editingDemo)
+        setDemoSaving(false)
+        setTemplateDefaults(prev => { const next = { ...prev }; delete next[editingDemo]; return next })
+        setEditingDemo(null)
+      }}
+      onClose={() => setEditingDemo(null)}
+      onExtractPdf={callExtract}
+    />}
     {(pdfResult !== null || pdfError) && <div className="ai-extract-overlay" role="presentation" onMouseDown={e=>{if(e.target===e.currentTarget){setPdfResult(null);setPdfError('')}}}><section className="ai-extract-dialog" role="dialog" aria-modal="true"><header><span className="ai-extract-badge">AI</span><h2>Extracted Details</h2><button className="dialog-close" onClick={()=>{setPdfResult(null);setPdfError('')}} aria-label="Close">×</button></header>{pdfError?<p className="workspace-alert">{pdfError}</p>:<><div className="ai-extract-fields">{([
-      ['Groom', pdfResult?.groom],
-      ['Bride', pdfResult?.bride],
+      ['Groom', pdfResult?.groom, pdfResult?.groomFullName],
+      ['Bride', pdfResult?.bride, pdfResult?.brideFullName],
       ['Groom\'s family', pdfResult?.groomFamily],
       ['Bride\'s family', pdfResult?.brideFamily],
       ['Date', pdfResult?.date],
@@ -498,10 +556,119 @@ Rules:
       ['Address', pdfResult?.address],
       ['Message', pdfResult?.message],
       ['Dress code', pdfResult?.dressCode],
-    ] as [string, string | undefined][]).filter(([,v]) => v?.trim()).map(([label, value]) => <div key={label} className="ai-field"><span className="ai-field-label">{label}</span><span className="ai-field-value">{value}</span></div>)}
+    ] as [string, string | undefined, string | undefined][]).filter(([,v]) => v?.trim()).map(([label, value, fullName]) => <div key={label} className="ai-field"><span className="ai-field-label">{label}</span><span className="ai-field-value">{value}{fullName && fullName !== value && <small className="ai-field-full-name">{fullName}</small>}</span></div>)}
       {pdfResult?.events && pdfResult.events.length > 0 && <><div className="ai-field-divider">Additional Events</div>{pdfResult.events.map((ev, i) => <div key={i} className="ai-event-card">{([['Event', ev.title], ['Date', ev.date], ['Time', ev.time], ['Venue', ev.venue], ['Address', ev.address]] as [string, string | undefined][]).filter(([,v]) => v?.trim()).map(([l, v]) => <div key={l} className="ai-field"><span className="ai-field-label">{l}</span><span className="ai-field-value">{v}</span></div>)}</div>)}</>}
     </div><footer className="ai-extract-footer"><button type="button" className="ai-fill-form-btn" onClick={()=>{if(!pdfResult)return;setDetails(prev=>({...prev,groom:pdfResult.groom||'',bride:pdfResult.bride||'',groomFamily:pdfResult.groomFamily||'',brideFamily:pdfResult.brideFamily||'',date:pdfResult.date||'',time:pdfResult.time||'',venue:pdfResult.venue||'',address:pdfResult.address||'',map:'',message:pdfResult.message||'',dressCode:pdfResult.dressCode||'',giftNote:'',music:'',gallery:'',events:[]}));setWeddingEventTitle('Wedding');setPhoneNumber('');setExtraEvents(pdfResult.events?.length?pdfResult.events.map(ev=>({title:ev.title||'',date:ev.date||'',time:ev.time||'',venue:ev.venue||'',address:ev.address||'',map:''})):[]);setPdfResult(null);setPdfError('')}}><span className="ai-extract-badge">AI</span> Fill form with these details</button></footer></>}</section></div>}
   </main></CardTemplateContext.Provider>
+}
+
+type DemoEvent = { title: string; date: string; time: string; venue: string; address: string }
+function TemplateDemoEditor({ templateId, templateName, companyId: _companyId, existing, saving, onSave, onReset, onClose, onExtractPdf }: { templateId: number; templateName: string; companyId: number; existing: Record<string, unknown> | null; saving: boolean; onSave: (data: Record<string, unknown>) => Promise<void>; onReset: () => Promise<void>; onClose: () => void; onExtractPdf: (base64: string, filename: string) => Promise<{ groom?: string; groomFullName?: string; bride?: string; brideFullName?: string; groomFamily?: string; brideFamily?: string; date?: string; time?: string; venue?: string; address?: string; message?: string; dressCode?: string; events?: { title?: string; date?: string; time?: string; venue?: string; address?: string }[] }> }) {
+  const example = invitationExample(templateId)
+  const pdfRef = useRef<HTMLInputElement>(null)
+  const [pdfExtracting, setPdfExtracting] = useState(false)
+  const [pdfError, setPdfError] = useState('')
+  const [groom, setGroom] = useState((existing?.groom as string) || '')
+  const [bride, setBride] = useState((existing?.bride as string) || '')
+  const [groomFamily, setGroomFamily] = useState((existing?.groomFamily as string) || '')
+  const [brideFamily, setBrideFamily] = useState((existing?.brideFamily as string) || '')
+  const [venue, setVenue] = useState((existing?.venue as string) || '')
+  const [address, setAddress] = useState((existing?.address as string) || '')
+  const [message, setMessage] = useState((existing?.message as string) || '')
+  const [date, setDate] = useState((existing?.date as string) || '')
+  const [time, setTime] = useState((existing?.time as string) || '')
+  const [dressCode, setDressCode] = useState((existing?.dressCode as string) || '')
+  const [giftNote, setGiftNote] = useState((existing?.giftNote as string) || '')
+  const [events, setEvents] = useState<DemoEvent[]>(() => {
+    const saved = existing?.events as DemoEvent[] | undefined
+    return saved?.length ? saved : []
+  })
+  async function handlePdf(file: File) {
+    setPdfExtracting(true); setPdfError('')
+    try {
+      const base64 = await new Promise<string>((resolve, reject) => {
+        const reader = new FileReader()
+        reader.onload = () => { const r = reader.result as string; resolve(r.split(',')[1]) }
+        reader.onerror = () => reject(new Error('Failed to read file.'))
+        reader.readAsDataURL(file)
+      })
+      const result = await onExtractPdf(base64, file.name)
+      if (result.groom) setGroom(result.groom)
+      if (result.bride) setBride(result.bride)
+      if (result.groomFamily) setGroomFamily(result.groomFamily)
+      if (result.brideFamily) setBrideFamily(result.brideFamily)
+      if (result.venue) setVenue(result.venue)
+      if (result.address) setAddress(result.address)
+      if (result.date) setDate(result.date)
+      if (result.time) setTime(result.time)
+      if (result.message) setMessage(result.message)
+      if (result.dressCode) setDressCode(result.dressCode)
+      if (result.events?.length) setEvents(result.events.map(ev => ({ title: ev.title || '', date: ev.date || '', time: ev.time || '', venue: ev.venue || '', address: ev.address || '' })))
+    } catch (err) { setPdfError(err instanceof Error ? err.message : 'Failed to extract from PDF.') }
+    finally { setPdfExtracting(false) }
+  }
+  function handleSave() {
+    const data: Record<string, unknown> = {}
+    if (groom.trim()) data.groom = groom.trim()
+    if (bride.trim()) data.bride = bride.trim()
+    if (groomFamily.trim()) data.groomFamily = groomFamily.trim()
+    if (brideFamily.trim()) data.brideFamily = brideFamily.trim()
+    if (venue.trim()) data.venue = venue.trim()
+    if (address.trim()) data.address = address.trim()
+    if (message.trim()) data.message = message.trim()
+    if (date.trim()) data.date = date.trim()
+    if (time.trim()) data.time = time.trim()
+    if (dressCode.trim()) data.dressCode = dressCode.trim()
+    if (giftNote.trim()) data.giftNote = giftNote.trim()
+    const validEvents = events.filter(e => e.title.trim())
+    if (validEvents.length) data.events = validEvents
+    void onSave(data)
+  }
+  function updateEvent(index: number, patch: Partial<DemoEvent>) { setEvents(prev => prev.map((e, i) => i === index ? { ...e, ...patch } : e)) }
+  return <div className="demo-editor-overlay" role="presentation" onMouseDown={e => { if (e.target === e.currentTarget) onClose() }}>
+    <section className="demo-editor-dialog" role="dialog" aria-modal="true" aria-labelledby="demo-editor-title">
+      <button className="dialog-close" onClick={onClose} aria-label="Close">×</button>
+      <div className="demo-editor-header">
+        <div><span className="workspace-kicker">CUSTOMIZE DEMO DATA</span><h2 id="demo-editor-title">{templateName}</h2></div>
+        <input ref={pdfRef} type="file" accept=".pdf,application/pdf" hidden onChange={e => { const f = e.target.files?.[0]; if (f) handlePdf(f); e.target.value = '' }}/>
+        <button type="button" className="demo-editor-pdf" disabled={pdfExtracting} onClick={() => pdfRef.current?.click()}>{pdfExtracting ? 'Extracting…' : '📄 Upload PDF'}</button>
+      </div>
+      {pdfError && <p className="workspace-alert" role="alert">{pdfError}</p>}
+      <p className="demo-editor-hint">Set custom names and details for your store's template preview. Empty fields fall back to the standard example.</p>
+      <div className="demo-editor-fields">
+        <label>Groom's name<textarea rows={2} value={groom} onChange={e => setGroom(e.target.value)} placeholder={example?.groom || 'Groom'}/></label>
+        <label>Bride's name<textarea rows={2} value={bride} onChange={e => setBride(e.target.value)} placeholder={example?.bride || 'Bride'}/></label>
+        <label>Groom's family<textarea rows={3} value={groomFamily} onChange={e => setGroomFamily(e.target.value)} placeholder={example?.groomFamily || "Groom's family"}/></label>
+        <label>Bride's family<textarea rows={3} value={brideFamily} onChange={e => setBrideFamily(e.target.value)} placeholder={example?.brideFamily || "Bride's family"}/></label>
+        <label>Venue<textarea rows={2} value={venue} onChange={e => setVenue(e.target.value)} placeholder={example?.venue || 'Venue'}/></label>
+        <label>Address<textarea rows={2} value={address} onChange={e => setAddress(e.target.value)} placeholder={example?.address || 'Address'}/></label>
+        <label>Wedding date<input type="date" value={date} onChange={e => setDate(e.target.value)}/></label>
+        <label>Ceremony time<input type="time" value={time} onChange={e => setTime(e.target.value)}/></label>
+        <label>Dress code<textarea rows={2} value={dressCode} onChange={e => setDressCode(e.target.value)} placeholder={example?.dressCode || 'Dress code'}/></label>
+        <label className="demo-editor-full">Welcome message<textarea rows={4} value={message} onChange={e => setMessage(e.target.value)} placeholder={example?.message || 'Welcome message'}/></label>
+        <label className="demo-editor-full">Short note<textarea rows={3} value={giftNote} onChange={e => setGiftNote(e.target.value)} placeholder={example?.giftNote || 'Short note'}/></label>
+      </div>
+      <div className="demo-celebrations">
+        <div className="demo-celebrations-heading"><h3>Celebrations</h3><button type="button" className="secondary-action" disabled={events.length >= 9} onClick={() => setEvents(prev => [...prev, { title: '', date: date || '', time: '17:00', venue: '', address: '' }])}>+ Add celebration</button></div>
+        {events.map((ev, i) => <div className="demo-celebration-row" key={i}>
+          <div className="demo-celebration-head"><small>Celebration {i + 1}</small><button type="button" className="text-action" onClick={() => setEvents(prev => prev.filter((_, j) => j !== i))}>Remove</button></div>
+          <div className="demo-editor-fields">
+            <label>Event name<textarea rows={2} value={ev.title} onChange={e => updateEvent(i, { title: e.target.value })} placeholder="e.g. Mehendi, Sangeet"/></label>
+            <label>Date<input type="date" value={ev.date} onChange={e => updateEvent(i, { date: e.target.value })}/></label>
+            <label>Time<input type="time" value={ev.time} onChange={e => updateEvent(i, { time: e.target.value })}/></label>
+            <label>Venue<textarea rows={2} value={ev.venue} onChange={e => updateEvent(i, { venue: e.target.value })} placeholder="Venue"/></label>
+            <label className="demo-editor-full">Address<textarea rows={2} value={ev.address} onChange={e => updateEvent(i, { address: e.target.value })} placeholder="Address"/></label>
+          </div>
+        </div>)}
+        {events.length === 0 && <p className="demo-editor-hint">No additional celebrations. Click "+ Add celebration" to include mehendi, sangeet, reception, etc.</p>}
+      </div>
+      <div className="demo-editor-actions">
+        <button type="button" className="primary-action" disabled={saving} onClick={handleSave}>{saving ? 'Saving…' : 'Save Demo Data'}</button>
+        {existing && <button type="button" className="secondary-action" disabled={saving} onClick={() => void onReset()}>Reset to Default</button>}
+        <button type="button" className="text-action" onClick={onClose}>Cancel</button>
+      </div>
+    </section>
+  </div>
 }
 
 function Field({ label, value, onChange, type = 'text', required = false }: { label: string; value: string; onChange: (value: string) => void; type?: string; required?: boolean }) {
@@ -520,12 +687,12 @@ function TemplatePrice({ setting }: { setting?: TemplateSettings }) {
   if (setting.sale_type === 'none' || setting.sale_value === 0) return <span className="client-template-price"><strong>{formatPrice(setting.price)}</strong></span>
   return <span className="client-template-price client-template-price-sale"><small className="client-template-sale-badge">{setting.sale_type === 'percentage' ? `${setting.sale_value}% OFF` : `${formatPrice(setting.sale_value)} OFF`}</small><span className="client-template-price-row"><strong>{formatPrice(currentPrice)}</strong><i aria-hidden="true"/><del>{formatPrice(setting.price)}</del></span></span>
 }
-function TemplateSettingsPanel({companyName,templates,settings,error,canSave,onChange,onSaveAll}:{companyName:string;templates:Template[];settings:Record<number,TemplateSettings>;error:string;canSave:boolean;onChange:(id:number,patch:Partial<TemplateSettings>)=>void;onSaveAll:()=>Promise<void>}) {
+function TemplateSettingsPanel({companyName,templates,settings,defaults:_defaults,error,canSave,onChange,onSaveAll,onCustomizeDemo}:{companyName:string;templates:Template[];settings:Record<number,TemplateSettings>;defaults:Record<number,Record<string,unknown>>;error:string;canSave:boolean;onChange:(id:number,patch:Partial<TemplateSettings>)=>void;onSaveAll:()=>Promise<void>;onCustomizeDemo:(id:number)=>void}) {
   const [saved,setSaved]=useState(false)
   const [saving,setSaving]=useState(false)
   function handleChange(id:number,patch:Partial<TemplateSettings>){setSaved(false);onChange(id,patch)}
   async function handleSaveAll(){setSaving(true);await onSaveAll();setSaving(false);setSaved(true)}
-  return <><div className="client-settings-intro"><div><span className="workspace-kicker">YOUR TEMPLATE CATALOG</span><h2>Configure your designs</h2><p>Set your price, optional discount, and premium status for each template. These settings belong to {companyName}.</p></div><button type="button" className={`primary-action client-settings-save${saved?' is-saved':''}`} disabled={!canSave||saving} onClick={handleSaveAll}>{saving?'Saving…':saved?'Saved ✓':'Save changes'}</button></div>{error&&<p className="workspace-alert" role="alert">{error}</p>}<div className="client-template-settings">{templates.map(template=>{const setting=settings[template.id]||{price:0,sale_type:'none' as const,sale_value:0,is_premium:false};return <article className="client-template-setting" key={template.id}><div className="client-template-setting-art"><img src={template.thumbnail_url} alt={`${template.name} invitation cover`}/><TemplatePrice setting={setting}/></div><div className="client-template-setting-content"><h3 style={{fontSize:template.name.length>20?'12px':template.name.length>14?'14px':'17px'}}>{template.name}</h3><div className="client-template-setting-fields"><label>Price (INR)<span className="client-settings-input-wrap"><i aria-hidden="true">₹</i><input type="number" min="0" step="1" value={setting.price||''} onChange={event=>handleChange(template.id,{price:event.target.value===''?0:Number(event.target.value)})}/></span></label><label>Sale type<select value={setting.sale_type} onChange={event=>handleChange(template.id,{sale_type:event.target.value as TemplateSettings['sale_type'],sale_value:event.target.value==='none'?0:setting.sale_value})}><option value="none">No sale</option><option value="percentage">Percentage discount</option><option value="fixed">Fixed discount</option></select></label>{setting.sale_type!=='none'&&<label className="client-discount-setting">{setting.sale_type==='percentage'?'Discount percentage':'Discount amount (INR)'}<span className="client-settings-input-wrap">{setting.sale_type==='fixed'&&<i aria-hidden="true">₹</i>}<input type="number" min="0" max={setting.sale_type==='percentage'?100:setting.price} step={setting.sale_type==='percentage'?'0.1':'1'} value={setting.sale_value||''} onChange={event=>handleChange(template.id,{sale_value:event.target.value===''?0:Number(event.target.value)})}/>{setting.sale_type==='percentage'&&<i aria-hidden="true">%</i>}</span></label>}</div><label className="client-premium-setting"><input type="checkbox" checked={setting.is_premium} onChange={event=>handleChange(template.id,{is_premium:event.target.checked})}/><span className="client-premium-switch" aria-hidden="true"/><span className="client-premium-copy"><b>Premium template <i aria-hidden="true">♛</i></b></span></label></div></article>})}</div></>
+  return <><div className="client-settings-intro"><div><span className="workspace-kicker">YOUR TEMPLATE CATALOG</span><h2>Configure your designs</h2><p>Set your price, optional discount, and premium status for each template. These settings belong to {companyName}.</p></div><button type="button" className={`primary-action client-settings-save${saved?' is-saved':''}`} disabled={!canSave||saving} onClick={handleSaveAll}>{saving?'Saving…':saved?'Saved ✓':'Save changes'}</button></div>{error&&<p className="workspace-alert" role="alert">{error}</p>}<div className="client-template-settings">{templates.map(template=>{const setting=settings[template.id]||{price:0,sale_type:'none' as const,sale_value:0,is_premium:false};return <article className="client-template-setting" key={template.id}><div className="client-template-setting-art"><span className="setting-art-wrap"><img src={template.thumbnail_url} alt={`${template.name} invitation cover`}/><button type="button" className="setting-demo-overlay" onClick={()=>onCustomizeDemo(template.id)}>✎ Customize</button></span><TemplatePrice setting={setting}/></div><div className="client-template-setting-content"><h3 style={{fontSize:template.name.length>20?'12px':template.name.length>14?'14px':'17px'}}>{template.name}</h3><div className="client-template-setting-fields"><label>Price (INR)<span className="client-settings-input-wrap"><i aria-hidden="true">₹</i><input type="number" min="0" step="1" value={setting.price||''} onChange={event=>handleChange(template.id,{price:event.target.value===''?0:Number(event.target.value)})}/></span></label><label>Sale type<select value={setting.sale_type} onChange={event=>handleChange(template.id,{sale_type:event.target.value as TemplateSettings['sale_type'],sale_value:event.target.value==='none'?0:setting.sale_value})}><option value="none">No sale</option><option value="percentage">Percentage discount</option><option value="fixed">Fixed discount</option></select></label>{setting.sale_type!=='none'&&<label className="client-discount-setting">{setting.sale_type==='percentage'?'Discount percentage':'Discount amount (INR)'}<span className="client-settings-input-wrap">{setting.sale_type==='fixed'&&<i aria-hidden="true">₹</i>}<input type="number" min="0" max={setting.sale_type==='percentage'?100:setting.price} step={setting.sale_type==='percentage'?'0.1':'1'} value={setting.sale_value||''} onChange={event=>handleChange(template.id,{sale_value:event.target.value===''?0:Number(event.target.value)})}/>{setting.sale_type==='percentage'&&<i aria-hidden="true">%</i>}</span></label>}</div><label className="client-premium-setting"><input type="checkbox" checked={setting.is_premium} onChange={event=>handleChange(template.id,{is_premium:event.target.checked})}/><span className="client-premium-switch" aria-hidden="true"/><span className="client-premium-copy"><b>Premium template <i aria-hidden="true">♛</i></b></span></label></div></article>})}</div></>
 }
 function OrderTable({ orders, onSelect, onCreate, variant = 'orders' }: { orders: Order[]; onSelect?: (order:Order)=>void; onCreate?:()=>void; variant?: 'orders'|'overview' }) {
   return <div className={`table-wrap ${orders.length===0?'orders-empty-table':''}`}>
