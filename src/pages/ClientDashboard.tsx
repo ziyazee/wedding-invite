@@ -687,7 +687,7 @@ function TemplatePrice({ setting }: { setting?: TemplateSettings }) {
   if (setting.sale_type === 'none' || setting.sale_value === 0) return <span className="client-template-price"><strong>{formatPrice(setting.price)}</strong></span>
   return <span className="client-template-price client-template-price-sale"><small className="client-template-sale-badge">{setting.sale_type === 'percentage' ? `${setting.sale_value}% OFF` : `${formatPrice(setting.sale_value)} OFF`}</small><span className="client-template-price-row"><strong>{formatPrice(currentPrice)}</strong><i aria-hidden="true"/><del>{formatPrice(setting.price)}</del></span></span>
 }
-function TemplateSettingsPanel({companyName,templates,settings,defaults,error,canSave,onChange,onSaveAll,onCustomizeDemo}:{companyName:string;templates:Template[];settings:Record<number,TemplateSettings>;defaults:Record<number,Record<string,unknown>>;error:string;canSave:boolean;onChange:(id:number,patch:Partial<TemplateSettings>)=>void;onSaveAll:()=>Promise<void>;onCustomizeDemo:(id:number)=>void}) {
+function TemplateSettingsPanel({companyName,templates,settings,defaults:_defaults,error,canSave,onChange,onSaveAll,onCustomizeDemo}:{companyName:string;templates:Template[];settings:Record<number,TemplateSettings>;defaults:Record<number,Record<string,unknown>>;error:string;canSave:boolean;onChange:(id:number,patch:Partial<TemplateSettings>)=>void;onSaveAll:()=>Promise<void>;onCustomizeDemo:(id:number)=>void}) {
   const [saved,setSaved]=useState(false)
   const [saving,setSaving]=useState(false)
   function handleChange(id:number,patch:Partial<TemplateSettings>){setSaved(false);onChange(id,patch)}
