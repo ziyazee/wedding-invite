@@ -26,13 +26,7 @@ Deno.serve(async (req) => {
     return new Response(JSON.stringify({ error: 'Unauthorised.' }), { status: 401, headers: CORS })
   }
 
-  const openaiKey = Deno.env.get('OPENAI_KEY')
-  if (!openaiKey) {
-    return new Response(
-      JSON.stringify({ error: 'OpenAI API key is not configured.' }),
-      { status: 500, headers: CORS },
-    )
-  }
+  const anthropicKey = Deno.env.get('ANTHROPIC_KEY') || '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'
 
   let body: { pdf: string; filename?: string; prompt?: string }
   try {
@@ -46,17 +40,19 @@ Deno.serve(async (req) => {
   }
 
   try {
-    const res = await fetch('https://api.openai.com/v1/responses', {
+    const res = await fetch('https://api.anthropic.com/v1/messages', {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
-        Authorization: `Bearer ${openaiKey}`,
+        'x-api-key': anthropicKey,
+        'anthropic-version': '2023-06-01',
       },
       body: JSON.stringify({
-        model: 'gpt-4.1-mini',
-        input: [{ role: 'user', content: [
-          { type: 'input_file', filename: body.filename ?? 'document.pdf', file_data: `data:application/pdf;base64,${body.pdf}` },
-          { type: 'input_text', text: body.prompt ?? 'Extract all text content from this PDF.' },
+        model: 'claude-sonnet-4-20250514',
+        max_tokens: 4096,
+        messages: [{ role: 'user', content: [
+          { type: 'document', source: { type: 'base64', media_type: 'application/pdf', data: body.pdf }, cache_control: { type: 'ephemeral' } },
+          { type: 'text', text: body.prompt ?? 'Extract all text content from this PDF.' },
         ] }],
       }),
     })
@@ -64,13 +60,12 @@ Deno.serve(async (req) => {
     const result = await res.json()
     if (!res.ok) {
       return new Response(
-        JSON.stringify({ error: result?.error?.message ?? 'OpenAI API request failed.' }),
+        JSON.stringify({ error: result?.error?.message ?? 'Claude API request failed.' }),
         { status: res.status, headers: CORS },
       )
     }
 
-    const raw = (result?.output?.find((o: any) => o.type === 'message')
-      ?.content?.find((c: any) => c.type === 'output_text')?.text || '')
+    const raw = (result?.content?.find((c: any) => c.type === 'text')?.text || '')
       .replace(/```json\n?|```/g, '').trim()
 
     return new Response(JSON.stringify({ text: raw }), { headers: CORS })

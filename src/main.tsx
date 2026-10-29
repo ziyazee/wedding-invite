@@ -43,7 +43,8 @@ if (
 
 function isPublicInvitationRoute(): boolean {
   const host = location.hostname
-  if (host.endsWith('.shaadiinvites.in') && host !== 'www.shaadiinvites.in') return true
+  // Subdomains are ambiguous (store vs invitation) — resolve inside React.
+  if (host.endsWith('.shaadiinvites.in') && host !== 'www.shaadiinvites.in') return false
   const path = location.pathname.replace(/\/+$/, '') || '/'
   if (path === '/') return false
   if (/^\/(?:client|admin|login|dashboard|create|newDesign|testing567|edits)(?:\/|$)/.test(path)) return false

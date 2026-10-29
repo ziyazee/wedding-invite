@@ -10,6 +10,7 @@ export const TEMPLATE_INTRO_VIDEOS: Record<number, string> = {
 }
 
 export const TEMPLATE_INTRO_IMAGES: Record<number, string> = {
+  8: '/templates/the-artful-love-story/assets/optimized/QUYudzcydz5OmxfmIxgjPrFyb6I-640.webp',
   11: '/templates/shaadipath-t02/assets/layers/Hero background.webp',
   12: '/templates/destination-wedding/wedding/background_main.webp',
   13: '/templates/raabta/assets/mosque-scene.webp',

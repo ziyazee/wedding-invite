@@ -23,3 +23,13 @@ for (const [id, groom, bride, venue] of [
 export function invitationExample(templateId: number): InvitationData | undefined {
   return templateInvitationData[templateId]
 }
+
+export function storeInvitationExample(
+  templateId: number,
+  demoData: Record<string, unknown> | null | undefined,
+): InvitationData | undefined {
+  const base = invitationExample(templateId)
+  if (!base) return undefined
+  if (!demoData || Object.keys(demoData).length === 0) return base
+  return { ...base, ...demoData, template: templateId } as InvitationData
+}

@@ -1,7 +1,8 @@
 import { Navigate, Route, Routes, useParams } from 'react-router-dom'
-import { lazy, Suspense } from 'react'
+import { lazy, Suspense, useEffect, useState } from 'react'
 import { lazySitePage } from './SiteFonts'
 import InvitationViewport from './invitations/InvitationViewport'
+import { isSupabaseConfigured, supabase } from './lib/supabase'
 
 // Route boundaries keep dashboards, editor tools and unrelated designs out of
 // the initial guest-page dependency graph.
@@ -41,6 +42,7 @@ const Design16 = lazySitePage(() => import('./pages/Design16'))
 const Design17 = lazySitePage(() => import('./pages/Design17'))
 const MohadRahma = lazy(() => import('./pages/MohadRahma'))
 const GeneratedInvitation = lazy(() => import('./pages/GeneratedInvitation'))
+const StoreLanding = lazySitePage(() => import('./pages/StoreLanding'))
 
 function getInviteSlug(): string | null {
   const host = window.location.hostname
@@ -63,12 +65,37 @@ function SingleSegmentRoute() {
   return <GeneratedInvitation />
 }
 
+const SUBDOMAIN_CACHE_KEY = 'si:subdomain:'
+
+function SubdomainResolver({ slug }: { slug: string }) {
+  const [target, setTarget] = useState<'store' | 'invitation' | null>(() => {
+    try { return sessionStorage.getItem(SUBDOMAIN_CACHE_KEY + slug) as 'store' | 'invitation' | null } catch { return null }
+  })
+
+  useEffect(() => {
+    if (target) return
+    if (!supabase || !isSupabaseConfigured) { setTarget('invitation'); return }
+    let cancelled = false
+    supabase.rpc('resolve_subdomain', { p_slug: slug }).then(({ data, error }) => {
+      if (cancelled) return
+      const resolved = !error && data?.type === 'store' ? 'store' : 'invitation'
+      try { sessionStorage.setItem(SUBDOMAIN_CACHE_KEY + slug, resolved) } catch {}
+      setTarget(resolved as 'store' | 'invitation')
+    })
+    return () => { cancelled = true }
+  }, [slug, target])
+
+  if (!target) return <main role="status" style={{minHeight:'100svh',display:'grid',placeItems:'center',background:'#fffaf2',color:'#75664c',font:'14px Arial,sans-serif'}}>Loading…</main>
+  if (target === 'store') return <StoreLanding slug={slug} />
+  return <GeneratedInvitation overrideSlug={slug} />
+}
+
 export default function App() {
   const inviteSlug = getInviteSlug()
   if (inviteSlug) {
     return (
       <InvitationViewport><Suspense fallback={<main role="status" style={{minHeight:'100svh',display:'grid',placeItems:'center',background:'#fffaf2',color:'#75664c',font:'14px Arial,sans-serif'}}>Loading…</main>}>
-        <GeneratedInvitation overrideSlug={inviteSlug} />
+        <SubdomainResolver slug={inviteSlug} />
       </Suspense></InvitationViewport>
     )
   }

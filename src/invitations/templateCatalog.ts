@@ -8,6 +8,7 @@ export type InvitationTemplate = {
   thumbnail_url: string
   preview_url: string
   is_active: boolean
+  company_id?: number | null
 }
 
 /** Supabase is the source of truth for template identity and visibility. */
