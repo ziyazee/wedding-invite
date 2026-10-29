@@ -5,6 +5,7 @@
 - [ ] Redesign the Review Order and Publish Order flows.
   - Keep all text fully visible in clearly sized text areas; avoid truncating content.
 - [ ] Complete the WhatsApp integration.
+  - Investigate the `Edge Function returned a non-2xx status code` error.
 - [ ] Optimize PDF extraction.
 - [ ] Fix text sizing so text is consistently readable and fully visible.
 - [ ] Support bride-side invitations across all designs, including “Bride weds Groom” name ordering.

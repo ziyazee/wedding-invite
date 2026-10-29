@@ -2544,7 +2544,7 @@ body.is-modal .scroller { overflow: hidden; }
      data-src, which is why this needs !important — the loader writes the URL
      to the element's style attribute. */
   .panel[data-scene="2"] .layer.el.toplights.is-ready {
-    background-image: url("https://api.aamantran.online/r2-proxy/templates/qubool-32426/draft/assets/scene2/04-lanternstring.webp") !important;
+    background-image: url("/templates/qubool/assets/scene2/04-lanternstring.webp") !important;
   }
 
   .panel[data-scene="2"] .layer.el.toplights {

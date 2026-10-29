@@ -423,7 +423,18 @@ Additional rules:
     const { data, error: fnError } = await supabase.functions.invoke('openai-extract', {
       body: { pdf: base64, filename, prompt: pdfExtractPrompt },
     })
-    if (fnError) throw fnError
+    if (fnError) {
+      const context = fnError.context
+      if (context instanceof Response) {
+        let message = ''
+        try {
+          const payload = await context.clone().json()
+          if (typeof payload?.error === 'string') message = payload.error
+        } catch { /* Keep the original Supabase error if the response isn't JSON. */ }
+        if (message) throw new Error(message)
+      }
+      throw fnError
+    }
     if (data?.error) throw new Error(data.error)
     const raw = (data?.text || '').trim()
     return JSON.parse(raw)

@@ -18,12 +18,13 @@ export function destinationConfig(d: InvitationData) {
 }
 
 export function destinationHTML(html: string, d: InvitationData) {
-  const doc = new DOMParser().parseFromString(html, 'text/html')
-  const base = doc.createElement('base'); base.href = new URL('/templates/destination-wedding/', window.location.origin).href; doc.head.prepend(base)
-  const config = [...doc.scripts].find(script => script.textContent?.includes('window.__AAMANTRAN_INVITE__ ='))
-  if (!config) throw new Error('Destination configuration is missing.')
-  config.textContent = `window.__AAMANTRAN_INVITE__=${JSON.stringify(destinationConfig(d)).replace(/</g, '\\u003c')};`
-  return '<!doctype html>' + doc.documentElement.outerHTML
+  const baseTag = `<base href="${new URL('/templates/destination-wedding/', window.location.origin).href}">`
+  const configJS = `window.__AAMANTRAN_INVITE__=${JSON.stringify(destinationConfig(d)).replace(/</g, '\\u003c')};`
+  let replaced = false
+  let out = html.replace(/<head([^>]*)>/, `<head$1>${baseTag}`)
+  out = out.replace(/window\.__AAMANTRAN_INVITE__\s*=\s*\{[\s\S]*?\};\s*(?=<\/script>)/, () => { replaced = true; return configJS + '\n' })
+  if (!replaced) throw new Error('Destination configuration is missing.')
+  return out
 }
 
 const templates = new WeakMap<Document, HTMLElement>()

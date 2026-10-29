@@ -4,7 +4,7 @@
   const reduced = matchMedia('(prefers-reduced-motion: reduce)').matches;
   const opening = document.querySelector('#opening');
   const bloomFloralStyle = document.createElement('style');
-  bloomFloralStyle.textContent = '#welcome>img[src*="welcome-flowers-Dy0evJgO.png"]{width:132%!important;max-width:none!important}@media(min-width:768px){#welcome>img[src*="welcome-flowers-Dy0evJgO.png"]{width:min(76vw,760px)!important}}';
+  bloomFloralStyle.textContent = '#welcome>img[src*="welcome-flowers-Dy0evJgO.webp"]{width:132%!important;max-width:none!important}@media(min-width:768px){#welcome>img[src*="welcome-flowers-Dy0evJgO.webp"]{width:min(76vw,760px)!important}}';
   document.head.append(bloomFloralStyle);
   const [first] = opening.querySelectorAll('video');
   const music = document.querySelector('#music-track');

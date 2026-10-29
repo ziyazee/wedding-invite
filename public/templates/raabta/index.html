@@ -6,11 +6,11 @@ Remaining media refs: 0
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
   <title>Mustafa &amp; Zoya — Wedding Invitation</title>
-  <link rel="stylesheet" href="/aamantran-raabta/styles.css">
+  <link rel="stylesheet" href="/templates/raabta/styles.css">
   <!-- The gate art is a CSS background, so it is found late; the hero mosque
        is an <img> found immediately. Without this hint the gate is the last
        thing to arrive — exactly the wrong order. -->
-  <link rel="preload" as="image" href="/aamantran-raabta/assets/gate-closed.webp">
+  <link rel="preload" as="image" href="/templates/raabta/assets/gate-closed.webp">
   <!-- Runs before the browser can restore the last scroll offset, so a
        refresh cannot drop the guest mid-invite behind the closed gate. -->
   <script>
@@ -23,7 +23,7 @@ Remaining media refs: 0
   <!-- Hidden: ISO from 2027-02-12 -->
   <div id="js-wedding-date" data-date="2027-02-12" style="display:none"></div>
 
-  <audio id="bgMusic" src="/aamantran-raabta/music.mp3" loop preload="auto" playsinline webkit-playsinline style="display:none"></audio>
+  <audio id="bgMusic" src="/templates/raabta/music.mp3" loop preload="auto" playsinline webkit-playsinline style="display:none"></audio>
 
   <!-- ── Arch Gate — full-screen entry overlay, tap to open ───────────────
        A tall mihrab-style pointed arch splits open like double doors carved
@@ -52,7 +52,7 @@ Remaining media refs: 0
 
   <!-- ── Scene 1: Names over the mosque + moon ─────────────────────────── -->
   <div class="scene scene-hero">
-    <img src="/aamantran-raabta/assets/mosque-scene.webp" alt="" class="scene-hero-mosque">
+    <img src="/templates/raabta/assets/mosque-scene.webp" alt="" class="scene-hero-mosque">
     <div class="stars" aria-hidden="true">
       <div class="star star-a" style="left:6%;  width:14px; animation-duration:12s; animation-delay:-2s;"></div>
       <div class="star star-b" style="left:16%; width:10px; animation-duration:9s;  animation-delay:-6s;"></div>
@@ -70,7 +70,7 @@ Remaining media refs: 0
            its asymmetry left the two names visually unbalanced. Above the pair
            it works as sky, the couple reads as one unit, and everything stays
            on open night rather than the lit mosque facade. -->
-      <img src="/aamantran-raabta/assets/crescent-moon.webp" alt="" class="scene-hero-moon">
+      <img src="/templates/raabta/assets/crescent-moon.webp" alt="" class="scene-hero-moon">
       <!-- Groom first, matching <title> and the jaisalmer/royal themes. With a
            symmetric "&" the order read either way; "weds" is directional, so
            it has to agree with the tab title. -->
@@ -88,11 +88,11 @@ Remaining media refs: 0
   <div class="scene scene-blessing scene-crowned">
     <div class="scene-inner">
      <div class="vessel reveal">
-      <img src="/aamantran-raabta/assets/corner-spray.webp" alt="" class="vessel-corner vessel-corner-tl">
-      <img src="/aamantran-raabta/assets/corner-spray.webp" alt="" class="vessel-corner vessel-corner-tr">
-      <img src="/aamantran-raabta/assets/corner-spray.webp" alt="" class="vessel-corner vessel-corner-bl">
-      <img src="/aamantran-raabta/assets/corner-spray.webp" alt="" class="vessel-corner vessel-corner-br">
-      <img id="bismillah" src="/aamantran-raabta/assets/bismillah-medallion.webp" data-dynamic-src="" alt="Bismillah" class="scene-medallion reveal">
+      <img src="/templates/raabta/assets/corner-spray.webp" alt="" class="vessel-corner vessel-corner-tl">
+      <img src="/templates/raabta/assets/corner-spray.webp" alt="" class="vessel-corner vessel-corner-tr">
+      <img src="/templates/raabta/assets/corner-spray.webp" alt="" class="vessel-corner vessel-corner-bl">
+      <img src="/templates/raabta/assets/corner-spray.webp" alt="" class="vessel-corner vessel-corner-br">
+      <img id="bismillah" src="/templates/raabta/assets/bismillah-medallion.webp" data-dynamic-src="" alt="Bismillah" class="scene-medallion reveal">
 
       <div class="invite-blessing reveal">With the blessings of Almighty God</div>
 
@@ -112,7 +112,7 @@ Remaining media refs: 0
        one box instead of three. Confetti bursts once fully scratched. ─── -->
   <div class="scene scene-invite">
     <div class="scene-inner">
-      <img src="/aamantran-raabta/assets/lattice-arch.webp" alt="" class="scene-arch reveal">
+      <img src="/templates/raabta/assets/lattice-arch.webp" alt="" class="scene-arch reveal">
       <h1 class="invite-title reveal">Nikah</h1>
       <div class="invite-join reveal">request the honour of your presence at the wedding of</div>
       <div class="invite-person reveal" id="p1Name">Mustafa Siddiqui</div>
@@ -143,10 +143,10 @@ Remaining media refs: 0
   <div class="functions-run">
   <div class="scene scene-function">
     <div class="function-card reveal">
-      <img src="/aamantran-raabta/assets/corner-spray.webp" alt="" class="fn-corner fn-corner-tl">
-      <img src="/aamantran-raabta/assets/corner-spray.webp" alt="" class="fn-corner fn-corner-tr">
-      <img src="/aamantran-raabta/assets/corner-spray.webp" alt="" class="fn-corner fn-corner-bl">
-      <img src="/aamantran-raabta/assets/corner-spray.webp" alt="" class="fn-corner fn-corner-br">
+      <img src="/templates/raabta/assets/corner-spray.webp" alt="" class="fn-corner fn-corner-tl">
+      <img src="/templates/raabta/assets/corner-spray.webp" alt="" class="fn-corner fn-corner-tr">
+      <img src="/templates/raabta/assets/corner-spray.webp" alt="" class="fn-corner fn-corner-bl">
+      <img src="/templates/raabta/assets/corner-spray.webp" alt="" class="fn-corner fn-corner-br">
       <h3 class="fn-name">Mehendi</h3>
       <div class="invite-divider fn-divider"></div>
       <p class="fn-row">2027-02-10</p>
@@ -159,10 +159,10 @@ Remaining media refs: 0
   </div>
   <div class="scene scene-function">
     <div class="function-card reveal">
-      <img src="/aamantran-raabta/assets/corner-spray.webp" alt="" class="fn-corner fn-corner-tl">
-      <img src="/aamantran-raabta/assets/corner-spray.webp" alt="" class="fn-corner fn-corner-tr">
-      <img src="/aamantran-raabta/assets/corner-spray.webp" alt="" class="fn-corner fn-corner-bl">
-      <img src="/aamantran-raabta/assets/corner-spray.webp" alt="" class="fn-corner fn-corner-br">
+      <img src="/templates/raabta/assets/corner-spray.webp" alt="" class="fn-corner fn-corner-tl">
+      <img src="/templates/raabta/assets/corner-spray.webp" alt="" class="fn-corner fn-corner-tr">
+      <img src="/templates/raabta/assets/corner-spray.webp" alt="" class="fn-corner fn-corner-bl">
+      <img src="/templates/raabta/assets/corner-spray.webp" alt="" class="fn-corner fn-corner-br">
       <h3 class="fn-name">Nikah</h3>
       <div class="invite-divider fn-divider"></div>
       <p class="fn-row">2027-02-12</p>
@@ -175,10 +175,10 @@ Remaining media refs: 0
   </div>
   <div class="scene scene-function">
     <div class="function-card reveal">
-      <img src="/aamantran-raabta/assets/corner-spray.webp" alt="" class="fn-corner fn-corner-tl">
-      <img src="/aamantran-raabta/assets/corner-spray.webp" alt="" class="fn-corner fn-corner-tr">
-      <img src="/aamantran-raabta/assets/corner-spray.webp" alt="" class="fn-corner fn-corner-bl">
-      <img src="/aamantran-raabta/assets/corner-spray.webp" alt="" class="fn-corner fn-corner-br">
+      <img src="/templates/raabta/assets/corner-spray.webp" alt="" class="fn-corner fn-corner-tl">
+      <img src="/templates/raabta/assets/corner-spray.webp" alt="" class="fn-corner fn-corner-tr">
+      <img src="/templates/raabta/assets/corner-spray.webp" alt="" class="fn-corner fn-corner-bl">
+      <img src="/templates/raabta/assets/corner-spray.webp" alt="" class="fn-corner fn-corner-br">
       <h3 class="fn-name">Rukhsati</h3>
       <div class="invite-divider fn-divider"></div>
       <p class="fn-row">2027-02-12</p>
@@ -191,10 +191,10 @@ Remaining media refs: 0
   </div>
   <div class="scene scene-function">
     <div class="function-card reveal">
-      <img src="/aamantran-raabta/assets/corner-spray.webp" alt="" class="fn-corner fn-corner-tl">
-      <img src="/aamantran-raabta/assets/corner-spray.webp" alt="" class="fn-corner fn-corner-tr">
-      <img src="/aamantran-raabta/assets/corner-spray.webp" alt="" class="fn-corner fn-corner-bl">
-      <img src="/aamantran-raabta/assets/corner-spray.webp" alt="" class="fn-corner fn-corner-br">
+      <img src="/templates/raabta/assets/corner-spray.webp" alt="" class="fn-corner fn-corner-tl">
+      <img src="/templates/raabta/assets/corner-spray.webp" alt="" class="fn-corner fn-corner-tr">
+      <img src="/templates/raabta/assets/corner-spray.webp" alt="" class="fn-corner fn-corner-bl">
+      <img src="/templates/raabta/assets/corner-spray.webp" alt="" class="fn-corner fn-corner-br">
       <h3 class="fn-name">Walima</h3>
       <div class="invite-divider fn-divider"></div>
       <p class="fn-row">2027-02-13</p>
@@ -216,18 +216,18 @@ Remaining media refs: 0
       <p class="meet-story reveal" id="coupleStory">We are both so delighted that you are able to join us in celebrating what we hope will be one of the happiest days of our lives. The affection shown to us by so many people since our roka has been incredibly moving, and has touched us both deeply. We would like to take this opportunity to thank everyone most sincerely for their kindness. We are looking forward to seeing you at the wedding.</p>
 
       <div class="carousel-wrapper reveal">
-        <img src="/aamantran-raabta/assets/photo-frame.webp" alt="" class="carousel-frame">
+        <img src="/templates/raabta/assets/photo-frame.webp" alt="" class="carousel-frame">
         <button class="carousel-btn carousel-prev" id="carouselPrev" aria-label="Previous photo">&#8249;</button>
         <div class="couple-carousel" id="coupleCarousel" aria-label="Couple photos">
           <div class="carousel-track" id="carouselTrack">
             <div class="carousel-slide">
-              <img src="/aamantran-raabta/assets/couple-1.webp" alt="" loading="lazy">
+              <img src="/templates/raabta/assets/couple-1.webp" alt="" loading="lazy">
             </div>
             <div class="carousel-slide">
-              <img src="/aamantran-raabta/assets/couple-2.webp" alt="" loading="lazy">
+              <img src="/templates/raabta/assets/couple-2.webp" alt="" loading="lazy">
             </div>
             <div class="carousel-slide">
-              <img src="/aamantran-raabta/assets/couple-3.webp" alt="" loading="lazy">
+              <img src="/templates/raabta/assets/couple-3.webp" alt="" loading="lazy">
             </div>
           </div>
         </div>
@@ -244,7 +244,7 @@ Remaining media refs: 0
       <div class="invite-divider reveal"></div>
       <p class="insta-caption reveal">As you share the joy of our special day, we'd love to be part of your memories too. Tag your photos with our wedding hashtag so every smile finds its way back to us.</p>
       <a class="insta-link reveal" href="https://www.instagram.com/aamantran_online/" target="_blank" rel="noopener noreferrer" aria-label="Instagram">
-        <img src="/aamantran-raabta/assets/insta-icon.svg" alt="Instagram" class="insta-icon">
+        <img src="/templates/raabta/assets/insta-icon.svg" alt="Instagram" class="insta-icon">
       </a>
       <div class="insta-hashtag-wrap reveal">
         <!-- hashtag_raw is the bare tag (no leading #), so the "#" below is ours.
@@ -283,15 +283,15 @@ Remaining media refs: 0
   <div class="lantern-divider">
     <div class="hang-row reveal">
       <div class="hang" style="--drop: 8px;  --dur: 4.1s; --delay: -0.9s; --tilt: 5deg;   --w: 62px;">
-        <img src="/aamantran-raabta/assets/lantern-float.webp" alt="" class="hang-img">
+        <img src="/templates/raabta/assets/lantern-float.webp" alt="" class="hang-img">
         <span class="hang-glow" aria-hidden="true"></span>
       </div>
       <div class="hang hang-mid" style="--drop: 36px; --dur: 5.3s; --delay: -2.4s; --tilt: 3.4deg; --w: 84px;">
-        <img src="/aamantran-raabta/assets/lantern-float.webp" alt="Lanterns" class="hang-img">
+        <img src="/templates/raabta/assets/lantern-float.webp" alt="Lanterns" class="hang-img">
         <span class="hang-glow" aria-hidden="true"></span>
       </div>
       <div class="hang" style="--drop: 4px;  --dur: 4.7s; --delay: -1.7s; --tilt: 5.6deg; --w: 58px;">
-        <img src="/aamantran-raabta/assets/lantern-float.webp" alt="" class="hang-img">
+        <img src="/templates/raabta/assets/lantern-float.webp" alt="" class="hang-img">
         <span class="hang-glow" aria-hidden="true"></span>
       </div>
     </div>
@@ -301,10 +301,10 @@ Remaining media refs: 0
   <div class="scene scene-things scene-crowned">
     <div class="scene-inner">
      <div class="vessel reveal">
-      <img src="/aamantran-raabta/assets/corner-spray.webp" alt="" class="vessel-corner vessel-corner-tl">
-      <img src="/aamantran-raabta/assets/corner-spray.webp" alt="" class="vessel-corner vessel-corner-tr">
-      <img src="/aamantran-raabta/assets/corner-spray.webp" alt="" class="vessel-corner vessel-corner-bl">
-      <img src="/aamantran-raabta/assets/corner-spray.webp" alt="" class="vessel-corner vessel-corner-br">
+      <img src="/templates/raabta/assets/corner-spray.webp" alt="" class="vessel-corner vessel-corner-tl">
+      <img src="/templates/raabta/assets/corner-spray.webp" alt="" class="vessel-corner vessel-corner-tr">
+      <img src="/templates/raabta/assets/corner-spray.webp" alt="" class="vessel-corner vessel-corner-bl">
+      <img src="/templates/raabta/assets/corner-spray.webp" alt="" class="vessel-corner vessel-corner-br">
       <h2 class="things-title reveal">Things to Know</h2>
       <div class="invite-divider reveal"></div>
 
@@ -438,7 +438,7 @@ Remaining media refs: 0
 
       <!-- ── Footer ─────────────────────────────────────────────────── -->
       <div class="footer-ending">
-        <img src="/aamantran-raabta/assets/footer-ornament.webp" alt="" class="footer-ornament">
+        <img src="/templates/raabta/assets/footer-ornament.webp" alt="" class="footer-ornament">
       </div>
 
     </div>
@@ -470,7 +470,7 @@ Remaining media refs: 0
   <!-- Interaction only. All invitation data is injected server-side by
        Handlebars and read back out of the DOM — do NOT load demo-data.js or
        demo-helpers.js here, they overwrite the real values. -->
-  <script src="/aamantran-raabta/script.js"></script>
+  <script src="/templates/raabta/script.js"></script>
 
 
 

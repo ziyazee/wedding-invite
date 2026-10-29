@@ -196,17 +196,6 @@ export async function personalizeBloom(
  closingNames.classList.add('atelier-opening-names', 'atelier-bloom-names')
  closingNames.replaceChildren(closingGroom, closingAmpersand, closingBride)
  closingDate.textContent = formatDate(d.date)
- const contact = bloomFooter.querySelector('.bloom-invitation-contact')
- const whatsappLink = contact?.querySelector<HTMLAnchorElement>('a')
- if (whatsappLink) {
-  contact?.querySelector('p')?.remove()
-  const label = doc.createElement('span')
-  label.textContent = 'Contact on WhatsApp'
-  whatsappLink.prepend(label)
-  whatsappLink.setAttribute('aria-label', 'Contact on WhatsApp')
-  whatsappLink.style.gap = '6px'
-  whatsappLink.style.fontSize = '12px'
- }
  personal.querySelector(':scope > .atelier-note:last-child')?.remove()
  bloomEnding.append(rsvp, bloomFooter)
  return { welcome: bloomWelcome, ending: bloomEnding }

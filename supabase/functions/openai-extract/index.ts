@@ -54,7 +54,7 @@ Deno.serve(async (req) => {
         'anthropic-version': '2023-06-01',
       },
       body: JSON.stringify({
-        model: 'claude-sonnet-5-5',
+        model: 'claude-sonnet-5',
         max_tokens: 4096,
         messages: [{ role: 'user', content: [
           { type: 'document', source: { type: 'base64', media_type: 'application/pdf', data: body.pdf }, cache_control: { type: 'ephemeral' } },

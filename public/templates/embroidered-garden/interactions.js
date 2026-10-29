@@ -135,6 +135,7 @@
   const musicBtn = document.getElementById('music-btn');
   if (musicTrack && musicBtn) {
     musicTrack.volume = 0.45;
+    musicTrack.muted = false;
     function updateMusicBtn() {
       const playing = !musicTrack.paused;
       musicBtn.setAttribute('aria-label', playing ? 'Mute music' : 'Play music');

@@ -9,7 +9,7 @@ Remaining media refs: 0
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@400;600;700&family=Jost:wght@300;400;500&family=Amiri:ital,wght@0,400;0,700;1,400&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="/aamantran-qubool/styles.css" />
+<link rel="stylesheet" href="/templates/qubool/styles.css" />
 <script>
   /* guide.md 7.2 — browsers restore the previous scroll position even on a
      hard reload, which drops the guest mid-invite behind a closed gate. This
@@ -31,7 +31,7 @@ Remaining media refs: 0
 <!-- Tap-to-enter cover. One-time; JS removes it and starts the music. -->
 <div class="gate" id="gate">
   <div class="gate__art" aria-hidden="true"
-       data-bg="/aamantran-qubool/assets/gate/00-gate.webp" data-bg-p="/aamantran-qubool/assets/gate/00-gate-p.webp"></div>
+       data-bg="/templates/qubool/assets/gate/00-gate.webp" data-bg-p="/templates/qubool/assets/gate/00-gate-p.webp"></div>
   <div class="gate__inner">
     <p class="bismillah" lang="ar" dir="rtl">&#1576;&#1616;&#1587;&#1618;&#1605;&#1616; &#1575;&#1604;&#1604;&#1617;&#1607;&#1616; &#1575;&#1604;&#1585;&#1617;&#1614;&#1581;&#1618;&#1605;&#1614;&#1606;&#1616; &#1575;&#1604;&#1585;&#1617;&#1614;&#1581;&#1616;&#1610;&#1605;&#1616;</p>
     <p class="gate__eyebrow">You are invited to the Nikah of</p>
@@ -45,10 +45,10 @@ Remaining media refs: 0
 
   <!-- ══════════ SCENE 1 — Jaali arch at dawn · couple names ══════════ -->
   <section class="panel" data-scene="1" data-text="top-left" data-tint="warm">
-    <div class="layer bg"          data-depth="0" data-bg="/aamantran-qubool/assets/scene1/01-jaali-dawn.webp" data-bg-p="/aamantran-qubool/assets/scene1/01-jaali-dawn-p.webp"></div>
-    <div class="layer el fig-left" data-depth="16" data-src="/aamantran-qubool/assets/scene1/02-her.webp"></div>
-    <div class="layer el fig-right" data-depth="20" data-src="/aamantran-qubool/assets/scene1/03-him.webp"></div>
-    <div class="layer el fill"     data-depth="30" data-src="/aamantran-qubool/assets/scene1/04-garden-fg.webp" data-mobile-float=".2" data-mobile-parallax="1.15"></div>
+    <div class="layer bg"          data-depth="0" data-bg="/templates/qubool/assets/scene1/01-jaali-dawn.webp" data-bg-p="/templates/qubool/assets/scene1/01-jaali-dawn-p.webp"></div>
+    <div class="layer el fig-left" data-depth="16" data-src="/templates/qubool/assets/scene1/02-her.webp"></div>
+    <div class="layer el fig-right" data-depth="20" data-src="/templates/qubool/assets/scene1/03-him.webp"></div>
+    <div class="layer el fill"     data-depth="30" data-src="/templates/qubool/assets/scene1/04-garden-fg.webp" data-mobile-float=".2" data-mobile-parallax="1.15"></div>
 
     <div class="panel__inner">
       <p class="bismillah bismillah--sm" lang="ar" dir="rtl">&#1576;&#1616;&#1587;&#1618;&#1605;&#1616; &#1575;&#1604;&#1604;&#1617;&#1607;&#1616; &#1575;&#1604;&#1585;&#1617;&#1614;&#1581;&#1618;&#1605;&#1614;&#1606;&#1616; &#1575;&#1604;&#1585;&#1617;&#1614;&#1581;&#1616;&#1610;&#1605;&#1616;</p>
@@ -65,17 +65,17 @@ Remaining media refs: 0
 
   <!-- ══════════ SCENE 2 — Marble courtyard · the families ══════════ -->
   <section class="panel" data-scene="2" data-text="center" data-tint="warm">
-    <div class="layer bg"           data-depth="0" data-bg="/aamantran-qubool/assets/scene2/01-marble-court.webp" data-bg-p="/aamantran-qubool/assets/scene2/01-marble-court-p.webp"></div>
-    <div class="layer el toplights" data-depth="24" data-src="/aamantran-qubool/assets/scene2/04-lanterns.webp"
+    <div class="layer bg"           data-depth="0" data-bg="/templates/qubool/assets/scene2/01-marble-court.webp" data-bg-p="/templates/qubool/assets/scene2/01-marble-court-p.webp"></div>
+    <div class="layer el toplights" data-depth="24" data-src="/templates/qubool/assets/scene2/04-lanterns.webp"
          data-mobile-drop-in="23" data-mobile-float=".25"></div>
     <!-- A SECOND lantern row, so scene 2 matches scene 4. Scene 4 gets two
          rows: one from its toplights layer and one painted into its own
          background plate. Scene 2's plate is a daytime garden with no
          lanterns, so the second row is supplied as a layer. CSS shows it on
          phones only. -->
-    <div class="layer el toplights toplights--row2" data-depth="18" data-src="/aamantran-qubool/assets/scene2/04-lanternstring.webp"
+    <div class="layer el toplights toplights--row2" data-depth="18" data-src="/templates/qubool/assets/scene2/04-lanternstring.webp"
          data-mobile-drop-in="21" data-mobile-float=".25"></div>
-    <div class="layer el fill glow" data-depth="8"  data-src="/aamantran-qubool/assets/scene2/05-bokeh.webp"></div>
+    <div class="layer el fill glow" data-depth="8"  data-src="/templates/qubool/assets/scene2/05-bokeh.webp"></div>
 
     <div class="panel__inner panel__inner--wide">
       <p class="eyebrow">Together with our families</p>
@@ -100,7 +100,7 @@ Remaining media refs: 0
         
 
         <div class="family__sep" aria-hidden="true">
-          <img src="/aamantran-qubool/assets/jaali-motif.webp" alt="" />
+          <img src="/templates/qubool/assets/jaali-motif.webp" alt="" />
         </div>
 
         <div class="family">
@@ -117,11 +117,11 @@ Remaining media refs: 0
 
   <!-- ══════════ SCENE 3 — Twilight · the date + countdown ══════════ -->
   <section class="panel" data-scene="3" data-text="top-right" data-tint="cool">
-    <div class="layer bg"            data-depth="0" data-bg="/aamantran-qubool/assets/scene3/01-lantern-night.webp" data-bg-p="/aamantran-qubool/assets/scene3/01-lantern-night-p.webp"></div>
-    <div class="layer el fill glow"  data-depth="7"  data-src="/aamantran-qubool/assets/scene3/05-lampglow.webp"></div>
-    <div class="layer el fig-center" data-depth="16" data-src="/aamantran-qubool/assets/scene3/02-couple-seated.webp"></div>
-    <div class="layer el branch branch--left"  data-depth="14" data-src="/aamantran-qubool/assets/scene3/03-arch.webp"></div>
-    <div class="layer el branch branch--right" data-depth="11" data-src="/aamantran-qubool/assets/scene3/03-arch-right.webp"></div>
+    <div class="layer bg"            data-depth="0" data-bg="/templates/qubool/assets/scene3/01-lantern-night.webp" data-bg-p="/templates/qubool/assets/scene3/01-lantern-night-p.webp"></div>
+    <div class="layer el fill glow"  data-depth="7"  data-src="/templates/qubool/assets/scene3/05-lampglow.webp"></div>
+    <div class="layer el fig-center" data-depth="16" data-src="/templates/qubool/assets/scene3/02-couple-seated.webp"></div>
+    <div class="layer el branch branch--left"  data-depth="14" data-src="/templates/qubool/assets/scene3/03-arch.webp"></div>
+    <div class="layer el branch branch--right" data-depth="11" data-src="/templates/qubool/assets/scene3/03-arch-right.webp"></div>
 
     <div class="panel__inner">
       <!-- The eyebrow introduces the date, so it goes when the date does —
@@ -146,11 +146,11 @@ Remaining media refs: 0
        script.js, because the platform's asset rewriter only rewrites HTML and
        CSS — a './assets/…' literal in JS ships verbatim and 404s (guide.md 6.1). -->
   <section class="panel panel--tall" data-scene="4" data-text="bottom-left" data-tint="warm"
-           data-lantern="/aamantran-qubool/assets/lantern-float.webp">
-    <div class="layer bg"            data-depth="0" data-bg="/aamantran-qubool/assets/scene4/01-mehendi-terrace.webp" data-bg-p="/aamantran-qubool/assets/scene4/01-mehendi-terrace-p.webp"></div>
-    <div class="layer el fill glow"  data-depth="6"  data-src="/aamantran-qubool/assets/scene4/05-sparkle.webp"></div>
-    <div class="layer el fig-center" data-depth="16" data-src="/aamantran-qubool/assets/scene4/02-mehendi-moment.webp"></div>
-    <div class="layer el toplights"  data-depth="24" data-src="/aamantran-qubool/assets/scene4/03-lanternstring.webp"></div>
+           data-lantern="/templates/qubool/assets/lantern-float.webp">
+    <div class="layer bg"            data-depth="0" data-bg="/templates/qubool/assets/scene4/01-mehendi-terrace.webp" data-bg-p="/templates/qubool/assets/scene4/01-mehendi-terrace-p.webp"></div>
+    <div class="layer el fill glow"  data-depth="6"  data-src="/templates/qubool/assets/scene4/05-sparkle.webp"></div>
+    <div class="layer el fig-center" data-depth="16" data-src="/templates/qubool/assets/scene4/02-mehendi-moment.webp"></div>
+    <div class="layer el toplights"  data-depth="24" data-src="/templates/qubool/assets/scene4/03-lanternstring.webp"></div>
 
     <div class="panel__inner panel__inner--wide">
       <p class="eyebrow">The celebrations</p>
@@ -215,9 +215,9 @@ Remaining media refs: 0
 
   <!-- ══════════ SCENE 5 — Dholki night · things to know ══════════ -->
   <section class="panel" data-scene="5" data-text="bottom-right" data-tint="warm">
-    <div class="layer bg"       data-depth="0" data-bg="/aamantran-qubool/assets/scene5/01-rose-blur.webp" data-bg-p="/aamantran-qubool/assets/scene5/01-rose-blur-p.webp"></div>
-    <div class="layer el hands" data-depth="15" data-src="/aamantran-qubool/assets/scene5/02-dholak.webp"></div>
-    <div class="layer el fill"  data-depth="34" data-src="/aamantran-qubool/assets/scene5/05-rose-petals.webp"></div>
+    <div class="layer bg"       data-depth="0" data-bg="/templates/qubool/assets/scene5/01-rose-blur.webp" data-bg-p="/templates/qubool/assets/scene5/01-rose-blur-p.webp"></div>
+    <div class="layer el hands" data-depth="15" data-src="/templates/qubool/assets/scene5/02-dholak.webp"></div>
+    <div class="layer el fill"  data-depth="34" data-src="/templates/qubool/assets/scene5/05-rose-petals.webp"></div>
 
     <div class="panel__inner">
       <!-- The heading only exists if at least one row below it does, otherwise
@@ -243,12 +243,12 @@ Remaining media refs: 0
 
   <!-- ══════════ SCENE 6 — The Nikah · the ceremony moment ══════════ -->
   <section class="panel" data-scene="6" data-text="top-left" data-tint="warm">
-    <div class="layer bg"            data-depth="0" data-bg="/aamantran-qubool/assets/scene6/01-nikah-pavilion.webp" data-bg-p="/aamantran-qubool/assets/scene6/01-nikah-pavilion-p.webp"></div>
-    <div class="layer el fill glow"  data-depth="6"  data-src="/aamantran-qubool/assets/scene6/05-glow.webp"></div>
-    <div class="layer el fig-center" data-depth="16" data-src="/aamantran-qubool/assets/scene6/02-nikah-moment.webp"></div>
+    <div class="layer bg"            data-depth="0" data-bg="/templates/qubool/assets/scene6/01-nikah-pavilion.webp" data-bg-p="/templates/qubool/assets/scene6/01-nikah-pavilion-p.webp"></div>
+    <div class="layer el fill glow"  data-depth="6"  data-src="/templates/qubool/assets/scene6/05-glow.webp"></div>
+    <div class="layer el fig-center" data-depth="16" data-src="/templates/qubool/assets/scene6/02-nikah-moment.webp"></div>
 
     <div class="panel__inner">
-      <img class="crest crest--sm" src="/aamantran-qubool/assets/crescent-star.webp" alt="" aria-hidden="true" />
+      <img class="crest crest--sm" src="/templates/qubool/assets/crescent-star.webp" alt="" aria-hidden="true" />
       <p class="eyebrow">The Nikah</p>
       <h2 class="scene-title">
           Two souls, one light
@@ -263,10 +263,10 @@ Remaining media refs: 0
        with no https://, a /live/ link), which would otherwise leave an iframe
        with an empty src inside a scene stretched to hold it (guide.md 6.3). -->
   <section class="panel panel--tall" data-scene="7" data-text="bottom-right" data-tint="warm">
-    <div class="layer bg"            data-depth="0" data-bg="/aamantran-qubool/assets/scene7/01-dusk-garden.webp" data-bg-p="/aamantran-qubool/assets/scene7/01-dusk-garden-p.webp"></div>
-    <div class="layer el fill glow"  data-depth="6"  data-src="/aamantran-qubool/assets/scene7/05-bokeh.webp"></div>
-    <div class="layer el fig-center" data-depth="16" data-src="/aamantran-qubool/assets/scene7/02-couple-close.webp"></div>
-    <div class="layer el branch"     data-depth="26" data-src="/aamantran-qubool/assets/scene7/03-rose-arch.webp"></div>
+    <div class="layer bg"            data-depth="0" data-bg="/templates/qubool/assets/scene7/01-dusk-garden.webp" data-bg-p="/templates/qubool/assets/scene7/01-dusk-garden-p.webp"></div>
+    <div class="layer el fill glow"  data-depth="6"  data-src="/templates/qubool/assets/scene7/05-bokeh.webp"></div>
+    <div class="layer el fig-center" data-depth="16" data-src="/templates/qubool/assets/scene7/02-couple-close.webp"></div>
+    <div class="layer el branch"     data-depth="26" data-src="/templates/qubool/assets/scene7/03-rose-arch.webp"></div>
 
     <div class="panel__inner">
         <p class="eyebrow">Share your photos with</p>
@@ -295,10 +295,10 @@ Remaining media refs: 0
 
   <!-- ══════════ SCENE 8 — Night field · RSVP + wishes (finale) ══════════ -->
   <section class="panel panel--tall panel--finale" data-scene="8" data-text="top-left" data-tint="warm">
-    <div class="layer bg"            data-depth="0" data-bg="/aamantran-qubool/assets/scene8/01-starlit-terrace.webp" data-bg-p="/aamantran-qubool/assets/scene8/01-starlit-terrace-p.webp"></div>
-    <div class="layer el fill glow"  data-depth="6"  data-src="/aamantran-qubool/assets/scene8/05-starlight.webp"></div>
-    <div class="layer el fig-seated" data-depth="15" data-src="/aamantran-qubool/assets/scene8/02-couple-sit.webp"></div>
-    <div class="layer el fill"       data-depth="28" data-src="/aamantran-qubool/assets/scene8/04-terrace-fg.webp"></div>
+    <div class="layer bg"            data-depth="0" data-bg="/templates/qubool/assets/scene8/01-starlit-terrace.webp" data-bg-p="/templates/qubool/assets/scene8/01-starlit-terrace-p.webp"></div>
+    <div class="layer el fill glow"  data-depth="6"  data-src="/templates/qubool/assets/scene8/05-starlight.webp"></div>
+    <div class="layer el fig-seated" data-depth="15" data-src="/templates/qubool/assets/scene8/02-couple-sit.webp"></div>
+    <div class="layer el fill"       data-depth="28" data-src="/templates/qubool/assets/scene8/04-terrace-fg.webp"></div>
 
     <div class="panel__inner panel__inner--wide">
 
@@ -388,7 +388,7 @@ Remaining media refs: 0
       </div>
 
       <footer class="footer">
-        <img class="footer__orn" src="/aamantran-qubool/assets/footer-ornament.webp" alt="" aria-hidden="true" />
+        <img class="footer__orn" src="/templates/qubool/assets/footer-ornament.webp" alt="" aria-hidden="true" />
         <p class="footer__names">Zayan &amp; Alishba</p>
         <p class="footer__date">14 February 2027</p>
       </footer>
@@ -419,7 +419,7 @@ Remaining media refs: 0
   </svg>
   <span class="music__bars" aria-hidden="true"><i></i><i></i><i></i></span>
 </button>
-<audio id="music" src="/aamantran-qubool/music.mp3" loop preload="none" muted playsinline></audio>
+<audio id="music" src="/templates/qubool/music.mp3" loop preload="none" muted playsinline></audio>
 
 <!-- GSAP is self-hosted, not pulled from cdnjs. The platform's CSP script-src
      allows only 'self' and the media CDN, so a cdnjs <script> is blocked outright
@@ -427,9 +427,9 @@ Remaining media refs: 0
      moves. Loaded from here rather than injected by script.js, because relative
      asset paths are rewritten to the CDN in HTML but NOT in JS (guide.md 6.1).
      `defer` keeps document order, so both have run before script.js does. -->
-<script src="/aamantran-qubool/assets/vendor/gsap.min.js" defer></script>
-<script src="/aamantran-qubool/assets/vendor/ScrollTrigger.min.js" defer></script>
-<script src="/aamantran-qubool/script.js" defer></script>
+<script src="/templates/qubool/assets/vendor/gsap.min.js" defer></script>
+<script src="/templates/qubool/assets/vendor/ScrollTrigger.min.js" defer></script>
+<script src="/templates/qubool/script.js" defer></script>
 
 
 
