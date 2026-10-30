@@ -256,7 +256,7 @@ export default function Design3D() {
           We are so grateful to have you be a part of this beautiful beginning.
         </p>
         <p className="d3d-closing-names">
-          {COUPLE.groom} &amp; {COUPLE.bride}
+          <span>{COUPLE.groom}</span><i>&amp;</i><span>{COUPLE.bride}</span>
         </p>
       </footer>
     </div>

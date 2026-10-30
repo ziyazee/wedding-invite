@@ -199,7 +199,10 @@
 .d12-p3-couple-label {
   font-family: 'Jost', sans-serif; font-weight: 500;
   font-size: 15px; line-height: 1.35; color: var(--blue-accent); opacity: 0.9;
+  display: flex; flex-direction: column; align-items: center;
 }
+.d12-p3-couple-label span { display: block }
+.d12-p3-couple-label i { display: block; font-size: 13px }
 .d12-p3-grid {
   display: grid; grid-template-columns: minmax(260px, 0.82fr) minmax(0, 1fr);
   gap: clamp(16px, 2.5vw, 32px); align-items: start;

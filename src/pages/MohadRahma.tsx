@@ -5,6 +5,7 @@ import { lazy, Suspense, useEffect, useRef, useState } from 'react'
 import type { ReactNode } from 'react'
 import './Design2.css'
 import './MohadRahma.css'
+import '../invitations/premiumTextMotion.css'
 import HeartDateReveal from './HeartDateReveal'
 import FlowerTrail from './FlowerTrail'
 import { useInvitationDetails } from '../invitations/context'
@@ -30,7 +31,7 @@ const defaultEvents = [
   { id: 'mehendi-mehfil', title: 'Mehendi Mehfil', date: 'Saturday, December 19', iso: '2026-12-19T17:00:00+05:30', time: '5:00 PM', venue: 'Royal Garden Beach Resort', address: 'Ullal, Mangalore', map: 'https://maps.app.goo.gl/43ui6W3Hn6N2cbui8' },
   { id: 'nikah', title: 'Nikah & Wedding', date: 'Sunday, December 20', iso: '2026-12-20T11:00:00+05:30', time: '11:00 AM', venue: 'TMA Pai Convention Centre', address: 'Mangalore', map: 'https://maps.app.goo.gl/1xf3k59k9QEaoQ717' },
   { id: 'wedding-reception', title: 'Wedding Reception', date: 'Monday, December 21', iso: '2026-12-21T19:00:00+05:30', time: '7:00 PM', venue: 'Shoolin Palace', address: 'Airport Road, Mangalore', map: 'https://maps.app.goo.gl/ARcdN5shsLC5og2f8' },
-  { id: 'brides-reception-chikmagaluru', title: 'Bride’s Reception — Chikmagaluru', date: 'Thursday, December 24', iso: '2026-12-24T11:00:00+05:30', time: '11:00 AM', venue: 'Heritage Convention Hall', address: 'Chikmagaluru', map: 'https://maps.app.goo.gl/NbvAqoYtcacD5Xas6' },
+  { id: 'brides-reception-chikmagaluru', title: 'Bride\'s Reception — Chikmagaluru', date: 'Thursday, December 24', iso: '2026-12-24T11:00:00+05:30', time: '11:00 AM', venue: 'Heritage Convention Hall', address: 'Chikmagaluru', map: 'https://maps.app.goo.gl/NbvAqoYtcacD5Xas6' },
 ]
 
 function Divider({ symbol = '✧' }: { symbol?: string }) { return <div className="rg-divider" aria-hidden="true"><span />{symbol}<span /></div> }
@@ -96,8 +97,7 @@ export default function MohadRahma() {
         observer.unobserve(entry.target)
       })
     }, { threshold: 0.12, rootMargin: '0px 0px -20px 0px' })
-    elements.forEach((element, index) => {
-      element.style.setProperty('--mr-reveal-delay', `${(index % 3) * 60}ms`)
+    elements.forEach(element => {
       element.classList.add('mr-scroll-reveal')
       observer.observe(element)
     })
@@ -105,7 +105,6 @@ export default function MohadRahma() {
       observer.disconnect()
       elements.forEach(element => {
         element.classList.remove('mr-scroll-reveal', 'mr-scroll-visible')
-        element.style.removeProperty('--mr-reveal-delay')
       })
     }
   }, [opened])
@@ -136,8 +135,8 @@ export default function MohadRahma() {
       <div className="rg-hero-shade" />
       {!opened && <button className="rg-open" onClick={openInvitation} aria-label="Open your invitation" />}
       <div className="rg-names" aria-hidden={!namesVisible}>
-        <span className="rg-heart">♥</span><EditableText as="p" {...text('opening','heading','We’re getting married')} className="rg-script">We’re getting married</EditableText><Divider symbol="♥" />
-        <h1><EditableText {...text('opening', 'groom', 'Groom’s name · opening')}>{groom}</EditableText><EditableText as="i" {...text('opening','separator','Ampersand · opening')}>&</EditableText><EditableText {...text('opening', 'bride', 'Bride’s name · opening')}>{bride}</EditableText></h1>
+        <span className="rg-heart">♥</span><EditableText as="p" {...text('opening','heading',"We're getting married")} className="rg-script">We're getting married</EditableText><Divider symbol="♥" />
+        <h1><EditableText {...text('opening', 'groom', "Groom's name · opening")}>{groom}</EditableText><EditableText as="i" {...text('opening','separator','Ampersand · opening')}>&</EditableText><EditableText {...text('opening', 'bride', "Bride's name · opening")}>{bride}</EditableText></h1>
         <EditableText as="p" {...text('opening','caption','Together, with our families')} className="rg-eyebrow">Together, with our families</EditableText>
       </div>
       {namesVisible && <EditableText as="a" {...text('opening','scroll','Scroll to discover')} className="rg-scroll" href="#rg-welcome" onClick={e => {
@@ -157,7 +156,7 @@ export default function MohadRahma() {
         <EditableText as="p" {...text('welcome', 'message', 'Welcome message')}>{details?.message || "With the blessings of God and the love of our families, we invite you to celebrate the beginning of our forever."}</EditableText>
         <EditableText as="p" {...text('welcome','blessing','Your presence, your prayers…')}>Your presence, your prayers, and your love will make our day complete.</EditableText>
         <Divider />
-        <span className="rg-signature rg-script"><EditableText {...text('welcome', 'groom', 'Groom’s name · welcome')} style={{display:'inline-block'}}>{groom}</EditableText> <EditableText {...text('welcome','separator','Ampersand · welcome')} style={{display:'inline-block'}}>&amp;</EditableText> <EditableText {...text('welcome', 'bride', 'Bride’s name · welcome')} style={{display:'inline-block'}}>{bride}</EditableText></span>
+        <span className="rg-signature rg-script"><EditableText {...text('welcome', 'groom', "Groom's name · welcome")} style={{display:'block'}}>{groom}</EditableText><EditableText {...text('welcome','separator','Ampersand · welcome')} style={{display:'block'}}>&amp;</EditableText><EditableText {...text('welcome', 'bride', "Bride's name · welcome")} style={{display:'block'}}>{bride}</EditableText></span>
       </InvitationSection>
       <InvitationSection data-invite-section="save-date" className="rg-section"><EditableText as="h2" {...text('save-date','heading','Save our date')} className="rg-script">Save our date</EditableText><HeartDateReveal date={details ? formatDate(details.date) : "20 December 2026"} day={details ? formatDate(details.date,{weekday:"long"}) : "Sunday"} time={details ? formatTime(details.time) : "11:00 in the morning"} coatingImage="/templates/royal-grace/scratch.png" revealedImage="/templates/royal-grace/post-scratch.png" /></InvitationSection>
       <InvitationSection data-invite-section="countdown" className="rg-section"><Divider /><EditableText as="p" {...text('countdown','caption','Counting down to Nikah & Wedding')} className="rg-eyebrow">Counting down to Nikah & Wedding</EditableText><EditableText as="h2" {...text('countdown','heading','Until our forever')} className="rg-script">Until our forever</EditableText><Countdown /><Divider /></InvitationSection>
@@ -182,7 +181,7 @@ export default function MohadRahma() {
       </InvitationSection>
       {!details && <section className="rg-section mr-gallery"><Divider /><p className="rg-eyebrow">Captured with love</p><h2 className="rg-script">Every moment, held close.</h2><p>Visit the gallery as the celebration unfolds and relive the memories with us.</p><a className="rg-button" href={`${SOURCE}/gallery`} target="_blank" rel="noreferrer">Explore the gallery ↗</a><Divider /></section>}
       <PersonalNotes/>
-      <InvitationSection as="footer" data-invite-section="closing" className="rg-ending"><EditableText as="p" {...text('closing','caption','Made with love for our family and friends')} className="rg-eyebrow">Made with love for our family and friends</EditableText><EditableText as="h2" {...text('closing','heading','Forever & ever')} className="rg-script">Forever & ever</EditableText><Divider /><span className="rg-script"><EditableText {...text('closing','groom','Groom’s name · closing')} style={{display:'inline-block'}}>{groom}</EditableText> <EditableText {...text('closing','separator','Ampersand · closing')} style={{display:'inline-block'}}>&amp;</EditableText> <EditableText {...text('closing','bride','Bride’s name · closing')} style={{display:'inline-block'}}>{bride}</EditableText></span><EditableText as="p" {...text('closing','date','Wedding date · closing')} className="rg-eyebrow">{details ? formatDate(details.date) : "20 · 12 · 26"}</EditableText></InvitationSection>
+      <InvitationSection as="footer" data-invite-section="closing" className="rg-ending"><EditableText as="p" {...text('closing','caption','Made with love for our family and friends')} className="rg-eyebrow">Made with love for our family and friends</EditableText><EditableText as="h2" {...text('closing','heading','Forever & ever')} className="rg-script">Forever & ever</EditableText><Divider /><span className="rg-script"><EditableText {...text('closing','groom',"Groom's name · closing")} style={{display:'block'}}>{groom}</EditableText><EditableText {...text('closing','separator','Ampersand · closing')} style={{display:'block'}}>&amp;</EditableText><EditableText {...text('closing','bride',"Bride's name · closing")} style={{display:'block'}}>{bride}</EditableText></span><EditableText as="p" {...text('closing','date','Wedding date · closing')} className="rg-eyebrow">{details ? formatDate(details.date) : "20 · 12 · 26"}</EditableText></InvitationSection>
     </div>}
   </main></InvitationLayoutProvider>
 }

@@ -7,7 +7,7 @@ import { InvitationSection } from './InvitationSection'
 import { InvitationMedia } from './InvitationMedia'
 
 /** Native form shared by migrated invitations; only published orders submit. */
-export function InvitationRsvp({ template, couple, target, countOnly }: { template: number; couple: string; target?: RsvpTarget; countOnly?: boolean }) {
+export function InvitationRsvp({ template, couple, target, countOnly, envelopeClosed, envelopeOpen }: { template: number; couple: string; target?: RsvpTarget; countOnly?: boolean; envelopeClosed?: string; envelopeOpen?: string }) {
   const [opened, setOpened] = useState(false)
   const [attendance, setAttendance] = useState<'yes' | 'no'>('yes')
   const [count, setCount] = useState(1)
@@ -31,14 +31,14 @@ export function InvitationRsvp({ template, couple, target, countOnly }: { templa
     finally { setBusy(false) }
   }
   return <InvitationSection data-invite-section="rsvp" className="invitation-rsvp">
-    <Text as="p" textId={id('caption')} label="RSVP caption" className="mj-eyebrow">The {couple} wedding</Text>
+    <Text as="p" textId={id('caption')} label="RSVP caption" className="invite-eyebrow">The {couple} wedding</Text>
     <Text as="h2" textId={id('heading')} label="RSVP heading">RSVP</Text>
-    <Text as="p" textId={id('intro')} label="RSVP introduction" className="mj-eyebrow">Kindly reply</Text>
+    <Text as="p" textId={id('intro')} label="RSVP introduction" className="invite-eyebrow">Kindly reply</Text>
     {!opened ? <div className="invitation-envelope">
-      <button className="invitation-envelope-art" type="button" onClick={() => setOpened(true)} aria-label="Open your RSVP envelope"><InvitationMedia src="/templates/secret-garden/assets/envelope-closed-new.webp" alt="A closed embroidered ivory envelope" /></button>
+      <button className="invitation-envelope-art" type="button" onClick={() => setOpened(true)} aria-label="Open your RSVP envelope"><InvitationMedia src={envelopeClosed || '/templates/secret-garden/assets/envelope-closed-new.webp'} alt="A closed embroidered ivory envelope" /></button>
       <button type="button" onClick={() => setOpened(true)}><Text textId={id('open')} label="Open RSVP label">Open RSVP</Text></button>
     </div> : <form onSubmit={submit}>
-      <InvitationMedia className="invitation-envelope-open" src="/templates/secret-garden/assets/envelope-open-new.webp" alt="An open embroidered ivory envelope" />
+      <InvitationMedia className="invitation-envelope-open" src={envelopeOpen || '/templates/secret-garden/assets/envelope-open-new.webp'} alt="An open embroidered ivory envelope" />
       <fieldset><legend><Text textId={id('attendance')} label="Attendance question">Will you attend?</Text></legend>
         <label><input type="radio" name="attendance" value="yes" checked={attendance === 'yes'} onChange={() => setAttendance('yes')} /><Text textId={id('yes')} label="Attending label">Yes, I’ll be there</Text></label>
         <label><input type="radio" name="attendance" value="no" checked={attendance === 'no'} onChange={() => setAttendance('no')} /><Text textId={id('no')} label="Not attending label">Sorry, I can’t</Text></label>

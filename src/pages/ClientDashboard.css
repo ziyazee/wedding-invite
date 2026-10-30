@@ -1,10 +1,10 @@
 /* Client studio layout, rebuilt around template selection, customization and preview. */
 .client-workspace {
-  --client-ink: #18212a;
-  --client-muted: #66717e;
-  --client-line: #e2e6e9;
-  --client-green: #a1844c;
-  --client-green-hover: #876a38;
+  --client-ink: #252B29;
+  --client-muted: #737A74;
+  --client-line: #E7E3DA;
+  --client-green: #354C43;
+  --client-green-hover: #293D35;
   --client-paper: #ffffff;
   min-height: 100svh;
   display: grid;
@@ -439,7 +439,7 @@
 
 /* Upload PDF AI */
 .client-upload-pdf-ai { display: none; }
-.client-workspace.has-client-preview.show-client-details .client-upload-pdf-ai {
+.workspace-top .client-upload-pdf-ai {
   position: relative; display: inline-flex; align-items: center; gap: 10px;
   min-height: 40px; padding: 8px 16px;
   border: 1.5px solid rgba(139, 92, 246, .18); border-radius: 10px;
@@ -449,12 +449,12 @@
   transition: transform .25s ease, box-shadow .3s ease, border-color .3s ease;
   box-shadow: 0 2px 12px rgba(139, 92, 246, .08);
 }
-.client-workspace.has-client-preview.show-client-details .client-upload-pdf-ai::before {
+.workspace-top .client-upload-pdf-ai::before {
   content: ''; position: absolute; inset: 0; z-index: -1; opacity: .5;
   background: radial-gradient(ellipse 80% 60% at 20% 50%, rgba(167, 139, 250, .12), transparent),
               radial-gradient(ellipse 60% 50% at 80% 50%, rgba(196, 181, 253, .1), transparent);
 }
-.client-workspace.has-client-preview.show-client-details .client-upload-pdf-ai:hover {
+.workspace-top .client-upload-pdf-ai:hover {
   transform: translateY(-1px); border-color: rgba(139, 92, 246, .35);
   box-shadow: 0 6px 24px rgba(139, 92, 246, .14), 0 0 0 3px rgba(139, 92, 246, .06);
 }
@@ -818,6 +818,35 @@
   .overview-dashboard .metric-card > small { margin-top: 6px; font-size: 9px; white-space: normal; }
 }
 
+/* Compact PDF upload: reference artwork styling within the existing header footprint. */
+.client-workspace.has-client-preview:not(.show-client-details) .workspace-main > .workspace-top { display: grid; grid-template-columns: minmax(0,1fr) auto minmax(0,1fr); gap: 16px; align-items: center; margin-bottom: 18px; padding-bottom: 0; border: 0; }
+.client-workspace.has-client-preview:not(.show-client-details) .workspace-top > div:first-child { min-width: 0; }
+.client-workspace.has-client-preview:not(.show-client-details) .workspace-top .client-upload-pdf-ai { grid-column: 3; justify-self: end; position: relative; left: auto; }
+.client-workspace.has-client-preview:not(.show-client-details) .workspace-top .client-design-count { display: none; }
+.workspace-top .client-upload-pdf-ai { position: relative; flex: none; display: grid; width: fit-content; max-width: 100%; min-height: 56px; grid-template-columns: 40px auto; align-items: center; gap: 10px; margin: 0; padding: 7px 12px; overflow: hidden; isolation: isolate; border: 1px solid #d2ad7b; border-radius: 14px; background: linear-gradient(115deg,#fcf3ec,#fffdf9 50%,#f7ecdd); color: #3d5248; text-align: left; box-shadow: inset 0 0 0 1px #fffaf4,inset 0 0 0 2px #ead2b3,0 4px 12px #92704420; transition: border-color .2s,box-shadow .2s; }
+.workspace-top .client-upload-pdf-ai::before { content: ''; position: absolute; z-index: -1; inset: 3px; border: 1px solid #fffdfa; border-radius: 11px; background: radial-gradient(ellipse at 0 100%,#e9c9b63b,transparent 65%); }
+.workspace-top .client-upload-pdf-ai::after { content: ''; position: absolute; z-index: -1; width: 65px; height: 65px; right: -25px; bottom: -35px; border: 1px solid #dfbf9255; border-radius: 50% 0 50% 0; box-shadow: 0 0 0 5px #fff8,0 0 0 6px #dfbf9244,0 0 0 12px #fff5,0 0 0 13px #dfbf9233; transform: rotate(-30deg); pointer-events: none; }
+.workspace-top .client-upload-pdf-ai:hover { transform: none; border-color: #b58c57; box-shadow: inset 0 0 0 1px #fffaf4,inset 0 0 0 2px #ead2b3,0 5px 14px #92704430; }
+.workspace-top .client-upload-pdf-ai:focus-visible { outline: 3px solid #8da092; outline-offset: 3px; }
+.client-upload-pdf-ai .ai-icon-wrap { width: 40px; height: 40px; border: 1px solid #e4c69e; border-radius: 12px; background: url('/pdf-upload-icon.svg') center / 34px 34px no-repeat,linear-gradient(145deg,#fffefa,#f6e8d9); box-shadow: inset 0 0 0 1px #fffaf3,0 3px 7px #a67a4524; }
+.client-upload-pdf-ai .ai-icon-wrap svg { display: none; }
+.client-upload-pdf-ai .ai-label { align-self: stretch; align-items: center; justify-content: center; gap: 2px; text-align: center; }
+.client-upload-pdf-ai .ai-label strong { width: auto; color: #3d5248; font: 600 15px/1.1 'Playfair Display',Georgia,serif; letter-spacing: 0; }
+.client-upload-pdf-ai .ai-label::after { content: none; color: #8f8273; font: 11px/1.25 Inter,Arial,sans-serif; letter-spacing: .02em; }
+.client-upload-pdf-ai.ai-extracting .ai-label::after { content: 'Reading your PDF…'; }
+.client-upload-pdf-ai i { position: static; transform: none; padding: 4px 9px; border: 1px solid #fff1da; border-radius: 999px; background: linear-gradient(135deg,#efd3a9,#c99f6c 55%,#dab782); color: #fffdf8; font: 700 10px Inter,Arial,sans-serif; letter-spacing: .1em; box-shadow: inset 0 1px #fff9,0 2px 5px #aa794829; animation: none; }
+.client-upload-pdf-ai i::before { content: '✦'; margin-right: 4px; font-size: 10px; }
+.client-upload-pdf-ai .ai-sparkle { display: none; }
+.client-upload-pdf-ai.ai-extracting { opacity: .78; }
+.client-upload-pdf-ai.ai-extracting .ai-icon-wrap { animation: ai-spin 1.2s linear infinite; }
+@media (max-width: 760px) {
+  .client-workspace.has-client-preview:not(.show-client-details) .workspace-main > .workspace-top { gap: 8px; margin-bottom: 14px; }
+  .workspace-top .client-upload-pdf-ai { gap: 8px; padding: 7px 9px; border-radius: 12px; }
+  .client-upload-pdf-ai .ai-label strong { font-size: 14px; }
+  .client-upload-pdf-ai .ai-label::after { font-size: 10px; letter-spacing: 0; }
+  .client-upload-pdf-ai i { padding: 4px 7px; font-size: 9px; }
+}
+
 .client-settings-intro { display: flex; align-items: center; justify-content: space-between; gap: 20px; margin: 27px 0 20px; padding-bottom: 19px; border-bottom: 1px solid var(--line); }
 .client-settings-intro h2 { margin: 8px 0 7px; color: #35483a; font: 400 27px Georgia, serif; }
 .client-settings-intro p { max-width: 650px; margin: 0; color: var(--muted); font-size: 12px; line-height: 1.7; }
@@ -1033,3 +1062,127 @@
 .demo-celebration-head .text-action { font-size: 12px; color: #b83232; }
 .demo-celebration-row .demo-editor-fields { margin-bottom: 0; }
 @media (max-width: 600px) { .demo-editor-fields { grid-template-columns: 1fr; } .demo-editor-dialog { padding: 24px 18px; max-width: 100%; } .demo-editor-header { flex-direction: column; } }
+
+/* Dashboard interface theme. No sizing, layout, typography, or artwork overrides. */
+:where(.client-workspace, .ai-extract-dialog, .client-workflow-controls) {
+  --client-background: #F8F6F1;
+  --client-paper: #FFFFFF;
+  --client-green: #354C43;
+  --client-green-hover: #293D35;
+  --client-accent: #D5BD91;
+  --client-ink: #252B29;
+  --client-muted: #737A74;
+  --client-line: #E7E3DA;
+  --client-selected: #F0F3EE;
+  --client-success: #365F46;
+  --client-success-bg: #EAF1E9;
+  --client-danger: #88483F;
+  --client-danger-bg: #F6ECE8;
+  --client-shadow: 0 2px 8px #252b2908;
+  --ink: var(--client-ink);
+  --muted: var(--client-muted);
+  --gold: var(--client-green);
+  --line: var(--client-line);
+  --paper: var(--client-background);
+}
+.client-workspace, .client-workspace .workspace-main,
+.client-workspace.has-client-preview .client-preview-panel { background: var(--client-background); color: var(--client-ink); }
+.client-workspace .client-preview-panel { border-color: var(--client-line); box-shadow: none; }
+.client-workspace .workspace-sidebar, .client-workspace .client-topbar { background: var(--client-paper); border-color: var(--client-line); }
+.client-workspace .workspace-sidebar > .client-brand, .client-workspace .workspace-top { border-color: var(--client-line); }
+.client-workspace .workspace-account, .client-workspace .workspace-top h1,
+.client-workspace .client-recent-orders h2, .client-workspace .metric-card strong,
+.client-workspace .client-template-setting-content h3 { color: var(--client-ink); }
+.client-workspace .workspace-kicker, .client-workspace .workspace-lede,
+.client-workspace .workspace-account small, .client-workspace .client-design-count,
+.client-workspace .metric-card > span, .client-workspace .metric-card > small,
+.client-workspace .client-settings-intro p, .client-workspace .client-template-card-copy > small,
+.client-workspace .orders-search > span { color: var(--client-muted); }
+.client-workspace .client-section-nav button,
+.client-workspace .client-section-nav button > span:first-child { color: var(--client-muted); }
+.client-workspace .client-section-nav button:hover { background: var(--client-selected); color: var(--client-green); }
+.client-workspace .client-section-nav button.active { background: var(--client-selected); color: var(--client-green); border-color: var(--client-line); box-shadow: none; }
+.client-workspace .client-section-nav button.active > span:first-child { color: var(--client-green); }
+.client-workspace .client-top-search { background: var(--client-background); border-color: var(--client-line); color: var(--client-muted); }
+.client-workspace .client-top-search input { color: var(--client-ink); }
+.client-workspace input::placeholder, .client-workspace textarea::placeholder { color: var(--client-muted); }
+.client-workspace .client-top-search:focus-within { border-color: var(--client-green); }
+.client-workspace .client-account-avatar,
+.client-workspace .workspace-logout > span:first-child { background: var(--client-selected); border-color: var(--client-line); color: var(--client-green); }
+.client-workspace .workspace-logout { background: var(--client-paper); border-color: var(--client-line); color: var(--client-green); box-shadow: none; }
+.client-workspace .workspace-logout:hover, .client-workspace .workspace-logout:hover > span:first-child { background: var(--client-selected); color: var(--client-green-hover); border-color: var(--client-green); }
+.client-workspace.has-client-preview .client-filter-chips button { background: var(--client-paper); border-color: var(--client-line); color: var(--client-ink); box-shadow: none; }
+.client-workspace.has-client-preview .client-filter-chips button:hover { background: var(--client-selected); border-color: var(--client-green); box-shadow: none; }
+.client-workspace.has-client-preview .client-filter-chips button.active { background: var(--client-green); border-color: var(--client-green); color: var(--client-paper); box-shadow: none; }
+.client-workspace.has-client-preview .client-filter-chips button .category-chip-icon { color: var(--client-green); }
+.client-workspace.has-client-preview .client-filter-chips button.active .category-chip-icon { color: var(--client-paper); }
+.client-workspace.has-client-preview .client-selected-card,
+.client-workspace .client-template-setting, .client-workspace .metric-card,
+.client-workspace .settings-card, .client-workspace .table-wrap,
+.client-workspace .client-recent-orders { background: var(--client-paper); border-color: var(--client-line); box-shadow: var(--client-shadow); }
+.client-workspace.has-client-preview .client-selected-card:hover,
+.client-workspace.has-client-preview .client-selected-card.active { background: var(--client-paper); border-color: var(--client-green); box-shadow: var(--client-shadow); }
+.client-workspace.has-client-preview .client-template-card-copy > strong,
+.client-workspace .client-template-price, .client-workspace .client-template-price strong,
+.client-workspace.has-client-preview .client-template-price-row > strong,
+.client-workspace.has-client-preview .client-template-price > strong { color: var(--client-green); }
+.client-workspace.has-client-preview .client-template-sale-badge,
+.client-workspace .client-template-setting-art .client-template-sale-badge { background: #FFDA63; color: var(--client-green-hover); border-color: #FFDA63; box-shadow: none; }
+.client-workspace.has-client-preview .client-template-premium-badge { background: #64349A; color: #FFFFFF; border-color: #9D79CF; box-shadow: none; }
+.client-workspace .client-template-price del, .client-workspace .client-template-price-unset { color: var(--client-muted); }
+.client-workspace .primary-action, .client-workspace .order-form .primary-action,
+.client-workspace .client-template-setting-actions .primary-action,
+.client-workspace .orders-new-order, .client-workspace .orders-create-first,
+.client-workspace .wa-send-btn, .client-workflow-controls .client-workflow-next,
+.ai-extract-dialog .ai-fill-form-btn { background: var(--client-green); border-color: var(--client-green); color: var(--client-paper); box-shadow: none; }
+.client-workspace .primary-action:hover, .client-workspace .order-form .primary-action:hover,
+.client-workspace .client-template-setting-actions .primary-action:hover,
+.client-workspace .orders-new-order:hover, .client-workspace .orders-create-first:hover,
+.client-workspace .wa-send-btn:hover:not(:disabled), .client-workflow-controls .client-workflow-next:hover,
+.ai-extract-dialog .ai-fill-form-btn:hover { background: var(--client-green-hover); border-color: var(--client-green-hover); color: var(--client-paper); }
+.client-workspace .secondary-action, .client-workspace .overview-view-link,
+.client-workspace .pagination button, .client-workspace .recent-orders-footer button,
+.client-workspace.has-client-preview .client-selected-card-order,
+.client-workflow-controls .client-workflow-back { background: var(--client-paper); border-color: var(--client-line); color: var(--client-green); box-shadow: none; }
+.client-workspace .secondary-action:hover, .client-workspace .overview-view-link:hover,
+.client-workspace .pagination button:hover, .client-workspace .recent-orders-footer button:hover,
+.client-workflow-controls .client-workflow-back:hover { background: var(--client-selected); border-color: var(--client-green); }
+.client-workspace.has-client-preview .client-selected-card-order:hover,
+.client-workspace.has-client-preview .client-selected-card.active .client-selected-card-order { background: var(--client-green); border-color: var(--client-green); color: var(--client-paper); box-shadow: none; }
+.client-workspace .orders-table th { background: var(--client-background); color: var(--client-muted); border-color: var(--client-line); }
+.client-workspace .orders-table td { color: var(--client-ink); border-color: var(--client-line); }
+.client-workspace .orders-table .status-pill { background: var(--client-accent); color: var(--client-green-hover); }
+.client-workspace .orders-table .status-in_progress { background: var(--client-selected); color: var(--client-green); }
+.client-workspace .orders-table .status-ready, .client-workspace .workspace-success,
+.client-workspace .client-settings-save.is-saved, .client-workspace .client-setting-status { background: var(--client-success-bg); color: var(--client-success); border-color: var(--client-line); }
+.client-workspace .orders-table .status-rejected, .client-workspace .workspace-alert { background: var(--client-danger-bg); color: var(--client-danger); border-color: var(--client-danger); }
+.client-workspace .metric-card .metric-change-up b { color: var(--client-success); }
+.client-workspace .metric-card .metric-change-down b { color: var(--client-danger); }
+.client-workspace .overview-dashboard .metric-card > i { background: var(--client-selected); color: var(--client-green); }
+.client-workspace .overview-dashboard .metric-card.metric-gold > i { background: var(--client-accent); color: var(--client-green-hover); }
+.client-workspace .orders-search, .client-workspace .orders-date-filter,
+.client-workspace .orders-filters > select, .client-workspace .client-settings-input-wrap,
+.client-workspace .order-form input, .client-workspace .order-form select, .client-workspace .order-form textarea,
+.client-workspace .client-template-setting-fields select, .client-workspace .demo-editor-fields input,
+.client-workspace .demo-editor-fields textarea { background: var(--client-paper); border-color: var(--client-line); color: var(--client-ink); }
+.client-workspace .client-settings-input-wrap > i { background: var(--client-background); border-color: var(--client-line); color: var(--client-muted); }
+.client-workspace .client-premium-setting > input:checked + .client-premium-switch { background: var(--client-green); }
+.client-workspace .client-premium-switch { background: var(--client-muted); }
+.client-workspace .client-settings-input-wrap > input:focus-visible { box-shadow: inset 0 0 0 2px var(--client-green); }
+.client-workspace :is(button,a,input,select,textarea):focus-visible,
+.ai-extract-dialog :is(button,input,textarea):focus-visible,
+.client-workflow-controls button:focus-visible { outline: 2px solid var(--client-green); outline-offset: 2px; }
+.client-workspace button:disabled, .ai-extract-dialog button:disabled,
+.client-workflow-controls button:disabled { box-shadow: none; }
+.client-workspace .workspace-top .client-upload-pdf-ai,
+.client-workspace .workspace-top .client-upload-pdf-ai:hover { background: var(--client-background); border-color: var(--client-accent); color: var(--client-green); box-shadow: none; }
+.client-workspace .workspace-top .client-upload-pdf-ai:hover { background: var(--client-selected); border-color: var(--client-green); }
+.client-workspace .client-upload-pdf-ai::before,
+.client-workspace .client-upload-pdf-ai::after { background: transparent; border-color: transparent; box-shadow: none; }
+.client-workspace .client-upload-pdf-ai .ai-icon-wrap { background-image: url('/pdf-upload-icon.svg'); background-color: var(--client-paper); border-color: var(--client-line); box-shadow: none; }
+.client-workspace .client-upload-pdf-ai .ai-label strong { color: var(--client-green); }
+.client-workspace .client-upload-pdf-ai i { background: var(--client-accent); color: var(--client-green-hover); border-color: var(--client-accent); box-shadow: none; }
+.ai-extract-dialog { background: var(--client-paper); color: var(--client-ink); border-color: var(--client-line); }
+.ai-extract-dialog > header h2 { color: var(--client-ink); }
+.ai-extract-dialog > header .dialog-close, .ai-extract-dialog > header .dialog-close:hover { background: var(--client-selected); color: var(--client-green); }
+.ai-extract-dialog .ai-extract-badge { background: var(--client-accent); color: var(--client-green-hover); box-shadow: none; }

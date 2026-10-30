@@ -1,6 +1,6 @@
 import { useEffect, useLayoutEffect, useRef, useState } from 'react'
 import { useInvitationDetails } from '../invitations/context'
-import { OpeningScene, WelcomeScene, CoupleScene, ClosingScene, InvitationContact, SvgDefinitions, Celebrations as ReferenceCelebrations } from './a-timeless-union/Design14Scenes'
+import { OpeningScene, WelcomeScene, CoupleScene, ClosingScene, SvgDefinitions, Celebrations as ReferenceCelebrations } from './a-timeless-union/Design14Scenes'
 import { ReferenceOpeningScene, ReferenceWelcomeScene } from './a-timeless-union/ReferenceScenes'
 import { useDesign14Motion } from './a-timeless-union/useDesign14Motion'
 import styles from './a-timeless-union/Design14.css?inline'
@@ -130,7 +130,6 @@ export default function Design14() {
             {details ? <Celebrations opened={opened} events={events} offset={details.offset} couple={`${groom} & ${bride}`} showIllustrations={showIllustrations} /> : <ReferenceCelebrations opened={opened} events={referenceEvents} />}
             {details && <TimelessNotes dressCode={details.dressCode} note={details.giftNote} />}
             <ClosingScene showIllustrations={showIllustrations} />
-            <InvitationContact />
           </div>
         </div>
         <div id="overlay" />

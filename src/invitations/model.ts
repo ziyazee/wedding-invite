@@ -42,6 +42,10 @@ export const mapURL = (venue: string, address: string, url = '') => url || `http
 export function nameSlug(groom: string, bride: string) {
   return `${groom}${bride}`.normalize('NFKD').replace(/[\u0300-\u036f]/g, '').toLowerCase().replace(/[^a-z0-9]/g, '').slice(0, 80) || 'wedding'
 }
+const gluedHonorific = /^(dr|mr|mrs|ms|prof|rev|sr|jr|st|smt|shri|haj|hajj)\.(\S)/i
+export function displayName(s: string) {
+  return s.replace(gluedHonorific, (_, prefix, ch) => `${prefix}. ${ch}`)
+}
 function normName(s: string) {
   return s.normalize('NFKD').replace(/[\u0300-\u036f]/g, '').toLowerCase().replace(/[^a-z0-9]/g, '').slice(0, 35)
 }
@@ -54,7 +58,6 @@ export function slugVariants(groom: string, bride: string): string[] {
     `${g}weds${b}`,
     `${g}and${b}`,
     `${g}-${b}`,
-    `${g}.${b}`,
     `${g}marries${b}`,
     `${g}with${b}`,
     `${base}wedding`,
@@ -83,6 +86,7 @@ export function validateDetails(value: unknown, allowRetired = false): Invitatio
     return v
   }
   const time = (v: unknown) => {
+    if (typeof v === 'string' && !v.trim()) return ''
     if (typeof v !== 'string' || !/^([01]\d|2[0-3]):[0-5]\d$/.test(v)) throw new Error('Enter a valid event time.')
     return v
   }
@@ -109,7 +113,7 @@ export function validateDetails(value: unknown, allowRetired = false): Invitatio
     ...(d.layoutVersion !== undefined ? { layoutVersion: d.layoutVersion } : {}),
     textOverrides: readTextLayout(d.textOverrides),
     showCoupleIllustrations:d.showCoupleIllustrations !== false,
-    template:d.template, groom:text(d.groom,'groom name',nameTextLimit(d.template,'groom') ?? 80,true), bride:text(d.bride,'bride name',nameTextLimit(d.template,'bride') ?? 80,true), date:date(d.date), time:time(d.time), offset:d.offset,
+    template:d.template, groom:displayName(text(d.groom,'groom name',nameTextLimit(d.template,'groom') ?? 80,true)), bride:displayName(text(d.bride,'bride name',nameTextLimit(d.template,'bride') ?? 80,true)), date:date(d.date), time:time(d.time), offset:d.offset,
     venue:text(d.venue,'venue',cardTextLimit(d.template,'venue') ?? 160,true),address:text(d.address,'address',cardTextLimit(d.template,'address') ?? 300,true),map:url(d.map,'map link'),
     message:text(d.message,'welcome message',2000),groomFamily:text(d.groomFamily,'groom family',200),brideFamily:text(d.brideFamily,'bride family',200),
     dressCode:text(d.dressCode,'dress code',600),giftNote:text(d.giftNote,'gift note',600),music:url(d.music,'music link'),gallery:url(d.gallery,'gallery link'),

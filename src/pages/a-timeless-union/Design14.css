@@ -1413,8 +1413,9 @@ html:where(.d14-document).d14-awaiting-play #main * {
 
 html:where(.d14-document) #main .d14-entry-name {
   opacity: 0 !important;
-  transform: translate(-50%, -50%) scale(1.15) !important;
-  transition: opacity 2800ms cubic-bezier(.22, .61, .36, 1) 250ms !important;
+  transform: translate(-50%, -50%) !important;
+  translate: 0 25px;
+  transition: opacity 800ms cubic-bezier(.22, .61, .36, 1) 0ms, translate 800ms cubic-bezier(.22, .61, .36, 1) 0ms !important;
 }
 
 html:where(.d14-document).d14-started #main .d14-entry-name {
@@ -1605,8 +1606,8 @@ html:where(.d14-document).d14-started #main .d14-entry-name {
 :where(html.d14-document) [data-d14-text-motion].d14-text-visible {
   opacity: 1 !important;
   translate: 0 0;
-  transition: opacity 1100ms cubic-bezier(.22, .61, .36, 1) var(--d14-text-delay, 0ms),
-    translate 1100ms cubic-bezier(.22, .61, .36, 1) var(--d14-text-delay, 0ms) !important;
+  transition: opacity 800ms cubic-bezier(.22, .61, .36, 1) 0ms,
+    translate 800ms cubic-bezier(.22, .61, .36, 1) 0ms !important;
 }
 
 :where(html.d14-document) .d14-event-label {
@@ -1614,14 +1615,11 @@ html:where(.d14-document).d14-started #main .d14-entry-name {
 }
 
 html:where(.d14-document) #main .d14-entry-name {
-  translate: 0 12px;
-  transition: opacity 2800ms cubic-bezier(.22, .61, .36, 1) var(--d14-entry-delay, 250ms),
-    translate 2800ms cubic-bezier(.22, .61, .36, 1) var(--d14-entry-delay, 250ms) !important;
+  translate: 0 25px;
+  transition: opacity 800ms cubic-bezier(.22, .61, .36, 1),
+    translate 800ms cubic-bezier(.22, .61, .36, 1) !important;
 }
 
-html:where(.d14-document) #main .d14-1sy4tjt { --d14-entry-delay: 430ms; }
-html:where(.d14-document) #main .d14-1xwenpz { --d14-entry-delay: 610ms; }
-html:where(.d14-document) #main .d14-entry-date { --d14-entry-delay: 790ms; }
 html:where(.d14-document).d14-started #main .d14-entry-name { translate: 0 0; }
 
 :where(html.d14-document) .d14-entry-label {

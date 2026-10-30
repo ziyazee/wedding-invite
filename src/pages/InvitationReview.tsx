@@ -48,7 +48,7 @@ export default function InvitationReview({ details, phone, title, events, templa
   return <section className="review-card inv-review" aria-label={`Review ${template} invitation details`}>
     <header className="inv-review-hero">
       <span>REVIEW ORDER DETAILS</span>
-      <h2>{details.groom || 'Groom'} &amp; {details.bride || 'Bride'}</h2>
+      <h2>{details.groom || 'Groom'} &amp; {details.bride || 'Breveide'}</h2>
     </header>
     <div className="inv-review-grid">
       <div className="inv-review-column">

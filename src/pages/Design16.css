@@ -36,7 +36,7 @@
 .d16-families{display:grid;gap:8px;margin:28px auto;font-size:19px}
 .d16-families p{margin:0}
 .d16-families small{display:block;font:8px Georgia,serif;letter-spacing:2px;color:#a4703c;margin-bottom:5px}
-.d16-signature{display:block;font-size:38px;color:#9e662f}
+.d16-signature{display:flex;flex-direction:column;align-items:center;font-size:38px;color:#9e662f}.d16-signature span{display:block}.d16-signature i{display:block;font-size:22px}
 .d16-couple-art{display:block;width:min(42vw,180px);max-height:255px;object-fit:contain;margin:18px auto 0;filter:drop-shadow(0 4px 5px #54251f22)}
 .d16-heart-section{padding:54px 18% 64px;text-align:center}
 .d16-page .rg-heart-reveal{position:relative;color:#54251f}
@@ -69,7 +69,7 @@
 .d16-section-heading{text-align:center;margin:0 auto 36px}
 .d16-section-heading h2 em{font-weight:400;color:#a25b2f}
 .d16-event{position:relative;isolation:isolate;display:flex;flex-direction:column;justify-content:center;box-sizing:border-box;width:100%;max-width:470px;aspect-ratio:2/3;margin:0 auto 30px;padding:82px 16% 72px;text-align:center;border:0;background:none;border-radius:0;box-shadow:none;filter:drop-shadow(0 8px 8px #514b3020);color:#5c3029}
-.d16-event::before{content:"";position:absolute;z-index:-1;inset:0;pointer-events:none;background:url('/templates/royal-grace/ivory-stationery-unframed.png') center/100% 100% no-repeat;mask:url('/templates/royal-grace/stationery-silhouette.svg') center/100% 100% no-repeat;-webkit-mask:url('/templates/royal-grace/stationery-silhouette.svg') center/100% 100% no-repeat}
+.d16-event::before{content:"";position:absolute;z-index:-1;inset:0;pointer-events:none;background:url('/templates/deprecated/design16/ivory-stationery-unframed.png') center/100% 100% no-repeat;mask:url('/templates/deprecated/design16/stationery-silhouette.svg') center/100% 100% no-repeat;-webkit-mask:url('/templates/deprecated/design16/stationery-silhouette.svg') center/100% 100% no-repeat}
 .d16-main-event::before{background-image:url('/templates/deprecated/design16/burgundy-stationery.png')}
 .d16-main-event{color:#fff5d9}
 .d16-event-index{font:8px Georgia,serif;letter-spacing:2px;color:#9a7840}
@@ -93,8 +93,8 @@
 .d16-notes .d16-kicker:not(:first-child){margin-top:32px}
 .d16-footer{min-height:480px;padding-top:64px;padding-bottom:80px;background:transparent}
 .d16-footer h2{margin-bottom:14px}
-.d16-footer-names{font:39px 'Great Vibes','Dancing Script',cursive;color:#78452e;margin:22px 0}
-.d16-footer-names i{font:italic 23px 'Cormorant Garamond',serif}
+.d16-footer-names{font:39px 'Great Vibes','Dancing Script',cursive;color:#78452e;margin:22px 0;display:flex;flex-direction:column;align-items:center}
+.d16-footer-names span{display:block}.d16-footer-names i{display:block;font:italic 23px 'Cormorant Garamond',serif}
 .d16-footer>p:not(.d16-kicker){font-size:15px;line-height:1.7}
 .d16-reveal{opacity:0;transform:translateY(20px);transition:opacity .8s ease,transform .8s ease}
 .d16-reveal.d16-visible{opacity:1;transform:none}

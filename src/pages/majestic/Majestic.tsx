@@ -1,5 +1,5 @@
 import { useEffect, useRef, useState } from 'react'
-import type { ComponentProps } from 'react'
+import type { ComponentProps, CSSProperties } from 'react'
 import type { Celebration, InvitationData } from '../../invitations/model'
 import { formatDate, formatTime, weddingISO } from '../../invitations/model'
 import { downloadCalendar } from '../../invitations/calendar'
@@ -10,12 +10,25 @@ import { InvitationMedia } from '../../invitations/components/InvitationMedia'
 import { InvitationRsvp } from '../../invitations/components/InvitationRsvp'
 import PersonalMusic from '../../invitations/PersonalMusic'
 import { wrapCardText } from '../../invitations/cardContentFit'
+import type { TextLayout } from '../../invitations/textLayout'
 import { useMajesticCard, useMajesticNames } from './useMajesticFit'
+import defaultLayout from './defaultLayout'
 import './Majestic.css'
 
+function mergeLayouts(base: TextLayout, overrides?: TextLayout): TextLayout {
+  if (!overrides) return base
+  return { version: 1, elements: { ...base.elements, ...overrides.elements } }
+}
+
 type CopyProps = Omit<ComponentProps<typeof EditableText>, 'textId'> & { field: string }
-function Copy({ field, label, ...props }: CopyProps) {
-  return <EditableText {...props} textId={`t2.${field}`} label={label || field.replaceAll('.', ' · ')} />
+function Copy({ field, label, children, animation = 'fade-up', animationStagger = 40, animationDelay = 0, ...props }: CopyProps) {
+  const text = typeof children === 'string' ? children : undefined
+  const animatedChildren = animation === 'letter-rise' && text !== undefined
+    ? [...text].map((character, index) => <span className="invite-motion-letter" style={{ '--letter-delay': `${animationDelay + index * animationStagger}ms` } as CSSProperties} key={index}>{character === ' ' ? '\u00a0' : character}</span>)
+    : animation === 'stagger-lines' && text !== undefined
+      ? text.split('\n').map((line, index) => <span className="invite-motion-line" style={{ '--line-delay': `${animationDelay + index * animationStagger}ms` } as CSSProperties} key={index}>{line || '\u00a0'}</span>)
+      : children
+  return <EditableText {...props} animation={animation} animationStagger={animationStagger} animationDelay={animationDelay} textId={`t2.${field}`} label={label || field.replaceAll('.', ' · ')} aria-label={animation === 'letter-rise' ? text : undefined}>{animatedChildren}</EditableText>
 }
 
 function AmbientVideo({ src, poster, className }: { src: string; poster?: string; className: string }) {
@@ -41,11 +54,12 @@ function AmbientVideo({ src, poster, className }: { src: string; poster?: string
 function Names({ details: d, section, family = false }: { details: InvitationData; section: string; family?: boolean }) {
   const root = useRef<HTMLDivElement>(null)
   const stacked = family && !!(d.groomFamily.trim() || d.brideFamily.trim())
-  useMajesticNames(root, JSON.stringify([d.groom, d.bride, d.textOverrides]), stacked)
+  const separatorLayout = d.textOverrides?.elements[`t2.${section}.separator`] ?? defaultLayout.elements[`t2.${section}.separator`]
+  useMajesticNames(root, JSON.stringify([d.groom, d.bride, d.textOverrides]), stacked, section === 'closing' ? 4 : 8, section === 'closing' ? .04 : .01, section === 'closing' || section === 'opening')
   return <div ref={root} role={section === 'opening' ? 'heading' : undefined} aria-level={section === 'opening' ? 1 : undefined} className={`mj-names ${stacked ? 'mj-stacked' : ''}`}>
-    <div><Copy as="span" field={`${section}.groom`} label={`Groom · ${section}`} data-mj-name="">{d.groom}</Copy>{family && d.groomFamily.trim() && <Copy as="p" field={`${section}.groomFamily`} className="mj-family">{d.groomFamily}</Copy>}</div>
-    <Copy field={`${section}.separator`} className="mj-ampersand">&amp;</Copy>
-    <div><Copy as="span" field={`${section}.bride`} label={`Bride · ${section}`} data-mj-name="">{d.bride}</Copy>{family && d.brideFamily.trim() && <Copy as="p" field={`${section}.brideFamily`} className="mj-family">{d.brideFamily}</Copy>}</div>
+    <div><Copy as="span" field={`${section}.groom`} label={`Groom · ${section}`} data-mj-name="" animationReplay={section === 'opening'}>{d.groom}</Copy>{family && d.groomFamily.trim() && <Copy as="p" field={`${section}.groomFamily`} className="mj-family">{d.groomFamily}</Copy>}</div>
+    <Copy field={`${section}.separator`} className="mj-ampersand" style={separatorLayout?.y !== undefined ? { top: 0 } : undefined}>&amp;</Copy>
+    <div><Copy as="span" field={`${section}.bride`} label={`Bride · ${section}`} data-mj-name="" animationReplay={section === 'opening'}>{d.bride}</Copy>{family && d.brideFamily.trim() && <Copy as="p" field={`${section}.brideFamily`} className="mj-family">{d.brideFamily}</Copy>}</div>
   </div>
 }
 
@@ -87,22 +101,30 @@ export default function Majestic({ details: d, rsvpTarget }: { details: Invitati
   const structure = JSON.stringify([events.map(event => event.key), !!d.dressCode.trim(), !!d.giftNote.trim(), !!d.gallery.trim()])
   useEffect(() => { const previous = document.title; document.title = `${couple} — Majestic`; return () => { document.title = previous } }, [couple])
   useEffect(() => {
-    if (!root.current || window.matchMedia('(prefers-reduced-motion: reduce)').matches || new URLSearchParams(window.location.search).has('editor')) return
-    const elements = [...root.current.querySelectorAll<HTMLElement>('[data-invite-section]:not(.mj-hero)')]
+    if (!root.current || window.matchMedia('(prefers-reduced-motion: reduce)').matches) return
+    root.current.classList.add('invite-motion-ready')
+    const elements = [...root.current.querySelectorAll<HTMLElement>('[data-invite-animation]')]
     const observer = new IntersectionObserver(entries => {
-      entries.forEach(entry => { if (entry.isIntersecting) { entry.target.classList.add('mj-visible'); observer.unobserve(entry.target) } })
-    }, { threshold: .08 })
-    elements.forEach(element => { element.classList.add('mj-reveal'); observer.observe(element) })
-    return () => { observer.disconnect(); elements.forEach(element => element.classList.remove('mj-reveal')) }
+      entries.forEach(entry => {
+        const element = entry.target
+        if (entry.isIntersecting) {
+          element.classList.add('invite-motion-visible')
+          if (!element.hasAttribute('data-invite-animation-replay')) observer.unobserve(element)
+        } else if (element.hasAttribute('data-invite-animation-replay')) element.classList.remove('invite-motion-visible')
+      })
+    }, { threshold: .12, rootMargin: '0px 0px -4% 0px' })
+    elements.forEach(element => observer.observe(element))
+    return () => { observer.disconnect(); elements.forEach(element => element.classList.remove('invite-motion-visible')); root.current?.classList.remove('invite-motion-ready') }
   }, [structure])
-  return <InvitationLayoutProvider layout={d.textOverrides}><main ref={root} className="majestic-native">
+  const layout = mergeLayouts(defaultLayout, d.textOverrides)
+  return <InvitationLayoutProvider layout={layout}><main ref={root} className="majestic-native">
     <PersonalMusic src={d.music || '/templates/majestic/assets/intro-music-CzqJOUtA.mp3'} />
     <Section data-invite-section="opening" className="mj-hero">
       <AmbientVideo src="/templates/majestic/assets/hero-bg-l-slFnvE.mp4" poster="/templates/majestic/assets/hero-poster-DkA1j00-.jpg" className="mj-hero-video" />
-      <div className="mj-hero-copy"><Copy as="p" field="opening.caption" className="mj-eyebrow">We are getting married</Copy><Names details={d} section="opening" /><Copy as="p" field="opening.date" className="mj-eyebrow">{formatDate(d.date)}</Copy></div>
+      <div className="mj-hero-copy"><Copy as="p" field="opening.caption" className="mj-eyebrow" animationReplay>We are getting married</Copy><Names details={d} section="opening" /><Copy as="p" field="opening.date" className="mj-eyebrow" animationReplay>{formatDate(d.date)}</Copy></div>
     </Section>
     <Countdown details={d} />
-    <InvitationMedia className="mj-intro-lights" src="/templates/secret-garden/assets/lights.webp" alt="" />
+    <InvitationMedia className="mj-intro-lights" src="/templates/majestic/assets/lights.webp" alt="" />
     <Section data-invite-section="welcome" className="mj-welcome"><Copy as="p" field="welcome.caption" className="mj-eyebrow">Together with our families</Copy><Names details={d} section="welcome" family /><Copy as="p" field="welcome.message">{d.message}</Copy></Section>
     <Section data-invite-section="venue" className="mj-details">
       <Copy as="h2" field="venue.heading">Details</Copy><Copy as="p" field="venue.caption" className="mj-eyebrow">When &amp; where</Copy>
@@ -111,9 +133,9 @@ export default function Majestic({ details: d, rsvpTarget }: { details: Invitati
     </Section>
     <Section data-invite-section="programme" className="mj-programme"><InvitationMedia src="/templates/majestic/assets/food.webp" alt="" /><Copy as="h2" field="programme.heading">The programme</Copy></Section>
     <div className="mj-events">{events.map(({ event, key }) => <EventCard key={key} event={event} eventKey={key} details={d} />)}</div>
-    {d.dressCode.trim() && <Section data-invite-section="dress" className="mj-dress"><Copy as="h2" field="dress.heading">Dress Code</Copy><Copy as="p" field="dress.caption" className="mj-eyebrow">A few gentle reminders</Copy>{d.showCoupleIllustrations !== false && <InvitationMedia src="/templates/secret-garden/assets/dress-code-new.webp" alt="Wedding attire illustration" />}<div className="mj-dress-card"><Copy as="h3" field="dress.text">{d.dressCode}</Copy></div></Section>}
+    {d.dressCode.trim() && <Section data-invite-section="dress" className="mj-dress"><Copy as="h2" field="dress.heading">Dress Code</Copy><Copy as="p" field="dress.caption" className="mj-eyebrow">A few gentle reminders</Copy>{d.showCoupleIllustrations !== false && <InvitationMedia src="/templates/majestic/assets/dress-code-new.webp" alt="Wedding attire illustration" />}<div className="mj-dress-card"><Copy as="h3" field="dress.text">{d.dressCode}</Copy></div></Section>}
     {(d.giftNote.trim() || d.gallery.trim()) && <Section data-invite-section="notes" className="mj-notes">{d.giftNote.trim() && <><Copy as="h2" field="notes.heading">A little note</Copy><Copy as="p" field="notes.gift">{d.giftNote}</Copy></>}{d.gallery.trim() && <Copy as="a" field="notes.gallery" href={d.gallery} target="_blank" rel="noreferrer">Our photo gallery ↗</Copy>}</Section>}
-    <InvitationRsvp template={2} couple={couple} target={rsvpTarget} />
-    <Section as="footer" data-invite-section="closing" className="mj-closing"><Names details={d} section="closing" /><Copy as="p" field="closing.date">{formatDate(d.date)}</Copy><InvitationMedia src="/templates/secret-garden/assets/footer-flowers.png" alt="An embroidered arrangement of white roses and greenery" /></Section>
+    <InvitationRsvp template={2} couple={couple} target={rsvpTarget} envelopeClosed="/templates/majestic/assets/envelope-closed-new.webp" envelopeOpen="/templates/majestic/assets/envelope-open-new.webp" />
+    <Section as="footer" data-invite-section="closing" className="mj-closing"><Names details={d} section="closing" /><Copy as="p" field="closing.date">{formatDate(d.date)}</Copy><InvitationMedia src="/templates/majestic/assets/footer-flowers.png" alt="An embroidered arrangement of white roses and greenery" /></Section>
   </main></InvitationLayoutProvider>
 }

@@ -55,7 +55,7 @@ function EventCard({ event, eventKey, details: d }: { event: Celebration; eventK
   const prefix = `event-${eventKey}`
   useSecretGardenCard(root, JSON.stringify([event, d.textOverrides]))
   return <Section as="article" data-invite-section={prefix} className="sg-event">
-    <AmbientVideo className="sg-event-video" src="/templates/majestic/assets/celebrations.mov" />
+    <AmbientVideo className="sg-event-video" src="/templates/secret-garden/assets/celebrations.mov" />
     <div ref={root} className="sg-event-copy">
       <Copy as="p" field={`${prefix}.weekday`} className="sg-eyebrow">{formatDate(event.date, { weekday: 'long' })}</Copy>
       <Copy as="h2" field={`${prefix}.title`}>{wrapCardText(event.title, 18)}</Copy>
@@ -83,7 +83,7 @@ export default function SecretGarden({ details: d, rsvpTarget }: { details: Invi
   // Scroll reveal
   const structure = JSON.stringify([events.map(e => e.key), !!d.dressCode.trim()])
   useEffect(() => {
-    if (!root.current || !opened || window.matchMedia('(prefers-reduced-motion: reduce)').matches || new URLSearchParams(window.location.search).has('editor')) return
+    if (!root.current || !opened || window.matchMedia('(prefers-reduced-motion: reduce)').matches) return
     const elements = [...root.current.querySelectorAll<HTMLElement>('[data-invite-section]:not(.sg-hero)')]
     const observer = new IntersectionObserver(entries => {
       entries.forEach(entry => { if (entry.isIntersecting) { entry.target.classList.add('sg-visible'); observer.unobserve(entry.target) } })
@@ -140,7 +140,7 @@ export default function SecretGarden({ details: d, rsvpTarget }: { details: Invi
           {d.message.trim() && <Copy as="p" field="venue.message" className="sg-details-message">{d.message}</Copy>}
         </div>
         <div className="sg-venue-card">
-          <InvitationMedia className="sg-venue-frame" src="/templates/majestic/assets/ornate-badge-2PyCLI0e.png" alt="" width={1080} height={1080} />
+          <InvitationMedia className="sg-venue-frame" src="/templates/secret-garden/assets/ornate-badge-2PyCLI0e.png" alt="" width={1080} height={1080} />
           <div className="sg-venue-copy">
             <Copy as="h3" field="venue.location">Location</Copy>
             <Copy as="p" field="venue.name" className="sg-venue-name">{d.venue}</Copy>
@@ -157,7 +157,7 @@ export default function SecretGarden({ details: d, rsvpTarget }: { details: Invi
 
       {/* ── Programme ── */}
       <Section data-invite-section="programme" className="sg-programme">
-        <InvitationMedia src="/templates/majestic/assets/food.webp" alt="" />
+        <InvitationMedia src="/templates/secret-garden/assets/food.webp" alt="" />
         <Copy as="h2" field="programme.heading">The programme</Copy>
       </Section>
 
@@ -177,7 +177,7 @@ export default function SecretGarden({ details: d, rsvpTarget }: { details: Invi
 
       {/* ── Closing ── */}
       <Section data-invite-section="closing" className="sg-closing">
-        <Copy as="h2" field="closing.couple">{couple}</Copy>
+        <Copy as="h2" field="closing.couple" className="sg-closing-names"><span>{d.groom}</span><i>&</i><span>{d.bride}</span></Copy>
         <Copy as="p" field="closing.date" className="sg-eyebrow">{formatDate(d.date)}</Copy>
         <InvitationMedia className="sg-footer-flowers" src="/templates/secret-garden/assets/footer-flowers.png" alt="An embroidered arrangement of white roses and greenery" />
       </Section>

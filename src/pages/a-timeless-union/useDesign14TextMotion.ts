@@ -26,11 +26,11 @@ export function useDesign14TextMotion(host: RefObject<HTMLDivElement | null>, op
     addGroup('closing', container.querySelector('.d14-end-gratitude'), ':scope > p, :scope > h2')
 
     const previousTransforms = new Map<TextNode, string>()
-    groups.forEach(group => group.nodes.forEach((node, index) => {
+    groups.forEach(group => group.nodes.forEach(node => {
       previousTransforms.set(node, node.style.transform)
       node.style.transform = node.style.transform.replace(' translateY(40px)', '').replace('translateY(40px)', '')
       node.setAttribute('data-d14-text-motion', '')
-      node.style.setProperty('--d14-text-delay', `${index * 110}ms`)
+      node.style.setProperty('--d14-text-delay', '0ms')
     }))
     const motion = matchMedia('(prefers-reduced-motion: reduce)')
     const visible = new Map<Element, number>()

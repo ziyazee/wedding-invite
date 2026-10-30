@@ -129,7 +129,7 @@ export default function Design15() {
           {details.groomFamily && <p><small>GROOM’S FAMILY</small>{details.groomFamily}</p>}
           {details.brideFamily && <p><small>BRIDE’S FAMILY</small>{details.brideFamily}</p>}
         </div>}
-        <Flourish /><span className="d15-signature d15-script">{details.groom} & {details.bride}</span>
+        <Flourish /><span className="d15-signature d15-script"><span>{details.groom}</span><i>&</i><span>{details.bride}</span></span>
       </section>
 
       <section className="d15-save-date d15-reveal">
@@ -163,7 +163,7 @@ export default function Design15() {
 
       <footer className="d15-footer d15-reveal">
         <p className="d15-kicker">MADE WITH LOVE FOR OUR FAMILY AND FRIENDS</p><Flourish />
-        <h2 className="d15-script">Forever & ever</h2><p className="d15-footer-names">{details.groom} <i>&</i> {details.bride}</p>
+        <h2 className="d15-script">Forever & ever</h2><p className="d15-footer-names"><span>{details.groom}</span><i>&</i><span>{details.bride}</span></p>
         <p>{formatDate(details.date)} · {details.address}</p><a href={mapURL(details.venue, details.address, details.map)} target="_blank" rel="noreferrer">{details.venue} <Arrow /></a>
       </footer>
       </div>

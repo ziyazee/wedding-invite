@@ -108,8 +108,8 @@ export default function Design18() {
           {details.groomFamily && <p data-family="groom"><small>GROOM’S FAMILY</small>{details.groomFamily}</p>}
           {details.brideFamily && <p data-family="bride"><small>BRIDE’S FAMILY</small>{details.brideFamily}</p>}
         </div>}
-        <Flourish /><span className="d18-signature d18-script">{details.groom} & {details.bride}</span>
-        <img className="d18-couple-art" src="/templates/deprecated/design16/couple-watercolor.png" alt="" aria-hidden="true" loading="lazy" />
+        <Flourish /><span className="d18-signature d18-script"><span>{details.groom}</span><i>&</i><span>{details.bride}</span></span>
+        <img className="d18-couple-art" src="/templates/mandap-at-dusk/couple-watercolor.png" alt="" aria-hidden="true" loading="lazy" />
       </section>
 
       <section className="d18-heart-section d18-reveal" aria-label="Scratch to reveal the wedding date">
@@ -140,7 +140,7 @@ export default function Design18() {
 
       <footer className="d18-footer d18-reveal">
         <p className="d18-kicker">MADE WITH LOVE FOR OUR FAMILY AND FRIENDS</p><Flourish />
-        <h2 className="d18-script">Forever & ever</h2><p className="d18-footer-names">{details.groom} <i>&</i> {details.bride}</p>
+        <h2 className="d18-script">Forever & ever</h2><p className="d18-footer-names"><span>{details.groom}</span><i>&</i><span>{details.bride}</span></p>
         <p>{formatDate(details.date)} · {details.address}</p><a href={mapURL(details.venue, details.address, details.map)} target="_blank" rel="noreferrer">{details.venue} <Arrow /></a>
       </footer>
       </div>

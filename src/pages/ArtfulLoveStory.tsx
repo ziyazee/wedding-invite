@@ -93,6 +93,20 @@ export default function Design13() {
         applyOpeningDate(frameRef.current, details)
         if (editorPreview && frameRef.current?.contentDocument) frameRef.current.contentDocument.documentElement.style.overflowAnchor = 'none'
         if (editorPreview) frameRef.current?.contentWindow?.postMessage({ type: 'invitation-editor-details', query: new URL(templateSrc, window.location.origin).search }, window.location.origin)
+        const iframeDoc = frameRef.current?.contentDocument
+        if (iframeDoc && details && (details.companyLogo || details.companyName)) {
+          const existing = iframeDoc.querySelector('.designed-by-footer')
+          if (!existing) {
+            const esc = (s: string) => s.replace(/[&<>"']/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]!))
+            const footer = iframeDoc.createElement('footer')
+            footer.className = 'designed-by-footer'
+            footer.innerHTML = `<span class="designed-by-label">Designed by</span>${details.companyLogo ? `<img class="designed-by-logo" src="${esc(details.companyLogo)}" alt="${esc(details.companyName || 'Company')}"/>` : `<span class="designed-by-name">${esc(details.companyName!)}</span>`}`
+            const style = iframeDoc.createElement('style')
+            style.textContent = `.designed-by-footer{display:flex;align-items:center;justify-content:center;gap:6px;padding:14px 16px;background:rgba(0,0,0,.03);border-top:1px solid rgba(0,0,0,.06);font-family:system-ui,-apple-system,sans-serif}.designed-by-label{font-size:11px;letter-spacing:.04em;color:rgba(0,0,0,.4);text-transform:uppercase}.designed-by-logo{max-height:22px;width:auto;object-fit:contain;opacity:.7}.designed-by-name{font-size:13px;font-weight:600;color:rgba(0,0,0,.5)}`
+            iframeDoc.head.appendChild(style)
+            iframeDoc.body.appendChild(footer)
+          }
+        }
       }}
     />
   )

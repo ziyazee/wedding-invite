@@ -127,7 +127,7 @@ export default function Design17() {
           {details.groomFamily && <p><small>GROOM’S FAMILY</small>{details.groomFamily}</p>}
           {details.brideFamily && <p><small>BRIDE’S FAMILY</small>{details.brideFamily}</p>}
         </div>}
-        <Flourish /><span className="d17-signature d17-script">{details.groom} & {details.bride}</span>
+        <Flourish /><span className="d17-signature d17-script"><span>{details.groom}</span><i>&</i><span>{details.bride}</span></span>
       </section>
 
       <section className="d17-save-date d17-reveal">
@@ -161,7 +161,7 @@ export default function Design17() {
 
       <footer className="d17-footer d17-reveal">
         <p className="d17-kicker">MADE WITH LOVE FOR OUR FAMILY AND FRIENDS</p><Flourish />
-        <h2 className="d17-script">Forever & ever</h2><p className="d17-footer-names">{details.groom} <i>&</i> {details.bride}</p>
+        <h2 className="d17-script">Forever & ever</h2><p className="d17-footer-names"><span>{details.groom}</span><i>&</i><span>{details.bride}</span></p>
         <p>{formatDate(details.date)} · {details.address}</p><a href={mapURL(details.venue, details.address, details.map)} target="_blank" rel="noreferrer">{details.venue} <Arrow /></a>
       </footer>
       </div>

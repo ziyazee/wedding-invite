@@ -189,7 +189,7 @@ export default function Design12() {
             <svg viewBox="0 0 24 24" className="d12-p3-star d12-p3-star--bl"><path d="M3 12C8 12 12 8 12 3C12 8 16 12 21 12C16 12 12 16 12 21C12 16 8 12 3 12Z" fill="rgb(7, 95, 203)" /><circle cx="12" cy="12" r="2" fill="rgb(10, 48, 127)" /></svg>
             <svg viewBox="0 0 24 24" className="d12-p3-star d12-p3-star--br"><path d="M3 12C8 12 12 8 12 3C12 8 16 12 21 12C16 12 12 16 12 21C12 16 8 12 3 12Z" fill="rgb(215, 162, 42)" /><circle cx="12" cy="12" r="2" fill="rgb(10, 48, 127)" /></svg>
 
-            <span className="d12-p3-couple-label">{d.groom} &amp; {d.bride}</span>
+            <span className="d12-p3-couple-label"><span>{d.groom}</span><i>&</i><span>{d.bride}</span></span>
 
             <div className="d12-p3-grid">
               {/* Photo shell with blue border, gold inset, exact Framer styling */}

@@ -1,5 +1,6 @@
 import { lazy, Suspense, useMemo } from 'react'
 import type { InvitationData } from './model'
+import { displayName } from './model'
 import type { RsvpTarget } from './rsvp'
 import { InvitationContext } from './context'
 import SiteFonts from '../SiteFonts'
@@ -44,7 +45,8 @@ const templateComponent: Record<number, React.LazyExoticComponent<React.Componen
 
 const fallback = <div role="status" style={{ minHeight: '100svh', display: 'grid', placeItems: 'center', background: '#fffaf2', color: '#75664c', font: '14px Arial,sans-serif' }}>Opening your invitation…</div>
 
-export default function InvitationRenderer({ details, rsvpTarget }: { details: InvitationData; rsvpTarget?: RsvpTarget }) {
+export default function InvitationRenderer({ details: raw, rsvpTarget }: { details: InvitationData; rsvpTarget?: RsvpTarget }) {
+  const details = useMemo<InvitationData>(() => ({ ...raw, groom: displayName(raw.groom), bride: displayName(raw.bride) }), [raw])
   const animatedDetails = useMemo(() => details, [details])
 
   return <InvitationContext.Provider value={details}><Suspense fallback={fallback}>

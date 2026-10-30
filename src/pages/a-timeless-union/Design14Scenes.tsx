@@ -78,7 +78,7 @@ export function WelcomeScene({ groom, bride, groomFamily, brideFamily, message }
         <p className={"d14-page-two-intro"} hidden={message !== undefined && !message.trim()}>
           {message === undefined ? <>{'With the blessings of God and our beloved families,'}<br />{'we joyfully invite you to celebrate the wedding of'}</> : message}
         </p>
-        <TimelessNames groom={groom} bride={bride} groomFamily={groomFamily === undefined ? 'Son of Sri Bhaskar Shetty P & Smt. Shilpashri B. Shetty,\nGrandson of Late Puttanna Shetty Pandubettu and Late Bhoja S. Shetty Shanarabettu.\nBrother of Dr. Anmol B. Shetty.' : groomFamily} brideFamily={brideFamily === undefined ? 'Daughter of Sri Sadashiva Shetty & Smt. Rekha S. Shetty.\nGranddaughter of Haradi Marbinamane Late Krishnayya Shetty, Chantharu Guddemane Late Hiriyanna Shetty.\nSister of Suhas Shetty & Chinraj Shetty.' : brideFamily} />
+        <TimelessNames groom={groom} bride={bride} stacked groomFamily={groomFamily === undefined ? 'Son of Sri Bhaskar Shetty P & Smt. Shilpashri B. Shetty,\nGrandson of Late Puttanna Shetty Pandubettu and Late Bhoja S. Shetty Shanarabettu.\nBrother of Dr. Anmol B. Shetty.' : groomFamily} brideFamily={brideFamily === undefined ? 'Daughter of Sri Sadashiva Shetty & Smt. Rekha S. Shetty.\nGranddaughter of Haradi Marbinamane Late Krishnayya Shetty, Chantharu Guddemane Late Hiriyanna Shetty.\nSister of Suhas Shetty & Chinraj Shetty.' : brideFamily} />
         <div className={"d14-page-two-celebrate"}>
           <span className={"d14-page-two-divider"} aria-hidden={"true"}>
             <i />

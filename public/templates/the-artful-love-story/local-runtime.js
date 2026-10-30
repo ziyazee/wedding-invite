@@ -1,10 +1,28 @@
 (() => {
   const revealStaticContent = () => {
+    const reduced = window.matchMedia('(prefers-reduced-motion: reduce)').matches
+    const textMotion = typeof IntersectionObserver === 'undefined' || reduced ? null : new IntersectionObserver((entries, observer) => {
+      entries.forEach((entry) => {
+        if (!entry.isIntersecting) return
+        const element = entry.target
+        element.style.opacity = '1'
+        element.style.translate = '0 0'
+        observer.unobserve(element)
+      })
+    }, { threshold: 0.12 })
     document.querySelectorAll('#main [style]').forEach((element) => {
       const style = element.style
+      const text = element.matches('[data-d13-component-type="RichTextContainer"]')
 
       if (style.opacity === '0' || style.opacity === '0.001') {
-        style.opacity = '1'
+        if (text && textMotion) {
+          style.translate = '0 25px'
+          style.transition = 'opacity 800ms cubic-bezier(.22,.61,.36,1), translate 800ms cubic-bezier(.22,.61,.36,1)'
+          textMotion.observe(element)
+        } else {
+          style.opacity = '1'
+          if (text) style.translate = 'none'
+        }
       }
 
       if (style.filter.includes('blur(')) {

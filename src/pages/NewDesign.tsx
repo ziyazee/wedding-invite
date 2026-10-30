@@ -498,8 +498,8 @@ export default function NewDesign() {
             <p style={{ fontFamily: F.body, fontSize: '0.82rem', color: C.textSoft, margin: '1rem 0 0.4rem' }}>
               Hope to see you there!
             </p>
-            <p style={{ fontFamily: F.script, fontSize: '2.2rem', color: C.rose }}>
-              {couple.groom} &amp; {couple.bride}
+            <p style={{ fontFamily: F.script, fontSize: '2.2rem', color: C.rose, display: 'flex', flexDirection: 'column', alignItems: 'center', gap: '0.1em' }}>
+              <span>{couple.groom}</span><i>&amp;</i><span>{couple.bride}</span>
             </p>
             <GoldDivider />
           </div>

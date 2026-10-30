@@ -1,0 +1,27 @@
+.mohad-rahma .rg-names {
+  transform: translateY(25px);
+  transition: opacity 800ms cubic-bezier(.22, .61, .36, 1), transform 800ms cubic-bezier(.22, .61, .36, 1);
+}
+
+.mohad-rahma .rg-is-open .rg-names {
+  transform: none;
+}
+
+.mohad-rahma .mr-scroll-reveal {
+  opacity: 0;
+  translate: 0 25px;
+  transition: opacity 800ms cubic-bezier(.22, .61, .36, 1), translate 800ms cubic-bezier(.22, .61, .36, 1);
+}
+
+.mohad-rahma .mr-scroll-reveal.mr-scroll-visible {
+  opacity: 1;
+  translate: 0 0;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .mohad-rahma .rg-names,
+  .mohad-rahma .mr-scroll-reveal {
+    translate: none;
+    transition: none;
+  }
+}

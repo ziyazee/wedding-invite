@@ -87,11 +87,18 @@ function ClientWorkspace({ showHiddenTemplates = false }: { showHiddenTemplates?
   const [waSending, setWaSending] = useState(false)
   const [waSent, setWaSent] = useState(false)
   const [waError, setWaError] = useState('')
+  useEffect(() => {
+    if (!viewOrder) return
+    setWaPhone(viewOrder.phone_number || '')
+    setWaSent(false)
+    setWaError('')
+  }, [viewOrder?.id])
   const pdfInputRef = useRef<HTMLInputElement>(null)
   const [pdfExtracting, setPdfExtracting] = useState(false)
   type PdfExtracted = { groom?: string; groomFullName?: string; bride?: string; brideFullName?: string; groomFamily?: string; brideFamily?: string; date?: string; time?: string; venue?: string; address?: string; message?: string; dressCode?: string; events?: { title?: string; date?: string; time?: string; venue?: string; address?: string }[] }
   const [pdfResult, setPdfResult] = useState<PdfExtracted | null>(null)
   const [pdfError, setPdfError] = useState('')
+  const [pdfPrefilled, setPdfPrefilled] = useState(false)
   const [templateDefaults, setTemplateDefaults] = useState<Record<number, Record<string, unknown>>>({})
   const [editingDemo, setEditingDemo] = useState<number | null>(null)
   const [demoSaving, setDemoSaving] = useState(false)
@@ -276,7 +283,8 @@ function ClientWorkspace({ showHiddenTemplates = false }: { showHiddenTemplates?
       events: [{ title: weddingEventTitle, date: details.date, time: details.time, venue: details.venue, address: details.address, map: details.map }, ...extraEvents],
     }
   }, [details, companyBranding, extraEvents, previewTemplate?.id, selected, weddingEventTitle])
-  const browsePreviewData = !showDetails && previewTemplate ? (templateDefaults[previewTemplate.id] ? { ...invitationExample(previewTemplate.id), ...templateDefaults[previewTemplate.id], ...companyBranding, template: previewTemplate.id } : { ...invitationExample(previewTemplate.id), ...companyBranding }) : undefined
+  const hasUserDetails = details.groom !== initial.groom || details.bride !== initial.bride || details.date !== initial.date
+  const browsePreviewData = !showDetails && previewTemplate ? (hasUserDetails ? { ...livePreviewDetails, template: previewTemplate.id } : templateDefaults[previewTemplate.id] ? { ...invitationExample(previewTemplate.id), ...templateDefaults[previewTemplate.id], ...companyBranding, template: previewTemplate.id } : { ...invitationExample(previewTemplate.id), ...companyBranding }) : undefined
   const previewSrc = showDetails ? '/client/live-preview?editor=1' : browsePreviewData ? '/client/live-preview' : previewTemplate?.preview_url || '/client/live-preview'
   useLayoutEffect(() => {
     if (tab !== 'Templates') return
@@ -340,7 +348,8 @@ function ClientWorkspace({ showHiddenTemplates = false }: { showHiddenTemplates?
         ? 'With the blessings of Lord Ganesha and our families, we invite you to celebrate the beginning of our forever.'
         : previous.message,
     }))
-    setShowDetails(true); setFormStep(0); setTab('Templates'); setNotice(''); setError(''); setReview(false)
+    setShowDetails(true); setTab('Templates'); setNotice(''); setError('')
+    if (pdfPrefilled) { setReview(true) } else { setFormStep(0); setReview(false) }
   }
   function editTemplateSetting(id: number, patch: Partial<TemplateSettings>) {
     setTemplateSettings(current => ({ ...current, [id]: { ...(current[id] ?? { price: 0, sale_type: 'none', sale_value: 0, is_premium: false }), ...patch } }))
@@ -379,11 +388,11 @@ function ClientWorkspace({ showHiddenTemplates = false }: { showHiddenTemplates?
   }
   async function sendWhatsApp() {
     if (!viewOrder?.published_url || !viewOrder.management_id || !supabase) return
-    const phone = waPhone.trim()
+    const phone = waPhone.trim() || viewOrder.phone_number?.trim() || ''
     if (!phone) return
     setWaSending(true); setWaError('')
     try {
-      const { error: fnError } = await supabase.functions.invoke('send-whatsapp', {
+      const { data, error: sendError } = await supabase.functions.invoke('send-whatsapp', {
         body: {
           phone,
           groomBride: `${viewOrder.groom_name} & ${viewOrder.bride_name}`,
@@ -392,7 +401,13 @@ function ClientWorkspace({ showHiddenTemplates = false }: { showHiddenTemplates?
           companyName: company?.company_name ?? 'Shaadi Invites',
         },
       })
-      if (fnError) throw fnError
+      if (sendError) {
+        const details = sendError.context instanceof Response
+          ? await sendError.context.json().catch(() => null)
+          : null
+        throw new Error(details?.error || sendError.message)
+      }
+      if (!data?.success) throw new Error(data?.error || 'Failed to send WhatsApp message.')
       setWaSent(true)
     } catch (err) {
       setWaError(err instanceof Error ? err.message : 'Failed to send. Please try again.')
@@ -409,13 +424,22 @@ Look for clues: "their beloved daughter" means hosts are bride's parents. "their
 
 STEP 3 — Pick calling names:
 For each person in the couple, pick the one distinctive name people would use to call them — not a common prefix, not a surname. If unsure, use the last word of the given name (not surname).
+IMPORTANT: If a name includes any professional or honorific title (Dr., Prof., Eng., Ar., CA., Adv., Er., Mr., Mrs., etc.), KEEP the title as part of the calling name with NO space after the dot (e.g. "Dr.Ayesha", not "Dr. Ayesha" or "Ayesha"). Format: Title.{{Name}} — no space between the dot and the name.
+
+STEP 4 — Separate the MAIN WEDDING from other celebrations:
+The main wedding/nikah details go into the top-level date, time, venue, address fields — NOT into the events array.
+The events array is ONLY for additional celebrations (reception, mehendi, sangeet, walima, etc.).
+Do NOT repeat the wedding in the events array.
+Do NOT include meal descriptions (lunch, dinner, breakfast, buffet) as event titles — these are part of the wedding, not separate celebrations.
+Do NOT include "groom side", "bride side", or similar qualifiers in event titles. Keep titles clean: just the ceremony name (e.g. "Reception", "Mehendi", "Sangeet").
 
 Now return ONLY valid JSON (no markdown, no explanation) in this shape:
-{"groom":"calling name","groomFullName":"full name as written","bride":"calling name","brideFullName":"full name as written","groomFamily":"parents and grandparents with relation labels","brideFamily":"parents and grandparents with relation labels","date":"YYYY-MM-DD","time":"HH:MM (24h)","venue":"venue name","address":"full address","message":"blessing or religious text from the invite","dressCode":"if mentioned","events":[{"title":"event name","date":"YYYY-MM-DD","time":"HH:MM","venue":"venue","address":"address"}]}
+{"groom":"calling name","groomFullName":"full name as written","bride":"calling name","brideFullName":"full name as written","groomFamily":"parents and grandparents with relation labels","brideFamily":"parents and grandparents with relation labels","date":"YYYY-MM-DD","time":"HH:MM (24h)","venue":"venue name","address":"full address","message":"short blessing (max 3 lines / ~150 chars)","dressCode":"if mentioned","events":[{"title":"event name","date":"YYYY-MM-DD","time":"HH:MM","venue":"venue","address":"address"}]}
 
 Additional rules:
 - Family fields: include relation labels (S/o, D/o, Grand D/o, etc.) for both sides. If one side has a label but the other does not, infer and add it. Exclude addresses, house names, and location details.
-- events: additional ceremonies beyond the main wedding (reception, mehendi, sangeet). Empty array if only one event.
+- events: additional ceremonies beyond the main wedding (reception, mehendi, sangeet). Empty array if only one event. Never duplicate the wedding here.
+- message: condense the blessing or religious text to a short, elegant version — maximum 3 lines (~150 characters). Do not copy the full paragraph.
 - Empty string for any field not found.`
 
   async function callExtract(base64: string, filename: string): Promise<PdfExtracted> {
@@ -441,6 +465,7 @@ Additional rules:
   }
 
   async function handlePdfUpload(file: File) {
+    if (file.type !== 'application/pdf' && !file.name.toLowerCase().endsWith('.pdf')) { setPdfError('Please choose a PDF file.'); setPdfResult(null); return }
     setPdfExtracting(true); setPdfError(''); setPdfResult(null)
     try {
       const base64 = await new Promise<string>((resolve, reject) => {
@@ -474,17 +499,17 @@ Additional rules:
       const { data: companyRow, error: companyError } = await supabase.from('companies').select('id').ilike('email', user.email || '').maybeSingle()
       if (companyError || !companyRow) throw new Error('Your account is not linked to a company yet.')
       const companyId = companyRow.id
-      if (!phoneNumber.trim()) throw new Error('Please enter a phone number for this order.')
+      const phone = phoneNumber.trim()
       const formData = validateDetails({ ...details, template: selected, events: [{ title: weddingEventTitle, date: details.date, time: details.time, venue: details.venue, address: details.address, map: details.map }, ...extraEvents], companyLogo: companyLogo !== '/logo.png' ? companyLogo : (company?.logo_path || undefined), companyName: company?.company_name || undefined })
       const templateCode = templates.find(template => template.id === selected)?.template_code
       if (!templateCode) throw new Error('That design is no longer available. Choose another template.')
-      const { data, error: insertError } = await supabase.from('orders').insert({ company_id: companyId, template_code: templateCode, created_by: user.id, groom_name: formData.groom, bride_name: formData.bride, phone_number: phoneNumber.trim(), form_data: formData }).select('*').single()
+      const { data, error: insertError } = await supabase.from('orders').insert({ company_id: companyId, template_code: templateCode, created_by: user.id, groom_name: formData.groom, bride_name: formData.bride, phone_number: phone, form_data: formData }).select('*').single()
       if (insertError) throw insertError
       const createdOrder = data as Order
       const { data: reserved, error: reserveError } = await supabase.rpc('reserve_company_order_path', { p_order_id: createdOrder.id, p_candidate_paths: slugVariants(createdOrder.groom_name, createdOrder.bride_name) })
       const publishedPath: string | null = reserved?.published_path || null
       setViewOrder({ ...createdOrder, published_path: publishedPath, published_url: null })
-      setSelected(null); setDetails(initial); setPhoneNumber(defaultPhoneNumber); setWeddingEventTitle(initialWeddingEvent); setExtraEvents(initialExtraEvents); setShowDetails(false); setFormStep(0); setTab('Orders'); setReview(false); await refresh()
+      setSelected(null); setDetails(initial); setPhoneNumber(defaultPhoneNumber); setWeddingEventTitle(initialWeddingEvent); setExtraEvents(initialExtraEvents); setShowDetails(false); setFormStep(0); setTab('Orders'); setReview(false); setPdfPrefilled(false); await refresh()
       if (reserveError) setError(`Order created, but its URL could not be reserved yet: ${reserveError.message}`)
     } catch (cause) {
       const databaseMessage = cause && typeof cause === 'object' && 'message' in cause && typeof cause.message === 'string' ? cause.message : null
@@ -513,7 +538,7 @@ Additional rules:
     <header className="client-topbar"><label className="client-top-search"><span aria-hidden="true">⌕</span><input value={templateSearch} onChange={event=>{setTemplateSearch(event.target.value);setTab('Templates');setSelected(null)}} placeholder="Search templates by name, category or style…" aria-label="Search invitation designs"/></label>
     <div className="workspace-account"><span className="client-account-name">{company?.company_name || 'Company'}</span><span className="client-account-avatar" aria-hidden="true"><svg viewBox="0 0 24 24"><circle cx="12" cy="8" r="4"/><path d="M4.5 21a7.5 7.5 0 0 1 15 0"/></svg></span></div></header>
     <aside className="workspace-sidebar"><a href="/" className="client-brand"><img src={showHiddenTemplates ? '/logo-landing.png' : companyLogo} alt={company?.company_name || 'Shaadi Invites'} onError={()=>setCompanyLogo('/logo.png')}/></a><nav className="client-section-nav" aria-label="Client dashboard">{(['Overview','Templates','Orders','Settings'] as const).map(item=><button type="button" key={item} className={tab===item?'active':''} onClick={()=>{setTab(item);setSelected(item==='Templates'?(chosen?.id||allTemplates[0]?.id||null):null);setError('')}}><span aria-hidden="true">{navIcons[item]}</span>{item==='Overview'?'Dashboard':item}</button>)}</nav><section className="client-sidebar-note"><span>♕ CLIENT SUPPORT</span><h2>Need a hand?</h2><p>Our team can help you create a beautiful invitation.</p><a href="https://wa.me/917975948093?text=Hey%20I%20need%20an%20invitation%21" target="_blank" rel="noreferrer">Contact support <b>↗</b></a></section><button className="workspace-logout" aria-label="Log out" onClick={() => void signOutToLogin()}><span aria-hidden="true"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/><polyline points="16 17 21 12 16 7"/><line x1="21" y1="12" x2="9" y2="12"/></svg></span><span>Log out</span></button></aside>
-    <section className={`workspace-main ${tab==='Orders'?'orders-page':''}`}><header className="workspace-top"><div><span className="workspace-kicker">{tab==='Orders'?'ORDERS':tab==='Templates'?(showDetails?'PERSONALISE YOUR INVITATION':'THE ART OF A BEAUTIFUL BEGINNING'):`${company?.company_name||'Company'} · PRIVATE STUDIO`}</span><h1>{tab==='Templates'?(showDetails?'Create your invitation':'Choose a Template'):tab==='Overview'?'Your invitation studio':tab}</h1></div>{tab==='Orders'&&<button type="button" className="orders-new-order" onClick={()=>{setTab('Templates');setSelected(chosen?.id||allTemplates[0]?.id||null)}}><span aria-hidden="true">＋</span> New Order</button>}{tab==='Templates'&&showDetails&&workflowHost&&createPortal(<div className="client-workflow-controls"><span className="client-workflow-progress" aria-hidden="true"></span><button type="button" className="client-workflow-back" disabled={review?false:formStep===0} onClick={()=>review?setReview(false):setFormStep(step=>Math.max(0,step-1))}>{review?<><ReviewActionIcon edit/>Edit details</>:'← Back'}</button><button type="button" className="client-workflow-next" hidden={review} onClick={advanceFormStep}>Continue →</button></div>,workflowHost)}{tab==='Templates'&&showDetails&&<><input ref={pdfInputRef} type="file" accept=".pdf,application/pdf" hidden onChange={e=>{const f=e.target.files?.[0];if(f)void handlePdfUpload(f);e.target.value=''}}/><button type="button" className={`client-upload-pdf-ai${pdfExtracting?' ai-extracting':''}`} disabled={pdfExtracting} onClick={()=>pdfInputRef.current?.click()}><span className="ai-icon-wrap"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><path d="M9 15l3-3 3 3"/><path d="M12 12v6"/></svg></span><span className="ai-label"><strong>{pdfExtracting?'Extracting…':<>Upload PDF <i>AI</i></>}</strong></span><span className="ai-sparkle" aria-hidden="true">✦</span></button></>}{tab==='Templates'&&showDetails&&<button type="button" className="client-form-back" onClick={()=>{setShowDetails(false);setReview(false)}}>← Back to templates</button>}{tab==='Templates'&&<span className="client-design-count">{allTemplates.length} carefully curated invitations</span>}</header>
+    <section className={`workspace-main ${tab==='Orders'?'orders-page':''}`}><header className="workspace-top"><div><span className="workspace-kicker">{tab==='Orders'?'ORDERS':tab==='Templates'?(showDetails?'PERSONALISE YOUR INVITATION':'THE ART OF A BEAUTIFUL BEGINNING'):`${company?.company_name||'Company'} · PRIVATE STUDIO`}</span><h1>{tab==='Templates'?(showDetails?'Create your invitation':'Choose a Template'):tab==='Overview'?'Your invitation studio':tab}</h1></div>{tab==='Templates'&&!showDetails&&<><input ref={pdfInputRef} type="file" accept=".pdf,application/pdf" hidden onChange={e=>{const f=e.target.files?.[0];if(f)void handlePdfUpload(f);e.target.value=''}}/><button type="button" className={`client-upload-pdf-ai${pdfExtracting?' ai-extracting':''}`} disabled={pdfExtracting} onClick={()=>pdfInputRef.current?.click()} onDragOver={e=>e.preventDefault()} onDrop={e=>{e.preventDefault();const f=e.dataTransfer.files?.[0];if(f)void handlePdfUpload(f)}}><span className="ai-icon-wrap"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><path d="M9 15l3-3 3 3"/><path d="M12 12v6"/></svg></span><span className="ai-label"><strong>{pdfExtracting?'Extracting…':<>Upload PDF <i>AI</i></>}</strong></span><span className="ai-sparkle" aria-hidden="true">✦</span></button></>}{tab==='Orders'&&<button type="button" className="orders-new-order" onClick={()=>{setTab('Templates');setSelected(chosen?.id||allTemplates[0]?.id||null)}}><span aria-hidden="true">＋</span> New Order</button>}{tab==='Templates'&&showDetails&&workflowHost&&createPortal(<div className="client-workflow-controls"><span className="client-workflow-progress" aria-hidden="true"></span><button type="button" className="client-workflow-back" disabled={review?false:formStep===0} onClick={()=>review?setReview(false):setFormStep(step=>Math.max(0,step-1))}>{review?<><ReviewActionIcon edit/>Edit details</>:'← Back'}</button><button type="button" className="client-workflow-next" hidden={review} onClick={advanceFormStep}>Continue →</button></div>,workflowHost)}{tab==='Templates'&&showDetails&&<button type="button" className="client-form-back" onClick={()=>{setShowDetails(false);setReview(false)}}>← Back to templates</button>}{tab==='Templates'&&<span className="client-design-count">{allTemplates.length} carefully curated invitations</span>}</header>
       {tab==='Templates'&&<div className="client-catalog-controls"><div className="client-filter-chips"><button type="button" className={categoryFilter==='ALL'?'active':''} onClick={()=>selectCategory('ALL')}>All <span className="category-chip-count">{allTemplates.length}</span></button>{categories.map(category=><button type="button" key={category} className={categoryFilter===category?'active':''} onClick={()=>selectCategory(category)}><span className="category-chip-icon" aria-hidden="true">{categoryChipIcons[category] ?? <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round"><circle cx="12" cy="12" r="3"/><path d="M12 2v3M12 19v3M2 12h3M19 12h3"/></svg>}</span>{category}</button>)}</div><label className="client-sort-control">Sort by<select value={templateSort} onChange={event=>setTemplateSort(event.target.value as 'CURATED'|'NAME')}><option value="CURATED">Curated</option><option value="NAME">Name</option></select></label></div>}
       {tab==='Templates'&&chosen&&<div className="client-selected-gallery"><div className="client-selected-gallery-title"><span className="workspace-kicker">THE COLLECTION</span><button type="button" onClick={()=>setShowDetails(false)}>{showDetails?'Hide details':'Choose a template'}</button></div><div key={categoryFilter} className={`client-selected-card-grid category-slide-from-${categoryDirection}`}>{templates.map(template=><article key={template.id} className={`client-selected-card ${template.id===previewTemplate?.id?'active':''}`}><button type="button" className="client-card-preview-trigger" onClick={()=>setPreviewId(template.id)} aria-label={`Preview ${template.name} on the mobile screen`}><span className="client-selected-thumb">{TEMPLATE_INTRO_VIDEOS[template.id]?<video src={TEMPLATE_INTRO_VIDEOS[template.id]} poster={TEMPLATE_THUMBNAIL_OVERRIDES[template.id]??template.thumbnail_url} autoPlay muted loop playsInline aria-label={`${template.name} intro preview`}/>:<img src={TEMPLATE_THUMBNAIL_OVERRIDES[template.id]??TEMPLATE_INTRO_IMAGES[template.id]??template.thumbnail_url} alt=""/>}{templateSettings[template.id]?.is_premium&&<span className="client-template-premium-badge">PREMIUM</span>}</span><span className="client-template-card-meta"><span className="client-template-card-copy"><strong>{template.name}</strong><small>{template.category}</small></span><TemplatePrice setting={templateSettings[template.id]}/></span></button><button type="button" className="client-selected-card-order" onClick={()=>chooseTemplate(template.id)}>Get this design <span aria-hidden="true">→</span></button></article>)}</div></div>}
       {tab !== 'Settings' && error && <p className="workspace-alert" role="alert">{error}</p>}{tab === 'Templates' && notice && <p className="workspace-success" role="status">{notice}</p>}
@@ -569,7 +594,7 @@ Additional rules:
       ['Dress code', pdfResult?.dressCode],
     ] as [string, string | undefined, string | undefined][]).filter(([,v]) => v?.trim()).map(([label, value, fullName]) => <div key={label} className="ai-field"><span className="ai-field-label">{label}</span><span className="ai-field-value">{value}{fullName && fullName !== value && <small className="ai-field-full-name">{fullName}</small>}</span></div>)}
       {pdfResult?.events && pdfResult.events.length > 0 && <><div className="ai-field-divider">Additional Events</div>{pdfResult.events.map((ev, i) => <div key={i} className="ai-event-card">{([['Event', ev.title], ['Date', ev.date], ['Time', ev.time], ['Venue', ev.venue], ['Address', ev.address]] as [string, string | undefined][]).filter(([,v]) => v?.trim()).map(([l, v]) => <div key={l} className="ai-field"><span className="ai-field-label">{l}</span><span className="ai-field-value">{v}</span></div>)}</div>)}</>}
-    </div><footer className="ai-extract-footer"><button type="button" className="ai-fill-form-btn" onClick={()=>{if(!pdfResult)return;setDetails(prev=>({...prev,groom:pdfResult.groom||'',bride:pdfResult.bride||'',groomFamily:pdfResult.groomFamily||'',brideFamily:pdfResult.brideFamily||'',date:pdfResult.date||'',time:pdfResult.time||'',venue:pdfResult.venue||'',address:pdfResult.address||'',map:'',message:pdfResult.message||'',dressCode:pdfResult.dressCode||'',giftNote:'',music:'',gallery:'',events:[]}));setWeddingEventTitle('Wedding');setPhoneNumber('');setExtraEvents(pdfResult.events?.length?pdfResult.events.map(ev=>({title:ev.title||'',date:ev.date||'',time:ev.time||'',venue:ev.venue||'',address:ev.address||'',map:''})):[]);setPdfResult(null);setPdfError('')}}><span className="ai-extract-badge">AI</span> Fill form with these details</button></footer></>}</section></div>}
+    </div><footer className="ai-extract-footer"><button type="button" className="ai-fill-form-btn" onClick={()=>{if(!pdfResult)return;setDetails(prev=>({...prev,groom:pdfResult.groom||'',bride:pdfResult.bride||'',groomFamily:pdfResult.groomFamily||'',brideFamily:pdfResult.brideFamily||'',date:pdfResult.date||'',time:pdfResult.time||'',venue:pdfResult.venue||'',address:pdfResult.address||'',map:'',message:pdfResult.message||'',dressCode:pdfResult.dressCode||'',giftNote:'',music:'',gallery:'',events:[]}));setWeddingEventTitle('Wedding');setPhoneNumber('');setExtraEvents(pdfResult.events?.length?pdfResult.events.map(ev=>({title:ev.title||'',date:ev.date||'',time:ev.time||'',venue:ev.venue||'',address:ev.address||'',map:''})):[]);setPdfPrefilled(true);setPdfResult(null);setPdfError('')}}><span className="ai-extract-badge">AI</span> Fill form with these details</button></footer></>}</section></div>}
   </main></CardTemplateContext.Provider>
 }
 

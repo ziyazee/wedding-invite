@@ -1,10 +1,31 @@
 // Fit the complete content group inside each template's decorative clearance.
 // Embroidered Garden supplies its own bounds below the shared card styles.
+const honorificRe = /^(dr|mr|mrs|ms|prof|rev|sr|jr|st|smt|shri|haj|hajj)\.?$/i
+const gluedHonorificRe = /^(dr|mr|mrs|ms|prof|rev|sr|jr|st|smt|shri|haj|hajj)\.(\S)/i
+
+function expandHonorifics(raw: string[]): string[] {
+ const expanded: string[] = []
+ for (const w of raw) {
+  const m = gluedHonorificRe.exec(w)
+  if (m) expanded.push(m[1] + '.', w.slice(m[1].length + 1))
+  else expanded.push(w)
+ }
+ return expanded
+}
+
 export function wrapCardText(value: string, lineLimit: number): string {
  return value.split(/\r?\n/).map(paragraph=>{
   const lines:string[]=[]
   let line=''
-  for(const word of paragraph.trim().split(/\s+/).filter(Boolean)){
+  const raw=expandHonorifics(paragraph.trim().split(/\s+/).filter(Boolean))
+  const words:string[]=[]
+  for(let i=0;i<raw.length;i++){
+   if(honorificRe.test(raw[i])&&i+1<raw.length){
+    words.push(`${raw[i]} ${raw[i+1]}`)
+    i++
+   }else words.push(raw[i])
+  }
+  for(const word of words){
    const characters=Array.from(word)
    if(line&&Array.from(line).length+1+characters.length>lineLimit){lines.push(line);line=''}
    while(characters.length>lineLimit){

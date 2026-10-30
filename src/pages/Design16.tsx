@@ -126,7 +126,7 @@ export default function Design16() {
           {details.groomFamily && <p><small>GROOM’S FAMILY</small>{details.groomFamily}</p>}
           {details.brideFamily && <p><small>BRIDE’S FAMILY</small>{details.brideFamily}</p>}
         </div>}
-        <Flourish /><span className="d16-signature d16-script">{details.groom} & {details.bride}</span>
+        <Flourish /><span className="d16-signature d16-script"><span>{details.groom}</span><i>&</i><span>{details.bride}</span></span>
         <img className="d16-couple-art" src="/templates/deprecated/design16/couple-watercolor.png" alt="" aria-hidden="true" loading="lazy" />
       </section>
 
@@ -158,7 +158,7 @@ export default function Design16() {
 
       <footer className="d16-footer d16-reveal">
         <p className="d16-kicker">MADE WITH LOVE FOR OUR FAMILY AND FRIENDS</p><Flourish />
-        <h2 className="d16-script">Forever & ever</h2><p className="d16-footer-names">{details.groom} <i>&</i> {details.bride}</p>
+        <h2 className="d16-script">Forever & ever</h2><p className="d16-footer-names"><span>{details.groom}</span><i>&</i><span>{details.bride}</span></p>
         <p>{formatDate(details.date)} · {details.address}</p><a href={mapURL(details.venue, details.address, details.map)} target="_blank" rel="noreferrer">{details.venue} <Arrow /></a>
       </footer>
       </div>
