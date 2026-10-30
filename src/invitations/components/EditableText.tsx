@@ -1,4 +1,4 @@
-import { createContext, createElement, useContext, useMemo } from 'react'
+import { createContext, createElement, isValidElement, useContext, useMemo } from 'react'
 import type { AnchorHTMLAttributes, HTMLAttributes, ReactNode } from 'react'
 import { emptyTextLayout, readTextLayout, textFonts } from '../textLayout'
 import type { TextLayout } from '../textLayout'
@@ -37,7 +37,7 @@ function extractText(node: ReactNode): string {
   if (node == null || typeof node === 'boolean') return ''
   if (typeof node === 'string' || typeof node === 'number') return String(node)
   if (Array.isArray(node)) return node.map(extractText).join('')
-  if (typeof node === 'object' && 'props' in node) return extractText(node.props.children)
+  if (isValidElement<{ children?: ReactNode }>(node)) return extractText(node.props.children)
   return ''
 }
 
