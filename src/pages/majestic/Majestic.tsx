@@ -143,7 +143,7 @@ export default function Majestic({ details: d, rsvpTarget }: { details: Invitati
     <Section data-invite-section="opening" className="mj-hero">
       <AmbientVideo src="/templates/majestic/assets/hero-bg-l-slFnvE.mp4" poster="/templates/majestic/assets/hero-poster-DkA1j00-.jpg" className="mj-hero-video" paused={!opened} />
       <div className="mj-hero-copy"><Copy as="p" field="opening.caption" className="mj-eyebrow" animationReplay>We are getting married</Copy><Names details={d} section="opening" /><Copy as="p" field="opening.date" className="mj-eyebrow" animationReplay>{formatDate(d.date)}</Copy></div>
-      {!opened && <div className="mj-cover" onClick={() => setOpened(true)}><button type="button" className="mj-open-btn">Open Invitation</button></div>}
+      <div className={`mj-cover${opened ? ' mj-cover-hidden' : ''}`} onClick={() => setOpened(true)} aria-hidden={opened}><button type="button" className="mj-open-btn" tabIndex={opened ? -1 : 0}>Open Invitation</button></div>
     </Section>
     <Countdown details={d} />
     <InvitationMedia className="mj-intro-lights" src="/templates/majestic/assets/lights.webp" alt="" />
