@@ -215,7 +215,7 @@ export default function Design12() {
                 <h2 className="d12-p3-event-title">{mainEvent.title}</h2>
                 <div className="d12-p3-event-meta">
                   <div className="d12-p3-event-chip"><CalIcon /><span>{formatDate(mainEvent.date)}</span></div>
-                  <div className="d12-p3-event-chip"><ClockIcon /><span>{formatTime(mainEvent.time)}</span></div>
+                  {mainEvent.time && <div className="d12-p3-event-chip"><ClockIcon /><span>{formatTime(mainEvent.time)}</span></div>}
                   <div className="d12-p3-event-chip"><MapPin /><span>{mainEvent.venue.toUpperCase()}</span></div>
                 </div>
                 <p className="d12-p3-event-desc">An evening of mehendi artistry, music, and family celebration.</p>
@@ -238,7 +238,7 @@ export default function Design12() {
                 <h3>{event.title}</h3>
                 <div className="d12-celeb-meta">
                   <span className="d12-celeb-chip"><CalIcon />{formatDate(event.date)}</span>
-                  <span className="d12-celeb-chip"><ClockIcon />{formatTime(event.time)}</span>
+                  {event.time && <span className="d12-celeb-chip"><ClockIcon />{formatTime(event.time)}</span>}
                 </div>
                 <div className="d12-celeb-venue">{event.venue}</div>
                 {event.address !== event.venue && <p className="d12-celeb-addr">{event.address}</p>}

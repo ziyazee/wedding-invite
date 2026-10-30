@@ -126,7 +126,7 @@ export default function Design18() {
         {[...details.events].sort((a, b) => `${a.date}${a.time}`.localeCompare(`${b.date}${b.time}`)).map((event, index) => <article data-invite-event-key={event.id || `legacy-${details.events.indexOf(event)}`} className={`d18-event d18-reveal ${/nikah|wedding/i.test(event.title) ? 'd18-main-event' : ''}`} key={event.id || `legacy-${details.events.indexOf(event)}`}>
           <p className="d18-event-index">{String(index + 1).padStart(2, '0')} <span>✧</span> THE CELEBRATION</p>
           <h3 className="d18-script">{event.title}</h3>
-          <div className="d18-event-date"><strong>{formatDate(event.date, { day: '2-digit' })}</strong><span>{formatDate(event.date, { weekday: 'long', month: 'long', year: 'numeric' })}<small>{formatTime(event.time)}</small></span></div>
+          <div className="d18-event-date"><strong>{formatDate(event.date, { day: '2-digit' })}</strong><span>{formatDate(event.date, { weekday: 'long', month: 'long', year: 'numeric' })}{event.time && <small>{formatTime(event.time)}</small>}</span></div>
           <Flourish /><h4>{event.venue}</h4>{event.address !== event.venue && <p className="d18-address">{event.address}</p>}
           <div className="d18-event-actions"><a href={mapURL(event.venue, event.address, event.map)} target="_blank" rel="noreferrer">Directions <Arrow /></a><button onClick={() => downloadCalendar(event, details.offset, `${details.groom} & ${details.bride}`)}>Save the date <span>＋</span></button></div>
         </article>)}

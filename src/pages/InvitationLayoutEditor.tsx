@@ -7,7 +7,7 @@ import { royalGraceBasePlacements } from '../invitations/royalGraceLayout'
 type Placement = { x: number; y: number; scale: number }
 type Layout = Record<string, Placement>
 // A new revision keeps earlier browser drafts from overriding the approved layout.
-const storageKey = 'mohadrahma-text-layout-v3'
+const storageKey = 'royal-grace-text-layout-v3'
 const initial: Placement = { x: 0, y: 0, scale: 1 }
 const approvedMehfil = royalGraceBasePlacements
 const defaultLayout: Layout = Object.fromEntries(
@@ -81,7 +81,7 @@ export default function InvitationLayoutEditor({ children }: { children: ReactNo
   }
   function download() {
     const url = URL.createObjectURL(new Blob([JSON.stringify(layout, null, 2)], { type: 'application/json' }))
-    const link = document.createElement('a'); link.href = url; link.download = 'mohadrahma-layout.json'; link.click()
+    const link = document.createElement('a'); link.href = url; link.download = 'royal-grace-layout.json'; link.click()
     setTimeout(() => URL.revokeObjectURL(url), 1000)
   }
   return <>

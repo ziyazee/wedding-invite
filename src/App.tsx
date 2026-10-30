@@ -40,7 +40,7 @@ const Design12 = lazySitePage(() => import('./pages/Design12'))
 const Design15 = lazySitePage(() => import('./pages/Design15'))
 const Design16 = lazySitePage(() => import('./pages/Design16'))
 const Design17 = lazySitePage(() => import('./pages/Design17'))
-const MohadRahma = lazy(() => import('./pages/MohadRahma'))
+const RoyalGrace = lazy(() => import('./pages/RoyalGrace'))
 const GeneratedInvitation = lazy(() => import('./pages/GeneratedInvitation'))
 const StoreLanding = lazy(() => import('./pages/StoreLanding'))
 const Privacy = lazy(() => import('./pages/Privacy'))
@@ -145,9 +145,7 @@ export default function App() {
       <Route path="/ivory-arch" element={<Design15 />} />
       <Route path="/sacred-mandap" element={<Design16 />} />
       <Route path="/gulabi-mandap" element={<Design17 />} />
-      <Route path="/royal-grace" element={<MohadRahma />} />
-      <Route path="/mohadrahm" element={<Navigate to="/mohadrahma" replace />} />
-      <Route path="/mohadrahma" element={<MohadRahma />} />
+      <Route path="/royal-grace" element={<RoyalGrace />} />
       <Route path="/:orderNumber/:slug" element={<GeneratedInvitation />} />
       <Route path="/:slug" element={<SingleSegmentRoute />} />
     </Routes></Suspense></InvitationViewport>

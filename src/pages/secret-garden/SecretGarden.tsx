@@ -60,7 +60,7 @@ function EventCard({ event, eventKey, details: d }: { event: Celebration; eventK
       <Copy as="p" field={`${prefix}.weekday`} className="sg-eyebrow">{formatDate(event.date, { weekday: 'long' })}</Copy>
       <Copy as="h2" field={`${prefix}.title`}>{wrapCardText(event.title, 18)}</Copy>
       <div className="sg-event-date" aria-label={formatDate(event.date)}><Copy field={`${prefix}.day`}>{event.date.slice(8)}</Copy><Copy field={`${prefix}.month`}>{formatDate(event.date, { month: 'short' }).toUpperCase()}</Copy><Copy field={`${prefix}.year`}>{event.date.slice(0, 4)}</Copy></div>
-      <Copy as="p" field={`${prefix}.time`}>{formatTime(event.time)}</Copy>
+      {event.time && <Copy as="p" field={`${prefix}.time`}>{formatTime(event.time)}</Copy>}
       <Copy as="h3" field={`${prefix}.venue`}>{wrapCardText(event.venue, 24)}</Copy>
       <Copy as="p" field={`${prefix}.address`}>{wrapCardText(event.address, 32)}</Copy>
       <div className="sg-event-links">{event.map.trim() && <Copy as="a" field={`${prefix}.directions`} href={event.map} target="_blank" rel="noreferrer">Directions ↗</Copy>}<Copy as="button" type="button" field={`${prefix}.calendar`} onClick={() => downloadCalendar(event, d.offset, `${d.groom} & ${d.bride}`)}>Add to calendar</Copy></div>
@@ -146,7 +146,7 @@ export default function SecretGarden({ details: d, rsvpTarget }: { details: Invi
             <Copy as="p" field="venue.name" className="sg-venue-name">{d.venue}</Copy>
             <Copy as="p" field="venue.address">{d.address}</Copy>
             <Copy as="p" field="venue.date" className="sg-venue-date">{formatDate(d.date)}</Copy>
-            <p className="sg-venue-time"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" aria-hidden="true"><circle cx="12" cy="12" r="10"/><path d="M12 6v6l4 2"/></svg>{formatTime(d.time)}</p>
+            {d.time && <p className="sg-venue-time"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" aria-hidden="true"><circle cx="12" cy="12" r="10"/><path d="M12 6v6l4 2"/></svg>{formatTime(d.time)}</p>}
           </div>
         </div>
         <div className="sg-actions">

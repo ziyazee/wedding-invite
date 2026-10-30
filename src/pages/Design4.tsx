@@ -92,12 +92,12 @@ export default function Design4() {
     <div className="bo-content" inert={phase !== 'open'}>
       <section className="bo-hero">
         <video ref={hero} src={`${A}hero.mp4`} poster={`${A}hero-poster.jpg`} muted playsInline loop preload="metadata" aria-hidden="true" />
-        <div className="bo-couple"><h1 className="bo-script"><span>{details?.groom || "Amira"}</span><i>&</i><span>{details?.bride || "Yusuf"}</span></h1><p>{details ? formatDate(details.date) : "20 Mai 2027"}<br />{details ? formatTime(details.time) : "à partir de 16h"}</p></div>
+        <div className="bo-couple"><h1 className="bo-script"><span>{details?.groom || "Amira"}</span><i>&</i><span>{details?.bride || "Yusuf"}</span></h1><p>{details ? formatDate(details.date) : "20 Mai 2027"}{details ? (details.time ? <><br />{formatTime(details.time)}</> : null) : <><br />à partir de 16h</>}</p></div>
       </section>
       <section className="bo-arabic" lang="ar" dir="rtl">
         <img className="bo-arch" src={`${A}arch.png`} alt="" />
         <div className="bo-arabic-copy"><img className="bo-basmala" src={`${A}arabic-heading.png`} alt="بسم الله الرحمن الرحيم" /><img className="bo-small-flower" src={`${A}small-flower.png`} alt="" />
-          {details ? <div dir="auto"><p><span>{details.groom}</span> <span>&</span> <span>{details.bride}</span></p><p>{details.message}</p><p>{formatDate(details.date)} · {formatTime(details.time)}</p><p>{details.venue}</p></div> : <>          <p>الآنسة أميرة والسيد يوسف</p><p>يسعدهما ويشرفهما أن يدعوا<br />حضرتكم الكريمة<br />لمشاركتهما فرحة حفل زفافهما</p><p>وذلك بمشيئة الله تعالى يوم<br />الخميس 20 ماي 2027<br />على الساعة الرابعة مساءً</p><p>بقاعة</p><p className="bo-script bo-arabic-venue" lang="fr" dir="ltr">Beldi Country Club</p></>}<Divider />
+          {details ? <div dir="auto"><p><span>{details.groom}</span> <span>&</span> <span>{details.bride}</span></p><p>{details.message}</p><p>{formatDate(details.date)}{details.time ? ` · ${formatTime(details.time)}` : ''}</p><p>{details.venue}</p></div> : <>          <p>الآنسة أميرة والسيد يوسف</p><p>يسعدهما ويشرفهما أن يدعوا<br />حضرتكم الكريمة<br />لمشاركتهما فرحة حفل زفافهما</p><p>وذلك بمشيئة الله تعالى يوم<br />الخميس 20 ماي 2027<br />على الساعة الرابعة مساءً</p><p>بقاعة</p><p className="bo-script bo-arabic-venue" lang="fr" dir="ltr">Beldi Country Club</p></>}<Divider />
         </div>
       </section>
       <section className="bo-section bo-countdown-section"><Heading>La Célébration Commence</Heading><Countdown /></section>

@@ -10,13 +10,13 @@
 .personal-notes .personal-note-ornament{display:block;font-size:25px;opacity:.65;margin-bottom:16px}
 .personal-notes .personal-family{margin:22px 0 0}
 .personal-notes .personal-family-label{display:block;font-size:10px;line-height:1.5;letter-spacing:.16em;text-transform:uppercase;opacity:.75}
-.mohad-rahma .personal-notes{max-width:none;padding:48px 17%;background:url('/templates/royal-grace/general.jpg') center top / 100% auto repeat-y}
-.mohad-rahma .personal-notes h2{font-family:'Dancing Script','Great Vibes',cursive;font-size:38px;font-weight:400;color:var(--rg-ink)}
-.mohad-rahma .personal-notes p{font-size:20px;line-height:1.65;color:var(--rg-ink)}
-.mohad-rahma .personal-notes .personal-note-ornament{color:var(--rg-accent)}
+.royal-grace .personal-notes{max-width:none;padding:48px 17%;background:url('/templates/royal-grace/general.jpg') center top / 100% auto repeat-y}
+.royal-grace .personal-notes h2{font-family:'Dancing Script','Great Vibes',cursive;font-size:38px;font-weight:400;color:var(--rg-ink)}
+.royal-grace .personal-notes p{font-size:20px;line-height:1.65;color:var(--rg-ink)}
+.royal-grace .personal-notes .personal-note-ornament{color:var(--rg-accent)}
 @media(max-width:600px){
  .personal-notes{padding:36px 24px}
- .mohad-rahma .personal-notes{padding:40px 17%}
- .mohad-rahma .personal-notes h2{font-size:32px;line-height:1.25}
- .mohad-rahma .personal-notes p{font-size:18px}
+ .royal-grace .personal-notes{padding:40px 17%}
+ .royal-grace .personal-notes h2{font-size:32px;line-height:1.25}
+ .royal-grace .personal-notes p{font-size:18px}
 }

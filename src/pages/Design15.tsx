@@ -6,8 +6,8 @@ import './Design15.css'
 
 const demo: InvitationData = {
   template: 15,
-  groom: 'Mohad',
-  bride: 'Rahma',
+  groom: 'Groom',
+  bride: 'Bride',
   date: '2026-12-20',
   time: '11:00',
   offset: '+05:30',
@@ -136,7 +136,7 @@ export default function Design15() {
         <p className="d15-kicker">PLEASE SAVE THE DATE</p>
         <h2 className="d15-script">A day made for us</h2>
         <div className="d15-date-stamp"><span>{formatDate(details.date, { month: 'long' })}</span><strong>{formatDate(details.date, { day: '2-digit' })}</strong><span>{formatDate(details.date, { year: 'numeric' })}</span></div>
-        <p>{formatDate(details.date, { weekday: 'long' })} · {formatTime(details.time)}</p>
+        <p>{formatDate(details.date, { weekday: 'long' })}{details.time ? ` · ${formatTime(details.time)}` : ''}</p>
       </section>
 
       <section className="d15-countdown d15-reveal">
@@ -149,7 +149,7 @@ export default function Design15() {
         {[...details.events].sort((a, b) => `${a.date}${a.time}`.localeCompare(`${b.date}${b.time}`)).map((event, index) => <article className={`d15-event d15-reveal ${/nikah|wedding/i.test(event.title) ? 'd15-main-event' : ''}`} key={`${event.title}-${event.date}`}>
           <p className="d15-event-index">{String(index + 1).padStart(2, '0')} <span>✧</span> THE CELEBRATION</p>
           <h3 className="d15-script">{event.title}</h3>
-          <div className="d15-event-date"><strong>{formatDate(event.date, { day: '2-digit' })}</strong><span>{formatDate(event.date, { weekday: 'long', month: 'long', year: 'numeric' })}<small>{formatTime(event.time)}</small></span></div>
+          <div className="d15-event-date"><strong>{formatDate(event.date, { day: '2-digit' })}</strong><span>{formatDate(event.date, { weekday: 'long', month: 'long', year: 'numeric' })}{event.time && <small>{formatTime(event.time)}</small>}</span></div>
           <Flourish /><h4>{event.venue}</h4>{event.address !== event.venue && <p className="d15-address">{event.address}</p>}
           <div className="d15-event-actions"><a href={mapURL(event.venue, event.address, event.map)} target="_blank" rel="noreferrer">Directions <Arrow /></a><button onClick={() => downloadCalendar(event, details.offset, `${details.groom} & ${details.bride}`)}>Save the date <span>＋</span></button></div>
         </article>)}

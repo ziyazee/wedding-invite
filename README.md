@@ -83,21 +83,19 @@ Design 8 now includes custom SVG illustrations for the welcome drinks, Nikah arc
 
 The displayed venue image now uses a real photograph of Falaknuma Palace: **The hotel rooms around the courtyard**, by **Tijl Vercaemer**, licensed **CC BY 2.0**. Local asset: `public/design8/falaknuma-courtyard.jpg`. Source: https://commons.wikimedia.org/wiki/File:The_hotel_rooms_around_the_courtyard_(9918844916).jpg . License: https://creativecommons.org/licenses/by/2.0/ . The image is displayed with a responsive crop and a separate gradient overlay; attribution is linked in the venue section. The earlier moonlit illustration is no longer displayed.
 
-## Mohad & Rahma
+## Royal Grace
 
-- Route: `/mohadrahma`.
-- Uses Design 2's Royal Grace styling, editable welcome screen, music, flower trail and heart date reveal.
-- Content source: https://mohad-rahma-wedding.fly.dev . Includes all five events (December 17–24, 2026), original directions, calendar links, and the original gallery.
-- Main wedding countdown: December 20, 2026 at 11:00 AM IST.
-- Page: `src/pages/MohadRahma.tsx`; scoped event styles: `src/pages/MohadRahma.css`. Edit event details in its `events` array.
-- `HeartDateReveal` accepts optional date/day/time props; Design 2 retains its existing default details.
-- The original gallery and calendar endpoints remain hosted on the source website. No sample RSVP, unrelated venue image, or invented dress/gift rules are included on this page.
+- Route: `/royal-grace`.
+- Sage and ivory stationery with pearls and delicate botanical relief.
+- Page: `src/pages/RoyalGrace.tsx`; scoped event styles: `src/pages/RoyalGrace.css`.
+- `HeartDateReveal` accepts optional date/day/time props.
+- `/mohadrahma` redirects to `/royal-grace`.
 
 ## Invitation dashboard
 
 Open `/dashboard` to choose from all eight designs, enter the couple's names, wedding date/time, venue, map link, additional celebrations, family details, and optional notes/music/gallery links. The home page's buttons now lead here.
 
-Submitting creates a groom-first URL such as `/ahmedsara`. Existing names and built-in routes are never overwritten: a suffix is added when necessary. `/mohadrahma` and the remaining demo routes retain their existing content. `/newDesign` (Sacred Romance) is retired and redirects to `/dashboard`. It cannot be selected for new invitations; existing saved invitations using it remain supported.
+Submitting creates a groom-first URL such as `/ahmedsara`. Existing names and built-in routes are never overwritten: a suffix is added when necessary. `/royal-grace` and the remaining demo routes retain their existing content. `/newDesign` (Sacred Romance) is retired and redirects to `/dashboard`. It cannot be selected for new invitations; existing saved invitations using it remain supported.
 
 ### Local use
 
@@ -121,7 +119,7 @@ The SPA fallback is in `public/_redirects`; API Functions are scoped using `publ
 
 ### Template personalization
 
-- Designs 1, 2, 4, 8, and 9 consume the shared invitation context in React. Design 2 uses the refined Royal Grace celebration cards from Mohad & Rahma.
+- Designs 1, 2, 4, 8, and 9 consume the shared invitation context in React. Design 2 uses the refined Royal Grace celebration cards.
 - Designs 3, 5, 6, and 7 retain their typography, artwork, scroll effects and countdown; their video opening gates have been removed. Their generated versions replace demo-only body sections with personalized welcome, event stationery, and optional notes. Original demo URLs are unchanged.
 - Dates and calendar downloads use the event's explicit UTC offset; select the offset applicable on the wedding date.
 - External music/gallery/map links must use HTTP(S). Music starts after a guest gesture when the browser allows it.
@@ -131,13 +129,13 @@ The SPA fallback is in `public/_redirects`; API Functions are scoped using `publ
 
 ### Design 9 — Sunehri · The Golden Veil
 
-Preview `/design9`, or select it in `/dashboard` to create a personalized invitation. The demo uses Mohad and Rahma’s celebrations.
+Preview `/design9`, or select it in `/dashboard` to create a personalized invitation.
 
 `public/design9/curtain-portrait.mp4` is a centered 1080 × 1920 crop of the supplied curtain video. The complete 10.005-second duration and original audio track are preserved in the MP4. The MP4 is retained as an export asset. The website now opens directly on the final arch still with editable names and a separate music control.
 
 ### Editable first screens
 
-Video opening scenes are removed from designs 2, 3, 5, 6, 7, and 9, including `/mohadrahma` and generated invitations. These designs immediately display their invitation content without downloading the opening video. Decorative background video in Majestic is retained. Designs 4 and 8 retain their code-driven openings. Archived video files remain on disk.
+Video opening scenes are removed from designs 2, 3, 5, 6, 7, and 9, including `/royal-grace` and generated invitations. These designs immediately display their invitation content without downloading the opening video. Decorative background video in Majestic is retained. Designs 4 and 8 retain their code-driven openings. Archived video files remain on disk.
 
 ### Customer creation experience — `/create`
 
@@ -183,7 +181,7 @@ The partner sign-in is `/login`. Enter the account email as the username. Supaba
 
 ### Supabase setup
 
-Apply `supabase/migrations/202610150001_dashboard_orders.sql`, `supabase/migrations/202610170001_selected_order_templates.sql`, `supabase/migrations/202610180001_company_template_settings.sql`, and `supabase/migrations/202610180002_client_order_publishing.sql` to the Supabase project. They create companies, the selected eight-design order catalog, orders, role checks, RLS policies, and the public published-invitation lookup and company publishing functions. The order form starts with Mohad & Rahma's couple and event details as editable defaults; submitted details are saved with each order. Clients can publish their own new order immediately from the confirmation dialog.
+Apply `supabase/migrations/202610150001_dashboard_orders.sql`, `supabase/migrations/202610170001_selected_order_templates.sql`, `supabase/migrations/202610180001_company_template_settings.sql`, and `supabase/migrations/202610180002_client_order_publishing.sql` to the Supabase project. They create companies, the selected eight-design order catalog, orders, role checks, RLS policies, and the public published-invitation lookup and company publishing functions. The order form starts with sample couple and event details as editable defaults; submitted details are saved with each order. Clients can publish their own new order immediately from the confirmation dialog.
 
 Configure the existing public client environment variables `VITE_SUPABASE_URL` and `VITE_SUPABASE_ANON_KEY` (the latter accepts a Supabase publishable key). Do not put a service-role key in browser configuration. Create user accounts in Supabase Auth. For a client, use the same email on the Auth user and company row; the company email is unique and determines which orders the user can see. For an admin, assign the role only through trusted SQL or a server process because browser users must not be allowed to edit Auth `app_metadata`.
 

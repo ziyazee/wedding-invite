@@ -64,7 +64,7 @@ export default function EventTimeline({ events }: EventTimelineProps) {
                   className="text-sm mt-0.5"
                   style={{ fontFamily: SG.fontBody, color: SG.creamMuted }}
                 >
-                  {formatTime(event.time)}
+                  {event.time ? formatTime(event.time) : ''}
                 </p>
               </div>
             </div>

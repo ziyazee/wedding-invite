@@ -130,7 +130,7 @@ export default function Design11() {
                 <div className="d11-event-title">{mainEvent.title}</div>
                 <div className="d11-event-meta">
                   <span className="d11-event-chip"><CalIcon />{formatDate(mainEvent.date)}</span>
-                  <span className="d11-event-chip"><ClockIcon />{formatTime(mainEvent.time)}</span>
+                  {mainEvent.time && <span className="d11-event-chip"><ClockIcon />{formatTime(mainEvent.time)}</span>}
                 </div>
                 <div className="d11-event-venue">{mainEvent.venue}</div>
                 <p className="d11-event-desc">An evening of mehendi artistry, music, and family celebration.</p>
@@ -153,7 +153,7 @@ export default function Design11() {
                 <h3>{event.title}</h3>
                 <div className="d11-celeb-meta">
                   <span className="d11-celeb-chip"><CalIcon />{formatDate(event.date)}</span>
-                  <span className="d11-celeb-chip"><ClockIcon />{formatTime(event.time)}</span>
+                  {event.time && <span className="d11-celeb-chip"><ClockIcon />{formatTime(event.time)}</span>}
                 </div>
                 <div className="d11-celeb-venue">{event.venue}</div>
                 {event.address !== event.venue && <p className="d11-celeb-addr">{event.address}</p>}

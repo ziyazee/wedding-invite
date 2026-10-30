@@ -41,6 +41,16 @@
 .ote-history { display: flex; gap: 4px; }
 .order-text-editor .ote-history button { padding: 6px 8px; min-height: 32px; border-color: transparent; background: #f6f4ef; }
 .order-text-editor .ote-reset { padding: 6px 0; min-height: 32px; border-color: transparent; background: transparent; color: #8e806b; }
+.ote-hide-btn { background: #f5ebe0 !important; color: #8c5e3c !important; border-color: #e0d2c0 !important; }
+.ote-hidden-list { padding: 8px 16px 12px; border-top: 1px solid #eee9e0; }
+.ote-hidden-list > small { display: block; font-size: 9px; font-weight: 600; letter-spacing: .08em; color: #a09585; margin-bottom: 6px; }
+.ote-hidden-item { display: flex; align-items: center; justify-content: space-between; gap: 8px; padding: 5px 0; }
+.ote-hidden-item span { font-size: 11px; color: #6b6054; min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.ote-hidden-item button { flex: none; padding: 4px 10px; border: 1px solid #d4cebc; border-radius: 5px; background: #f9f6ef; color: #5a7a4a; font: 500 10px Inter, Arial, sans-serif; cursor: pointer; }
+.ote-hidden-item button:hover { background: #eef5e8; }
+.ote-add-text { display: flex; align-items: center; gap: 6px; width: calc(100% - 32px); margin: 0 16px 10px; padding: 8px 12px; border: 1px dashed #d4cebc; border-radius: 8px; background: #faf8f3; color: #6b7d55; font: 500 11px Inter, Arial, sans-serif; cursor: pointer; transition: background .12s; }
+.ote-add-text:hover { background: #f0ece3; }
+.ote-add-text svg { width: 14px; height: 14px; }
 .ote-save-status { display: flex; align-items: flex-start; gap: 8px; padding: 11px 16px; border-top: 1px solid #eee9e0; background: #f9f8f4; }
 .ote-status-dot { flex: 0 0 5px; height: 5px; margin-top: 5px; border-radius: 50%; background: #7d9273; }
 .ote-save-status small { color: #7a756a; font-size: 10px; line-height: 1.6; }

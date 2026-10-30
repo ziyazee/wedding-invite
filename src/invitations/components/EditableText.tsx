@@ -14,7 +14,7 @@ export function InvitationLayoutProvider({ layout, children }: { layout?: TextLa
 
 export type BaseTextTransform = { x: number; y: number; scale: number }
 type TextProps = HTMLAttributes<HTMLElement> & Pick<AnchorHTMLAttributes<HTMLAnchorElement>, 'href' | 'target' | 'rel'> & {
-  as?: 'p' | 'span' | 'strong' | 'small' | 'i' | 'h1' | 'h2' | 'h3' | 'h4' | 'a' | 'button' | 'time'
+  as?: 'p' | 'span' | 'strong' | 'small' | 'i' | 'h1' | 'h2' | 'h3' | 'h4' | 'a' | 'button' | 'time' | 'div'
   textId?: string
   label?: string
   'data-invite-text'?: string
@@ -45,6 +45,7 @@ export function EditableText({ as = 'span', textId, label, baseTransform, style,
   const layout = useContext(LayoutContext)
   const id = textId || props['data-invite-text']
   const override = id ? layout.elements[id] : undefined
+  if (override?.hidden) return null
   const positioned = !!override && (override.x !== undefined || override.y !== undefined)
   const section = useSectionGeometry(positioned || !!baseTransform)
   const rule = id ? getRuleForElement(id) : undefined
@@ -71,5 +72,5 @@ export function EditableText({ as = 'span', textId, label, baseTransform, style,
       ...(override?.color ? { '--invite-color': override.color } : {}),
       ...(positioned ? { translate: `${(override.x || 0) * section.width}px ${(override.y || 0) * section.height}px` } : {}),
     },
-  }, children)
+  }, override?.content !== undefined ? override.content : children)
 }

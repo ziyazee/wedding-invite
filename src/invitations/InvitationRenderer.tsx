@@ -8,7 +8,7 @@ const PersonalMusic = lazy(() => import('./PersonalMusic'))
 const AnimatedInvitation = lazy(() => import('./AnimatedInvitation'))
 const NewDesign = lazy(() => import('../pages/NewDesign'))
 const Design4 = lazy(() => import('../pages/Design4'))
-const MohadRahma = lazy(() => import('../pages/MohadRahma'))
+const RoyalGrace = lazy(() => import('../pages/RoyalGrace'))
 const Majestic = lazy(() => import('../pages/majestic/Majestic'))
 const SecretGarden = lazy(() => import('../pages/secret-garden/SecretGarden'))
 const Design8 = lazy(() => import('../pages/Design8'))
@@ -27,7 +27,7 @@ const OrderFrameInvitation = lazy(() => import('./OrderFrameInvitation'))
 const DesignedByFooter = lazy(() => import('./components/DesignedByFooter'))
 
 const templateComponent: Record<number, React.LazyExoticComponent<React.ComponentType<any>>> = {
-  1: MohadRahma,
+  1: RoyalGrace,
   3: ATimelessUnion,
   4: MandapAtDusk,
   8: ArtfulLoveStory,
@@ -68,7 +68,7 @@ function renderTemplate(details: InvitationData, animatedDetails: InvitationData
   if (template === 5) return <SecretGarden details={details} rsvpTarget={rsvpTarget} />
 
   // Standalone page component (no SiteFonts or TextLayoutLayer)
-  if (template === 1) return <MohadRahma />
+  if (template === 1) return <RoyalGrace />
 
   // Page components or AnimatedInvitation, wrapped in SiteFonts + TextLayoutLayer
   const Component = templateComponent[template]

@@ -12,6 +12,8 @@ export type TextOverride = {
   color?: string
   x?: number
   y?: number
+  hidden?: boolean
+  content?: string
 }
 export type TextLayout = { version: 1; elements: Record<string, TextOverride> }
 export const emptyTextLayout = (): TextLayout => ({ version: 1, elements: {} })
@@ -32,6 +34,8 @@ export function readTextLayout(value: unknown): TextLayout {
       const n = raw[axis]
       if (typeof n === 'number' && Number.isFinite(n) && Math.abs(n) <= 1) entry[axis] = n
     }
+    if (typeof raw.hidden === 'boolean') entry.hidden = raw.hidden
+    if (typeof raw.content === 'string' && raw.content.length <= 500) entry.content = raw.content
     if (Object.keys(entry).length) result.elements[id] = entry
   }
   return result

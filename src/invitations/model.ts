@@ -2,7 +2,7 @@ import { readTextLayout } from './textLayout.ts'
 import type { TextLayout } from './textLayout.ts'
 
 export const designs = [
-  { id: 1, name: 'Royal Grace', description: 'Sage and ivory stationery with pearls and delicate botanical relief.', route: '/mohadrahma', image: '/templates/royal-grace/opening-poster.jpg', color: '#8b9274' },
+  { id: 1, name: 'Royal Grace', description: 'Sage and ivory stationery with pearls and delicate botanical relief.', route: '/royal-grace', image: '/templates/royal-grace/opening-poster.jpg', color: '#8b9274' },
   { id: 2, name: 'Majestic', description: 'Pearl accents, chandeliers and grand garden scenes.', route: '/majestic', image: '/templates/majestic/assets/hero-poster-DkA1j00-.jpg', color: '#e9dfca' },
   { id: 3, name: 'A Timeless Union', description: 'A traditional Hindu wedding invitation with family blessings, a mehendi celebration, and a photo story.', route: '/arjunbhavana', image: '/templates/a-timeless-union/timeless-union-opening.jpg', color: '#f8f2e9' },
   { id: 4, name: 'Mandap at Dusk', description: 'A sunset mandap reveal with a cinematic curtain opening and a personal name reveal.', route: '/mandap-at-dusk', image: '/templates/mandap-at-dusk/preview.jpg', color: '#d19b72' },
@@ -35,9 +35,9 @@ export interface InvitationData {
   companyLogo?: string; companyName?: string;
 }
 export interface SavedInvitation { slug: string; details: InvitationData; createdAt: string; orderId?: string }
-export const weddingISO = (d: InvitationData) => `${d.date}T${d.time}:00${d.offset}`
+export const weddingISO = (d: InvitationData) => `${d.date}T${d.time || '00:00'}:00${d.offset}`
 export const formatDate = (date: string, options: Intl.DateTimeFormatOptions = { day: 'numeric', month: 'long', year: 'numeric' }) => new Date(`${date}T12:00:00Z`).toLocaleDateString('en-GB', { ...options, timeZone: 'UTC' })
-export const formatTime = (time: string) => new Date(`2000-01-01T${time}:00Z`).toLocaleTimeString('en-US', { hour: 'numeric', minute: '2-digit', timeZone: 'UTC' })
+export const formatTime = (time: string) => { if (!time) return ''; return new Date(`2000-01-01T${time}:00Z`).toLocaleTimeString('en-US', { hour: 'numeric', minute: '2-digit', timeZone: 'UTC' }) }
 export const mapURL = (venue: string, address: string, url = '') => url || `https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(`${venue}, ${address}`)}`
 export function nameSlug(groom: string, bride: string) {
   return `${groom}${bride}`.normalize('NFKD').replace(/[\u0300-\u036f]/g, '').toLowerCase().replace(/[^a-z0-9]/g, '').slice(0, 80) || 'wedding'
@@ -71,7 +71,7 @@ export function inviteUrl(slug: string): string {
   }
   return `https://${slug}.shaadiinvites.in`
 }
-export const reservedSlugs = new Set(['assets','images','fonts','dashboard','client','admin','login','create','preview','invite','newdesign','mohadrahma','api','arjunmeera','rohankavya','aarongrace','danielsarah','vikramananya','nikhiladiti','embroidered-garden','secret-garden','majestic','bloom','the-artful-love-story','arjunbhavana','a-timeless-union','mandap-at-dusk','maroon-letter','emerald-parchment','royal-jodhpur','destination-wedding','raabta','qubool','blossom-and-oud','noor','sunehri','yasmin','maitri','kiran','ivory-arch','sacred-mandap','gulabi-mandap','birthday','housewarming'])
+export const reservedSlugs = new Set(['assets','images','fonts','dashboard','client','admin','login','create','preview','invite','newdesign','royal-grace','api','arjunmeera','rohankavya','aarongrace','danielsarah','vikramananya','nikhiladiti','embroidered-garden','secret-garden','majestic','bloom','the-artful-love-story','arjunbhavana','a-timeless-union','mandap-at-dusk','maroon-letter','emerald-parchment','royal-jodhpur','destination-wedding','raabta','qubool','blossom-and-oud','noor','sunehri','yasmin','maitri','kiran','ivory-arch','sacred-mandap','gulabi-mandap','birthday','housewarming'])
 export function validateDetails(value: unknown, allowRetired = false): InvitationData {
   if (!value || typeof value !== 'object') throw new Error('Invitation details are required.')
   const d = value as InvitationData

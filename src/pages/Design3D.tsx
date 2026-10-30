@@ -37,6 +37,7 @@ function formatDisplayDate(date: string) {
 }
 
 function formatDisplayTime(time: string) {
+  if (!time) return ''
   return new Date(`2000-01-01T${time}:00Z`).toLocaleTimeString('en-US', {
     hour: 'numeric', minute: '2-digit', timeZone: 'UTC',
   })
@@ -45,7 +46,7 @@ function formatDisplayTime(time: string) {
 function useCountdown(date: string, time: string) {
   const [t, setT] = useState({ days: 0, hours: 0, minutes: 0, seconds: 0 })
   useEffect(() => {
-    const target = new Date(`${date}T${time}:00`).getTime()
+    const target = new Date(`${date}T${time || '00:00'}:00`).getTime()
     function tick() {
       const diff = target - Date.now()
       if (diff <= 0) { setT({ days: 0, hours: 0, minutes: 0, seconds: 0 }); return }
@@ -149,7 +150,7 @@ export default function Design3D() {
               </div>
               <div className="d3d-event-card">
                 <span className="d3d-event-time">
-                  {formatDisplayDate(event.date)} &middot; {formatDisplayTime(event.time)}
+                  {formatDisplayDate(event.date)}{event.time ? <> &middot; {formatDisplayTime(event.time)}</> : ''}
                 </span>
                 <strong className="d3d-event-name">{event.title}</strong>
                 <span className="d3d-event-venue">

@@ -10,6 +10,23 @@ import './Workspaces.css'
 import './ClientDashboard.css'
 import './Edits.css'
 
+type ImageSlot = { file: string; label: string; type: 'image' | 'video' }
+const TEMPLATE_IMAGE_SLOTS: Record<number, ImageSlot[]> = {
+  1: [
+    { file: 'welcome.jpg', label: 'Welcome background', type: 'image' },
+    { file: 'general.jpg', label: 'Body background', type: 'image' },
+    { file: 'end.png', label: 'Ending background', type: 'image' },
+    { file: 'opening-poster.jpg', label: 'Opening poster', type: 'image' },
+    { file: 'opening.mp4', label: 'Opening video', type: 'video' },
+  ],
+}
+const TEMPLATE_FOLDERS: Record<number, string> = {
+  1: 'royal-grace', 2: 'majestic', 3: 'a-timeless-union', 4: 'mandap-at-dusk',
+  5: 'secret-garden', 6: 'embroidered-garden', 7: 'bloom', 8: 'the-artful-love-story',
+  9: 'maroon-letter', 10: 'emerald-parchment', 11: 'shaadipath-t02', 12: 'destination-wedding',
+  13: 'raabta', 14: 'qubool',
+}
+
 const OrderTextEditor = lazy(() => import('./OrderTextEditor'))
 
 type Template = InvitationTemplate
@@ -20,6 +37,47 @@ async function loadEditsJson(templateId: number): Promise<TextLayout> {
     if (!resp.ok) return { version: 1, elements: {} }
     return readTextLayout(await resp.json())
   } catch { return { version: 1, elements: {} } }
+}
+
+function ImageEditor({ folder, slots, cacheKey, onUpload }: { folder: string | undefined; slots: ImageSlot[] | undefined; cacheKey: number; onUpload: (file: File, slot: ImageSlot) => Promise<void> }) {
+  const fileRefs = useRef<(HTMLInputElement | null)[]>([])
+  const [uploading, setUploading] = useState<string | null>(null)
+
+  if (!folder || !slots?.length) {
+    return <div className="edits-images-empty"><p>No configurable images for this template yet.</p></div>
+  }
+
+  return <div className="edits-images-grid">
+    {slots.map((slot, i) => {
+      const src = `/templates/${folder}/${slot.file}?v=${cacheKey}`
+      return <div key={slot.file} className="edits-image-slot">
+        <div className="edits-image-thumb">
+          {slot.type === 'video'
+            ? <video src={src} muted playsInline preload="metadata" className="edits-image-preview" />
+            : <img src={src} alt={slot.label} className="edits-image-preview" loading="lazy" />}
+        </div>
+        <div className="edits-image-info">
+          <strong>{slot.label}</strong>
+          <small>{slot.file}</small>
+        </div>
+        <button type="button" className="edits-image-replace-btn" disabled={uploading === slot.file} onClick={() => fileRefs.current[i]?.click()}>
+          {uploading === slot.file ? 'Uploading…' : 'Replace'}
+        </button>
+        <input
+          ref={el => { fileRefs.current[i] = el }}
+          type="file"
+          accept={slot.type === 'video' ? 'video/mp4' : 'image/jpeg,image/png,image/webp'}
+          style={{ display: 'none' }}
+          onChange={async e => {
+            const file = e.target.files?.[0]
+            if (!file) return
+            setUploading(slot.file)
+            try { await onUpload(file, slot) } finally { setUploading(null); e.target.value = '' }
+          }}
+        />
+      </div>
+    })}
+  </div>
 }
 
 export default function Edits() {
@@ -34,6 +92,8 @@ function EditsWorkspace() {
   const [saveStatus, setSaveStatus] = useState('')
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState('')
+  const [editMode, setEditMode] = useState<'text' | 'images'>('text')
+  const [imageCacheKey, setImageCacheKey] = useState(0)
   const previewScreen = useRef<HTMLDivElement>(null)
   const previewIframe = useRef<HTMLIFrameElement>(null)
   const [previewScale, setPreviewScale] = useState(0.75)
@@ -87,6 +147,26 @@ function EditsWorkspace() {
     return () => observer.disconnect()
   }, [selected, loading])
 
+  async function uploadImage(file: File, slot: ImageSlot) {
+    if (!selected) return
+    setSaveStatus('')
+    try {
+      const resp = await fetch(`/api/edits/image/${selected}/${slot.file}`, {
+        method: 'POST',
+        headers: { 'Content-Type': file.type },
+        body: file,
+      })
+      const result = await resp.json().catch(() => null)
+      if (!resp.ok) throw new Error(result?.error || 'Upload failed.')
+      setImageCacheKey(k => k + 1)
+      if (previewIframe.current) previewIframe.current.src = previewIframe.current.src
+      setSaveStatus(`Replaced ${slot.label}`)
+      setTimeout(() => setSaveStatus(s => s.startsWith('Replaced') ? '' : s), 4000)
+    } catch (err) {
+      setSaveStatus(err instanceof Error ? err.message : 'Upload failed.')
+    }
+  }
+
   async function saveDefaults() {
     if (!selected) return
     setSaving(true)
@@ -116,8 +196,8 @@ function EditsWorkspace() {
     <header className="client-topbar">
       <div className="edits-topbar-title"><strong>Template Edits</strong><span>Edit default text layout for all templates</span></div>
       <div className="edits-save-bar">
-        {saveStatus && <span className={`edits-save-status ${saveStatus.startsWith('Saved') ? 'is-saved' : 'is-error'}`}>{saveStatus}</span>}
-        <button className="edits-save-btn" type="button" disabled={saving || !selected} onClick={saveDefaults}>{saving ? 'Saving…' : 'Save defaults'}</button>
+        {saveStatus && <span className={`edits-save-status ${saveStatus.startsWith('Saved') || saveStatus.startsWith('Replaced') ? 'is-saved' : 'is-error'}`}>{saveStatus}</span>}
+        {editMode === 'text' && <button className="edits-save-btn" type="button" disabled={saving || !selected} onClick={saveDefaults}>{saving ? 'Saving…' : 'Save defaults'}</button>}
       </div>
     </header>
 
@@ -135,9 +215,14 @@ function EditsWorkspace() {
 
     <section className="workspace-main">
       <header className="workspace-top">
-        <div><span className="workspace-kicker">TEXT EDITS</span><h1>{chosenTemplate?.name || 'Select a template'}</h1></div>
+        <div><span className="workspace-kicker">{editMode === 'images' ? 'IMAGE EDITS' : 'TEXT EDITS'}</span><h1>{chosenTemplate?.name || 'Select a template'}</h1></div>
+        <div className="edits-mode-tabs">
+          <button type="button" className={`edits-mode-tab${editMode === 'text' ? ' active' : ''}`} onClick={() => setEditMode('text')}>Text</button>
+          <button type="button" className={`edits-mode-tab${editMode === 'images' ? ' active' : ''}`} onClick={() => setEditMode('images')}>Images</button>
+        </div>
       </header>
       {error && <p className="workspace-alert" role="alert">{error}</p>}
+      {editMode === 'images' && selected && <ImageEditor folder={TEMPLATE_FOLDERS[selected]} slots={TEMPLATE_IMAGE_SLOTS[selected]} cacheKey={imageCacheKey} onUpload={uploadImage} />}
     </section>
 
     {chosenTemplate && <aside className="client-preview-panel">
