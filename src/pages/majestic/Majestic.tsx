@@ -31,7 +31,7 @@ function Copy({ field, label, children, animation = 'fade-up', animationStagger 
   return <EditableText {...props} animation={animation} animationStagger={animationStagger} animationDelay={animationDelay} textId={`t2.${field}`} label={label || field.replaceAll('.', ' · ')} aria-label={animation === 'letter-rise' ? text : undefined}>{animatedChildren}</EditableText>
 }
 
-function AmbientVideo({ src, poster, className }: { src: string; poster?: string; className: string }) {
+function AmbientVideo({ src, poster, className, paused: forcePaused = false }: { src: string; poster?: string; className: string; paused?: boolean }) {
   const video = useRef<HTMLVideoElement>(null)
   const [failed, setFailed] = useState(false)
   useEffect(() => {
@@ -40,14 +40,14 @@ function AmbientVideo({ src, poster, className }: { src: string; poster?: string
     element.muted = true
     const motion = window.matchMedia('(prefers-reduced-motion: reduce)')
     let visible = true
-    const sync = () => { if (visible && !motion.matches && !document.hidden) void element.play().catch(() => {}); else element.pause() }
+    const sync = () => { if (!forcePaused && visible && !motion.matches && !document.hidden) void element.play().catch(() => {}); else element.pause() }
     const observer = new IntersectionObserver(entries => { visible = entries[0].isIntersecting; sync() })
     observer.observe(element)
     document.addEventListener('visibilitychange', sync)
     motion.addEventListener('change', sync)
     sync()
     return () => { observer.disconnect(); document.removeEventListener('visibilitychange', sync); motion.removeEventListener('change', sync); element.pause() }
-  }, [])
+  }, [forcePaused])
   return failed && poster ? <InvitationMedia className={className} src={poster} priority alt="" /> : <InvitationMedia kind="video" className={className} ref={video} src={src} poster={poster} preload="auto" muted loop playsInline onError={() => setFailed(true)} aria-hidden="true" />
 }
 
@@ -94,6 +94,7 @@ function EventCard({ event, eventKey, details: d }: { event: Celebration; eventK
 
 export default function Majestic({ details: d, rsvpTarget }: { details: InvitationData; rsvpTarget?: RsvpTarget }) {
   const root = useRef<HTMLElement>(null)
+  const [opened, setOpened] = useState(false)
   const couple = `${d.groom} & ${d.bride}`
   const wedding = { title: 'Wedding', date: d.date, time: d.time, venue: d.venue, address: d.address, map: d.map }
   // Capture original indexes before sorting so legacy orders retain stable IDs.
@@ -121,7 +122,7 @@ export default function Majestic({ details: d, rsvpTarget }: { details: Invitati
     return () => { links.forEach(link => link.remove()) }
   }, [])
   useEffect(() => {
-    if (!root.current || window.matchMedia('(prefers-reduced-motion: reduce)').matches) return
+    if (!root.current || !opened || window.matchMedia('(prefers-reduced-motion: reduce)').matches) return
     root.current.classList.add('invite-motion-ready')
     const elements = [...root.current.querySelectorAll<HTMLElement>('[data-invite-animation]')]
     const observer = new IntersectionObserver(entries => {
@@ -135,13 +136,14 @@ export default function Majestic({ details: d, rsvpTarget }: { details: Invitati
     }, { threshold: .12, rootMargin: '0px 0px -4% 0px' })
     elements.forEach(element => observer.observe(element))
     return () => { observer.disconnect(); elements.forEach(element => element.classList.remove('invite-motion-visible')); root.current?.classList.remove('invite-motion-ready') }
-  }, [structure])
+  }, [structure, opened])
   const layout = mergeLayouts(defaultLayout, d.textOverrides)
-  return <InvitationLayoutProvider layout={layout}><main ref={root} className="majestic-native">
+  return <InvitationLayoutProvider layout={layout}><main ref={root} className={`majestic-native${opened ? ' mj-opened' : ''}`} style={opened ? undefined : { overflow: 'hidden', height: '100svh' }}>
     <PersonalMusic src={d.music || '/templates/majestic/assets/intro-music-CzqJOUtA.mp3'} />
     <Section data-invite-section="opening" className="mj-hero">
-      <AmbientVideo src="/templates/majestic/assets/hero-bg-l-slFnvE.mp4" poster="/templates/majestic/assets/hero-poster-DkA1j00-.jpg" className="mj-hero-video" />
+      <AmbientVideo src="/templates/majestic/assets/hero-bg-l-slFnvE.mp4" poster="/templates/majestic/assets/hero-poster-DkA1j00-.jpg" className="mj-hero-video" paused={!opened} />
       <div className="mj-hero-copy"><Copy as="p" field="opening.caption" className="mj-eyebrow" animationReplay>We are getting married</Copy><Names details={d} section="opening" /><Copy as="p" field="opening.date" className="mj-eyebrow" animationReplay>{formatDate(d.date)}</Copy></div>
+      {!opened && <div className="mj-cover" onClick={() => setOpened(true)}><button type="button" className="mj-open-btn">Open Invitation</button></div>}
     </Section>
     <Countdown details={d} />
     <InvitationMedia className="mj-intro-lights" src="/templates/majestic/assets/lights.webp" alt="" />
