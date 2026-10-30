@@ -101,6 +101,24 @@ export default function Majestic({ details: d, rsvpTarget }: { details: Invitati
   const structure = JSON.stringify([events.map(event => event.key), !!d.dressCode.trim(), !!d.giftNote.trim(), !!d.gallery.trim()])
   useEffect(() => { const previous = document.title; document.title = `${couple} — Majestic`; return () => { document.title = previous } }, [couple])
   useEffect(() => {
+    const preloads = [
+      { href: '/templates/majestic/assets/hero-poster-DkA1j00-.jpg', as: 'image' },
+      { href: '/templates/majestic/assets/font-0.woff2', as: 'font', type: 'font/woff2' },
+      { href: '/templates/majestic/assets/bodoni-moda-latin-italic-400.woff2', as: 'font', type: 'font/woff2' },
+    ]
+    const links = preloads.map(({ href, as: asValue, type }) => {
+      const link = document.createElement('link')
+      link.rel = 'preload'
+      link.href = href
+      link.setAttribute('as', asValue)
+      if (type) link.type = type
+      if (asValue === 'font') link.crossOrigin = 'anonymous'
+      document.head.appendChild(link)
+      return link
+    })
+    return () => { links.forEach(link => link.remove()) }
+  }, [])
+  useEffect(() => {
     if (!root.current || window.matchMedia('(prefers-reduced-motion: reduce)').matches) return
     root.current.classList.add('invite-motion-ready')
     const elements = [...root.current.querySelectorAll<HTMLElement>('[data-invite-animation]')]
