@@ -12,7 +12,7 @@ export default function GeneratedInvitation({overrideSlug}:{overrideSlug?:string
  }catch(e){if(!abort.signal.aborted)setError(e instanceof Error?e.message:'Invitation not found.')}})();return()=>abort.abort()},[overrideSlug,orderNumber,slug])
  useEffect(()=>{if(!record)return;const old=document.title;document.title=`${record.details.groom} & ${record.details.bride} — Wedding invitation`;return()=>{document.title=old}},[record])
  if(error)return <main className="studio studio-empty"><h1>Invitation unavailable</h1><p role="alert">{error}</p><Link to="/dashboard">Back to the dashboard</Link></main>
- if(!record)return <main role="status" style={{position:'fixed',inset:0,display:'flex',alignItems:'center',justifyContent:'center',textAlign:'center'}}>Opening your invitation…</main>
+ if(!record)return null
  const publishedOrderId=record.orderId||(orderNumber&&/^\d+$/.test(orderNumber)&&record.slug===`${orderNumber}/${slug||''}`?orderNumber:undefined)
  return <InvitationRenderer details={record.details} rsvpTarget={publishedOrderId?{orderId:publishedOrderId,path:record.slug}:undefined}/>
 }
