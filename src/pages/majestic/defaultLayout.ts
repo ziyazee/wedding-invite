@@ -9,7 +9,7 @@ const layout: TextLayout = {
     't2.opening.groom':     { fontSize: 37, x: 0, y: 0 },
     't2.opening.bride':     { fontSize: 37, x: 0, y: 0 },
     't2.opening.date':      { fontSize: 24, x: 0, y: 0 },
-    't2.closing.separator': { fontSize: 54, x: 0, y: 0.04962675920267453 },
+    't2.closing.separator': { fontSize: 54 },
     't2.closing.groom':     { fontSize: 61 },
     't2.closing.bride':     { fontSize: 64 },
   },
