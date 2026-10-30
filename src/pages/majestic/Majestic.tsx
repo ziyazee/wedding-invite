@@ -31,8 +31,8 @@ function Copy({ field, label, children, animation = 'fade-up', animationStagger 
   return <EditableText {...props} animation={animation} animationStagger={animationStagger} animationDelay={animationDelay} textId={`t2.${field}`} label={label || field.replaceAll('.', ' · ')} aria-label={animation === 'letter-rise' ? text : undefined}>{animatedChildren}</EditableText>
 }
 
-function useBlobUrl(src: string): string {
-  const [url, setUrl] = useState(src)
+function useBlobUrl(src: string): string | undefined {
+  const [url, setUrl] = useState<string>()
   useEffect(() => {
     let blobUrl: string | undefined
     let cancelled = false
@@ -43,7 +43,7 @@ function useBlobUrl(src: string): string {
         blobUrl = URL.createObjectURL(blob)
         setUrl(blobUrl)
       })
-      .catch(() => {})
+      .catch(() => { if (!cancelled) setUrl(src) })
     return () => { cancelled = true; if (blobUrl) URL.revokeObjectURL(blobUrl) }
   }, [src])
   return url
@@ -92,12 +92,12 @@ function Countdown({ details }: { details: InvitationData }) {
   </Section>
 }
 
-function EventCard({ event, eventKey, details: d, videoSrc }: { event: Celebration; eventKey: string; details: InvitationData; videoSrc: string }) {
+function EventCard({ event, eventKey, details: d, videoSrc }: { event: Celebration; eventKey: string; details: InvitationData; videoSrc?: string }) {
   const root = useRef<HTMLDivElement>(null)
   const prefix = `event-${eventKey}`
   useMajesticCard(root, JSON.stringify([event, d.textOverrides]))
   return <Section as="article" data-invite-section={prefix} className="mj-event">
-    <AmbientVideo className="mj-event-video" src={videoSrc} />
+    {videoSrc && <AmbientVideo className="mj-event-video" src={videoSrc} />}
     <div ref={root} className="mj-event-copy">
       <Copy as="p" field={`${prefix}.weekday`} className="mj-eyebrow">{formatDate(event.date, { weekday: 'long' })}</Copy>
       <Copy as="h2" field={`${prefix}.title`}>{wrapCardText(event.title, 18)}</Copy>
