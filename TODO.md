@@ -9,6 +9,10 @@
 - [ ] Optimize PDF extraction.
 - [ ] Fix text sizing so text is consistently readable and fully visible.
 - [ ] Support bride-side invitations across all designs, including “Bride weds Groom” name ordering.
+- [ ] Majestic template — further asset optimization.
+  - Convert `ornate-badge-2PyCLI0e.png` (1 MB) and `footer-flowers.png` (446 KB) to WebP.
+  - Compress `celebrations.mp4` (2.8 MB) — lower bitrate/resolution since it's a background texture, not primary content.
+  - Add a Service Worker for cache-first asset loading (benefits all templates, not just Majestic).
 - [ ] Fix missing Bloom and The Artful Love Story thumbnails in the Settings tab.
   - **Where:** `TemplateSettingsPanel` in `src/pages/ClientDashboard.tsx` (~line 679). The `.setting-art-wrap` element uses a bare `<img src={template.thumbnail_url}>`. Bloom (id 7) and The Artful Love Story (id 8) have no `thumbnail_url` from the catalog, so their cards render a broken image.
   - **Fix:** Mirror the media logic already used in the Templates tab cards (~line 491): check `TEMPLATE_INTRO_VIDEOS[id]` first (renders a `<video>`), then fall back to `TEMPLATE_THUMBNAIL_OVERRIDES[id] ?? TEMPLATE_INTRO_IMAGES[id] ?? template.thumbnail_url`. All three maps are already imported from `src/lib/templateCardData.ts`.
