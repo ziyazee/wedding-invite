@@ -48,7 +48,7 @@ function AmbientVideo({ src, poster, className }: { src: string; poster?: string
     sync()
     return () => { observer.disconnect(); document.removeEventListener('visibilitychange', sync); motion.removeEventListener('change', sync); element.pause() }
   }, [])
-  return failed && poster ? <InvitationMedia className={className} src={poster} priority alt="" /> : <InvitationMedia kind="video" className={className} ref={video} src={src} poster={poster} muted loop playsInline onError={() => setFailed(true)} aria-hidden="true" />
+  return failed && poster ? <InvitationMedia className={className} src={poster} priority alt="" /> : <InvitationMedia kind="video" className={className} ref={video} src={src} poster={poster} preload="auto" muted loop playsInline onError={() => setFailed(true)} aria-hidden="true" />
 }
 
 function Names({ details: d, section, family = false }: { details: InvitationData; section: string; family?: boolean }) {
@@ -103,6 +103,8 @@ export default function Majestic({ details: d, rsvpTarget }: { details: Invitati
   useEffect(() => {
     const preloads = [
       { href: '/templates/majestic/assets/hero-poster-DkA1j00-.jpg', as: 'image' },
+      { href: '/templates/majestic/assets/hero-bg-l-slFnvE.mp4', as: 'video' },
+      { href: '/templates/majestic/assets/celebrations.mp4', as: 'video' },
       { href: '/templates/majestic/assets/font-0.woff2', as: 'font', type: 'font/woff2' },
       { href: '/templates/majestic/assets/bodoni-moda-latin-italic-400.woff2', as: 'font', type: 'font/woff2' },
     ]
