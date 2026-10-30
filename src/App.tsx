@@ -86,7 +86,7 @@ function SubdomainResolver({ slug }: { slug: string }) {
     return () => { cancelled = true }
   }, [slug, target])
 
-  if (!target) return <main role="status" style={{minHeight:'100svh',display:'grid',placeItems:'center',background:'#fffaf2',color:'#75664c',font:'14px Arial,sans-serif'}}>Loading…</main>
+  if (!target) return <main role="status" style={{position:'fixed',inset:0,display:'flex',alignItems:'center',justifyContent:'center',textAlign:'center'}}>Opening your invitation…</main>
   if (target === 'store') return <StoreLanding slug={slug} />
   return <GeneratedInvitation overrideSlug={slug} />
 }
@@ -95,13 +95,13 @@ export default function App() {
   const inviteSlug = getInviteSlug()
   if (inviteSlug) {
     return (
-      <InvitationViewport><Suspense fallback={<main role="status" style={{minHeight:'100svh',display:'grid',placeItems:'center',background:'#fffaf2',color:'#75664c',font:'14px Arial,sans-serif'}}>Loading…</main>}>
+      <InvitationViewport><Suspense fallback={<main role="status" style={{position:'fixed',inset:0,display:'flex',alignItems:'center',justifyContent:'center',textAlign:'center'}}>Opening your invitation…</main>}>
         <SubdomainResolver slug={inviteSlug} />
       </Suspense></InvitationViewport>
     )
   }
   return (
-    <InvitationViewport><Suspense fallback={<main role="status" style={{minHeight:'100svh',display:'grid',placeItems:'center',background:'#fffaf2',color:'#75664c',font:'14px Arial,sans-serif'}}>Loading…</main>}><Routes>
+    <InvitationViewport><Suspense fallback={<main role="status" style={{position:'fixed',inset:0,display:'flex',alignItems:'center',justifyContent:'center',textAlign:'center'}}>Loading…</main>}><Routes>
       <Route path="/" element={<Landing />} />
       <Route path="/privacy" element={<Privacy />} />
       <Route path="/login" element={<Login />} />
