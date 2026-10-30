@@ -31,24 +31,6 @@ function Copy({ field, label, children, animation = 'fade-up', animationStagger 
   return <EditableText {...props} animation={animation} animationStagger={animationStagger} animationDelay={animationDelay} textId={`t2.${field}`} label={label || field.replaceAll('.', ' · ')} aria-label={animation === 'letter-rise' ? text : undefined}>{animatedChildren}</EditableText>
 }
 
-function useBlobUrl(src: string): string | undefined {
-  const [url, setUrl] = useState<string>()
-  useEffect(() => {
-    let blobUrl: string | undefined
-    let cancelled = false
-    fetch(src)
-      .then(r => r.blob())
-      .then(blob => {
-        if (cancelled) return
-        blobUrl = URL.createObjectURL(blob)
-        setUrl(blobUrl)
-      })
-      .catch(() => { if (!cancelled) setUrl(src) })
-    return () => { cancelled = true; if (blobUrl) URL.revokeObjectURL(blobUrl) }
-  }, [src])
-  return url
-}
-
 function AmbientVideo({ src, poster, className }: { src: string; poster?: string; className: string }) {
   const video = useRef<HTMLVideoElement>(null)
   const [failed, setFailed] = useState(false)
@@ -92,12 +74,12 @@ function Countdown({ details }: { details: InvitationData }) {
   </Section>
 }
 
-function EventCard({ event, eventKey, details: d, videoSrc }: { event: Celebration; eventKey: string; details: InvitationData; videoSrc?: string }) {
+function EventCard({ event, eventKey, details: d }: { event: Celebration; eventKey: string; details: InvitationData }) {
   const root = useRef<HTMLDivElement>(null)
   const prefix = `event-${eventKey}`
   useMajesticCard(root, JSON.stringify([event, d.textOverrides]))
   return <Section as="article" data-invite-section={prefix} className="mj-event">
-    {videoSrc && <AmbientVideo className="mj-event-video" src={videoSrc} />}
+    <AmbientVideo className="mj-event-video" src="/templates/majestic/assets/celebrations.mp4" />
     <div ref={root} className="mj-event-copy">
       <Copy as="p" field={`${prefix}.weekday`} className="mj-eyebrow">{formatDate(event.date, { weekday: 'long' })}</Copy>
       <Copy as="h2" field={`${prefix}.title`}>{wrapCardText(event.title, 18)}</Copy>
@@ -116,13 +98,13 @@ export default function Majestic({ details: d, rsvpTarget }: { details: Invitati
   const wedding = { title: 'Wedding', date: d.date, time: d.time, venue: d.venue, address: d.address, map: d.map }
   // Capture original indexes before sorting so legacy orders retain stable IDs.
   const events = d.events.map((event, index) => ({ event, key: event.id || `legacy-${index}` })).sort((a, b) => `${a.event.date}T${a.event.time}`.localeCompare(`${b.event.date}T${b.event.time}`))
-  const celebrationsSrc = useBlobUrl('/templates/majestic/assets/celebrations.mov')
   const structure = JSON.stringify([events.map(event => event.key), !!d.dressCode.trim(), !!d.giftNote.trim(), !!d.gallery.trim()])
   useEffect(() => { const previous = document.title; document.title = `${couple} — Majestic`; return () => { document.title = previous } }, [couple])
   useEffect(() => {
     const preloads = [
       { href: '/templates/majestic/assets/hero-poster-DkA1j00-.jpg', as: 'image' },
       { href: '/templates/majestic/assets/hero-bg-l-slFnvE.mp4', as: 'video' },
+      { href: '/templates/majestic/assets/celebrations.mp4', as: 'video' },
       { href: '/templates/majestic/assets/font-0.woff2', as: 'font', type: 'font/woff2' },
       { href: '/templates/majestic/assets/bodoni-moda-latin-italic-400.woff2', as: 'font', type: 'font/woff2' },
     ]
@@ -170,7 +152,7 @@ export default function Majestic({ details: d, rsvpTarget }: { details: Invitati
       <div className="mj-actions">{d.map.trim() && <Copy as="a" field="venue.directions" href={d.map} target="_blank" rel="noreferrer">Google Maps</Copy>}<Copy as="button" type="button" field="venue.calendar" onClick={() => downloadCalendar(wedding, d.offset, couple)}>Add to calendar</Copy></div>
     </Section>
     <Section data-invite-section="programme" className="mj-programme"><InvitationMedia src="/templates/majestic/assets/food.webp" alt="" /><Copy as="h2" field="programme.heading">The programme</Copy></Section>
-    <div className="mj-events">{events.map(({ event, key }) => <EventCard key={key} event={event} eventKey={key} details={d} videoSrc={celebrationsSrc} />)}</div>
+    <div className="mj-events">{events.map(({ event, key }) => <EventCard key={key} event={event} eventKey={key} details={d} />)}</div>
     {d.dressCode.trim() && <Section data-invite-section="dress" className="mj-dress"><Copy as="h2" field="dress.heading">Dress Code</Copy><Copy as="p" field="dress.caption" className="mj-eyebrow">A few gentle reminders</Copy>{d.showCoupleIllustrations !== false && <InvitationMedia src="/templates/majestic/assets/dress-code-new.webp" alt="Wedding attire illustration" />}<div className="mj-dress-card"><Copy as="h3" field="dress.text">{d.dressCode}</Copy></div></Section>}
     {(d.giftNote.trim() || d.gallery.trim()) && <Section data-invite-section="notes" className="mj-notes">{d.giftNote.trim() && <><Copy as="h2" field="notes.heading">A little note</Copy><Copy as="p" field="notes.gift">{d.giftNote}</Copy></>}{d.gallery.trim() && <Copy as="a" field="notes.gallery" href={d.gallery} target="_blank" rel="noreferrer">Our photo gallery ↗</Copy>}</Section>}
     <InvitationRsvp template={2} couple={couple} target={rsvpTarget} envelopeClosed="/templates/majestic/assets/envelope-closed-new.webp" envelopeOpen="/templates/majestic/assets/envelope-open-new.webp" />
