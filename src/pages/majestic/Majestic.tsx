@@ -133,8 +133,8 @@ export default function Majestic({ details: d, rsvpTarget }: { details: Invitati
         } else if (element.hasAttribute('data-invite-animation-replay')) element.classList.remove('invite-motion-visible')
       })
     }, { threshold: .12, rootMargin: '0px 0px -4% 0px' })
-    elements.forEach(element => observer.observe(element))
-    return () => { observer.disconnect(); elements.forEach(element => element.classList.remove('invite-motion-visible')); root.current?.classList.remove('invite-motion-ready') }
+    const raf = requestAnimationFrame(() => elements.forEach(element => observer.observe(element)))
+    return () => { cancelAnimationFrame(raf); observer.disconnect(); elements.forEach(element => element.classList.remove('invite-motion-visible')); root.current?.classList.remove('invite-motion-ready') }
   }, [structure])
   const layout = mergeLayouts(defaultLayout, d.textOverrides)
   return <InvitationLayoutProvider layout={layout}><main ref={root} className="majestic-native">
