@@ -15,5 +15,5 @@ export default function GeneratedInvitation({overrideSlug}:{overrideSlug?:string
  if(error)return <main className="studio studio-empty"><h1>Invitation unavailable</h1><p role="alert">{error}</p><Link to="/dashboard">Back to the dashboard</Link></main>
  const publishedOrderId=record?record.orderId||(orderNumber&&/^\d+$/.test(orderNumber)&&record.slug===`${orderNumber}/${slug||''}`?orderNumber:undefined):undefined
  if(showTemplate&&record)return <InvitationRenderer details={record.details} rsvpTarget={publishedOrderId?{orderId:publishedOrderId,path:record.slug}:undefined}/>
- return <main ref={splashRef} className="studio studio-empty" role="status" style={{transition:'opacity .5s ease',opacity:fadeOut?0:1}}>Opening your invitation…</main>
+ return <main ref={splashRef} className="studio-empty" role="status" style={{transition:'opacity .5s ease',opacity:fadeOut?0:1}}>Opening your invitation…</main>
 }
