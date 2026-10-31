@@ -11,6 +11,7 @@ const Design4 = lazy(() => import('../pages/Design4'))
 const RoyalGrace = lazy(() => import('../pages/RoyalGrace'))
 const Majestic = lazy(() => import('../pages/majestic/Majestic'))
 const SecretGarden = lazy(() => import('../pages/secret-garden/SecretGarden'))
+const EmbroideredGarden = lazy(() => import('../pages/embroidered-garden/EmbroideredGarden'))
 const Design8 = lazy(() => import('../pages/Design8'))
 const Design9 = lazy(() => import('../pages/Design9'))
 const Design10 = lazy(() => import('../pages/Design10'))
@@ -66,6 +67,7 @@ function renderTemplate(details: InvitationData, animatedDetails: InvitationData
   // Native React components with their own layout
   if (template === 2) return <Majestic details={details} rsvpTarget={rsvpTarget} />
   if (template === 5) return <SecretGarden details={details} rsvpTarget={rsvpTarget} />
+  if (template === 6) return <EmbroideredGarden details={details} rsvpTarget={rsvpTarget} />
 
   // Standalone page component (no SiteFonts or TextLayoutLayer)
   if (template === 1) return <RoyalGrace />

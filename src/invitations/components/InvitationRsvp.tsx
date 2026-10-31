@@ -7,8 +7,8 @@ import { InvitationSection } from './InvitationSection'
 import { InvitationMedia } from './InvitationMedia'
 
 /** Native form shared by migrated invitations; only published orders submit. */
-export function InvitationRsvp({ template, couple, target, countOnly, envelopeClosed, envelopeOpen }: { template: number; couple: string; target?: RsvpTarget; countOnly?: boolean; envelopeClosed?: string; envelopeOpen?: string }) {
-  const [opened, setOpened] = useState(false)
+export function InvitationRsvp({ template, couple, target, countOnly, envelopeClosed, envelopeOpen, formOnly }: { template: number; couple: string; target?: RsvpTarget; countOnly?: boolean; envelopeClosed?: string; envelopeOpen?: string; formOnly?: boolean }) {
+  const [opened, setOpened] = useState(!!formOnly)
   const [attendance, setAttendance] = useState<'yes' | 'no'>('yes')
   const [count, setCount] = useState(1)
   const [busy, setBusy] = useState(false)
@@ -31,14 +31,14 @@ export function InvitationRsvp({ template, couple, target, countOnly, envelopeCl
     finally { setBusy(false) }
   }
   return <InvitationSection data-invite-section="rsvp" className="invitation-rsvp">
-    <Text as="p" textId={id('caption')} label="RSVP caption" className="invite-eyebrow">The {couple} wedding</Text>
+    {!formOnly && <><Text as="p" textId={id('caption')} label="RSVP caption" className="invite-eyebrow">The {couple} wedding</Text>
     <Text as="h2" textId={id('heading')} label="RSVP heading">RSVP</Text>
-    <Text as="p" textId={id('intro')} label="RSVP introduction" className="invite-eyebrow">Kindly reply</Text>
+    <Text as="p" textId={id('intro')} label="RSVP introduction" className="invite-eyebrow">Kindly reply</Text></>}
     {!opened ? <div className="invitation-envelope">
       <button className="invitation-envelope-art" type="button" onClick={() => setOpened(true)} aria-label="Open your RSVP envelope"><InvitationMedia src={envelopeClosed || '/templates/secret-garden/assets/envelope-closed-new.webp'} alt="A closed embroidered ivory envelope" /></button>
       <button type="button" onClick={() => setOpened(true)}><Text textId={id('open')} label="Open RSVP label">Open RSVP</Text></button>
     </div> : <form onSubmit={submit}>
-      <InvitationMedia className="invitation-envelope-open" src={envelopeOpen || '/templates/secret-garden/assets/envelope-open-new.webp'} alt="An open embroidered ivory envelope" />
+      {!formOnly && <InvitationMedia className="invitation-envelope-open" src={envelopeOpen || '/templates/secret-garden/assets/envelope-open-new.webp'} alt="An open embroidered ivory envelope" />}
       <fieldset><legend><Text textId={id('attendance')} label="Attendance question">Will you attend?</Text></legend>
         <label><input type="radio" name="attendance" value="yes" checked={attendance === 'yes'} onChange={() => setAttendance('yes')} /><Text textId={id('yes')} label="Attending label">Yes, I’ll be there</Text></label>
         <label><input type="radio" name="attendance" value="no" checked={attendance === 'no'} onChange={() => setAttendance('no')} /><Text textId={id('no')} label="Not attending label">Sorry, I can’t</Text></label>
@@ -48,7 +48,7 @@ export function InvitationRsvp({ template, couple, target, countOnly, envelopeCl
         {!countOnly && Array.from({ length: count - 1 }, (_, i) => <label key={i}><Text textId={id(`guest-${i}`)} label={`Guest ${i + 2} label`}>Guest {i + 2} name</Text><input name={`guest-${i}`} required maxLength={120} /></label>)}</>}
       <label><Text textId={id('message')} label="RSVP message label">Message (optional)</Text><textarea name="message" rows={4} maxLength={1000} /></label>
       <button type="submit" disabled={!target || busy}><Text textId={id('submit')} label="Send RSVP label">{busy ? 'Sending…' : 'Send RSVP'}</Text></button>
-      <p role="status" aria-live="polite">{status || (!target ? 'RSVP is available on the published invitation.' : '')}</p>
+      <p role="status" aria-live="polite">{status}</p>
     </form>}
     <div className="invitation-rsvp-lights" aria-hidden="true" />
   </InvitationSection>
