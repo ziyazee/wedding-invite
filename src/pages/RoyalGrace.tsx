@@ -74,7 +74,7 @@ function Divider({ symbol = '✧', textId }: { symbol?: string; textId?: string 
 }
 
 function CelebrationBotanical({ className = '' }: { className?: string }) {
-  return <InvitationMedia className={className} src={`${ASSETS}celebration-roses.png`} alt="" aria-hidden="true" />
+  return <InvitationMedia className={className} src={`${ASSETS}celebration-roses.webp`} alt="" aria-hidden="true" />
 }
 
 function Countdown() {
@@ -180,8 +180,8 @@ export default function RoyalGrace() {
   return <InvitationLayoutProvider layout={mergedLayout}><main ref={root} className="royal-grace">
     <FlowerTrail />
     <PersonalMusic src={details?.music || "/bisara.mp3"} />
-    <InvitationSection data-invite-section="opening" className={`rg-hero ${namesVisible ? 'rg-is-open' : ''}`} style={!namesVisible ? { backgroundImage: `url('${ASSETS}opening-poster.jpg')` } : undefined} aria-label="Wedding invitation">
-      {!videoFailed && <InvitationMedia kind="video" ref={video} src={`${ASSETS}opening.mp4`} poster={isEditor ? undefined : `${ASSETS}opening-poster.jpg`} muted playsInline onPlaying={event => {
+    <InvitationSection data-invite-section="opening" className={`rg-hero ${namesVisible ? 'rg-is-open' : ''}`} style={!namesVisible ? { backgroundImage: `url('${ASSETS}opening-poster.webp')` } : undefined} aria-label="Wedding invitation">
+      {!videoFailed && <InvitationMedia kind="video" ref={video} src={`${ASSETS}opening.mp4`} poster={isEditor ? undefined : `${ASSETS}opening-poster.webp`} muted playsInline onPlaying={event => {
         const player = event.currentTarget
         if (isEditor) player.playbackRate = 10
         if (typeof player.requestVideoFrameCallback === 'function') {
@@ -193,7 +193,7 @@ export default function RoyalGrace() {
         const v = event.currentTarget
         if (v.duration && v.duration - v.currentTime <= (isEditor ? 0.5 : 3)) setNamesVisible(true)
       }} onEnded={() => setNamesVisible(true)} />}
-      {!isEditor && <InvitationMedia priority className={`mr-opening-poster ${videoFrameReady || namesVisible ? 'mr-opening-poster-hidden' : ''}`} src={`${ASSETS}opening-poster.jpg`} alt="" aria-hidden="true" />}
+      {!isEditor && <InvitationMedia priority className={`mr-opening-poster ${videoFrameReady || namesVisible ? 'mr-opening-poster-hidden' : ''}`} src={`${ASSETS}opening-poster.webp`} alt="" aria-hidden="true" />}
       <div className="rg-hero-shade" />
       {!opened && <button className="rg-open" onClick={openInvitation} aria-label="Open your invitation" />}
       <div className="rg-names" aria-hidden={!namesVisible}>
@@ -219,7 +219,7 @@ export default function RoyalGrace() {
         <EditableText as="p" {...text('welcome','blessing','Your presence, your prayers…')}>Your presence, your prayers, and your love will make our day complete.</EditableText>
         {Object.entries(mergedLayout.elements).filter(([id, v]) => id.startsWith('t1.custom.') && !(v as any).hidden && (v as any).content).map(([id]) => <EditableText key={id} as="p" textId={id} label={`Custom text ${id.split('.')[2]}`}>{(mergedLayout.elements as any)[id].content}</EditableText>)}
       </InvitationSection>
-      <InvitationSection data-invite-section="save-date" className="rg-section rg-save-date"><EditableText as="div" textId="t1.save-date.couple" label="Couple photo"><InvitationMedia src={`${ASSETS}couple.png`} alt="" className="rg-couple-photo" aria-hidden="true" /></EditableText><EditableText as="h2" {...text('save-date','heading','Save our date')} className="rg-script">Save our date</EditableText><EditableText as="div" textId="t1.save-date.scratch" label="Scratch card"><HeartDateReveal date={details ? formatDate(details.date) : "20 December 2026"} day={details ? formatDate(details.date,{weekday:"long"}) : "Sunday"} time={details ? formatTime(details.time) : "11:00 in the morning"}  /></EditableText></InvitationSection>
+      <InvitationSection data-invite-section="save-date" className="rg-section rg-save-date"><EditableText as="div" textId="t1.save-date.couple" label="Couple photo"><InvitationMedia src={`${ASSETS}couple.webp`} alt="" className="rg-couple-photo" aria-hidden="true" /></EditableText><EditableText as="h2" {...text('save-date','heading','Save our date')} className="rg-script">Save our date</EditableText><EditableText as="div" textId="t1.save-date.scratch" label="Scratch card"><HeartDateReveal date={details ? formatDate(details.date) : "20 December 2026"} day={details ? formatDate(details.date,{weekday:"long"}) : "Sunday"} time={details ? formatTime(details.time) : "11:00 in the morning"}  /></EditableText></InvitationSection>
       <PersonalNotes family notes={false} />
       <InvitationSection data-invite-section="countdown" className="rg-section"><Divider textId="t1.countdown.divider-top" /><EditableText as="p" {...text('countdown','caption','Counting down to Nikah & Wedding')} className="rg-eyebrow">Counting down to Nikah & Wedding</EditableText><EditableText as="h2" {...text('countdown','heading','Until our forever')} className="rg-script">Until our forever</EditableText><EditableText as="div" textId="t1.countdown.timer" label="Countdown timer"><Countdown /></EditableText></InvitationSection>
       <InvitationSection data-invite-section="programme" className="rg-section mr-celebrations" aria-labelledby="mr-celebrations-title">
@@ -227,7 +227,7 @@ export default function RoyalGrace() {
         <div className="mr-celebration-body">
         <CelebrationLayout personalized={!!details}><div className="mr-events">{events.map(event => <article className={`mr-event ${event.id === 'nikah' ? 'mr-main-event' : ''}`} key={event.layoutKey} aria-labelledby={`mr-title-${event.id}`}>
           <InvitationSection as="div" data-invite-section="celebration" className="mr-event-paper">
-          <InvitationMedia className="mr-stationery-art" src={`${ASSETS}${event.id === 'nikah' ? 'sage-stationery-unframed.png' : 'ivory-stationery-unframed.png'}`} alt="" aria-hidden="true"/>
+          <InvitationMedia className="mr-stationery-art" src={`${ASSETS}${event.id === 'nikah' ? 'sage-stationery-unframed.webp' : 'ivory-stationery-unframed.webp'}`} alt="" aria-hidden="true"/>
           <div className="mr-event-heading">
             <div className="mr-title-column"><EditableText as="h3" {...eventText(event,'title','Celebration name')} data-layout-id={`${event.id}:title`} id={`mr-title-${event.id}`} className="rg-script">{event.title.split(' — ')[0]}</EditableText></div>
             <EditableText as="time" baseTransform={basePlacement(event,'date')} data-layout-id={`${event.id}:date`} dateTime={event.iso} className="mr-event-date"><EditableText as="strong" {...eventText(event,'day','Celebration date · day')}>{event.iso.slice(8,10)}</EditableText><span><EditableText {...eventText(event,'month','Celebration date · month')} style={{display:'inline-block'}}>{formatDate(event.iso.slice(0,10),{month:"long"})}</EditableText><EditableText as="small" {...eventText(event,'year','Celebration date · year')}>{event.iso.slice(0,4)}</EditableText></span></EditableText>

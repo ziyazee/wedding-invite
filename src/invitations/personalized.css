@@ -10,7 +10,7 @@
 .personal-notes .personal-note-ornament{display:block;font-size:25px;opacity:.65;margin-bottom:16px}
 .personal-notes .personal-family{margin:22px 0 0}
 .personal-notes .personal-family-label{display:block;font-size:10px;line-height:1.5;letter-spacing:.16em;text-transform:uppercase;opacity:.75}
-.royal-grace .personal-notes{max-width:none;padding:48px 17%;background:url('/templates/royal-grace/general.jpg') center top / 100% auto repeat-y}
+.royal-grace .personal-notes{max-width:none;padding:48px 17%;background:url('/templates/royal-grace/general.webp') center top / 100% auto repeat-y}
 .royal-grace .personal-notes h2{font-family:'Dancing Script','Great Vibes',cursive;font-size:38px;font-weight:400;color:var(--rg-ink)}
 .royal-grace .personal-notes p{font-size:20px;line-height:1.65;color:var(--rg-ink)}
 .royal-grace .personal-notes .personal-note-ornament{color:var(--rg-accent)}
