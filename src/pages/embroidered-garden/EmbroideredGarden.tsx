@@ -89,7 +89,7 @@ function EventCard({ event, eventKey, details: d, first }: { event: Celebration;
   const dateParts = new Intl.DateTimeFormat('en-GB', { day: '2-digit', month: 'short', year: 'numeric', timeZone: 'UTC' }).formatToParts(new Date(`${event.date}T12:00:00Z`))
   const part = (type: Intl.DateTimeFormatPartTypes) => dateParts.find(item => item.type === type)?.value || ''
   return <Section as="article" data-invite-section={prefix} className={`eg-event ${first ? 'eg-event-first' : 'eg-event-secondary'}`} style={first ? { backgroundImage: `url('${ASSETS}ceremony-reception-bg-opt.webp')` } : undefined}>
-    {!first && <AmbientVideo className="eg-event-video" src={`${ASSETS}celebration2.mp4`} />}
+    {!first && <AmbientVideo className="eg-event-video" src={`${ASSETS}celebration2.mp4`} poster={`${ASSETS}celebration-poster.webp`} />}
     <div ref={root} className="eg-event-copy">
       <Copy as="p" field={`${prefix}.weekday`} className="eg-eyebrow">{formatDate(event.date, { weekday: 'long' })}</Copy>
       <Copy as="h2" field={`${prefix}.title`}>{wrapCardText(event.title, 18)}</Copy>
@@ -131,13 +131,6 @@ export default function EmbroideredGarden({ details: d, rsvpTarget }: { details:
       document.head.appendChild(link)
       links.push(link)
     }
-    const videoPreload = document.createElement('link')
-    videoPreload.rel = 'preload'
-    videoPreload.href = `${ASSETS}celebration2.mp4`
-    videoPreload.setAttribute('as', 'fetch')
-    videoPreload.crossOrigin = 'anonymous'
-    document.head.appendChild(videoPreload)
-    links.push(videoPreload)
     return () => { links.forEach(link => link.remove()) }
   }, [])
 
