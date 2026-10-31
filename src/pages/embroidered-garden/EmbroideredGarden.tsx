@@ -68,12 +68,12 @@ function Countdown({ details }: { details: InvitationData }) {
   const values = [days, hours, minutes]
   const labels = ['Days', 'Hours', 'Minutes']
   return <Section data-invite-section="countdown" className="eg-countdown">
-    <InvitationMedia className="eg-countdown-bg" src={`${ASSETS}countdown-embroidery-frame-0EWM-os9.webp`} alt="" />
+    <InvitationMedia className="eg-countdown-bg" src={`${ASSETS}countdown-embroidery-frame-opt.webp`} alt="" />
     <div className="eg-countdown-content">
     <Copy as="h2" field="countdown.heading" className="eg-countdown-heading">Countdown</Copy>
     <div className="eg-medallions">{values.map((value, i) => <div key={i} className="eg-medallion">
       <div className="eg-medallion-pearl">
-        <InvitationMedia src={`${ASSETS}countdown-pearl-medallion-DJ2mwLBm.webp`} alt="" />
+        <InvitationMedia src={`${ASSETS}countdown-pearl-medallion-opt.webp`} alt="" />
         <Copy as="strong" field={`countdown.value-${i}`}>{String(value).padStart(2, '0')}</Copy>
       </div>
       <Copy as="small" field={`countdown.label-${i}`}>{labels[i]}</Copy>
@@ -88,7 +88,7 @@ function EventCard({ event, eventKey, details: d, first }: { event: Celebration;
   useEmbroideredGardenCard(root, JSON.stringify([event, d.textOverrides]))
   const dateParts = new Intl.DateTimeFormat('en-GB', { day: '2-digit', month: 'short', year: 'numeric', timeZone: 'UTC' }).formatToParts(new Date(`${event.date}T12:00:00Z`))
   const part = (type: Intl.DateTimeFormatPartTypes) => dateParts.find(item => item.type === type)?.value || ''
-  return <Section as="article" data-invite-section={prefix} className={`eg-event ${first ? 'eg-event-first' : 'eg-event-secondary'}`} style={first ? { backgroundImage: `url('${ASSETS}ceremony-reception-bg-v2.webp')` } : undefined}>
+  return <Section as="article" data-invite-section={prefix} className={`eg-event ${first ? 'eg-event-first' : 'eg-event-secondary'}`} style={first ? { backgroundImage: `url('${ASSETS}ceremony-reception-bg-opt.webp')` } : undefined}>
     {!first && <AmbientVideo className="eg-event-video" src={`${ASSETS}celebration2.mp4`} />}
     <div ref={root} className="eg-event-copy">
       <Copy as="p" field={`${prefix}.weekday`} className="eg-eyebrow">{formatDate(event.date, { weekday: 'long' })}</Copy>
@@ -99,7 +99,7 @@ function EventCard({ event, eventKey, details: d, first }: { event: Celebration;
       <Copy as="p" field={`${prefix}.address`}>{wrapCardText(event.address, 32)}</Copy>
       <div className="eg-links">{event.map.trim() && <Copy as="a" field={`${prefix}.directions`} href={mapURL(event.venue, event.address, event.map)} target="_blank" rel="noreferrer">Directions ↗</Copy>}<Copy as="button" type="button" field={`${prefix}.calendar`} onClick={() => downloadCalendar(event, d.offset, `${d.groom} & ${d.bride}`)}>Add to calendar</Copy></div>
     </div>
-    {first && <div className="eg-garland-wrap" aria-hidden="true"><InvitationMedia className="eg-garland" src={`${ASSETS}dresscode-hanging-garland-v2.webp`} alt="" /></div>}
+    {first && <div className="eg-garland-wrap" aria-hidden="true"><InvitationMedia className="eg-garland" src={`${ASSETS}dresscode-hanging-garland-opt.webp`} alt="" /></div>}
   </Section>
 }
 
@@ -123,10 +123,6 @@ export default function EmbroideredGarden({ details: d, rsvpTarget }: { details:
       '/templates/embroidered-garden/dbv4jbd.css',
       '/templates/embroidered-garden/yyb5qhs.css',
     ]
-    const preloads = [
-      { href: `${ASSETS}intro-curtains.jpg`, as: 'image' },
-      { href: `${ASSETS}embroidered-swans-hero-v2-optimized.webp`, as: 'image' },
-    ]
     const links: HTMLLinkElement[] = []
     for (const href of sheets) {
       const link = document.createElement('link')
@@ -135,14 +131,13 @@ export default function EmbroideredGarden({ details: d, rsvpTarget }: { details:
       document.head.appendChild(link)
       links.push(link)
     }
-    for (const { href, as: asValue } of preloads) {
-      const link = document.createElement('link')
-      link.rel = 'preload'
-      link.href = href
-      link.setAttribute('as', asValue)
-      document.head.appendChild(link)
-      links.push(link)
-    }
+    const videoPreload = document.createElement('link')
+    videoPreload.rel = 'preload'
+    videoPreload.href = `${ASSETS}celebration2.mp4`
+    videoPreload.setAttribute('as', 'fetch')
+    videoPreload.crossOrigin = 'anonymous'
+    document.head.appendChild(videoPreload)
+    links.push(videoPreload)
     return () => { links.forEach(link => link.remove()) }
   }, [])
 
@@ -179,11 +174,11 @@ export default function EmbroideredGarden({ details: d, rsvpTarget }: { details:
 
   const layout = mergeLayouts(defaultLayout, d.textOverrides)
   return <InvitationLayoutProvider layout={layout}><main ref={root} className={`eg-native${opened ? ' eg-opened' : ''}`} style={opened ? undefined : { overflow: 'hidden', height: '100svh' }}>
-    <PersonalMusic src={d.music || '/audios/general/autumn-wind.mp3'} />
+    <PersonalMusic src={d.music || '/audios/general/autumn-wind-opt.mp3'} />
 
     {/* Opening */}
     <Section data-invite-section="opening" className="eg-hero">
-      <InvitationMedia kind="video" className="eg-hero-video" ref={heroVideo} src={`${ASSETS}intro-doors-trimmed.mp4`} poster={`${ASSETS}intro-curtains.jpg`} muted playsInline preload="auto" />
+      <InvitationMedia kind="video" className="eg-hero-video" ref={heroVideo} src={`${ASSETS}intro-doors-opt.mp4`} poster={`${ASSETS}intro-curtains-opt.webp`} muted playsInline preload="auto" />
       <div className="eg-hero-copy">
         <div className="eg-opening-names">
           <Copy as="span" field="opening.groom" data-eg-opening-name="" className={namesVisible ? 'eg-name-visible' : ''}>{d.groom}</Copy>
@@ -197,14 +192,14 @@ export default function EmbroideredGarden({ details: d, rsvpTarget }: { details:
         </div>
       </div>
       <div className={`eg-cover${opened ? ' eg-cover-hidden' : ''}`} role="button" tabIndex={0} onClick={() => setOpened(true)} onKeyDown={e => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); setOpened(true) } }} aria-hidden={opened}>
-        <img src={`${ASSETS}intro-curtains.jpg`} alt="" />
+        <img src={`${ASSETS}intro-curtains-opt.webp`} alt="" />
         <span className="eg-cover-text">Tap to open</span>
       </div>
     </Section>
 
     {/* Introduction (swans hero) */}
     <Section data-invite-section="welcome-intro" className="eg-introduction">
-      <InvitationMedia src={`${ASSETS}embroidered-swans-hero-v2-optimized.webp`} priority alt="Embroidered wedding invitation" />
+      <InvitationMedia src={`${ASSETS}embroidered-swans-hero-opt.webp`} priority alt="Embroidered wedding invitation" />
       <div ref={introRef} className="eg-intro-copy">
         <Copy as="p" field="welcome-intro.heading" className="eg-intro-heading">Two souls.{'\n'}One beautiful journey.</Copy>
         <Copy as="p" field="welcome-intro.message" className="eg-fit-intro-content">With the blessings of God and the love of our families, we invite you to celebrate the beginning of our forever.</Copy>
@@ -228,7 +223,7 @@ export default function EmbroideredGarden({ details: d, rsvpTarget }: { details:
     {d.dressCode.trim() && <Section data-invite-section="dress" className="eg-note">
       <Copy as="h2" field="dress.heading">Dress code</Copy>
       <Copy as="p" field="dress.text">{d.dressCode}</Copy>
-      {d.showCoupleIllustrations !== false && <InvitationMedia className="eg-dress-illustration" src={`${ASSETS}dress-code-illustration-v2.webp`} alt="Wedding attire illustration" />}
+      {d.showCoupleIllustrations !== false && <InvitationMedia className="eg-dress-illustration" src={`${ASSETS}dress-code-illustration-opt.webp`} alt="Wedding attire illustration" />}
     </Section>}
 
     {/* Gift note */}
@@ -257,7 +252,7 @@ export default function EmbroideredGarden({ details: d, rsvpTarget }: { details:
         <p className="eg-footer-names">{d.groom} <i>&amp;</i> {d.bride}</p>
         <p className="eg-footer-date">{formatDate(d.date)}</p>
       </div>
-      <InvitationMedia className="eg-footer-chateau" src={`${ASSETS}footer-chateau.png`} alt="Chateau illustration" />
+      <InvitationMedia className="eg-footer-chateau" src={`${ASSETS}footer-chateau-opt.webp`} alt="Chateau illustration" />
     </footer>
   </main></InvitationLayoutProvider>
 }
