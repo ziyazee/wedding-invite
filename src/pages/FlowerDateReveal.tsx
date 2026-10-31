@@ -64,7 +64,7 @@ export default function FlowerDateReveal({ date = '27 September 2026', day = 'Su
   const containerRef = useRef<HTMLDivElement>(null)
   const [revealed, setRevealed] = useState(false)
   const [celebrating, setCelebrating] = useState(false)
-  const [remaining, setRemaining] = useState(0)
+  const [, setRemaining] = useState(0)
   const reducedMotion = useRef(false)
 
   useEffect(() => {
@@ -163,7 +163,7 @@ export default function FlowerDateReveal({ date = '27 September 2026', day = 'Su
   return <InvitationSection as="div" data-invite-section="date-reveal-section" className={`rg-heart-reveal ${revealed ? 'is-revealed' : ''}`}>
     <EditableText as="p" {...text(revealed ? 'revealedHeading' : 'scratchHeading', revealed ? 'Our forever begins' : 'Tap the flowers')} className="rg-heart-title rg-script" aria-live="polite">{revealed ? 'Our forever begins' : 'Tap the flowers'}</EditableText>
     <svg width="0" height="0" aria-hidden="true" style={{ position: 'absolute' }}><defs><clipPath id={clipId} clipPathUnits="objectBoundingBox"><path d={HEART} transform="scale(.01)" /></clipPath></defs></svg>
-    <InvitationSection as="div" data-invite-section="date-reveal" className="rg-heart-card" ref={cardRef}>
+    <div data-invite-section="date-reveal" className="rg-heart-card" ref={cardRef}>
       <div className="rg-heart-inner" style={revealed && revealedImage ? { maskImage: `url("${revealedImage}")`, maskSize: 'contain', maskPosition: 'center', maskRepeat: 'no-repeat', WebkitMaskImage: `url("${revealedImage}")`, WebkitMaskSize: 'contain', WebkitMaskPosition: 'center', WebkitMaskRepeat: 'no-repeat', background: 'transparent' } : { clipPath: `url(#${clipId})` }}>
         <div className="rg-heart-date" style={revealedImage ? { backgroundImage: `url("${revealedImage}")`, backgroundSize: 'contain', backgroundPosition: 'center', backgroundRepeat: 'no-repeat' } : undefined}>
           <EditableText {...text('invited', "You're invited!")} className="rg-script">You're invited!</EditableText>
@@ -179,7 +179,7 @@ export default function FlowerDateReveal({ date = '27 September 2026', day = 'Su
         />
       </div>
       {!(revealed && revealedImage) && <svg className="rg-heart-outline" viewBox="0 0 100 100" preserveAspectRatio="none" aria-hidden="true"><path d={HEART} fill="none" stroke="#78825b" strokeWidth="1.2" vectorEffect="non-scaling-stroke" /></svg>}
-    </InvitationSection>
+    </div>
     {revealed && <EditableText as="p" {...text('celebrate', 'Let the celebration begin!')} className="rg-reveal-message" role="status">Let the celebration begin! &#9825;</EditableText>}
     {celebrating && <div className="rg-confetti" aria-hidden="true">{confettiParticles.map((style, i) => <span key={i} style={style} />)}</div>}
     {!revealed && <EditableText as="button" {...text('tap', 'Or tap to reveal')} className="rg-text-button" onClick={reveal}>Or tap to reveal &#9825;</EditableText>}

@@ -13,8 +13,7 @@ import { isSupabaseConfigured, supabase } from '../lib/supabase'
 import { DashboardAccess, signOutToLogin } from './DashboardAccess'
 import './Workspaces.css'
 import './ClientDashboard.css'
-import InvitationReview, { ReviewActionIcon } from './InvitationReview'
-import { templateSellingPrice } from '../lib/orderPricing'
+import { ReviewActionIcon } from './InvitationReview'
 
 const OrderTextEditor = lazy(() => import('./OrderTextEditor'))
 
