@@ -39,10 +39,11 @@ function AmbientVideo({ src, poster, className, paused: forcePaused = false }: {
     const sync = () => { if (!forcePaused && visible && !motion.matches && !document.hidden) void element.play().catch(() => {}); else element.pause() }
     const observer = new IntersectionObserver(entries => { visible = entries[0].isIntersecting; sync() })
     observer.observe(element)
+    element.addEventListener('canplay', sync)
     document.addEventListener('visibilitychange', sync)
     motion.addEventListener('change', sync)
     sync()
-    return () => { observer.disconnect(); document.removeEventListener('visibilitychange', sync); motion.removeEventListener('change', sync); element.pause() }
+    return () => { observer.disconnect(); element.removeEventListener('canplay', sync); document.removeEventListener('visibilitychange', sync); motion.removeEventListener('change', sync); element.pause() }
   }, [forcePaused])
   return failed && poster ? <InvitationMedia className={className} src={poster} priority alt="" /> : <InvitationMedia kind="video" className={className} ref={video} src={src} poster={poster} preload="auto" muted loop playsInline onError={() => setFailed(true)} aria-hidden="true" />
 }
@@ -89,7 +90,7 @@ function EventCard({ event, eventKey, details: d, first }: { event: Celebration;
   const dateParts = new Intl.DateTimeFormat('en-GB', { day: '2-digit', month: 'short', year: 'numeric', timeZone: 'UTC' }).formatToParts(new Date(`${event.date}T12:00:00Z`))
   const part = (type: Intl.DateTimeFormatPartTypes) => dateParts.find(item => item.type === type)?.value || ''
   return <Section as="article" data-invite-section={prefix} className={`eg-event ${first ? 'eg-event-first' : 'eg-event-secondary'}`} style={first ? { backgroundImage: `url('${ASSETS}ceremony-reception-bg-opt.webp')` } : undefined}>
-    {!first && <AmbientVideo className="eg-event-video" src={`${ASSETS}celebration2.mp4`} />}
+    {!first && <AmbientVideo className="eg-event-video" src={`${ASSETS}celebration2.mp4`} poster={`${ASSETS}celebration-poster.webp`} />}
     <div ref={root} className="eg-event-copy">
       <Copy as="p" field={`${prefix}.weekday`} className="eg-eyebrow">{formatDate(event.date, { weekday: 'long' })}</Copy>
       <Copy as="h2" field={`${prefix}.title`}>{wrapCardText(event.title, 18)}</Copy>
