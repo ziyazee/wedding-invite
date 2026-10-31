@@ -29,7 +29,7 @@ const defaultTextLayout = {
   version: 1 as const,
   elements: {
     't1.opening.heading': { fontSize: 25 },
-    't1.opening.date': { fontSize: 13 },
+    't1.opening.date': { fontSize: 13, hidden: true },
     't1.opening.groom': { fontSize: 43 },
     't1.opening.bride': { fontSize: 47 },
     't1.save-date.couple': { x: 0, y: -0.30530511392175463 },
@@ -37,20 +37,18 @@ const defaultTextLayout = {
     't1.save-date.scratch': { x: 0, y: -0.3071392635355578 },
     't1.date-reveal.scratchHeading': { fontSize: 35, x: 0, y: 0.0382868599274265 },
     't1.date-reveal.tap': { x: 0, y: -0.0633898504307191 },
-    't1.countdown.divider-top': { x: 0, y: -0.7095845081847634 },
-    't1.countdown.caption': { x: 0, y: -0.6767672841501328 },
-    't1.countdown.heading': { x: 0, y: -0.6271108024287669 },
-    't1.countdown.timer': { x: 0, y: -0.6655537838023935 },
-    't1.countdown.divider-bottom': { x: 0, y: -0.60963800532236 },
-    't1.programme.flower': { x: 0, y: -0.7970442665731634 },
-    't1.programme.caption': { x: 0, y: -0.817549353817433 },
-    't1.programme.heading': { x: 0, y: -0.7967896713033353 },
-    't1.programme.intro': { x: 0, y: -0.045457867020150505 },
-    't1.programme.divider': { x: 0, y: -0.6487946024750283 },
+    't1.countdown.divider-top': {},
+    't1.countdown.caption': {},
+    't1.countdown.heading': {},
+    't1.countdown.timer': {},
+    't1.programme.flower': {},
+    't1.programme.caption': {},
+    't1.programme.heading': {},
+    't1.programme.divider': {},
     't1.event-legacy-1.title': { fontSize: 27 },
     't1.event-legacy-1.calendar': { x: 0.008930616616497676, y: 0.07605396617542613 },
     't1.event-legacy-1.directions': { x: 0.0054560014654626105, y: 0.07718983043323864 },
-    't1.notes.familyHeading': { fontSize: 33, x: 0, y: -0.023816907224525615 },
+    't1.notes.familyHeading': { fontSize: 33 },
     't1.notes.groomLabel': { fontSize: 12 },
     't1.notes.brideLabel': { fontSize: 13 },
     't1.notes.groomFamily': { fontSize: 19 },
@@ -97,7 +95,7 @@ export default function RoyalGrace() {
   const couple = `${groom} & ${bride}`
   const events = details ? [...details.events].sort((a,b)=>`${a.date}T${a.time}`.localeCompare(`${b.date}T${b.time}`)).map((event,index)=>({
     layoutKey: event.id || `legacy-${details.events.indexOf(event)}`,
-    id: event.title === 'Nikah & Wedding' ? 'nikah' : `event-${index}`,
+    id: event.date === details.date ? 'nikah' : `event-${index}`,
     title:event.title,date:formatDate(event.date,{weekday:'long',month:'long',day:'numeric'}),
     iso:`${event.date}T${event.time || '00:00'}:00${details.offset}`,time:formatTime(event.time),venue:event.venue,address:event.address,map:mapURL(event.venue,event.address===event.venue?'':event.address,event.map),
   })) : defaultEvents.map(event => ({ ...event, layoutKey: event.id }))
@@ -207,9 +205,10 @@ export default function RoyalGrace() {
         {Object.entries(mergedLayout.elements).filter(([id, v]) => id.startsWith('t1.custom.') && !v.hidden && v.content).map(([id]) => <EditableText key={id} as="p" textId={id} label={`Custom text ${id.split('.')[2]}`}>{mergedLayout.elements[id].content}</EditableText>)}
       </InvitationSection>
       <InvitationSection data-invite-section="save-date" className="rg-section rg-save-date"><EditableText as="div" textId="t1.save-date.couple" label="Couple photo"><InvitationMedia src={`${ASSETS}couple.png`} alt="" className="rg-couple-photo" aria-hidden="true" /></EditableText><EditableText as="h2" {...text('save-date','heading','Save our date')} className="rg-script">Save our date</EditableText><EditableText as="div" textId="t1.save-date.scratch" label="Scratch card"><HeartDateReveal date={details ? formatDate(details.date) : "20 December 2026"} day={details ? formatDate(details.date,{weekday:"long"}) : "Sunday"} time={details ? formatTime(details.time) : "11:00 in the morning"}  /></EditableText></InvitationSection>
-      <InvitationSection data-invite-section="countdown" className="rg-section"><Divider textId="t1.countdown.divider-top" /><EditableText as="p" {...text('countdown','caption','Counting down to Nikah & Wedding')} className="rg-eyebrow">Counting down to Nikah & Wedding</EditableText><EditableText as="h2" {...text('countdown','heading','Until our forever')} className="rg-script">Until our forever</EditableText><EditableText as="div" textId="t1.countdown.timer" label="Countdown timer"><Countdown /></EditableText><Divider textId="t1.countdown.divider-bottom" /></InvitationSection>
+      <PersonalNotes family notes={false} />
+      <InvitationSection data-invite-section="countdown" className="rg-section"><Divider textId="t1.countdown.divider-top" /><EditableText as="p" {...text('countdown','caption','Counting down to Nikah & Wedding')} className="rg-eyebrow">Counting down to Nikah & Wedding</EditableText><EditableText as="h2" {...text('countdown','heading','Until our forever')} className="rg-script">Until our forever</EditableText><EditableText as="div" textId="t1.countdown.timer" label="Countdown timer"><Countdown /></EditableText></InvitationSection>
       <InvitationSection data-invite-section="programme" className="rg-section mr-celebrations" aria-labelledby="mr-celebrations-title">
-        <InvitationSection as="div" data-invite-section="programme-heading" className="mr-celebration-heading"><EditableText as="div" textId="t1.programme.flower" label="Botanical flower"><CelebrationBotanical className="mr-heading-flower"/></EditableText><EditableText as="p" {...text('programme','caption','Together, in celebration')} className="rg-eyebrow">Together, in celebration</EditableText><EditableText as="h2" {...text('programme','heading','Moments that become memories')} id="mr-celebrations-title" className="rg-script">Moments that<br/>become memories</EditableText><EditableText as="p" {...text('programme','intro','Celebrations introduction')} className="mr-intro">{details ? `${events.length} celebrations. One beautiful beginning.` : "Five gatherings. One beautiful beginning."}</EditableText><Divider textId="t1.programme.divider" /><EditableText as="p" {...text('programme','year','Celebration month and time zone')} className="mr-year">{details ? formatDate(details.date,{month:"long",year:"numeric"}) : "December 2026"} <span>✧</span> All times in IST</EditableText></InvitationSection>
+        <InvitationSection as="div" data-invite-section="programme-heading" className="mr-celebration-heading"><EditableText as="div" textId="t1.programme.flower" label="Botanical flower"><CelebrationBotanical className="mr-heading-flower"/></EditableText><EditableText as="p" {...text('programme','caption','Together, in celebration')} className="rg-eyebrow">Together, in celebration</EditableText><EditableText as="h2" {...text('programme','heading','Moments that become memories')} id="mr-celebrations-title" className="rg-script">Moments that<br/>become memories</EditableText><Divider textId="t1.programme.divider" /></InvitationSection>
         <div className="mr-celebration-body">
         <CelebrationLayout personalized={!!details}><div className="mr-events">{events.map(event => <article className={`mr-event ${event.id === 'nikah' ? 'mr-main-event' : ''}`} key={event.layoutKey} aria-labelledby={`mr-title-${event.id}`}>
           <InvitationSection as="div" data-invite-section="celebration" className="mr-event-paper">
@@ -224,11 +223,10 @@ export default function RoyalGrace() {
           <div className="mr-actions"><EditableText as="a" {...eventText(event,'directions','Directions label')} data-layout-id={`${event.id}:directions`} className="mr-directions" href={event.map} target="_blank" rel="noreferrer" aria-label={`Directions to ${event.venue}`}>Directions <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true" style={{ flexShrink: 0 }}><path d="M6 18 18 6M6 6h12v12" /></svg></EditableText><EditableText as="a" {...eventText(event,'calendar','Save the date label')} data-layout-id={`${event.id}:calendar`} className="mr-calendar" onClick={e=>{if(details){e.preventDefault();downloadCalendar({title:event.title,date:event.iso.slice(0,10),time:event.iso.slice(11,16),venue:event.venue,address:event.address,map:event.map},details.offset,couple)}}} href="#" target="_blank" rel="noreferrer" aria-label={`Add ${event.title} to calendar`}>Save the date <span>+</span></EditableText></div>
           </InvitationSection>
         </article>)}</div></CelebrationLayout>
-        <InvitationSection as="div" data-invite-section="programme-close" className="mr-celebration-close"><span aria-hidden="true">♡</span><EditableText as="p" {...text('programme','closing','Every celebration is sweeter with you.')} className="rg-script">Every celebration is sweeter with you.</EditableText></InvitationSection>
         </div>
       </InvitationSection>
       {!details && <InvitationSection data-invite-section="gallery" className="rg-section mr-gallery"><Divider textId="t1.gallery.divider-top" /><p className="rg-eyebrow">Captured with love</p><h2 className="rg-script">Every moment, held close.</h2><p>Visit the gallery as the celebration unfolds and relive the memories with us.</p><Divider textId="t1.gallery.divider-bottom" /></InvitationSection>}
-      <PersonalNotes/>
+      <PersonalNotes family={false}/>
       <InvitationSection as="footer" data-invite-section="closing" className="rg-ending"><EditableText as="p" {...text('closing','caption','Made with love for our family and friends')} className="rg-eyebrow">Made with love for our family and friends</EditableText><EditableText as="h2" {...text('closing','heading','Forever & ever')} className="rg-script">Forever & ever</EditableText><Divider textId="t1.closing.divider" /><span className="rg-script"><EditableText {...text('closing','groom',"Groom's name · closing")} style={{display:'block'}}>{groom}</EditableText><EditableText {...text('closing','separator','Ampersand · closing')} style={{display:'block'}}>&amp;</EditableText><EditableText {...text('closing','bride',"Bride's name · closing")} style={{display:'block'}}>{bride}</EditableText></span><EditableText as="p" {...text('closing','date','Wedding date · closing')} className="rg-eyebrow">{details ? formatDate(details.date) : "20 · 12 · 26"}</EditableText></InvitationSection>
     </div>}
   </main></InvitationLayoutProvider>
