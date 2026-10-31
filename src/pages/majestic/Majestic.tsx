@@ -84,7 +84,7 @@ function EventCard({ event, eventKey, details: d }: { event: Celebration; eventK
       <Copy as="p" field={`${prefix}.weekday`} className="mj-eyebrow">{formatDate(event.date, { weekday: 'long' })}</Copy>
       <Copy as="h2" field={`${prefix}.title`}>{wrapCardText(event.title, 18)}</Copy>
       <div className="mj-event-date" aria-label={formatDate(event.date)}><Copy field={`${prefix}.day`}>{event.date.slice(8)}</Copy><Copy field={`${prefix}.month`}>{formatDate(event.date, { month: 'short' }).toUpperCase()}</Copy><Copy field={`${prefix}.year`}>{event.date.slice(0, 4)}</Copy></div>
-      <Copy as="p" field={`${prefix}.time`}>{formatTime(event.time)}</Copy>
+      <Copy as="p" field={`${prefix}.time`}>{formatTime(event.time ?? '')}</Copy>
       <Copy as="h3" field={`${prefix}.venue`}>{wrapCardText(event.venue, 24)}</Copy>
       <Copy as="p" field={`${prefix}.address`}>{wrapCardText(event.address, 32)}</Copy>
       <div className="mj-links">{event.map.trim() && <Copy as="a" field={`${prefix}.directions`} href={event.map} target="_blank" rel="noreferrer">Directions ↗</Copy>}<Copy as="button" type="button" field={`${prefix}.calendar`} onClick={() => downloadCalendar(event, d.offset, `${d.groom} & ${d.bride}`)}>Add to calendar</Copy></div>

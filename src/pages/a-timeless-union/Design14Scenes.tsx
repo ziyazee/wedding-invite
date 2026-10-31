@@ -205,7 +205,7 @@ function EngagementCard({ duplicate = false, event }: { duplicate?: boolean; eve
           </span>
         </time>
         <p className={"d14-engagement-time"}>
-          {eventTime(event.time)}
+          {eventTime(event.time ?? '')}
         </p>
         <div className={"d14-engagement-rule"} aria-hidden={"true"}>
           <svg className={"d14-engagement-lotus"} viewBox={"0 0 60 44"} fill={"none"} stroke={"currentColor"} strokeWidth={"1.5"} aria-hidden={"true"}>
@@ -263,7 +263,7 @@ function SangeethCard({ duplicate = false, event }: { duplicate?: boolean; event
           </span>
         </time>
         <p className={"d14-engagement-time"}>
-          {eventTime(event.time)}
+          {eventTime(event.time ?? '')}
         </p>
         <div className={"d14-engagement-rule"} aria-hidden={"true"}>
           <svg className={"d14-engagement-lotus"} viewBox={"0 0 60 44"} fill={"none"} stroke={"currentColor"} strokeWidth={"1.5"} aria-hidden={"true"}>
@@ -321,7 +321,7 @@ function MarriageCard({ duplicate = false, event }: { duplicate?: boolean; event
           </span>
         </time>
         <p className={"d14-engagement-time"}>
-          {eventTime(event.time)}
+          {eventTime(event.time ?? '')}
         </p>
         <div className={"d14-engagement-rule"} aria-hidden={"true"}>
           <svg className={"d14-engagement-lotus"} viewBox={"0 0 60 44"} fill={"none"} stroke={"currentColor"} strokeWidth={"1.5"} aria-hidden={"true"}>
@@ -379,7 +379,7 @@ function ReceptionCard({ duplicate = false, event }: { duplicate?: boolean; even
           </span>
         </time>
         <p className={"d14-engagement-time"}>
-          {eventTime(event.time)}
+          {eventTime(event.time ?? '')}
         </p>
         <div className={"d14-engagement-rule"} aria-hidden={"true"}>
           <svg className={"d14-engagement-lotus"} viewBox={"0 0 60 44"} fill={"none"} stroke={"currentColor"} strokeWidth={"1.5"} aria-hidden={"true"}>

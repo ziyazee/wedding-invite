@@ -97,7 +97,7 @@ export default function RoyalGrace() {
     layoutKey: event.id || `legacy-${details.events.indexOf(event)}`,
     id: event.date === details.date ? 'nikah' : `event-${index}`,
     title:event.title,date:formatDate(event.date,{weekday:'long',month:'long',day:'numeric'}),
-    iso:`${event.date}T${event.time || '00:00'}:00${details.offset}`,time:formatTime(event.time),venue:event.venue,address:event.address,map:mapURL(event.venue,event.address===event.venue?'':event.address,event.map),
+    iso:`${event.date}T${event.time || '00:00'}:00${details.offset}`,time:formatTime(event.time ?? ''),venue:event.venue,address:event.address,map:mapURL(event.venue,event.address===event.venue?'':event.address,event.map),
   })) : defaultEvents.map(event => ({ ...event, layoutKey: event.id }))
   const text = (section: string, field: string, label: string) => editableText(details?.template, section, field, label)
   const basePlacement = (event: (typeof events)[number], field: string) => details && event.id === 'nikah' ? royalGraceBasePlacements[field] : undefined
