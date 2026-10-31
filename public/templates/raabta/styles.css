@@ -373,6 +373,26 @@ h1.reveal.is-visible, h2.reveal.is-visible, h3.reveal.is-visible,
   font-weight: 600;
   color: var(--cream-text);
 }
+.invite-person-block {
+  margin-top: 2.5vh;
+  text-align: center;
+}
+.invite-person-name {
+  font-family: var(--font-display);
+  font-style: italic;
+  font-size: clamp(1.4rem, 5vw, 2rem);
+  font-weight: 600;
+  color: var(--gold-300);
+  line-height: 1.2;
+}
+.invite-person-family {
+  margin-top: 0.6vh;
+  font-family: var(--font-body);
+  font-size: 0.88rem;
+  color: var(--cream-text);
+  opacity: 0.8;
+  letter-spacing: 0.02em;
+}
 
 /* ── Shared "vessel" treatment — a bordered panel with jasmine corner
    sprays, reused by the blessing / invite / things-to-know scenes so no
@@ -889,14 +909,14 @@ h1.reveal.is-visible, h2.reveal.is-visible, h3.reveal.is-visible,
 .rsvp-btn {
   padding: 0.9em 1.8em;
   border-radius: 999px;
-  border: 1.5px solid var(--gold-600);
+  border: 1.5px solid var(--gold-400);
   background: transparent;
-  color: var(--indigo-800);
+  color: var(--gold-300);
   font-family: var(--font-body);
   font-size: 0.95rem;
   cursor: pointer;
 }
-.rsvp-yes { background: var(--gold-600); color: var(--cream-text); }
+.rsvp-yes { background: linear-gradient(135deg, var(--gold-400), var(--gold-600)); color: var(--night-900); font-weight: 500; }
 .rsvp-btn:hover { opacity: 0.88; }
 
 .rsvp-form, .wishes-form { text-align: left; margin-top: 2vh; }
@@ -1121,11 +1141,17 @@ h1.reveal.is-visible, h2.reveal.is-visible, h3.reveal.is-visible,
   .wish-all-list { grid-template-columns: repeat(2, 1fr); }
 }
 
+#order-personal-notes.order-extra { padding: 0 !important; text-align: center; background: none !important; border: none !important; box-shadow: none !important; margin: 0 0 8vh; color: var(--cream-text); }
+#order-personal-notes .notes-title { font-family: var(--font-heading); font-size: 1.4rem; color: var(--gold-300); letter-spacing: 0.06em; margin-bottom: 0.8em; }
+
 /* ── FOOTER ────────────────────────────────────────────────────────── */
 .footer-ending { margin-top: 6vh; text-align: center; }
 .footer-ornament { width: 180px; margin: 0 auto; }
-.watermark { margin-top: 2vh; font-size: 0.78rem; opacity: 0.6; }
-.watermark a { text-decoration: none; border-bottom: 1px solid currentColor; }
+#designed-by-footer { display: inline-flex; align-items: center; justify-content: center; gap: 6px; margin: 2vh auto 0; padding: 10px 20px; background: rgba(255,255,255,0.92); border-radius: 999px; }
+.footer-ending { display: flex; flex-direction: column; align-items: center; }
+.designed-by-label { font-size: 11px; letter-spacing: 0.04em; color: rgba(0,0,0,0.45); text-transform: uppercase; }
+.designed-by-logo { max-height: 22px; width: auto; object-fit: contain; }
+.designed-by-name { font-size: 13px; font-weight: 600; color: rgba(0,0,0,0.6); }
 
 /* ── MUSIC BUTTON ──────────────────────────────────────────────────── */
 .music-btn {
@@ -1171,7 +1197,6 @@ h1.reveal.is-visible, h2.reveal.is-visible, h3.reveal.is-visible,
 }
 .scene-rsvp .raabta-wish-message { color: var(--cream-text); }
 .scene-rsvp .raabta-wish-author { color: var(--gold-300); }
-.scene-rsvp .watermark { color: var(--cream-text); }
 @media (prefers-reduced-motion: reduce) {
   .scene-rsvp { background-attachment: scroll, scroll; }
 }

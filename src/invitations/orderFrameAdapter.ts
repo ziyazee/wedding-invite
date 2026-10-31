@@ -204,14 +204,6 @@ export function installOrderFrameRsvp(doc: Document, template: number, target?: 
   const name = doc.createElement('input'); name.placeholder = 'Your name'; name.setAttribute('aria-label', 'Your name'); name.required = true; name.maxLength = 120
   const count = doc.createElement('input'); count.type = 'number'; count.min = '1'; count.max = '10'; count.value = '1'; count.required = true; count.setAttribute('aria-label', 'Number of guests')
   const guestFields = doc.createElement('div')
-  count.oninput = () => {
-    const total = Math.min(10, Math.max(1, Number(count.value) || 1))
-    const values = Array.from(guestFields.querySelectorAll('input')).map(input => input.value)
-    guestFields.replaceChildren()
-    for (let i = 1; i < total; i++) {
-      const input = doc.createElement('input'); input.required = true; input.maxLength = 120; input.placeholder = `Guest ${i + 1} name`; input.setAttribute('aria-label', input.placeholder); input.value = values[i - 1] || ''; guestFields.append(input)
-    }
-  }
   const attendance = doc.createElement('select'); attendance.setAttribute('aria-label', 'Attendance')
   for (const [value, label] of [['yes', 'Attending'], ['no', 'Unable to attend']]) { const option = doc.createElement('option'); option.value = value; option.textContent = label; attendance.append(option) }
   attendance.onchange = () => {
@@ -219,16 +211,17 @@ export function installOrderFrameRsvp(doc: Document, template: number, target?: 
     guestFields.hidden = count.disabled
     guestFields.querySelectorAll('input').forEach(input => { input.disabled = count.disabled })
   }
+  const message = doc.createElement('textarea'); message.placeholder = 'Message (optional)'; message.setAttribute('aria-label', 'Message'); message.maxLength = 1000; message.rows = 3
   const button = doc.createElement('button'); button.type = 'submit'; button.textContent = 'Send RSVP'
   const status = doc.createElement('p'); status.setAttribute('role', 'status')
   if (!target) { button.disabled = true; status.textContent = 'RSVP is available on the published invitation.' }
-  form.append(name, attendance, count, guestFields, button, status); host.replaceChildren(form)
+  form.append(name, attendance, count, guestFields, message, button, status); host.replaceChildren(form)
   form.onsubmit = async e => {
     e.preventDefault()
     if (!target || button.disabled) return
     button.disabled = true; status.textContent = 'Sending…'
     try {
-      await saveOrderRsvp(target, { name: name.value.trim(), attendance: attendance.value === 'no' ? 'no' : 'yes', count: attendance.value === 'no' ? 0 : Number(count.value), guests: attendance.value === 'no' ? [] : Array.from(guestFields.querySelectorAll('input')).map(input => input.value.trim()), message: '' })
+      await saveOrderRsvp(target, { name: name.value.trim(), attendance: attendance.value === 'no' ? 'no' : 'yes', count: attendance.value === 'no' ? 0 : Number(count.value), guests: [], message: message.value.trim() })
       status.textContent = 'Thank you. Your reply has been saved.'
     } catch (error) { status.textContent = error instanceof Error ? error.message : 'Please try again.' }
     finally { button.disabled = false }

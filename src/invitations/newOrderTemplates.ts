@@ -42,11 +42,11 @@ export function applyNewOrderTemplate(doc: Document, d: InvitationData) {
   })
   const hide = (selector: string) => doc.querySelectorAll<HTMLElement>(selector).forEach(el => { el.hidden = true })
   if (d.template === 13) {
-    copy('#heroGroom,#p1Name,#gateCtagroom', d.groom, 'couple', 'groom'); copy('#heroBride,#p2Name,#gateCTAbride', d.bride, 'couple', 'bride')
+    copy('#heroGroom,#p1Name,#gateCtagroom,#blessingGroom', d.groom, 'couple', 'groom'); copy('#heroBride,#p2Name,#gateCTAbride,#blessingBride', d.bride, 'couple', 'bride')
     doc.querySelector('#heroGroom')?.setAttribute('data-person1', d.groom); doc.querySelector('#heroBride')?.setAttribute('data-person2', d.bride)
     copy('.hero-blessing', d.message, 'opening', 'message')
-    const families = doc.querySelectorAll<HTMLElement>('.scene-blessing .invite-couple-line')
-    families.forEach((el, index) => { const value = index === 0 ? d.groomFamily : index === 1 ? d.brideFamily : ''; el.textContent = value; el.hidden = !value.trim(); mark(el, 'families', index === 0 ? 'groom' : 'bride') })
+    copy('#blessingGroomFamily', d.groomFamily, 'families', 'groom'); copy('#blessingBrideFamily', d.brideFamily, 'families', 'bride')
+    doc.querySelectorAll<HTMLElement>('.invite-person-block').forEach((block, i) => { const family = block.querySelector<HTMLElement>('.invite-person-family'); if(family) block.hidden = !(i === 0 ? d.groomFamily : d.brideFamily).trim() })
     copy('#inviteDateText,#countdownDateDisplay', formatDate(d.date), 'date', 'wedding')
     copy('.scene-things .thing-row:first-of-type .thing-val', d.venue, 'venue', 'name')
     const rows = doc.querySelectorAll<HTMLElement>('.thing-row')
@@ -71,6 +71,15 @@ export function applyNewOrderTemplate(doc: Document, d: InvitationData) {
     doc.querySelectorAll<HTMLAnchorElement>('[data-scene="7"] a').forEach(el => { el.hidden = true })
   }
 
+  const footerHost = doc.querySelector('#designed-by-footer')
+  if (footerHost && (d.companyLogo || d.companyName)) {
+    footerHost.innerHTML = ''
+    const label = doc.createElement('span'); label.className = 'designed-by-label'; label.textContent = 'Invitation by '
+    footerHost.append(label)
+    if (d.companyLogo) { const img = doc.createElement('img'); img.className = 'designed-by-logo'; img.src = d.companyLogo; img.alt = d.companyName || 'Company'; footerHost.append(img) }
+    else { const name = doc.createElement('span'); name.className = 'designed-by-name'; name.textContent = d.companyName!; footerHost.append(name) }
+  }
+
   if (d.template !== 12) {
     const host = doc.querySelector(d.template === 13 ? '.functions-run' : '.functions')
     const signature = JSON.stringify([d.events, d.dressCode, d.groom, d.bride, d.offset])
@@ -91,6 +100,7 @@ export function applyNewOrderTemplate(doc: Document, d: InvitationData) {
           set('.fn-dress,.fn__meta',d.dressCode,'dress')
           card.querySelectorAll<HTMLElement>('.fn-dress,.fn__meta').forEach(el=>{el.hidden=!d.dressCode.trim()})
           card.querySelectorAll<HTMLAnchorElement>('a').forEach(el=>{el.hidden=!event.map.trim();el.href=event.map||'#';mark(el,section,'directions')})
+          card.querySelectorAll('button.fn-map,button.fn__map').forEach(el=>el.remove())
           const button=doc.createElement('button');button.type='button';button.className=d.template===13?'fn-map':'fn__map';button.textContent='Add to calendar';mark(button,section,'calendar');button.onclick=()=>downloadCalendar(event,d.offset,`${d.groom} & ${d.bride}`)
           ;(card.querySelector('.function-card')||card).append(button)
           return card
@@ -102,11 +112,12 @@ export function applyNewOrderTemplate(doc: Document, d: InvitationData) {
 
   // Keep optional order notes/gallery out of demo contact and photo sections.
   let extras=doc.querySelector<HTMLElement>('#order-personal-notes')
-  if(!extras){extras=doc.createElement('section');extras.id='order-personal-notes';extras.className='order-extra';(doc.querySelector('#rsvpSection')||doc.querySelector('[data-scene="8"]')||doc.querySelector('#root'))?.after(extras)}
+  if(!extras){extras=doc.createElement('section');extras.id='order-personal-notes';extras.className='order-extra';const anchor=d.template===13?doc.querySelector('#rsvpSection .rsvp-block'):null;if(anchor)anchor.before(extras);else (doc.querySelector('#rsvpSection')||doc.querySelector('[data-scene="8"]')||doc.querySelector('#root'))?.after(extras)}
   const extraKey=JSON.stringify([d.giftNote,d.dressCode,d.gallery,d.map])
   if(extras.dataset.content!==extraKey){
     extras.dataset.content=extraKey;extras.replaceChildren();extras.setAttribute('data-invite-section','notes')
-    for(const [field,value] of [['dress',d.dressCode],['gift',d.giftNote]])if(value.trim()){const p=doc.createElement('p');p.textContent=value;mark(p,'notes',field);extras.append(p)}
+    let hasNote=false
+    for(const [field,value] of [['dress',d.dressCode],['gift',d.giftNote]]){if(field==='dress'&&d.template===13)continue;if(value.trim()){if(!hasNote&&d.template===13){const h=doc.createElement('h3');h.className='notes-title';h.textContent='Short Note';extras.append(h);hasNote=true}const p=doc.createElement('p');p.textContent=value;mark(p,'notes',field);extras.append(p)}}
     for(const [field,title,url] of [['gallery','Our photo gallery',d.gallery],['directions','Wedding directions',d.map]])if(url.trim()){const a=doc.createElement('a');a.href=url;a.target='_blank';a.rel='noopener noreferrer';a.textContent=title;mark(a,'notes',field);extras.append(a)}
     extras.hidden=!extras.childElementCount
   }
