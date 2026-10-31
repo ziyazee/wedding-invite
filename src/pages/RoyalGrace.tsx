@@ -102,6 +102,7 @@ export default function RoyalGrace() {
   const text = (section: string, field: string, label: string) => editableText(details?.template, section, field, label)
   const basePlacement = (event: (typeof events)[number], field: string) => details && event.id === 'nikah' ? royalGraceBasePlacements[field] : undefined
   const eventText = (event: (typeof events)[number], field: string, label: string) => ({ ...text(`event-${event.layoutKey}`, field, label), baseTransform: basePlacement(event, field) })
+  const root = useRef<HTMLElement>(null)
   const video = useRef<HTMLVideoElement>(null)
   const timer = useRef<ReturnType<typeof setTimeout> | undefined>(undefined)
   const isEditor = new URLSearchParams(window.location.search).get('editor') === '1'
@@ -111,7 +112,7 @@ export default function RoyalGrace() {
   const [videoFrameReady, setVideoFrameReady] = useState(false)
 
   useEffect(() => {
-    if (isEditor && video.current) video.current.play().catch(() => { setVideoFailed(true); setNamesVisible(true) })
+    if (isEditor && video.current) { video.current.currentTime = 1; video.current.play().catch(() => { setVideoFailed(true); setNamesVisible(true) }) }
   }, [isEditor])
 
   useEffect(() => {
@@ -155,14 +156,28 @@ export default function RoyalGrace() {
     if (opened) return
     setOpened(true)
     if (videoFailed || window.matchMedia('(prefers-reduced-motion: reduce)').matches) { setNamesVisible(true); return }
-    video.current?.play().catch(() => { setVideoFailed(true); setNamesVisible(true) })
+    if (video.current) { video.current.currentTime = 1; video.current.play().catch(() => { setVideoFailed(true); setNamesVisible(true) }) }
   }
+
+  useEffect(() => {
+    const el = root.current
+    if (!el || !opened || isEditor || window.matchMedia('(prefers-reduced-motion: reduce)').matches) return
+    el.classList.add('invite-motion-ready')
+    const paper = el.querySelector('#rg-welcome')
+    if (!paper) return
+    const targets = [...paper.querySelectorAll<HTMLElement>('[data-invite-text]')]
+    const observer = new IntersectionObserver(entries => {
+      entries.forEach(entry => { if (entry.isIntersecting) { entry.target.classList.add('invite-motion-visible'); observer.unobserve(entry.target) } })
+    }, { threshold: 0.12, rootMargin: '0px 0px -4% 0px' })
+    targets.forEach(t => observer.observe(t))
+    return () => { observer.disconnect(); targets.forEach(t => t.classList.remove('invite-motion-visible')); el.classList.remove('invite-motion-ready') }
+  }, [opened])
 
   const mergedLayout = {
     version: 1 as const,
     elements: { ...defaultTextLayout.elements, ...details?.textOverrides?.elements },
   }
-  return <InvitationLayoutProvider layout={mergedLayout}><main className="royal-grace">
+  return <InvitationLayoutProvider layout={mergedLayout}><main ref={root} className="royal-grace">
     <FlowerTrail />
     <PersonalMusic src={details?.music || "/bisara.mp3"} />
     <InvitationSection data-invite-section="opening" className={`rg-hero ${namesVisible ? 'rg-is-open' : ''}`} style={!namesVisible ? { backgroundImage: `url('${ASSETS}opening-poster.jpg')` } : undefined} aria-label="Wedding invitation">

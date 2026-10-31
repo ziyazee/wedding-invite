@@ -353,3 +353,321 @@
   background-size: 16px 16px;
   cursor: pointer;
 }
+
+/* ── UI REFINEMENT PASS ─────────────────────────────────────────────────────── */
+
+/* 1. Header: vertical alignment, hover transitions, balanced spacing */
+.showcase-page .studio-header {
+  height: 64px;
+  align-items: center;
+  border-bottom: 1px solid #c4a57030;
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  transition: border-color .2s;
+}
+.showcase-page .studio-brand > img { height: 50px; }
+.showcase-page .studio-header nav a,
+.showcase-page .studio-header nav button {
+  position: relative;
+  padding: 6px 0;
+  font-size: 14px;
+  color: #4a3d32;
+  letter-spacing: .01em;
+  transition: color .2s;
+}
+.showcase-page .studio-header nav a:hover,
+.showcase-page .studio-header nav button:hover { color: var(--gold); }
+.showcase-page .studio-header nav .active {
+  color: var(--gold);
+  border-bottom: 1.5px solid var(--gold);
+}
+.showcase-page .studio-header .gold-button {
+  font-size: 13px;
+  padding: 10px 24px;
+  min-width: 152px;
+  letter-spacing: .02em;
+  transition: filter .2s, transform .15s;
+}
+.showcase-page .studio-header .gold-button:hover {
+  transform: translateY(-1px);
+}
+.showcase-page .search-toggle {
+  display: grid;
+  place-items: center;
+  width: 36px;
+  height: 36px;
+  border-radius: 50%;
+  transition: background .2s;
+}
+.showcase-page .search-toggle:hover { background: #e8dbc840; }
+
+/* 2. Hero: refine typography balance and CTA breathing room */
+.showcase-page .studio-eyebrow {
+  font-size: 9px;
+  letter-spacing: .48em;
+  color: #9a6b35;
+  margin-bottom: 16px;
+  font-weight: 500;
+}
+.showcase-page .hero-copy h1 {
+  margin-bottom: 18px;
+  color: #5e2f16;
+}
+.showcase-page .hero-description {
+  color: #4a3d32;
+  margin-bottom: 22px;
+  line-height: 1.15;
+}
+.showcase-page .hero-copy > .gold-button {
+  padding: 12px 34px;
+  font-size: 16px;
+  letter-spacing: .02em;
+  box-shadow: 0 4px 16px #8c5c2622;
+  transition: filter .2s, transform .2s, box-shadow .2s;
+}
+.showcase-page .hero-copy > .gold-button:hover {
+  transform: translateY(-1px);
+  box-shadow: 0 6px 22px #8c5c2630;
+}
+.showcase-page .hero-benefits {
+  margin-top: 28px;
+}
+.showcase-page .hero-benefits > span {
+  font-size: 11px;
+  color: #5e4a38;
+  letter-spacing: .01em;
+}
+.showcase-page .hero-benefits svg { color: #8a5a24; }
+.showcase-page .hero-note {
+  font-size: 26px;
+  color: #7a5230;
+  opacity: .7;
+}
+
+/* 3. Category navigation: consistent icons, smooth transitions, better active state */
+.showcase-page .template-filters {
+  height: 62px;
+  border-radius: 12px;
+  border-color: #c4a57030;
+  margin-bottom: 24px;
+  gap: 0;
+  transition: box-shadow .2s;
+}
+.showcase-page .template-filters button {
+  padding: 8px 10px;
+  font-size: 11px;
+  color: #6b5a48;
+  letter-spacing: .02em;
+  transition: background .2s, color .2s;
+}
+.showcase-page .template-filters button:hover {
+  background: #f5ece040;
+  color: #4a3520;
+}
+.showcase-page .template-filters button.active {
+  background: linear-gradient(135deg, #ecdbc4, #f2e7d6);
+  color: #5c3a18;
+  box-shadow: inset 0 0 0 1px #c4a57030;
+}
+.showcase-page .template-filters button span {
+  height: 22px;
+  margin-bottom: 4px;
+}
+.showcase-page .template-filters svg {
+  width: 21px;
+  height: 21px;
+  stroke-width: 1.3;
+}
+.showcase-page .template-filters button + button::before {
+  border-left-color: #c4a57020;
+}
+
+/* 4. Template heading: refined hierarchy */
+.showcase-page .template-heading {
+  margin-bottom: 16px;
+}
+.showcase-page .template-heading h2 {
+  font-size: 28px;
+  letter-spacing: -.025em;
+  color: #27221d;
+}
+.showcase-page .template-heading > div > span {
+  font-size: 13px;
+  color: #8a7d71;
+  letter-spacing: .01em;
+}
+.showcase-page .template-heading select {
+  border-color: #c4a57040;
+  border-radius: 8px;
+  padding: 8px 38px 8px 14px;
+  font-size: 13px;
+  color: #4a3d32;
+  transition: border-color .2s;
+}
+.showcase-page .template-heading select:hover {
+  border-color: #a5753c80;
+}
+
+/* 5. Template cards: refined hover, consistent visual weight */
+.showcase-page .template-image-wrap {
+  border-radius: 8px;
+  box-shadow: 0 3px 10px #593a2420, 0 1px 2px #67472220, inset 0 1px #fff;
+}
+.showcase-page .template-image-wrap img,
+.showcase-page .template-image-wrap .template-intro-video {
+  transition: transform .45s cubic-bezier(.2,.6,.3,1);
+}
+@media(hover:hover) {
+  .showcase-page .template-card:hover .template-image-wrap {
+    transform: translateY(-2px);
+    box-shadow: 0 8px 20px #593a2430, 0 0 0 1px #c5a57480;
+  }
+  .showcase-page .template-card:hover .template-image-wrap img,
+  .showcase-page .template-card:hover .template-image-wrap .template-intro-video {
+    transform: scale(1.02);
+  }
+}
+.showcase-page .template-name {
+  font-size: 14px !important;
+  line-height: 1.25;
+  margin-top: 10px;
+  color: #2d231a;
+  letter-spacing: -.01em;
+  transition: color .2s;
+}
+.showcase-page .template-card:hover .template-name { color: var(--gold); }
+.showcase-page .template-mood {
+  font-size: 10px;
+  margin-top: 4px;
+  color: #9a8d80;
+  letter-spacing: .02em;
+}
+
+/* Favourite icon refinement */
+.showcase-page .card-favorite {
+  top: 8px;
+  right: 8px;
+  width: 28px;
+  height: 28px;
+  border-radius: 50%;
+  background: #18120e40;
+  backdrop-filter: blur(4px);
+  -webkit-backdrop-filter: blur(4px);
+  display: grid;
+  place-items: center;
+  transition: background .2s, transform .15s;
+}
+.showcase-page .card-favorite:hover {
+  background: #18120e60;
+  transform: scale(1.1);
+}
+.showcase-page .card-favorite svg {
+  width: 16px;
+  height: 16px;
+  stroke-width: 2;
+}
+.showcase-page .card-favorite.saved {
+  background: #18120e50;
+}
+.showcase-page .card-favorite.saved svg {
+  fill: #fbe2b0;
+  stroke: #fbe2b0;
+}
+
+/* 6. Hero-to-templates transition: breathing room, continuous feel */
+.showcase-page .template-section {
+  padding-top: 20px;
+}
+
+/* 7. Footer refinement */
+.showcase-page .showcase-footer {
+  padding: 42px 0 28px;
+  font-size: 10px;
+  letter-spacing: .12em;
+  color: #a0927f;
+}
+
+/* 8. Template search refinement */
+.showcase-page .template-search {
+  border-color: #c4a57050;
+  border-radius: 10px;
+  padding: 10px 14px;
+  transition: border-color .2s;
+}
+.showcase-page .template-search:focus-within {
+  border-color: var(--gold);
+}
+.showcase-page .template-search input {
+  font-size: 15px;
+}
+
+/* 9. Empty state refinement */
+.showcase-page .template-empty {
+  padding: 60px 20px;
+}
+.showcase-page .template-empty h3 {
+  font-size: 24px;
+  font-weight: 400;
+  color: #5e4a38;
+  letter-spacing: -.015em;
+}
+
+/* 10. Modal refinement */
+.showcase-page .studio-modal {
+  border-radius: 20px;
+  border-color: #c4a57080;
+  box-shadow: 0 24px 80px #0003;
+}
+.showcase-page .studio-modal h2 {
+  font-size: 30px;
+  letter-spacing: -.02em;
+}
+
+/* 11. Gold button global refinement */
+.showcase-page .gold-button {
+  border-radius: 28px;
+  font-weight: 400;
+  letter-spacing: .02em;
+  transition: filter .2s, transform .15s, box-shadow .2s;
+}
+
+/* ── RESPONSIVE REFINEMENT OVERRIDES ──────────────────────────────────────── */
+
+@media (max-width: 1150px) {
+  .showcase-page .studio-header nav { gap: 22px; }
+  .showcase-page .template-heading h2 { font-size: 26px; }
+}
+
+@media (min-width: 761px) and (max-width: 1024px) {
+  .showcase-page .studio-header { height: 60px; }
+  .showcase-page .studio-brand > img { height: 44px; }
+  .showcase-page .hero-copy h1 { font-size: clamp(38px, 5vw, 52px); }
+  .showcase-page .template-filters { height: 58px; }
+  .showcase-page .template-filters button { font-size: 10px; }
+}
+
+@media (max-width: 760px) {
+  .showcase-page .studio-header {
+    height: 60px;
+    backdrop-filter: blur(10px);
+    -webkit-backdrop-filter: blur(10px);
+  }
+  .showcase-page .studio-brand > img { height: 42px; }
+  .showcase-page .hero-copy > .gold-button {
+    font-size: 15px;
+    padding: 12px 28px;
+  }
+  .showcase-page .template-filters {
+    height: 60px;
+    border-radius: 10px;
+  }
+  .showcase-page .template-filters button {
+    min-width: 80px;
+    font-size: 10px;
+  }
+  .showcase-page .template-heading h2 { font-size: 26px; }
+  .showcase-page .template-name { font-size: 14px !important; }
+  .showcase-page .template-section { padding: 16px 16px 0; }
+  .showcase-page .card-favorite { width: 26px; height: 26px; }
+  .showcase-page .card-favorite svg { width: 14px; height: 14px; }
+}

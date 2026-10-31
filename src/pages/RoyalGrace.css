@@ -100,6 +100,8 @@
 /* Dimensional ivory roses share the invitation's botanical palette. */
 .royal-grace .rg-save-date{padding-bottom:20px}
 .royal-grace [data-invite-section="notes"]{padding-top:0;padding-bottom:20px;margin-top:-150px}
+.royal-grace .mr-celebrations ~ [data-invite-section="notes"]{margin-top:30px}
+.royal-grace .rg-paper .personal-notes{background:none}
 .royal-grace [data-invite-section="countdown"]{padding-block:20px}
 .royal-grace .mr-celebration-heading{padding-top:0;padding-bottom:0;margin-top:0}
 .royal-grace .mr-heading-flower{position:relative;display:block;inset:auto;width:230px;max-width:100%;height:auto;margin:0 auto 24px;transform:none;filter:none;object-fit:contain}

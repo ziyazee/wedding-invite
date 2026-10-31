@@ -28,8 +28,13 @@ export default function ClientLivePreview() {
     const syncPreview = (event: StorageEvent) => {
       if (event.key === previewKey) setDetails(readPreview())
     }
+    const syncMessage = (event: MessageEvent) => {
+      if (event.data?.type === 'shaadi-preview-update' && event.data.data) setDetails(event.data.data as InvitationData)
+    }
     window.addEventListener('storage', syncPreview)
-    return () => window.removeEventListener('storage', syncPreview)
+    window.addEventListener('message', syncMessage)
+    window.parent?.postMessage({ type: 'shaadi-preview-ready' }, window.location.origin)
+    return () => { window.removeEventListener('storage', syncPreview); window.removeEventListener('message', syncMessage) }
   }, [])
 
   if (!details) return <main style={{ minHeight: '100vh', display: 'grid', placeItems: 'center', color: '#69746d', font: '14px Arial, sans-serif' }}>Preparing live invitation…</main>

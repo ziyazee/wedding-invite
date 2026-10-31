@@ -51,7 +51,6 @@ export default function Login() {
 
   return (
     <main className="login-page">
-      <div className="login-ornament" aria-hidden="true">✧</div>
       <section className="login-card" aria-labelledby="login-title">
         <Link className="login-brand" to="/" aria-label="Shaadi Invites home">
           <img src="/logo.png" alt="Shaadi Invites" />
@@ -70,7 +69,6 @@ export default function Login() {
         </form>
         <p className="login-footnote">Secure access for our invitation partners.</p>
       </section>
-      <div className="login-bottom-mark" aria-hidden="true">✦</div>
     </main>
   )
 }
