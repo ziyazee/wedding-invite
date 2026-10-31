@@ -237,13 +237,11 @@ export default function EmbroideredGarden({ details: d, rsvpTarget }: { details:
     {/* Personal closing note */}
     <Section data-invite-section="closing-native" className="eg-closing-note">
       <Copy field="closing-native.names" className="eg-closing-names"><span>{d.groom}</span><i>&amp;</i><span>{d.bride}</span></Copy>
-      <Copy as="p" field="closing-native.date" className="eg-closing-date">{formatDate(d.date)}</Copy>
     </Section>
 
     {/* Footer with chateau */}
     <footer className="eg-footer">
       <div className="eg-footer-inner">
-        <p className="eg-footer-names">{d.groom} <i>&amp;</i> {d.bride}</p>
         <p className="eg-footer-date">{formatDate(d.date)}</p>
       </div>
       <InvitationMedia className="eg-footer-chateau" src={`${ASSETS}footer-chateau-opt.webp`} alt="Chateau illustration" />

@@ -746,7 +746,7 @@ if (inviteDateEl && prettyDate) inviteDateEl.textContent = prettyDate;
 // ═══════════════════════════════════════════════════════════════════════
 
 (function () {
-  const wall = document.querySelector('[data-aamantran="wish-wall"]');
+  const wall = document.querySelector('[data-raabta="wish-wall"]');
   if (!wall) return;
 
   const INTERVAL    = 4000;
@@ -812,7 +812,7 @@ if (inviteDateEl && prettyDate) inviteDateEl.textContent = prettyDate;
 
   function initGrid() {
     clearInterval(timer);
-    cards   = Array.from(wall.querySelectorAll('.aamantran-wish'));
+    cards   = Array.from(wall.querySelectorAll('.raabta-wish'));
     visible = [];
     hidden  = [];
     rotSlot = 0;
@@ -904,7 +904,7 @@ if (inviteDateEl && prettyDate) inviteDateEl.textContent = prettyDate;
 (function () {
   if (!/^\/demo\//.test(window.location.pathname)) return;
 
-  const wall = document.querySelector('[data-aamantran="wish-wall"]');
+  const wall = document.querySelector('[data-raabta="wish-wall"]');
   if (!wall || wall.children.length) return;
 
   // Six, deliberately: more than the four slots the wall shows on desktop,
@@ -923,14 +923,14 @@ if (inviteDateEl && prettyDate) inviteDateEl.textContent = prettyDate;
   // wishes and need no CSS of their own.
   for (const [message, author] of SAMPLE) {
     const wrap = document.createElement('div');
-    wrap.className = 'aamantran-wish';
+    wrap.className = 'raabta-wish';
 
     const p = document.createElement('p');
-    p.className = 'aamantran-wish-message';
+    p.className = 'raabta-wish-message';
     p.textContent = `"${message}"`;
 
     const span = document.createElement('span');
-    span.className = 'aamantran-wish-author';
+    span.className = 'raabta-wish-author';
     span.textContent = `— ${author}`;
 
     wrap.appendChild(p);
@@ -958,12 +958,12 @@ if (inviteDateEl && prettyDate) inviteDateEl.textContent = prettyDate;
 
 (function () {
   const isDemo   = /^\/demo\//.test(window.location.pathname);
-  const wishForm = document.querySelector('form[data-aamantran="wish"]');
-  const rsvpForm = document.querySelector('form[data-aamantran="rsvp"]');
+  const wishForm = document.querySelector('form[data-raabta="wish"]');
+  const rsvpForm = document.querySelector('form[data-raabta="rsvp"]');
   if (!wishForm && !rsvpForm) return;
 
   function setStatus(form, kind, msg, isError) {
-    const el = form.querySelector(`[data-aamantran="${kind}-status"]`);
+    const el = form.querySelector(`[data-raabta="${kind}-status"]`);
     if (!el) return;
     el.textContent = msg;
     el.style.color = isError ? '#E58F8F' : 'var(--gold-300)';
@@ -991,17 +991,17 @@ if (inviteDateEl && prettyDate) inviteDateEl.textContent = prettyDate;
         return;
       }
 
-      const wall = document.querySelector('[data-aamantran="wish-wall"]');
+      const wall = document.querySelector('[data-raabta="wish-wall"]');
       if (wall) {
         // Same shape the SDK renders, so it styles identically and the wall's
         // MutationObserver picks it up into the rotation and the count.
         const wrap = document.createElement('div');
-        wrap.className = 'aamantran-wish';
+        wrap.className = 'raabta-wish';
         const p = document.createElement('p');
-        p.className = 'aamantran-wish-message';
+        p.className = 'raabta-wish-message';
         p.textContent = `"${message}"`;
         const span = document.createElement('span');
-        span.className = 'aamantran-wish-author';
+        span.className = 'raabta-wish-author';
         span.textContent = `— ${guestName}`;
         wrap.appendChild(p);
         wrap.appendChild(span);
@@ -1058,6 +1058,30 @@ if (inviteDateEl && prettyDate) inviteDateEl.textContent = prettyDate;
     if (buttonsContainer) buttonsContainer.style.display = 'none';
     if (noContainer)      noContainer.style.display      = 'block';
   });
+})();
+
+// ── Guest stepper (+/−) and attending dropdown sync ─────────────────────
+(function () {
+  const countInput = document.getElementById('rsvpGuestCount');
+  const stepVal    = document.getElementById('guestStepVal');
+  const minus      = document.getElementById('guestMinus');
+  const plus       = document.getElementById('guestPlus');
+  const select     = document.getElementById('rsvpAttendingSelect');
+  const hidden     = document.getElementById('rsvpAttending');
+
+  if (countInput && stepVal && minus && plus) {
+    function update(n) {
+      n = Math.max(1, n);
+      countInput.value = n;
+      stepVal.textContent = n;
+    }
+    minus.addEventListener('click', () => update(parseInt(countInput.value || '1', 10) - 1));
+    plus.addEventListener('click',  () => update(parseInt(countInput.value || '1', 10) + 1));
+  }
+
+  if (select && hidden) {
+    select.addEventListener('change', () => { hidden.value = select.value; });
+  }
 })();
 
 
@@ -1122,7 +1146,7 @@ if (inviteDateEl && prettyDate) inviteDateEl.textContent = prettyDate;
     el.style.left = left + '%';
     // The sprite is applied as a CSS background on .fl-img rather than an
     // <img src> here. The platform rewrites asset paths in HTML and CSS, but
-    // in JS it only touches import/from and root-relative "https://api.aamantran.online/r2-proxy/templates/raabta-35864/draft/assets/" strings —
+    // in JS it only touches import/from and root-relative "https://api.raabta.online/r2-proxy/templates/raabta-35864/draft/assets/" strings —
     // a './assets/…' literal would ship unrewritten and 404 on the live
     // invite, silently losing the lanterns. Keep the URL in the stylesheet.
     const img = document.createElement('div');

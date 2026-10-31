@@ -122,15 +122,15 @@
 .eg-native .invitation-envelope-open{width:min(72vw,300px);height:320px;object-fit:contain;margin:0 auto 34px;display:block}
 
 /* Personal closing note */
-.eg-native .eg-closing-note{max-width:680px;margin:auto;padding:55px 30px}
+.eg-native .eg-closing-note{max-width:680px;margin:auto;padding:55px 30px 0}
 .eg-native .eg-closing-names{display:flex;flex-direction:column;align-items:center;font-family:"adobe-caslon-pro",Georgia,serif;font-size:42px;line-height:1.2}
 .eg-native .eg-closing-names span{display:block}
 .eg-native .eg-closing-names i{display:block;font-size:24px;font-style:italic}
 .eg-native .eg-closing-date{margin-top:12px}
 
 /* HTML footer (chateau) */
-.eg-native .eg-footer{text-align:center;overflow:hidden;padding-bottom:8px;margin-top:10px}
-.eg-native .eg-footer-inner{max-width:448px;margin:0 auto;padding:48px 24px 8px}
+.eg-native .eg-footer{text-align:center;overflow:hidden;padding-bottom:8px;margin-top:0}
+.eg-native .eg-footer-inner{max-width:448px;margin:0 auto;padding:16px 24px 8px}
 .eg-native .eg-footer-names{font-family:"adobe-caslon-pro",Georgia,serif;font-size:48px;line-height:1.15;margin:0;padding:0}
 .eg-native .eg-footer-names i{font-style:italic}
 .eg-native .eg-footer-date{font-family:"adobe-caslon-pro",Georgia,serif;font-size:14px;letter-spacing:.36em;text-transform:uppercase;margin-top:12px}

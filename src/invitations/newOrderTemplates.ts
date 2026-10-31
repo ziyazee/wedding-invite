@@ -42,7 +42,7 @@ export function applyNewOrderTemplate(doc: Document, d: InvitationData) {
   })
   const hide = (selector: string) => doc.querySelectorAll<HTMLElement>(selector).forEach(el => { el.hidden = true })
   if (d.template === 13) {
-    copy('#heroGroom,#p1Name', d.groom, 'couple', 'groom'); copy('#heroBride,#p2Name', d.bride, 'couple', 'bride')
+    copy('#heroGroom,#p1Name,#gateCtagroom', d.groom, 'couple', 'groom'); copy('#heroBride,#p2Name,#gateCTAbride', d.bride, 'couple', 'bride')
     doc.querySelector('#heroGroom')?.setAttribute('data-person1', d.groom); doc.querySelector('#heroBride')?.setAttribute('data-person2', d.bride)
     copy('.hero-blessing', d.message, 'opening', 'message')
     const families = doc.querySelectorAll<HTMLElement>('.scene-blessing .invite-couple-line')

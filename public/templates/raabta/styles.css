@@ -31,12 +31,12 @@
   --font-script:  'Amiri', serif;
   --font-body:    'Jost', sans-serif;
 
-  --bg-ivory:  url('https://api.aamantran.online/r2-proxy/templates/raabta-35864/draft/assets/bg-ivory.webp');
-  --bg-indigo: url('https://api.aamantran.online/r2-proxy/templates/raabta-35864/draft/assets/bg-indigo.webp');
-  --bg-night:  url('https://api.aamantran.online/r2-proxy/templates/raabta-35864/draft/assets/bg-night.webp');
-  --bg-courtyard: url('https://api.aamantran.online/r2-proxy/templates/raabta-35864/draft/assets/scene-courtyard.webp');
-  --bg-garden-night: url('https://api.aamantran.online/r2-proxy/templates/raabta-35864/draft/assets/scene-garden-night.webp');
-  --bg-night-sky: url('https://api.aamantran.online/r2-proxy/templates/raabta-35864/draft/assets/scene-night-sky.webp');
+  --bg-ivory:  url('/templates/raabta/assets/bg-ivory.webp');
+  --bg-indigo: url('/templates/raabta/assets/bg-indigo.webp');
+  --bg-night:  url('/templates/raabta/assets/bg-night.webp');
+  --bg-courtyard: url('/templates/raabta/assets/scene-courtyard.webp');
+  --bg-garden-night: url('/templates/raabta/assets/scene-garden-night.webp');
+  --bg-night-sky: url('/templates/raabta/assets/scene-night-sky.webp');
 }
 
 * { box-sizing: border-box; }
@@ -117,10 +117,10 @@ h1.reveal.is-visible, h2.reveal.is-visible, h3.reveal.is-visible,
   top: 0;
   bottom: 0;
   width: 50%;
-  background-image: url('https://api.aamantran.online/r2-proxy/templates/raabta-35864/draft/assets/gate-closed.webp');
+  background-image: url('/templates/raabta/assets/gate-closed.webp');
   background-size: 200% 100%;
   background-repeat: no-repeat;
-  transition: transform 1.3s cubic-bezier(.64,-0.04,.35,1.02), filter 1.3s ease;
+  transition: transform 3s cubic-bezier(.64,-0.04,.35,1.02), filter 3s ease;
   will-change: transform;
   transform-style: preserve-3d;
   backface-visibility: hidden;
@@ -163,11 +163,27 @@ h1.reveal.is-visible, h2.reveal.is-visible, h3.reveal.is-visible,
   direction: rtl;
 }
 .gate-cta-names {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.2vh;
+  margin-bottom: 1.2vh;
+}
+.gate-cta-groom,
+.gate-cta-bride {
   font-family: var(--font-display);
   font-style: italic;
   font-size: clamp(1.8rem, 6.5vw, 2.7rem);
   text-shadow: 0 4px 20px rgba(0,0,0,0.5);
-  margin-bottom: 1.2vh;
+  line-height: 1.1;
+}
+.gate-cta-amp {
+  font-family: var(--font-display);
+  font-style: italic;
+  font-size: clamp(1.1rem, 4vw, 1.6rem);
+  color: var(--gold-300);
+  text-shadow: 0 4px 20px rgba(0,0,0,0.5);
+  line-height: 1.2;
 }
 .gate-cta-tap {
   font-size: 0.78rem;
@@ -271,11 +287,10 @@ h1.reveal.is-visible, h2.reveal.is-visible, h3.reveal.is-visible,
    instead of sitting on their line. */
 .hero-names-row {
   display: flex;
-  align-items: baseline;
-  justify-content: center;
-  gap: clamp(9px, 2.2vw, 18px);
+  flex-direction: column;
+  align-items: center;
+  gap: 0.3vh;
   margin-top: 3vh;
-  flex-wrap: nowrap;
 }
 .hero-name {
   font-family: var(--font-display);
@@ -285,18 +300,14 @@ h1.reveal.is-visible, h2.reveal.is-visible, h3.reveal.is-visible,
   line-height: 1.15;
   color: var(--cream-text);
   text-shadow: 0 4px 24px rgba(0,0,0,0.6), 0 0 12px rgba(11,14,29,0.5);
-  white-space: nowrap;
+  text-align: center;
 }
-/* Set in the same face as the names but much smaller and in gold, so it
-   joins them without competing — the names stay the focal point and "weds"
-   reads as connective tissue rather than a third word of equal weight. */
 .hero-join {
   font-family: var(--font-display);
   font-style: italic;
-  font-size: clamp(0.85rem, 2.4vw, 1.3rem);
-  letter-spacing: 0.06em;
-  line-height: 1;
-  color: var(--gold-400);
+  font-size: clamp(1rem, 3.5vw, 1.6rem);
+  line-height: 1.2;
+  color: var(--gold-300);
   text-shadow: 0 2px 14px rgba(0,0,0,0.5);
 }
 /* Hairline that fades out at both ends, so it reads as a flourish rather
@@ -435,16 +446,18 @@ h1.reveal.is-visible, h2.reveal.is-visible, h3.reveal.is-visible,
   max-width: 400px;
   margin: 0 auto;
   aspect-ratio: 2172 / 724;
-  background: url('https://api.aamantran.online/r2-proxy/templates/raabta-35864/draft/assets/date-plaque.webp') center / 100% 100% no-repeat;
+  background: url('/templates/raabta/assets/date-plaque.webp') center / 100% 100% no-repeat;
   filter: drop-shadow(0 8px 20px rgba(16,21,42,0.22));
 }
 .scratch-date-text {
   position: absolute;
   left: 21.7%; right: 21.8%;
-  top: 21.7%; bottom: 26%;
+  top: 23.4%; bottom: 24.3%;
   display: flex;
+  flex-direction: column;
   align-items: center;
   justify-content: center;
+  width: 56.5%;
   text-align: center;
   font-family: var(--font-display);
   font-weight: 600;
@@ -606,12 +619,17 @@ h1.reveal.is-visible, h2.reveal.is-visible, h3.reveal.is-visible,
 .fn-map {
   display: inline-block;
   margin-top: 12px;
+  padding: 0;
+  font-family: var(--font-body);
   font-size: 0.8rem;
   letter-spacing: 0.1em;
   text-transform: uppercase;
   color: var(--gold-700);
+  background: none;
+  border: none;
   border-bottom: 1px solid var(--gold-700);
   text-decoration: none;
+  cursor: pointer;
 }
 .fn-dress, .fn-notes { margin-top: 10px; font-size: 0.9rem; opacity: 0.75; font-style: italic; }
 
@@ -882,48 +900,122 @@ h1.reveal.is-visible, h2.reveal.is-visible, h3.reveal.is-visible,
 .rsvp-btn:hover { opacity: 0.88; }
 
 .rsvp-form, .wishes-form { text-align: left; margin-top: 2vh; }
-.rsvp-field { margin-bottom: 16px; }
-.rsvp-field-label { display: block; font-size: 0.82rem; margin-bottom: 6px; color: var(--gold-900); }
-.rsvp-input {
+
+/* ── Redesigned RSVP rows ─────────────────────────────────────────── */
+.rsvp-row {
+  display: flex;
+  align-items: center;
+  background: rgba(248,246,241,0.95);
+  border: 1.5px solid #CC9A32;
+  border-radius: 14px;
+  padding: 0 16px;
+  height: 56px;
+  margin-bottom: 14px;
+}
+.rsvp-icon { flex-shrink: 0; }
+.rsvp-sep {
+  width: 1px; height: 28px;
+  background: #CC9A32; opacity: 0.4;
+  margin: 0 12px;
+  flex-shrink: 0;
+}
+.rsvp-row .rsvp-input {
+  flex: 1;
+  border: none;
+  background: transparent;
+  font-family: 'Jost', sans-serif;
+  font-size: 1rem;
+  color: #241C10;
+  outline: none;
+  padding: 0;
+  height: 100%;
+  min-width: 0;
+}
+.rsvp-row .rsvp-input::placeholder { color: #8C6318; opacity: 0.6; }
+.rsvp-select {
+  appearance: none;
+  -webkit-appearance: none;
+  cursor: pointer;
+}
+.rsvp-chevron { flex-shrink: 0; margin-left: auto; pointer-events: none; }
+.rsvp-count-input {
+  max-width: 40px;
+  -moz-appearance: textfield;
+}
+.rsvp-count-input::-webkit-inner-spin-button,
+.rsvp-count-input::-webkit-outer-spin-button { -webkit-appearance: none; margin: 0; }
+.rsvp-stepper {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin-left: auto;
+}
+.rsvp-step-btn {
+  width: 32px; height: 32px;
+  border-radius: 50%;
+  border: 1.5px solid #CC9A32;
+  background: transparent;
+  color: #8C6318;
+  font-size: 1.2rem;
+  display: flex; align-items: center; justify-content: center;
+  cursor: pointer;
+  padding: 0;
+  line-height: 1;
+}
+.rsvp-step-btn:active { background: rgba(213,189,145,0.2); }
+.rsvp-step-val {
+  font-size: 1rem;
+  font-weight: 500;
+  color: #241C10;
+  min-width: 16px;
+  text-align: center;
+}
+.rsvp-submit {
   width: 100%;
-  padding: 0.7em 0.9em;
-  border: 1px solid var(--gold-500);
-  border-radius: 4px;
-  background: var(--ivory-100);
-  font-family: var(--font-body);
-  font-size: 0.95rem;
-  color: var(--ink-900);
+  padding: 16px;
+  border: 1.5px solid #CC9A32;
+  border-radius: 14px;
+  background: linear-gradient(135deg, #E2B959, #AD7D1F);
+  color: #1A2340;
+  font-family: 'Jost', sans-serif;
+  font-size: 1.05rem;
+  font-weight: 600;
+  letter-spacing: 0.04em;
+  cursor: pointer;
+  margin-top: 6px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+}
+.rsvp-submit:active { filter: brightness(0.95); }
+.rsvp-note {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  margin-top: 14px;
+  font-size: 0.82rem;
+  color: #F3D488;
+  opacity: 0.7;
 }
 .rsvp-textarea { resize: vertical; min-height: 90px; }
 .rsvp-functions { display: flex; flex-direction: column; gap: 6px; margin: 10px 0; }
-.rsvp-submit {
-  width: 100%;
-  padding: 0.9em;
-  border: none;
-  border-radius: 4px;
-  background: var(--indigo-800);
-  color: var(--cream-text);
-  font-size: 1rem;
-  letter-spacing: 0.05em;
-  cursor: pointer;
-  margin-top: 6px;
-}
-.rsvp-submit:hover { background: var(--indigo-900); }
-[data-aamantran="rsvp-status"], [data-aamantran="wish-status"] { margin-top: 10px; font-size: 0.85rem; color: var(--gold-900); text-align: center; }
+[data-raabta="rsvp-status"], [data-raabta="wish-status"] { margin-top: 10px; font-size: 0.85rem; color: var(--gold-900); text-align: center; }
 
 .rsvp-thank-you { padding: 3vh 0; }
 .rsvp-miss { margin-top: 1vh; color: var(--gold-900); opacity: 0.7; }
 
 .wish-wall { display: grid; grid-template-columns: repeat(2, 1fr); gap: 14px; margin-top: 3vh; }
-.aamantran-wish {
+.raabta-wish {
   background: var(--ivory-100);
   border: 1px solid var(--gold-500);
   border-radius: 6px;
   padding: 14px 16px;
   transition: opacity 0.36s ease;
 }
-.aamantran-wish-message { font-size: 0.88rem; font-style: italic; color: var(--ink-900); }
-.aamantran-wish-author { display: block; margin-top: 8px; font-size: 0.78rem; color: var(--gold-700); }
+.raabta-wish-message { font-size: 0.88rem; font-style: italic; color: var(--ink-900); }
+.raabta-wish-author { display: block; margin-top: 8px; font-size: 0.78rem; color: var(--gold-700); }
 .wish-hidden { display: none; }
 .wish-out { opacity: 0; }
 @media (max-width: 640px) { .wish-wall { grid-template-columns: 1fr; } }
@@ -932,7 +1024,7 @@ h1.reveal.is-visible, h2.reveal.is-visible, h3.reveal.is-visible,
    The wall shows only 3-4 cards and rotates the rest through, so this is
    the escape hatch to read every wish. The overlay sits at body level
    (outside .scene-rsvp), which means the cards cloned into it fall back to
-   the light base .aamantran-wish styling — so the dark treatment that the
+   the light base .raabta-wish styling — so the dark treatment that the
    scene applies is restated here explicitly. ────────────────────────── */
 .wish-view-all {
   display: block;
@@ -1015,13 +1107,13 @@ h1.reveal.is-visible, h2.reveal.is-visible, h3.reveal.is-visible,
 }
 /* Clones are never rotated, so they must not inherit the fade transition
    or the wish-hidden/wish-out state the wall uses. */
-.wish-all-list .aamantran-wish {
+.wish-all-list .raabta-wish {
   background: rgba(255, 255, 255, 0.07);
   border-color: rgba(226, 185, 89, 0.4);
   transition: none;
 }
-.wish-all-list .aamantran-wish-message { color: var(--cream-text); }
-.wish-all-list .aamantran-wish-author  { color: var(--gold-300); }
+.wish-all-list .raabta-wish-message { color: var(--cream-text); }
+.wish-all-list .raabta-wish-author  { color: var(--gold-300); }
 
 @media (min-width: 641px) {
   .wish-all-overlay { align-items: center; padding: 4vh 4vw; }
@@ -1067,27 +1159,18 @@ h1.reveal.is-visible, h2.reveal.is-visible, h3.reveal.is-visible,
 }
 
 /* ── RSVP night-garden inversions — kept at the END of the file so they
-   win over the base .rsvp-input / .aamantran-wish rules defined above at
+   win over the base .rsvp-input / .raabta-wish rules defined above at
    equal specificity (later rule wins). ─────────────────────────────── */
 .scene-rsvp .rsvp-title { color: var(--gold-300); }
 .scene-rsvp .rsvp-text { color: var(--cream-text); opacity: 0.88; }
-.scene-rsvp .rsvp-field-label { color: var(--gold-300); }
-.scene-rsvp .rsvp-input {
-  background: rgba(255,255,255,0.07);
-  border-color: rgba(226,185,89,0.55);
-  color: var(--cream-text);
-}
-.scene-rsvp .rsvp-input::placeholder { color: rgba(246,239,221,0.5); }
 .scene-rsvp .rsvp-no { color: var(--cream-text); border-color: var(--gold-300); }
-.scene-rsvp .rsvp-submit { background: var(--gold-600); color: var(--night-900); font-weight: 500; }
-.scene-rsvp .rsvp-submit:hover { background: var(--gold-500); }
 .scene-rsvp .rsvp-miss { color: var(--gold-300); }
-.scene-rsvp .aamantran-wish {
+.scene-rsvp .raabta-wish {
   background: rgba(255,255,255,0.07);
   border-color: rgba(226,185,89,0.4);
 }
-.scene-rsvp .aamantran-wish-message { color: var(--cream-text); }
-.scene-rsvp .aamantran-wish-author { color: var(--gold-300); }
+.scene-rsvp .raabta-wish-message { color: var(--cream-text); }
+.scene-rsvp .raabta-wish-author { color: var(--gold-300); }
 .scene-rsvp .watermark { color: var(--cream-text); }
 @media (prefers-reduced-motion: reduce) {
   .scene-rsvp { background-attachment: scroll, scroll; }
@@ -1135,7 +1218,7 @@ h1.reveal.is-visible, h2.reveal.is-visible, h3.reveal.is-visible,
   width: auto;
   aspect-ratio: 2172 / 724;
   max-width: 96vw;
-  background: url('https://api.aamantran.online/r2-proxy/templates/raabta-35864/draft/assets/arch-divider.webp') center bottom / contain no-repeat;
+  background: url('/templates/raabta/assets/arch-divider.webp') center bottom / contain no-repeat;
   pointer-events: none;
   opacity: 0.95;
   z-index: 1;
@@ -1208,7 +1291,7 @@ h1.reveal.is-visible, h2.reveal.is-visible, h3.reveal.is-visible,
 .float-lantern .fl-img {
   width: 100%;
   aspect-ratio: 381 / 1488;
-  background-image: url('https://api.aamantran.online/r2-proxy/templates/raabta-35864/draft/assets/lantern-float.webp');
+  background-image: url('/templates/raabta/assets/lantern-float.webp');
   background-size: contain;
   background-repeat: no-repeat;
   background-position: top center;

@@ -8,7 +8,7 @@ export default function DesignedByFooter() {
   if (!logo && !name) return null
   return (
     <footer className="designed-by-footer">
-      <span className="designed-by-label">Designed by</span>
+      <span className="designed-by-label">Invitation by</span>
       {logo
         ? <img className="designed-by-logo" src={logo} alt={name || 'Company'} />
         : <span className="designed-by-name">{name}</span>}
