@@ -12,7 +12,7 @@ export function destinationConfig(d: InvitationData) {
     hashtag: `${d.groom.replace(/\s/g, '')}Weds${d.bride.replace(/\s/g, '')}`, instagram_invite_text: '', hashtag_invite_text: '',
     music_url: d.music || '/templates/destination-wedding/music.mp3',
     rsvp_enabled: false, guest_notes_enabled: false,
-    functions: d.events.map((event, index) => ({ id: event.id || `legacy-${index}`, name: event.title, date: event.date, time: formatTime(event.time), venue_name: event.venue, venue_address: event.address, venue_map_url: event.map, dress_code: d.dressCode })),
+    functions: d.events.map((event, index) => ({ id: event.id || `legacy-${index}`, name: event.title, date: event.date, time: formatTime(event.time ?? ''), venue_name: event.venue, venue_address: event.address, venue_map_url: event.map, dress_code: d.dressCode })),
     media_slots: { couple_carousel: [], background_music: [{ url: d.music || '/templates/destination-wedding/music.mp3' }] }, couple_photos: [],
   }
 }
@@ -86,8 +86,8 @@ export function applyNewOrderTemplate(doc: Document, d: InvitationData) {
           card.querySelectorAll('[data-invite-text]').forEach(el => el.removeAttribute('data-invite-text'))
           const set = (selector: string, value: string, field: string) => card.querySelectorAll(selector).forEach(el => { el.textContent=value;mark(el,section,field) })
           set('.fn-name,.fn__name',event.title,'title')
-          if(d.template===13){const rows=card.querySelectorAll('.fn-row');[formatDate(event.date),formatTime(event.time),`${event.venue}\n${event.address}`].forEach((value,i)=>{if(rows[i]){rows[i].textContent=value;mark(rows[i],section,['date','time','venue'][i])}})}
-          else {set('.fn__date',formatDate(event.date),'date');set('.fn__time',formatTime(event.time),'time');set('.fn__venue',`${event.venue}\n${event.address}`,'venue')}
+          if(d.template===13){const rows=card.querySelectorAll('.fn-row');[formatDate(event.date),formatTime(event.time ?? ''),`${event.venue}\n${event.address}`].forEach((value,i)=>{if(rows[i]){rows[i].textContent=value;mark(rows[i],section,['date','time','venue'][i])}})}
+          else {set('.fn__date',formatDate(event.date),'date');set('.fn__time',formatTime(event.time ?? ''),'time');set('.fn__venue',`${event.venue}\n${event.address}`,'venue')}
           set('.fn-dress,.fn__meta',d.dressCode,'dress')
           card.querySelectorAll<HTMLElement>('.fn-dress,.fn__meta').forEach(el=>{el.hidden=!d.dressCode.trim()})
           card.querySelectorAll<HTMLAnchorElement>('a').forEach(el=>{el.hidden=!event.map.trim();el.href=event.map||'#';mark(el,section,'directions')})
@@ -125,7 +125,7 @@ export function markNewOrderText(root: HTMLElement, d: InvitationData) {
     ['groom',d.groom],['bride',d.bride],['groom-family',d.groomFamily],['bride-family',d.brideFamily],
     ['message',d.message],['date',formatDate(d.date)],['venue',d.venue],['address',d.address],['dress',d.dressCode],
   ]
-  d.events.forEach((event,index)=>{const id=event.id||`legacy-${index}`;fields.push([`event-${id}-title`,event.title],[`event-${id}-date`,formatDate(event.date)],[`event-${id}-time`,formatTime(event.time)],[`event-${id}-venue`,event.venue],[`event-${id}-address`,event.address])})
+  d.events.forEach((event,index)=>{const id=event.id||`legacy-${index}`;fields.push([`event-${id}-title`,event.title],[`event-${id}-date`,formatDate(event.date)],[`event-${id}-time`,formatTime(event.time ?? '')],[`event-${id}-venue`,event.venue],[`event-${id}-address`,event.address])})
   const occurrences=new Map<string,number>()
   const scopes = root.querySelectorAll<HTMLElement>(d.template===12 ? '#root section,#root > div,#order-rsvp-host,#order-personal-notes' : '.scene,.panel,.gate')
   scopes.forEach((scope,index)=>{

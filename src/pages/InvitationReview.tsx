@@ -77,7 +77,7 @@ export default function InvitationReview({ details, phone, title, events, templa
             <h4>{event.title || `Celebration ${index + 1}`}</h4>
             <div className="inv-review-event-meta">
               <span><Icon name="calendar"/>{event.date || '—'}</span>
-              <span><Icon name="clock"/>{reviewTime(event.time) || '—'}</span>
+              <span><Icon name="clock"/>{reviewTime(event.time ?? '') || '—'}</span>
               <span><Icon name="pin"/>{[event.venue, event.address].filter(Boolean).join(', ') || '—'}</span>
             </div>
             {event.map.trim() && <p className="inv-review-event-map">{event.map}</p>}

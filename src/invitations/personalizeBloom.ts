@@ -80,7 +80,7 @@ export async function personalizeBloom(
  const suffix = day % 100 >= 11 && day % 100 <= 13 ? 'th' : (['th','st','nd','rd'][day % 10] || 'th')
  date.children[0].textContent = `${formatDate(weddingEvent.date, { weekday: 'long' })}, ${day}${suffix}`
  date.children[1].textContent = `of ${formatDate(weddingEvent.date, { month: 'long', year: 'numeric' }).replace(/ (\d{4})$/, ', $1')}`
- time.textContent = formatTime(weddingEvent.time)
+ time.textContent = formatTime(weddingEvent.time ?? '')
  address.children[0].textContent = wrapCardText(weddingEvent.address.includes('\n') ? weddingEvent.address : addressParts[0] || '', 32)
  address.children[1].textContent = wrapCardText(locality, 32)
  if (!locality) address.children[1].remove()

@@ -105,14 +105,14 @@ function eventCard(doc: Document, event: Celebration, d: InvitationData) {
   card.removeAttribute('style'); card.removeAttribute('data-idx')
   card.querySelectorAll('a,button').forEach(el => el.remove())
   if (original) {
-    for (const [selector, value] of [['.ev-name,.tl-name', event.title], ['.ev-date,.tl-when', `${formatDate(event.date)} · ${formatTime(event.time)}`], ['.ev-venue,.tl-venue', event.venue], ['.ev-desc', event.address]]) {
+    for (const [selector, value] of [['.ev-name,.tl-name', event.title], ['.ev-date,.tl-when', `${formatDate(event.date)} · ${formatTime(event.time ?? '')}`], ['.ev-venue,.tl-venue', event.venue], ['.ev-desc', event.address]]) {
       card.querySelectorAll(selector).forEach(el => { el.textContent = value })
     }
     const icon = card.querySelector<HTMLImageElement>('.ev-icon')
     if (icon) { icon.src = '/templates/shaadipath-t02/assets/icons/icon-shaadi.webp'; icon.alt = '' }
     if (d.template === 10) { const address = doc.createElement('p'); address.textContent = event.address; card.querySelector('.tl-content')?.append(address) }
   } else {
-    for (const [tag, value] of [['h3', event.title], ['p', `${formatDate(event.date)} · ${formatTime(event.time)}`], ['p', event.venue], ['p', event.address]]) {
+    for (const [tag, value] of [['h3', event.title], ['p', `${formatDate(event.date)} · ${formatTime(event.time ?? '')}`], ['p', event.venue], ['p', event.address]]) {
       const el = doc.createElement(tag); el.textContent = value; card.append(el)
     }
   }
@@ -140,7 +140,7 @@ function updateEvents(doc: Document, d: InvitationData) {
       card.dataset.inviteEventKey = event.id || `legacy-${index}`
       for (const [selector, value] of [
         ['.event-name-large,.scratch-event-name', event.title], ['.scratch-date,.detail-date', formatDate(event.date)],
-        ['.scratch-time,.detail-time', formatTime(event.time)], ['.scratch-venue', event.venue],
+        ['.scratch-time,.detail-time', formatTime(event.time ?? '')], ['.scratch-venue', event.venue],
         ['.detail-venue span', `${event.venue}, ${event.address}`], ['.scratch-hint', `Scratch to reveal ${event.title}`],
       ]) card.querySelectorAll(selector).forEach(el => { el.textContent = value })
       const map = card.querySelector<HTMLAnchorElement>('.detail-map')
