@@ -39,6 +39,12 @@ export function wrapCardText(value: string, lineLimit: number): string {
  }).join('\n')
 }
 
+/** Replace the space between a title and the following name with a non-breaking
+ *  space so they are never split across lines during Names Fit wrapping. */
+export function bondTitles(text: string): string {
+  return text.replace(/\b(Dr|Prof|Mr|Mrs|Ms|Mx|Sir|Lady|Rev|Eng)\.\s+/gi, (_, title) => `${title}. `)
+}
+
 export const secretGardenCardCSS = `
  .atelier-video-page .atelier-card-content-fit .atelier-event{padding:0;min-height:0;aspect-ratio:720/1032;box-sizing:border-box}
  .atelier-video-page .atelier-card-content-fit .atelier-event-copy{--card-fit:1;position:absolute;top:34%;bottom:17%;left:18%;width:64%;display:flex;flex-direction:column;justify-content:flex-start;gap:calc(4px + 6px * var(--card-fit));overflow-wrap:anywhere;text-wrap:balance}

@@ -1,5 +1,6 @@
 import { useLayoutEffect } from 'react'
 import type { RefObject } from 'react'
+import { bondTitles } from '../../invitations/cardContentFit'
 
 /** Saved sizes supply the base; paired names share the longer name's reduction.
  * Measurements stay local and rerun on copy/font/width changes. */
@@ -20,6 +21,7 @@ export function useMajesticNames(root: RefObject<HTMLDivElement | null>, key: st
       // Use the smaller base so equalizing the pair never enlarges either name.
       const base = Math.min(...names.map(name => parseFloat(getComputedStyle(name).fontSize)))
       const minimum = Math.min(24, base)
+      names.forEach(name => { if (name.textContent) name.textContent = bondTitles(name.textContent) })
       const extraCharacters = names.map(name => Math.max(0, Array.from(name.textContent || '').length - threshold))
       const excess = Math.max(...extraCharacters)
       const target = Math.max(minimum, base * (1 - reduction * excess))

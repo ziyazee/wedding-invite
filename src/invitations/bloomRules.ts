@@ -31,7 +31,7 @@ export const bloomRulesCSS = `
  .atelier-bloom-ceremony [data-bloom-copy]{position:absolute;top:28%;bottom:30%;left:18%;width:64%;max-width:none;padding:0;display:flex;flex-direction:column;justify-content:center;gap:8px}
  .atelier-bloom-ceremony [data-bloom-copy]>*{flex:none;min-width:0;max-width:100%;margin:0;padding:0;white-space:pre-line}
  .atelier-bloom-ceremony [data-bloom-copy] h2{font-size:calc(24px + 12px * var(--bloom-fit));line-height:1.15}
- .atelier-bloom-ceremony [data-bloom-copy] h3{font-size:calc(16px + 12px * var(--bloom-fit));line-height:1.2}
+ .atelier-bloom-ceremony [data-bloom-copy] h3{font-size:calc(16px + 12px * var(--bloom-fit));line-height:1.2;font-family:'Cormorant Garamond',Georgia,serif}
  .atelier-bloom-ceremony [data-bloom-copy] p{font-size:calc(10px + 2px * var(--bloom-fit));line-height:1.4;letter-spacing:.12em}
  .atelier-bloom-ceremony [data-bloom-copy] div span{font-size:calc(12px + 2px * var(--bloom-fit));white-space:pre-line;overflow-wrap:anywhere}
  .atelier-bloom-ceremony [data-bloom-copy] .flex{flex-wrap:wrap}
@@ -73,7 +73,7 @@ export function fitBloomNames(block:HTMLElement){
  const children=Array.from(block.children) as HTMLElement[]
  if(children.length!==3)return
  const names=[children[0].querySelector<HTMLElement>('h3')||children[0],children[2].querySelector<HTMLElement>('h3')||children[2]]
- const values=names.map(name=>(name.dataset.nameInput??name.textContent??'').replace(/\r\n?/g,'\n').replace(/[^\S\n]+/g,' ').trim())
+ const values=names.map(name=>(name.dataset.nameInput??name.textContent??'').replace(/\r\n?/g,'\n').replace(/[^\S\n]+/g,' ').trim().replace(/\b(Dr|Prof|Mr|Mrs|Ms|Mx|Sir|Lady|Rev|Eng)\.(\s*)/gi,(_,t)=>`${t}. `))
  names.forEach((name,index)=>{name.style.removeProperty('font-size');name.textContent=values[index]})
  const maximum=parseFloat(win.getComputedStyle(names[0]).fontSize)
  const minimum=Math.min(24,maximum)
@@ -126,19 +126,19 @@ export function fitBloomNames(block:HTMLElement){
   if(!width)break
   const fullWidth=Math.max(...values.flatMap(value=>{
    if(value.includes('\n'))return value.split('\n').map(line=>measure(line,maximum))
-   const words=value.split(/\s+/).filter(Boolean)
+   const words=value.split(/ +/).filter(Boolean)
    return (words.length===2?words:[value]).map(line=>measure(line,maximum))
   }))
   let size=Math.min(maximum,Math.max(normalMinimum,maximum*width/Math.max(1,fullWidth)))
   // Keep every word intact, reducing both names beyond the usual limit if necessary.
-  const widestWord=Math.max(1,...values.flatMap(value=>value.split(value.includes('\n')?'\n':/\s+/).map(word=>measure(word,size))))
+  const widestWord=Math.max(1,...values.flatMap(value=>value.split(value.includes('\n')?'\n':/ +/).map(word=>measure(word,size))))
   size=Math.min(size,size*width/widestWord)
   const opening=doc.querySelector('.atelier-bloom-opening-names')
   const stacked=block.dataset.namesLayout==='stacked'||Boolean(block.classList.contains('atelier-family-names')&&opening?.classList.contains('atelier-names-stacked'))||values.reduce((sum,value)=>sum+measure(value,maximum),0)+children[1].getBoundingClientRect().width+32>width*.8
   block.classList.toggle('atelier-names-stacked',stacked)
   const wrap=(value:string,fontSize:number)=>{
    if(value.includes('\n'))return value
-   const words=value.split(/\s+/).filter(Boolean)
+   const words=value.split(/ +/).filter(Boolean)
    if(words.length===2)return words.join('\n')
    const lines:string[]=[]
    let line=''

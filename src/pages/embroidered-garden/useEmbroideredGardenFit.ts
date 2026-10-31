@@ -1,6 +1,6 @@
 import { useLayoutEffect } from 'react'
 import type { RefObject } from 'react'
-import { wrapCardText } from '../../invitations/cardContentFit'
+import { wrapCardText, bondTitles } from '../../invitations/cardContentFit'
 
 export function useEmbroideredGardenNames(root: RefObject<HTMLDivElement | null>, key: string, stacked: boolean) {
   useLayoutEffect(() => {
@@ -14,6 +14,7 @@ export function useEmbroideredGardenNames(root: RefObject<HTMLDivElement | null>
       element.classList.toggle('eg-stacked', stacked)
       const names = [...element.querySelectorAll<HTMLElement>('[data-eg-name]')]
       if (names.length !== 2) return
+      names.forEach(name => { if (name.textContent) name.textContent = bondTitles(name.textContent) })
       const manual = names.some(name => name.hasAttribute('data-invite-custom-size'))
       const base = Math.max(...names.map(name => parseFloat(getComputedStyle(name).fontSize)))
       const combined = names.reduce((n, name) => n + name.getBoundingClientRect().width, 0) + 60

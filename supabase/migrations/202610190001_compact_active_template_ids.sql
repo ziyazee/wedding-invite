@@ -38,10 +38,10 @@ begin
   for event_item in select value from jsonb_array_elements(new.form_data->'events') loop
     if nullif(trim(event_item->>'title'),'') is null or nullif(trim(event_item->>'date'),'') is null
       or event_item->>'date' !~ '^\d{4}-\d{2}-\d{2}$'
-      or coalesce(event_item->>'time','') !~ '^([01]\d|2[0-3]):[0-5]\d$'
+      or (nullif(trim(coalesce(event_item->>'time','')),'') is not null and coalesce(event_item->>'time','') !~ '^([01]\d|2[0-3]):[0-5]\d$')
       or nullif(trim(event_item->>'venue'),'') is null
       or nullif(trim(event_item->>'address'),'') is null then
-      raise exception 'Each celebration needs a name, date, time, venue, and address.';
+      raise exception 'Each celebration needs a name, date, venue, and address.';
     end if;
   end loop;
   return new;

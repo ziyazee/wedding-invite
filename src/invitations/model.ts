@@ -18,7 +18,7 @@ export const designs = [
   { id: 14, name: 'Qubool', description: 'Ornate jaali patterns with a cinematic gate reveal.', route: '/qubool', image: '/templates/qubool/assets/gate/00-gate.webp', color: '#2a1f1a' },
 ] as const
 export interface WeddingMoment { id: string; time: string; title: string; description: string; location: string }
-export interface Celebration { id?: string; title: string; date: string; time: string; venue: string; address: string; map: string; schedule?: WeddingMoment[] }
+export interface Celebration { id?: string; title: string; date: string; time?: string; venue: string; address: string; map: string; schedule?: WeddingMoment[] }
 export function nameTextLimit(template: number, field: string): number | undefined {
   return [2,3,5,6,7].includes(template) && (field==='groom'||field==='bride') ? 40 : undefined
 }
@@ -44,7 +44,9 @@ export function nameSlug(groom: string, bride: string) {
 }
 const gluedHonorific = /^(dr|mr|mrs|ms|prof|rev|sr|jr|st|smt|shri|haj|hajj)\.(\S)/i
 export function displayName(s: string) {
-  return s.replace(gluedHonorific, (_, prefix, ch) => `${prefix}. ${ch}`)
+  return s
+    .replace(gluedHonorific, (_, prefix, ch) => `${prefix}. ${ch}`)
+    .replace(/(^|\n|\s)(\S)/g, (_, sep, ch) => `${sep}${ch.toUpperCase()}`)
 }
 function normName(s: string) {
   return s.normalize('NFKD').replace(/[\u0300-\u036f]/g, '').toLowerCase().replace(/[^a-z0-9]/g, '').slice(0, 35)

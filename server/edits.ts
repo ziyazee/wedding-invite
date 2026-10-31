@@ -134,7 +134,9 @@ export function editsAPI(): Plugin {
           try {
             existing = readTextLayout(JSON.parse(await readFile(file, 'utf8')))
           } catch (error) {
-            if ((error as NodeJS.ErrnoException).code !== 'ENOENT') throw error
+            if ((error as NodeJS.ErrnoException).code !== 'ENOENT') {
+              throw new Error(`Read/parse failed: ${error instanceof Error ? error.message : String(error)}`)
+            }
           }
           const elements = { ...existing.elements }
           for (const [id, value] of Object.entries(incoming.elements)) {
@@ -150,8 +152,9 @@ export function editsAPI(): Plugin {
 
         try {
           send(200, { layout: await task })
-        } catch {
-          send(500, { error: 'Could not update the template edits file.' })
+        } catch (err) {
+          const message = err instanceof Error ? err.message : String(err)
+          send(500, { error: `Could not update the template edits file. ${message}` })
         }
       })
     },

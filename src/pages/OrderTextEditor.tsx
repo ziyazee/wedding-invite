@@ -82,6 +82,7 @@ export default function OrderTextEditor({ template, value, onChange, draftStatus
         const ended = drag
         drag = null
         if (!ended) return
+        ended.element.style.removeProperty('transition')
         ended.element.style.setProperty('translate', ended.original, ended.priority)
         try { ended.element.releasePointerCapture(ended.pointer) } catch { /* Pointer already released. */ }
       }
@@ -97,6 +98,7 @@ export default function OrderTextEditor({ template, value, onChange, draftStatus
       const draw = () => {
         raf = 0
         if (!drag) return
+        drag.element.style.setProperty('transition', 'none', 'important')
         drag.element.style.setProperty('translate', textTranslation(drag.element, drag.section, drag.next.x, drag.next.y), 'important')
         const box = drag.element.getBoundingClientRect()
         const bounds = drag.section.getBoundingClientRect()

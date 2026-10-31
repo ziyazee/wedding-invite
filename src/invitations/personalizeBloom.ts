@@ -106,7 +106,7 @@ export async function personalizeBloom(
  personal.querySelectorAll<HTMLElement>('.atelier-event').forEach(card => {
   card.setAttribute('data-bloom-card', 'video')
   const video = doc.createElement('video')
-  video.src = '/templates/bloom/assets/hum.mov'
+  video.src = '/templates/bloom/assets/humming.mp4'
   video.autoplay = true
   video.loop = true
   video.muted = true

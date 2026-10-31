@@ -108,6 +108,7 @@ export default function EmbroideredGarden({ details: d, rsvpTarget }: { details:
   const heroVideo = useRef<HTMLVideoElement>(null)
   const introRef = useRef<HTMLDivElement>(null)
   const [opened, setOpened] = useState(false)
+  const [coverHidden, setCoverHidden] = useState(false)
   const [namesVisible, setNamesVisible] = useState(false)
   const couple = `${d.groom} & ${d.bride}`
   const events = d.events.map((event, index) => ({ event, key: event.id || `legacy-${index}` }))
@@ -138,23 +139,23 @@ export default function EmbroideredGarden({ details: d, rsvpTarget }: { details:
   useEffect(() => {
     if (!opened) return
     const video = heroVideo.current
-    if (!video) { setNamesVisible(true); return }
-    if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) { setNamesVisible(true); return }
+    if (!video) { setCoverHidden(true); setNamesVisible(true); return }
+    video.muted = true
+    if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) { setCoverHidden(true); setNamesVisible(true); return }
+    video.addEventListener('playing', () => setCoverHidden(true), { once: true })
     const playPromise = video.play()
-    if (playPromise) playPromise.catch(() => setNamesVisible(true))
-    const timeout = setTimeout(() => setNamesVisible(true), 22000)
-    const onTime = () => { if (video.duration && video.currentTime >= video.duration - 3) setNamesVisible(true) }
-    const onEnd = () => setNamesVisible(true)
+    if (playPromise) playPromise.catch(() => { setCoverHidden(true); setNamesVisible(true) })
+    const timeout = setTimeout(() => { setCoverHidden(true); setNamesVisible(true) }, 22000)
+    const onTime = () => { if (video.duration && video.currentTime >= video.duration - 2) setNamesVisible(true) }
     video.addEventListener('timeupdate', onTime)
-    video.addEventListener('ended', onEnd)
-    return () => { clearTimeout(timeout); video.removeEventListener('timeupdate', onTime); video.removeEventListener('ended', onEnd) }
+    return () => { clearTimeout(timeout); video.removeEventListener('timeupdate', onTime) }
   }, [opened])
 
   // Scroll reveal
   useEffect(() => {
     if (!root.current || !opened || window.matchMedia('(prefers-reduced-motion: reduce)').matches) return
     root.current.classList.add('invite-motion-ready')
-    const elements = [...root.current.querySelectorAll<HTMLElement>('[data-invite-animation]')]
+    const elements = [...root.current.querySelectorAll<HTMLElement>('[data-invite-animation]')].filter(el => !el.closest('.eg-hero'))
     const observer = new IntersectionObserver(entries => {
       entries.forEach(entry => { if (entry.isIntersecting) { entry.target.classList.add('invite-motion-visible'); observer.unobserve(entry.target) } })
     }, { threshold: .04 })
@@ -184,7 +185,7 @@ export default function EmbroideredGarden({ details: d, rsvpTarget }: { details:
           <Copy field="opening.year">{part('year')}</Copy>
         </div>
       </div>
-      <div className={`eg-cover${opened ? ' eg-cover-hidden' : ''}`} role="button" tabIndex={0} onClick={() => setOpened(true)} onKeyDown={e => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); setOpened(true) } }} aria-hidden={opened}>
+      <div className={`eg-cover${coverHidden ? ' eg-cover-hidden' : ''}`} role="button" tabIndex={0} onClick={() => setOpened(true)} onKeyDown={e => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); setOpened(true) } }} aria-hidden={coverHidden}>
         <img src={`${ASSETS}intro-curtains-opt.webp`} alt="" />
         <span className="eg-cover-text">Tap to open</span>
       </div>
