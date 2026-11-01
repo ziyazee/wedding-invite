@@ -1549,7 +1549,7 @@ body.is-modal .scroller { overflow: hidden; }
      plate has its own calm middle band. */
   --gate-shift: 12%;
   background: var(--night);
-  transition: opacity .8s var(--ease), visibility .8s;
+  transition: opacity 1.5s var(--ease), visibility 1.5s;
 }
 .gate__art {
   position: absolute;

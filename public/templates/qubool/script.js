@@ -862,8 +862,8 @@
     document.body.classList.remove("is-gated");
     startMusic();
     // Let the reveal animations measure against the now-scrollable page.
-    setTimeout(() => window.ScrollTrigger && ScrollTrigger.refresh(), 850);
-    setTimeout(() => gate.remove(), 900);
+    setTimeout(() => window.ScrollTrigger && ScrollTrigger.refresh(), 1550);
+    setTimeout(() => gate.remove(), 1600);
   }
 
   gateBtn?.addEventListener("click", openGate);
