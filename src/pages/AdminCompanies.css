@@ -103,3 +103,20 @@
   .admin-company-detail { padding: 15px; }
   .admin-company-metrics { grid-template-columns: 1fr; }
 }
+
+.admin-companies-heading h2, .admin-company-profile h3, .admin-company-activity h4 { color: #25262b; }
+.admin-company-count, .admin-company-list, .admin-company-detail { border-color: #eceef2; box-shadow: 0 2px 10px #25293205; }
+.admin-company-card { border-color: #eceef2; border-radius: 12px; }
+.admin-company-card:hover { border-color: #cdd3dc; background: #fff; }
+.admin-company-card.selected { border-color: #59bf91; background: #f4fbf7; box-shadow: 0 0 0 2px #59bf911d; }
+.admin-company-logo { border-color: #e5e9ee; background: #f2f5f6; color: #3f745a; }
+.admin-active-badge { color: #27885f; }
+.admin-active-badge i { background: #38b77b; }
+.admin-company-metrics article { border-color: transparent; border-radius: 12px; }
+.admin-company-metrics article:nth-child(1) { background: #fcf0e4; }
+.admin-company-metrics article:nth-child(2) { background: #edf5e9; }
+.admin-company-metrics article:nth-child(3) { background: #edf1ff; }
+.admin-company-metrics article strong { color: #202126; }
+.admin-company-activity li { border-top-color: #eff0f3; }
+.admin-activity-icon { background: #eaf5ef; color: #328b65; }
+.admin-company-revenue-note { color: #858a93; }
