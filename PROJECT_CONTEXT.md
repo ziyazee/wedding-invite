@@ -73,6 +73,8 @@ Current active collection (the only designs to offer for new orders): Royal Grac
 
 Active order template IDs are compact and fixed: 1 Royal Grace, 2 Majestic, 3 A Timeless Union, 4 Mandap at Dusk, 5 Secret Garden, 6 Embroidered Garden, 7 Bloom, 8 The Artful Love Story. The `name` and `template_code` fields use these displayed names (`royal-grace` for Royal Grace); `preview_url` uses name-based testing routes. Existing numbered and personalized URLs remain available. These order IDs are distinct from the legacy route/design numbers. Apply `202610190001_compact_active_template_ids.sql` after the dashboard and company-template-settings migrations, then `202610190002_royal_grace_catalog_metadata.sql` and `202610190003_named_template_preview_urls.sql`.
 
+- Majestic uses `majestic.html` as its social link-preview entry point, with the Majestic hero poster as its Open Graph and Twitter preview image. Keep the `/majestic` rewrite and Vite development route aligned with this file.
+
 Important landing assets:
 
 - `public/landing/palace-wedding-hero.jpg`

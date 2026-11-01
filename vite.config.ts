@@ -12,6 +12,7 @@ export default defineConfig({
       input: {
         main: fileURLToPath(new URL('./index.html', import.meta.url)),
         arjunbhavana: fileURLToPath(new URL('./arjunbhavana.html', import.meta.url)),
+        majestic: fileURLToPath(new URL('./majestic.html', import.meta.url)),
       },
     },
   },
@@ -28,6 +29,9 @@ export default defineConfig({
           if (/^\/arjunbhavana\/?(?:\?|$)/.test(req.url || '')) {
             req.url = (req.url || '').replace(/^\/arjunbhavana\/?/, '/arjunbhavana.html')
           }
+          if (/^\/majestic\/?(?:\?|$)/.test(req.url || '')) {
+            req.url = (req.url || '').replace(/^\/majestic\/?/, '/majestic.html')
+          }
           next()
         })
       },
@@ -40,6 +44,9 @@ export default defineConfig({
           }
           if (/^\/arjunbhavana\/?(?:\?|$)/.test(req.url || '')) {
             req.url = (req.url || '').replace(/^\/arjunbhavana\/?/, '/arjunbhavana.html')
+          }
+          if (/^\/majestic\/?(?:\?|$)/.test(req.url || '')) {
+            req.url = (req.url || '').replace(/^\/majestic\/?/, '/majestic.html')
           }
           next()
         })

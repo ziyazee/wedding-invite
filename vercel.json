@@ -42,6 +42,14 @@
       "destination": "/arjunbhavana.html"
     },
     {
+      "source": "/majestic",
+      "destination": "/majestic.html"
+    },
+    {
+      "source": "/majestic/",
+      "destination": "/majestic.html"
+    },
+    {
       "source": "/(.*)",
       "destination": "/index.html"
     }
