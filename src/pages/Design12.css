@@ -23,6 +23,8 @@
   margin: auto;
   overflow: hidden;
 }
+.d12 .d12-p3, .d12 .d12-celebrations { display: none }
+.destination-celebrations-stage { display: grid; gap: 28px; padding: 24px 0; }
 .d12 * { box-sizing: border-box }
 .d12 img { max-width: 100%; display: block }
 .d12 button { font: inherit; cursor: pointer }

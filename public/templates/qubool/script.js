@@ -494,6 +494,19 @@
     });
   })();
 
+  (function initRsvpGuestCounter() {
+    const count = document.querySelector('[data-rsvp="count"]');
+    if (!count) return;
+    document.querySelectorAll("[data-rsvp-count]").forEach((button) => {
+      button.addEventListener("click", () => {
+        const current = Number(count.value || 1);
+        const delta = button.dataset.rsvpCount === "increase" ? 1 : -1;
+        count.value = String(Math.min(10, Math.max(1, current + delta)));
+        count.dispatchEvent(new Event("input", { bubbles: true }));
+      });
+    });
+  })();
+
   /* ── Wishes: four at a time, on a rotation ────────────────────────────
      The platform runtime owns the wall: it empties and rebuilds it on load and
      again after every posted wish. So nothing here holds onto nodes — a

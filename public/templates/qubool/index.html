@@ -1,5 +1,3 @@
-Remaining CDN refs: 0
-Remaining media refs: 0
 <!doctype html>
 <html lang="en">
 <head>
@@ -80,12 +78,6 @@ Remaining media refs: 0
     <div class="panel__inner panel__inner--wide">
       <p class="eyebrow">Together with our families</p>
 
-        <p class="blessing">With the blessings of our elders</p>
-        <p class="blessing__names">
-          Mr. Abdul Ahmed &amp; Mrs. Zubaida Begum
-        </p>
-      
-
       <!-- Each side exists only once at least one parent is named — guarded on
            the names themselves, not *_has_parents, which stays true for a row
            whose name was later cleared. The label comes from the couple's
@@ -93,7 +85,7 @@ Remaining media refs: 0
            with no pick yet it reads "Parents of <name>". -->
       <div class="families">
         <div class="family">
-          <p class="family__label">Son of</p>
+          <p class="family__label family__person-name">Zayan</p>
           <p class="family__name">Mr. Iqbal Ahmed</p>
           <p class="family__name">Mrs. Farhana Ahmed</p>
         </div>
@@ -104,7 +96,7 @@ Remaining media refs: 0
         </div>
 
         <div class="family">
-          <p class="family__label">Daughter of</p>
+          <p class="family__label family__person-name">Alishba</p>
           <p class="family__name">Mr. Sohail Rahman</p>
           <p class="family__name">Mrs. Nusrat Rahman</p>
         </div>
@@ -213,34 +205,6 @@ Remaining media refs: 0
     </div>
   </section>
 
-  <!-- ══════════ SCENE 5 — Dholki night · things to know ══════════ -->
-  <section class="panel" data-scene="5" data-text="bottom-right" data-tint="warm">
-    <div class="layer bg"       data-depth="0" data-bg="/templates/qubool/assets/scene5/01-rose-blur.webp" data-bg-p="/templates/qubool/assets/scene5/01-rose-blur-p.webp"></div>
-    <div class="layer el hands" data-depth="15" data-src="/templates/qubool/assets/scene5/02-dholak.webp"></div>
-    <div class="layer el fill"  data-depth="34" data-src="/templates/qubool/assets/scene5/05-rose-petals.webp"></div>
-
-    <div class="panel__inner">
-      <!-- The heading only exists if at least one row below it does, otherwise
-           this scene is a full screen reading "Things to know" over nothing
-           (guide.md 8). There is no `or` helper, hence the nest. -->
-      <p class="eyebrow">Things to know</p>
-      
-      <div class="know">
-          <div class="know__row">
-            <span class="know__k">Contact</span>
-            <span class="know__v">
-              Mustafa Rahman
-                <a href="tel:9999999999">9999999999</a>
-            </span>
-          </div>
-          <div class="know__row">
-            <span class="know__k">Note</span>
-            <span class="know__v">Don't miss the dessert counter.</span>
-          </div>
-      </div>
-    </div>
-  </section>
-
   <!-- ══════════ SCENE 6 — The Nikah · the ceremony moment ══════════ -->
   <section class="panel" data-scene="6" data-text="top-left" data-tint="warm">
     <div class="layer bg"            data-depth="0" data-bg="/templates/qubool/assets/scene6/01-nikah-pavilion.webp" data-bg-p="/templates/qubool/assets/scene6/01-nikah-pavilion-p.webp"></div>
@@ -250,14 +214,20 @@ Remaining media refs: 0
     <div class="panel__inner">
       <img class="crest crest--sm" src="/templates/qubool/assets/crescent-star.webp" alt="" aria-hidden="true" />
       <p class="eyebrow">The Nikah</p>
-      <h2 class="scene-title">
-          Two souls, one light
-      </h2>
-      <p class="lede">Road No. 12, Banjara Hills, Hyderabad</p>
+      <h2 class="scene-title">Our Nikah Day</h2>
+      <p class="lede nikah-note">With gratitude and duas, we invite you to witness our Nikah and celebrate the beginning of our life together.</p>
+      <div class="nikah-details">
+        <p class="lede nikah-venue">Gulmohar Courtyard</p>
+        <p class="lede nikah-address">Road No. 12, Banjara Hills, Hyderabad</p>
+        <div class="nikah-date-time">
+          <p class="lede nikah-date">13 February 2027</p>
+          <p class="lede nikah-time">1:30 PM</p>
+        </div>
+      </div>
     </div>
   </section>
 
-  <!-- ══════════ SCENE 7 — Dusk village · hashtag, Instagram, film ══════════ -->
+  <!-- ══════════ SCENE 7 — Dusk village · RSVP, Instagram, film ══════════ -->
   <!-- Both the extra height and the frame key off the HELPER, not the raw URL:
        youtube_embed_src returns '' for links it can't parse (a youtube.com URL
        with no https://, a /live/ link), which would otherwise leave an iframe
@@ -269,9 +239,24 @@ Remaining media refs: 0
     <div class="layer el branch"     data-depth="26" data-src="/templates/qubool/assets/scene7/03-rose-arch.webp"></div>
 
     <div class="panel__inner">
-        <p class="eyebrow">Share your photos with</p>
-        <p class="hashtag">#ZayanFoundHisAlishba</p>
-
+      <div class="card card--rsvp">
+        <form class="form rsvp-form" data-aamantran="rsvp">
+          <input type="hidden" data-field="attending" value="yes" />
+          <h2 class="scene-title rsvp-heading">Will you be attending <em>our wedding?</em></h2>
+          <input class="rsvp-line-input" data-field="guestName" type="text" required autocomplete="name" placeholder="Your name" aria-label="Your name" />
+          <div class="rsvp-count-row">
+            <span>Number of guests</span>
+            <div class="rsvp-count-controls">
+              <button type="button" data-rsvp-count="decrease" aria-label="Remove one guest">−</button>
+              <input data-field="plusCount" data-rsvp="count" type="number" min="1" max="10" step="1" value="1" aria-label="Number of guests" />
+              <button type="button" data-rsvp-count="increase" aria-label="Add one guest">+</button>
+            </div>
+          </div>
+          <textarea class="rsvp-message" data-field="message" rows="1" placeholder="A personal message for us..." aria-label="A personal message for us"></textarea>
+          <button class="btn btn--solid rsvp-submit" type="submit">Submit RSVP</button>
+          <p class="status" data-aamantran="rsvp-status" role="status" aria-live="polite"></p>
+        </form>
+      </div>
 
         <a class="btn btn--ghost" href="https://www.instagram.com/aamantran_online/" target="_blank" rel="noopener noreferrer">
           <svg class="btn__ico" viewBox="0 0 24 24" aria-hidden="true" focusable="false">
@@ -293,7 +278,7 @@ Remaining media refs: 0
     </div>
   </section>
 
-  <!-- ══════════ SCENE 8 — Night field · RSVP + wishes (finale) ══════════ -->
+  <!-- ══════════ SCENE 8 — Night field · wishes (finale) ══════════ -->
   <section class="panel panel--tall panel--finale" data-scene="8" data-text="top-left" data-tint="warm">
     <div class="layer bg"            data-depth="0" data-bg="/templates/qubool/assets/scene8/01-starlit-terrace.webp" data-bg-p="/templates/qubool/assets/scene8/01-starlit-terrace-p.webp"></div>
     <div class="layer el fill glow"  data-depth="6"  data-src="/templates/qubool/assets/scene8/05-starlight.webp"></div>
@@ -301,69 +286,6 @@ Remaining media refs: 0
     <div class="layer el fill"       data-depth="28" data-src="/templates/qubool/assets/scene8/04-terrace-fg.webp"></div>
 
     <div class="panel__inner panel__inner--wide">
-
-      <div class="card">
-        <p class="eyebrow">Will you join us?</p>
-        <h2 class="scene-title">RSVP</h2>
-        <!-- Three-part shape: ask first, then show either the form
-             or a kind note. The decline sits OUTSIDE the form, so `attending` is
-             simply always "yes" — only guests who are coming ever submit. -->
-        <div class="rsvp-choice" data-rsvp="choice">
-          <p class="rsvp-ask">Will you be joining us?</p>
-          <div class="rsvp-actions">
-            <button class="btn btn--solid" type="button" data-rsvp-choice="yes">Yes, with joy</button>
-            <button class="btn btn--ghost" type="button" data-rsvp-choice="no">Sorry, I can&rsquo;t</button>
-          </div>
-        </div>
-
-        <div class="rsvp-step" data-rsvp="decline" hidden>
-          <p class="rsvp-miss">We will miss you.</p>
-          <p class="rsvp-miss-sub">Thank you for letting us know &mdash; you will be in our duas on the day.</p>
-          <button class="rsvp-back" type="button" data-rsvp-back>Change my answer</button>
-        </div>
-
-        <div class="rsvp-step" data-rsvp="accept" hidden>
-          <form class="form" data-aamantran="rsvp">
-            <input type="hidden" data-field="attending" value="yes" />
-            <div class="field">
-              <label for="rsvp-name">Your name</label>
-              <input id="rsvp-name" data-field="guestName" type="text" required autocomplete="name" />
-            </div>
-            <div class="field-row">
-              <div class="field">
-                <label for="rsvp-phone">Phone</label>
-                <input id="rsvp-phone" data-field="phone" type="tel" autocomplete="tel" />
-              </div>
-              <div class="field">
-                <label for="rsvp-email">Email</label>
-                <input id="rsvp-email" data-field="email" type="email" autocomplete="email" />
-              </div>
-            </div>
-            <div class="field-row">
-              <div class="field">
-                <label for="rsvp-plus">Guests with you</label>
-                <input id="rsvp-plus" data-field="plusCount" type="number" min="0" step="1" value="0" />
-              </div>
-              <div class="field">
-                <label for="rsvp-meal">Meal preference</label>
-                <input id="rsvp-meal" data-field="mealPreference" type="text" placeholder="Veg / Jain / no preference" />
-              </div>
-            </div>
-
-            <!-- The platform runtime fills this with one checkbox per ceremony. -->
-            <div class="field field--functions" data-field="functions"></div>
-
-            <div class="field">
-              <label for="rsvp-msg">A note for us</label>
-              <textarea id="rsvp-msg" data-field="message" rows="3"></textarea>
-            </div>
-
-            <button class="btn btn--solid" type="submit">Send RSVP</button>
-            <p class="status" data-aamantran="rsvp-status" role="status" aria-live="polite"></p>
-          </form>
-          <button class="rsvp-back" type="button" data-rsvp-back>Change my answer</button>
-        </div>
-      </div>
 
       <div class="card">
         <p class="eyebrow">Duas for the couple</p>

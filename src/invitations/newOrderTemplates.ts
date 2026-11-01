@@ -1,6 +1,7 @@
 import { formatDate, formatTime } from './model'
 import type { InvitationData } from './model'
 import { downloadCalendar } from './calendar'
+import designedByFooterCSS from './components/DesignedByFooter.css?inline'
 
 export function destinationConfig(d: InvitationData) {
   return {
@@ -59,19 +60,45 @@ export function applyNewOrderTemplate(doc: Document, d: InvitationData) {
     copy('.footer__names', `${d.groom} & ${d.bride}`, 'closing', 'names')
     copy('.lede--story', d.message, 'welcome', 'message')
     doc.querySelectorAll<HTMLElement>('.family').forEach((family, index) => {
+      const personName = family.querySelector<HTMLElement>('.family__person-name')
+      if (personName) {
+        const name = index === 0 ? d.groom : d.bride
+        if (personName.textContent !== name) personName.textContent = name
+        mark(personName, 'families', index === 0 ? 'groom-name' : 'bride-name')
+        personName.style.whiteSpace = 'pre-line'
+        personName.style.overflowWrap = 'anywhere'
+      }
       const rows = family.querySelectorAll<HTMLElement>('.family__name')
       rows.forEach((row, i) => { row.textContent = i === 0 ? (index === 0 ? d.groomFamily : d.brideFamily) : ''; row.hidden = i > 0; if(i===0)mark(row,'families',index===0?'groom':'bride') })
       family.hidden = !(index === 0 ? d.groomFamily : d.brideFamily).trim()
     })
     hide('.blessing,.blessing__names,.know__item:has(a[href^="tel:"]),.film,.wishwall,.wishmodal,[data-aamantran="wish"]')
-    copy('[data-scene="3"] .lede,[data-scene="6"] .scene-title', d.venue, 'venue', 'name')
-    copy('[data-scene="6"] .lede', d.address, 'venue', 'address')
-    copy('.hashtag', `#${d.groom.replace(/\s/g,'')}Weds${d.bride.replace(/\s/g,'')}`, 'social', 'hashtag')
+    copy('[data-scene="3"] .lede', d.venue, 'venue', 'name')
+    copy('[data-scene="6"] .nikah-venue', d.venue, 'venue', 'name')
+    copy('[data-scene="6"] .nikah-address', d.address, 'venue', 'address')
+    copy('[data-scene="6"] .nikah-date', formatDate(d.date), 'date', 'wedding')
+    copy('[data-scene="6"] .nikah-time', formatTime(d.time), 'time', 'wedding')
     hide('[data-scene="5"] .know,.card:has([data-aamantran="wish"])')
     doc.querySelectorAll<HTMLAnchorElement>('[data-scene="7"] a').forEach(el => { el.hidden = true })
   }
 
-  const footerHost = doc.querySelector('#designed-by-footer')
+  let footerHost = doc.querySelector<HTMLElement>('#designed-by-footer')
+  if (d.template === 14) {
+    if (!footerHost) {
+      footerHost = doc.createElement('footer')
+      footerHost.id = 'designed-by-footer'
+      footerHost.className = 'designed-by-footer'
+      footerHost.style.backgroundColor = '#fff'
+      doc.querySelector('#scroller')?.append(footerHost)
+    }
+    footerHost.hidden = !(d.companyLogo || d.companyName)
+    if (!doc.querySelector('#order-company-footer-style')) {
+      const style = doc.createElement('style')
+      style.id = 'order-company-footer-style'
+      style.textContent = designedByFooterCSS
+      doc.head.append(style)
+    }
+  }
   if (footerHost && (d.companyLogo || d.companyName)) {
     footerHost.innerHTML = ''
     const label = doc.createElement('span'); label.className = 'designed-by-label'; label.textContent = 'Invitation by '
@@ -89,6 +116,13 @@ export function applyNewOrderTemplate(doc: Document, d: InvitationData) {
       if (original) {
         const cards = d.events.map((event, index) => {
           const card = original.cloneNode(true) as HTMLElement
+          // Scene 4's original card may already have GSAP's initial hidden
+          // inline styles when the iframe loads. New order cards are added
+          // after the reveal animation is registered, so clear those styles
+          // or the personalized cards can remain invisible indefinitely.
+          card.style.removeProperty('opacity')
+          card.style.removeProperty('visibility')
+          card.style.removeProperty('transform')
           const section = `event-${event.id || `legacy-${index}`}`
           card.setAttribute('data-invite-section', section)
           card.querySelectorAll('.reveal').forEach(el => { el.classList.remove('reveal'); (el as HTMLElement).style.opacity = '1' })
@@ -117,7 +151,7 @@ export function applyNewOrderTemplate(doc: Document, d: InvitationData) {
   if(extras.dataset.content!==extraKey){
     extras.dataset.content=extraKey;extras.replaceChildren();extras.setAttribute('data-invite-section','notes')
     let hasNote=false
-    for(const [field,value] of [['dress',d.dressCode],['gift',d.giftNote]]){if(field==='dress'&&d.template===13)continue;if(value.trim()){if(!hasNote&&d.template===13){const h=doc.createElement('h3');h.className='notes-title';h.textContent='Short Note';extras.append(h);hasNote=true}const p=doc.createElement('p');p.textContent=value;mark(p,'notes',field);extras.append(p)}}
+    for(const [field,value] of [['dress',d.dressCode],['gift',d.giftNote]]){if(d.template===14||(field==='dress'&&d.template===13))continue;if(value.trim()){if(!hasNote&&d.template===13){const h=doc.createElement('h3');h.className='notes-title';h.textContent='Short Note';extras.append(h);hasNote=true}const p=doc.createElement('p');p.textContent=value;mark(p,'notes',field);extras.append(p)}}
     for(const [field,title,url] of [['gallery','Our photo gallery',d.gallery],['directions','Wedding directions',d.map]])if(url.trim()){const a=doc.createElement('a');a.href=url;a.target='_blank';a.rel='noopener noreferrer';a.textContent=title;mark(a,'notes',field);extras.append(a)}
     extras.hidden=!extras.childElementCount
   }

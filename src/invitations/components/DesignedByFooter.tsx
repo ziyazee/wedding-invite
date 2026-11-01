@@ -6,7 +6,7 @@ export default function DesignedByFooter() {
   const logo = details?.companyLogo
   const name = details?.companyName
   if (!logo && !name) return null
-  if (details?.template === 13) return null
+  if (details?.template === 13 || details?.template === 14) return null
   return (
     <footer className="designed-by-footer">
       <span className="designed-by-label">Invitation by</span>

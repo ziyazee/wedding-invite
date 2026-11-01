@@ -3,6 +3,7 @@ import { useInvitationDetails } from '../invitations/context'
 import { formatDate, formatTime, mapURL, weddingISO, type InvitationData } from '../invitations/model'
 import { downloadCalendar } from '../invitations/calendar'
 import useGoogleFonts from '../hooks/useGoogleFonts'
+import { DestinationCelebrationCard } from './destination-wedding/DestinationCelebrationCard'
 import './Design12.css'
 
 const demo: InvitationData = {
@@ -227,6 +228,10 @@ export default function Design12() {
               </div>
             </div>
           </div>
+        </section>
+
+        <section className="destination-celebrations-stage" aria-label="Wedding celebrations">
+          {d.events.map((event, index) => <DestinationCelebrationCard key={event.id || index} event={event} eventKey={event.id || `legacy-${index}`} dressCode={d.dressCode} />)}
         </section>
 
         {/* Multiple celebrations */}

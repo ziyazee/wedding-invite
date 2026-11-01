@@ -197,9 +197,42 @@ function updateExtras(doc: Document, d: InvitationData) {
 }
 
 export function installOrderFrameRsvp(doc: Document, template: number, target?: RsvpTarget) {
-  const host = doc.querySelector(template === 12 ? '#order-rsvp-host' : template === 13 ? '#order-rsvp-host,#rsvpSection .rsvp-action-area' : template === 14 ? '#order-rsvp-host,[data-scene="8"] .card:has([data-aamantran="rsvp"])' : template === 9 ? '#rsvp-section' : template === 10 ? '#rsvp-form-wrap' : '#rsvp .container')
+  const host = doc.querySelector(template === 12 ? '#order-rsvp-host' : template === 13 ? '#order-rsvp-host,#rsvpSection .rsvp-action-area' : template === 14 ? '#order-rsvp-host,[data-scene="7"] .card:has([data-aamantran="rsvp"])' : template === 9 ? '#rsvp-section' : template === 10 ? '#rsvp-form-wrap' : '#rsvp .container')
   if (!host || host.querySelector('.order-rsvp')) return () => {}
   if(template>=12)host.id='order-rsvp-host'
+  if (template === 14) {
+    const form = doc.createElement('form'); form.className = 'order-rsvp rsvp-form'
+    const title = doc.createElement('h2'); title.className = 'scene-title rsvp-heading'
+    title.append('Will you be attending ')
+    const emphasis = doc.createElement('em'); emphasis.textContent = 'our wedding?'; title.append(emphasis)
+    const name = doc.createElement('input'); name.className = 'rsvp-line-input'; name.placeholder = 'Your name'; name.setAttribute('aria-label', 'Your name'); name.required = true; name.maxLength = 120; name.autocomplete = 'name'
+    const countRow = doc.createElement('div'); countRow.className = 'rsvp-count-row'
+    const countLabel = doc.createElement('span'); countLabel.textContent = 'Number of guests'
+    const controls = doc.createElement('div'); controls.className = 'rsvp-count-controls'
+    const count = doc.createElement('input'); count.className = 'rsvp-count'; count.type = 'number'; count.min = '1'; count.max = '10'; count.step = '1'; count.value = '1'; count.required = true; count.setAttribute('aria-label', 'Number of guests')
+    const minus = doc.createElement('button'); minus.type = 'button'; minus.textContent = '−'; minus.setAttribute('aria-label', 'Remove one guest')
+    const plus = doc.createElement('button'); plus.type = 'button'; plus.textContent = '+'; plus.setAttribute('aria-label', 'Add one guest')
+    const updateCount = (delta: number) => { count.value = String(Math.min(10, Math.max(1, Number(count.value || 1) + delta))) }
+    minus.onclick = () => updateCount(-1); plus.onclick = () => updateCount(1)
+    count.onchange = () => { count.value = String(Math.min(10, Math.max(1, Number(count.value || 1)))) }
+    controls.append(minus, count, plus); countRow.append(countLabel, controls)
+    const message = doc.createElement('textarea'); message.className = 'rsvp-message'; message.placeholder = 'A personal message for us...'; message.setAttribute('aria-label', 'A personal message for us'); message.maxLength = 1000; message.rows = 1
+    const button = doc.createElement('button'); button.type = 'submit'; button.className = 'btn btn--solid rsvp-submit'; button.textContent = 'Submit RSVP'
+    const status = doc.createElement('p'); status.className = 'status'; status.setAttribute('role', 'status')
+    if (!target) { button.disabled = true; status.hidden = true }
+    form.append(title, name, countRow, message, button, status); host.replaceChildren(form)
+    form.onsubmit = async e => {
+      e.preventDefault()
+      if (!target || button.disabled) return
+      button.disabled = true; status.textContent = 'Sending…'
+      try {
+        await saveOrderRsvp(target, { name: name.value.trim(), attendance: 'yes', count: Number(count.value), guests: [], message: message.value.trim() })
+        status.textContent = 'Thank you. Your reply has been saved.'
+      } catch (error) { status.textContent = error instanceof Error ? error.message : 'Please try again.' }
+      finally { button.disabled = false }
+    }
+    return () => { form.onsubmit = null; form.remove() }
+  }
   const form = doc.createElement('form'); form.className = 'order-rsvp'
   const name = doc.createElement('input'); name.placeholder = 'Your name'; name.setAttribute('aria-label', 'Your name'); name.required = true; name.maxLength = 120
   const count = doc.createElement('input'); count.type = 'number'; count.min = '1'; count.max = '10'; count.value = '1'; count.required = true; count.setAttribute('aria-label', 'Number of guests')
