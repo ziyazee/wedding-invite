@@ -1,6 +1,6 @@
 # Wedding invitation project context
 
-Last updated: 2026-10-30. Targeted source/worktree review only; no build, tests, browser review, or database verification was performed. These notes are not a full repository audit.
+Last updated: 2026-11-01. Targeted source/worktree review only; no build, tests, browser review, or database verification was performed. These notes are not a full repository audit.
 
 ## Project and local workflow
 
@@ -11,6 +11,8 @@ Last updated: 2026-10-30. Targeted source/worktree review only; no build, tests,
 - Company order invitations reserve a unique `*.shaadiinvites.in` subdomain when the order is created. Candidate priority is joined names, `weds`, `and`, hyphen, `marries`, `with`, then `wedding`; the dotted `groom.bride` option has been removed from new URL generation. Existing reserved/published paths are preserved. The database unique constraint handles collisions and a deleted order releases its path. The reservation and publish RPCs are in `202610230001_order_subdomain_fallbacks.sql`. Apply the migration before deploying the dashboard code. All seven candidates being occupied returns an error; no numeric fallback is defined.
 
 - The client dashboard catalog is loaded from Supabase `invitation_templates`. Migration `202610270001_restore_mandap_at_dusk.sql` restores/activates Mandap at Dusk at template ID 4 if it is missing or inactive; apply it to make that design available in the dashboard.
+- Admin dashboard behavior is in `src/pages/AdminDashboard.tsx`; its visual styling is scoped in `src/pages/AdminDashboard.css`, preserving the shared client workspace styles in `Workspaces.css`.
+- Admin Companies lists active onboarding records with order and PDF activity metrics. Revenue is estimated at a fixed ₹499 per submitted order. Migration `202611010001_admin_company_activity.sql` adds company active status, the PDF upload activity log, and the admin summary RPC; apply it before using the new panel. PDF upload history only accumulates after the activity log is enabled.
 - Landing, client dashboard, testing, and Edits share `src/invitations/templateCatalog.ts` as their Supabase catalog reader. Landing and client dashboard show active rows; testing and Edits show all rows. Database `id` remains the catalog identity; renderer compatibility routing is still handled by `InvitationRenderer` and needs a separate renderer-key migration before that routing can be removed safely.
 - `supabase/migrations/202610280001_template_catalog_read_access.sql` grants the anon role read access to active template rows for the public landing page and lets signed-in catalog tools read inactive rows too. Apply this migration in Supabase for those page filters to work under RLS.
 
