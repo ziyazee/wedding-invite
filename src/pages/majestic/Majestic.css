@@ -62,7 +62,7 @@
 .majestic-native .mj-actions>*{padding:12px 20px;border-radius:8px;background:#716149;color:#fffdf6;min-height:48px;font-family:'Cormorant Garamond',Georgia,serif;font-weight:400;font-size:clamp(15px,4.5vw,22px);letter-spacing:.08em}
 .majestic-native .mj-programme{padding-bottom:8px}
 .majestic-native .mj-programme img{display:block;width:min(68vw,390px);height:auto;margin:auto}
-.majestic-native .mj-events{max-width:680px;margin:auto;padding:0 12px;background:#EEE9D9}
+.majestic-native .mj-events{max-width:680px;margin:auto;padding:0 12px;background:#FF0000}
 .majestic-native .mj-event{position:relative;isolation:isolate;aspect-ratio:720/1032;max-width:620px;margin:30px auto}
 .majestic-native .mj-event:first-child{margin-top:12px}
 .majestic-native .mj-event-video{position:absolute;inset:0;z-index:0;width:100%;height:100%;object-fit:fill;pointer-events:none}

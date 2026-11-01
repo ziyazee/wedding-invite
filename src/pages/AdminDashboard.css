@@ -123,8 +123,8 @@
   --muted: #777b84;
   --gold: #38c997;
   --line: #ebedf1;
-  --paper: #E9E3D2;
-  background: #E9E3D2;
+  --paper: #f7f8fa;
+  background: #f7f8fa;
   color: #202126;
 }
 .admin-workspace .workspace-sidebar { border-right: 0; background: #17181d; }
@@ -134,7 +134,7 @@
 .admin-workspace .workspace-sidebar nav button span { color: #b7bac3; }
 .admin-workspace .workspace-sidebar nav button.active { border-color: transparent; background: #27292f; color: #fff; box-shadow: inset 3px 0 #48d5a2; }
 .admin-workspace .workspace-logout { color: #b7b9c1; }
-.admin-workspace .workspace-main { background: #E9E3D2; }
+.admin-workspace .workspace-main { background: #f7f8fa; }
 .admin-workspace .workspace-top { border-bottom-color: #e8eaee; }
 .admin-workspace .workspace-top h1 { color: #202126; font: 600 clamp(27px, 2.5vw, 34px)/1.2 Inter, Arial, sans-serif; letter-spacing: -.035em; }
 .admin-workspace .workspace-kicker { color: #81858e; }
@@ -174,7 +174,7 @@
 .admin-workspace .primary-action { border-color: #202126; border-radius: 8px; background: #202126; }
 .admin-workspace .primary-action:hover { background: #35373e; }
 .admin-workspace .secondary-action, .admin-workspace .back-action { border-radius: 8px; }
-.admin-workspace .admin-preview { background: #E9E3D2; }
+.admin-workspace .admin-preview { background: #f7f8fa; }
 @media (max-width: 760px) {
   .admin-workspace .workspace-sidebar { background: #17181df2; }
   .admin-workspace .workspace-sidebar nav button.active { box-shadow: inset 0 -2px #48d5a2; }
