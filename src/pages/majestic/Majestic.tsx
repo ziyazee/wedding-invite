@@ -51,15 +51,22 @@ function AmbientVideo({ src, poster, className, paused: forcePaused = false }: {
   return failed && poster ? <InvitationMedia className={className} src={poster} priority alt="" /> : <InvitationMedia kind="video" className={className} ref={video} src={src} poster={poster} preload="auto" muted loop playsInline onError={() => setFailed(true)} aria-hidden="true" />
 }
 
+function coupleLabel(details: InvitationData) {
+  return details.brideFirst ? `${details.bride} & ${details.groom}` : `${details.groom} & ${details.bride}`
+}
+
 function Names({ details: d, section, family = false }: { details: InvitationData; section: string; family?: boolean }) {
   const root = useRef<HTMLDivElement>(null)
   const stacked = family && !!(d.groomFamily.trim() || d.brideFamily.trim())
   const separatorLayout = d.textOverrides?.elements[`t2.${section}.separator`] ?? defaultLayout.elements[`t2.${section}.separator`]
-  useMajesticNames(root, JSON.stringify([d.groom, d.bride, d.textOverrides]), stacked, section === 'closing' ? 4 : 8, section === 'closing' ? .04 : .01, section === 'closing' || section === 'opening')
+  const people = d.brideFirst
+    ? [{ key: 'bride', name: d.bride, family: d.brideFamily, label: 'Bride' }, { key: 'groom', name: d.groom, family: d.groomFamily, label: 'Groom' }]
+    : [{ key: 'groom', name: d.groom, family: d.groomFamily, label: 'Groom' }, { key: 'bride', name: d.bride, family: d.brideFamily, label: 'Bride' }]
+  useMajesticNames(root, JSON.stringify([d.groom, d.bride, d.brideFirst, d.textOverrides]), stacked, section === 'closing' ? 4 : 8, section === 'closing' ? .04 : .01, section === 'closing' || section === 'opening')
   return <div ref={root} role={section === 'opening' ? 'heading' : undefined} aria-level={section === 'opening' ? 1 : undefined} className={`mj-names ${stacked ? 'mj-stacked' : ''}`}>
-    <div><Copy as="span" field={`${section}.groom`} label={`Groom · ${section}`} data-mj-name="" animationReplay={section === 'opening'}>{d.groom}</Copy>{family && d.groomFamily.trim() && <Copy as="p" field={`${section}.groomFamily`} className="mj-family">{d.groomFamily}</Copy>}</div>
+    {people[0] && <div><Copy as="span" field={`${section}.${people[0].key}`} label={`${people[0].label} · ${section}`} data-mj-name="" animationReplay={section === 'opening'}>{people[0].name}</Copy>{family && people[0].family.trim() && <Copy as="p" field={`${section}.${people[0].key}Family`} className="mj-family">{people[0].family}</Copy>}</div>}
     <Copy field={`${section}.separator`} className="mj-ampersand" style={separatorLayout?.y !== undefined ? { top: 0 } : undefined}>&amp;</Copy>
-    <div><Copy as="span" field={`${section}.bride`} label={`Bride · ${section}`} data-mj-name="" animationReplay={section === 'opening'}>{d.bride}</Copy>{family && d.brideFamily.trim() && <Copy as="p" field={`${section}.brideFamily`} className="mj-family">{d.brideFamily}</Copy>}</div>
+    {people[1] && <div><Copy as="span" field={`${section}.${people[1].key}`} label={`${people[1].label} · ${section}`} data-mj-name="" animationReplay={section === 'opening'}>{people[1].name}</Copy>{family && people[1].family.trim() && <Copy as="p" field={`${section}.${people[1].key}Family`} className="mj-family">{people[1].family}</Copy>}</div>}
   </div>
 }
 
@@ -87,7 +94,7 @@ function EventCard({ event, eventKey, details: d }: { event: Celebration; eventK
       <Copy as="p" field={`${prefix}.time`}>{formatTime(event.time ?? '')}</Copy>
       <Copy as="h3" field={`${prefix}.venue`}>{wrapCardText(event.venue, 24)}</Copy>
       <Copy as="p" field={`${prefix}.address`}>{wrapCardText(event.address, 32)}</Copy>
-      <div className="mj-links">{event.map.trim() && <Copy as="a" field={`${prefix}.directions`} href={event.map} target="_blank" rel="noreferrer">Directions ↗</Copy>}<Copy as="button" type="button" field={`${prefix}.calendar`} onClick={() => downloadCalendar(event, d.offset, `${d.groom} & ${d.bride}`)}>Add to calendar</Copy></div>
+      <div className="mj-links">{event.map.trim() && <Copy as="a" field={`${prefix}.directions`} href={event.map} target="_blank" rel="noreferrer">Directions ↗</Copy>}<Copy as="button" type="button" field={`${prefix}.calendar`} onClick={() => downloadCalendar(event, d.offset, coupleLabel(d))}>Add to calendar</Copy></div>
     </div>
   </Section>
 }
@@ -95,7 +102,7 @@ function EventCard({ event, eventKey, details: d }: { event: Celebration; eventK
 export default function Majestic({ details: d, rsvpTarget }: { details: InvitationData; rsvpTarget?: RsvpTarget }) {
   const root = useRef<HTMLElement>(null)
   const [opened, setOpened] = useState(false)
-  const couple = `${d.groom} & ${d.bride}`
+  const couple = coupleLabel(d)
   const wedding = { title: 'Wedding', date: d.date, time: d.time, venue: d.venue, address: d.address, map: d.map }
   // Capture original indexes before sorting so legacy orders retain stable IDs.
   const events = d.events.map((event, index) => ({ event, key: event.id || `legacy-${index}` })).sort((a, b) => `${a.event.date}T${a.event.time}`.localeCompare(`${b.event.date}T${b.event.time}`))

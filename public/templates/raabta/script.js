@@ -627,7 +627,12 @@ if (inviteDateEl && prettyDate) inviteDateEl.textContent = prettyDate;
   window.addEventListener('load', () => tryAutoplay(), { once: true });
   window.addEventListener('pageshow', () => tryAutoplay());
   document.addEventListener('visibilitychange', () => {
-    if (!document.hidden) tryAutoplay();
+    if (document.hidden) {
+      if (!audio.paused && !audio.muted) { pausedByExternal = true; audio.pause(); setPlaying(false); }
+    } else {
+      if (pausedByExternal) { pausedByExternal = false; if (!userPaused) playAudible(); }
+      else tryAutoplay();
+    }
   });
 
   btn.addEventListener('click', () => {

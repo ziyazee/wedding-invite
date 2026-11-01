@@ -29,6 +29,7 @@ export interface InvitationData {
   layoutVersion?: 1 | 2;
   textOverrides?: TextLayout;
   showCoupleIllustrations?: boolean;
+  brideFirst?: boolean;
   template: number; groom: string; bride: string; date: string; time: string; offset: string;
   venue: string; address: string; map: string; message: string; groomFamily: string; brideFamily: string;
   dressCode: string; giftNote: string; music: string; gallery: string; events: Celebration[];
@@ -78,6 +79,7 @@ export function validateDetails(value: unknown, allowRetired = false): Invitatio
   if (!value || typeof value !== 'object') throw new Error('Invitation details are required.')
   const d = value as InvitationData
   if(d.showCoupleIllustrations!==undefined&&typeof d.showCoupleIllustrations!=='boolean')throw new Error('Choose a valid illustration setting.')
+  if(d.brideFirst!==undefined&&typeof d.brideFirst!=='boolean')throw new Error('Choose a valid couple name order.')
   if (!designs.some(t => t.id === d.template) && !(allowRetired && [101, 104, 108, 109, 110, 111, 112, 115, 116, 117].includes(d.template))) throw new Error('Choose an available invitation template.')
   const text = (v: unknown, label: string, max: number, required = false) => {
     if (typeof v !== 'string' || v.length > max || (required && !v.trim())) throw new Error(`Please enter a valid ${label}.`)
@@ -115,6 +117,7 @@ export function validateDetails(value: unknown, allowRetired = false): Invitatio
     ...(d.layoutVersion !== undefined ? { layoutVersion: d.layoutVersion } : {}),
     textOverrides: readTextLayout(d.textOverrides),
     showCoupleIllustrations:d.showCoupleIllustrations !== false,
+    brideFirst:d.brideFirst === true,
     template:d.template, groom:displayName(text(d.groom,'groom name',nameTextLimit(d.template,'groom') ?? 80,true)), bride:displayName(text(d.bride,'bride name',nameTextLimit(d.template,'bride') ?? 80,true)), date:date(d.date), time:time(d.time), offset:d.offset,
     venue:text(d.venue,'venue',cardTextLimit(d.template,'venue') ?? 160,true),address:text(d.address,'address',cardTextLimit(d.template,'address') ?? 300,true),map:url(d.map,'map link'),
     message:text(d.message,'welcome message',2000),groomFamily:text(d.groomFamily,'groom family',200),brideFamily:text(d.brideFamily,'bride family',200),
