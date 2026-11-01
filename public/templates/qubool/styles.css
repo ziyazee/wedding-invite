@@ -1898,21 +1898,14 @@ body.is-modal .scroller { overflow: hidden; }
      frame collapses to ~42px, which is why this looked fixed when it wasn't.)
      Constraining the video's width caps the card height at a known value and
      keeps it clear of the art below. */
-  /* The film embed's height is the one thing this scene cannot predict — the
-     iframe reports 0 until YouTube loads, then jumps to a real 16:9 box, and
-     it is the LAST element in the card, so its growth pushes the card's bottom
-     edge down over the couple. Rather than guess the number, cap the card and
-     let the video scroll inside it: the art below is then safe at ANY embed
-     height, which is what makes this hold in Safari and not just in a
-     screenshot where the iframe never loaded. */
+  /* Show the complete RSVP form, including submit and status, in the main
+     page flow instead of hiding its bottom inside a capped scroll area. */
   .panel[data-scene="7"] .panel__inner {
-    max-height: 46svh;
-    overflow-y: auto;
-    overscroll-behavior: contain;
-    -webkit-overflow-scrolling: touch;
+    max-height: none;
+    overflow: visible;
   }
   .panel[data-scene="7"] .film { margin-top: .9rem; }
-  /* Keep the video a sensible size inside the capped card. */
+  /* Keep the optional demo video compact. */
   .panel[data-scene="7"] .film__frame { max-width: 230px; }
 
   /* MEASURED: 02-couple-close.webp is 1536x1024 with the pair CENTRED in the
