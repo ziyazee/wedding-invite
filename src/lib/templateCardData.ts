@@ -18,5 +18,6 @@ export const TEMPLATE_INTRO_IMAGES: Record<number, string> = {
 }
 
 export const TEMPLATE_THUMBNAIL_OVERRIDES: Record<number, string> = {
+  1: '/templates/royal-grace/opening-poster.webp',
   4: '/templates/mandap-at-dusk/preview.jpg',
 }

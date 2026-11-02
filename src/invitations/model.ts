@@ -16,7 +16,7 @@ export const designs = [
   { id: 12, name: 'Destination Wedding', description: 'A cinematic destination wedding invitation with couple photos and travel details.', route: '/destination-wedding', image: '/templates/destination-wedding/wedding/background_gate.webp', color: '#1a3a2a' },
   { id: 13, name: 'Raabta', description: 'Moonlit mosque scenery with floating lanterns and ornate arches.', route: '/raabta', image: '/templates/raabta/assets/mosque-scene.webp', color: '#1b2838' },
   { id: 14, name: 'Qubool', description: 'Ornate jaali patterns with a cinematic gate reveal.', route: '/qubool', image: '/templates/qubool/assets/gate/00-gate.webp', color: '#2a1f1a' },
-  { id: 15, name: 'Mangal', description: 'Cinematic mandap scenes with sacred fire and vermillion-gold palette.', route: '/mangal', image: '/templates/mangal/assets/gate/00-gate-p.png', color: '#8B1A1A' },
+  { id: 15, name: 'Mangal', description: 'Cinematic mandap scenes with sacred fire and vermillion-gold palette.', route: '/mangal', image: '/templates/mangal/assets/gate/00-gate-p.webp', color: '#8B1A1A' },
 ] as const
 export interface WeddingMoment { id: string; time: string; title: string; description: string; location: string }
 export interface Celebration { id?: string; title: string; date: string; time?: string; venue: string; address: string; map: string; schedule?: WeddingMoment[] }

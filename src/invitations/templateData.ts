@@ -20,6 +20,20 @@ for (const [id, groom, bride, venue] of [
   }
 }
 
+templateInvitationData[15] = {
+  ...examples[1],
+  template: 15,
+  groom: 'Arjun',
+  bride: 'Priya',
+  date: '2027-02-14',
+  venue: 'Royal Garden Venue',
+  address: 'MG Road, Bandra West, Mumbai',
+  events: [{
+    id: 'wedding', title: 'Wedding Ceremony', date: '2027-02-14', time: '11:00',
+    venue: 'Royal Garden Venue', address: 'MG Road, Bandra West, Mumbai', map: '',
+  }],
+}
+
 export function invitationExample(templateId: number): InvitationData | undefined {
   return templateInvitationData[templateId]
 }

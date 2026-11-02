@@ -118,6 +118,8 @@ Standalone iframe designs commonly use `index.html`, `interactions.js`, `interac
 
 ## Order dashboard and Supabase
 
+- Dashboard template switching keeps the phone iframe mounted instead of keying it by template/defaults. Browse previews use `?browse=1`; a same-origin ready handshake supplies data even when session storage is unavailable. Shared preview transitions retain the previous renderer during template lazy loading; edits within the same editor template remain immediate. Browse/editor mode changes still navigate the iframe. Browser verification pending.
+
 - Current order catalog now registers **14 designs**: **12 Destination**, **13 Raabta**, **14 Qubool** join IDs 1–11. Apply `supabase/migrations/202610220001_complete_order_template_catalog.sql` after the compact-ID migration to add/activate all six newer designs (9–14); it also covers the still-pending 202610210001 catalog rows. This SQL has NOT been applied: the workspace has only public Supabase credentials. Dashboard visibility depends on these database rows, not the landing-page list.
 
 - IDs 12–14 use `OrderFrameInvitation` and `newOrderTemplates.ts`. Destination receives order configuration before its bundled React app boots; content edits reload its preview, while styling-only edits keep the document. Raabta/Qubool personalize their existing HTML scenes and clone original event artwork for the entered event count. Shared RSVP replaces sample forms; demo wishes/photos/contact details are omitted, and notes/gallery/maps/music use order values. Raabta/Qubool countdowns use the wedding time and offset; Destination retains its native date-based countdown. Text mappings are compatibility adapters, not React migrations; Destination mappings still depend on the exported scene structure and matching configured text, so future migration needs an explicit saved-ID compatibility pass. No builds, unit tests, browser checks, or database writes were run for this addition.
@@ -219,6 +221,8 @@ Standalone iframe designs commonly use `index.html`, `interactions.js`, `interac
 - The management preview uses `/client/live-preview?editor=1`. Animated templates update their generated markup in place with `editorDocument.ts`; Design 13 receives edits through its personalization message handler. Preserve these paths to avoid replaying intros and resetting scroll on every keystroke. The editor centers the first visible text occurrence once per field change, using the previous text location when clearing a field.
 
 ## Shared music and contact behaviour
+
+- A Timeless Union shows a floating Pause music / Resume music control after opening. It operates the existing `d14-background-music` audio element, preserves playback position, and follows play/pause events including background visibility changes. Implementation: `ATimelessUnion.tsx` and `a-timeless-union/Design14.css`; browser verification pending.
 
 - `public/media-visibility.js` pauses playing audio/unmuted media when the browser/app goes into the background and resumes previously playing media when visible, subject to browser autoplay rules.
 - It is included in app HTML entries and standalone public design pages. Preserve user-muted/paused state.

@@ -1,10 +1,11 @@
-import { startTransition, useEffect, useLayoutEffect, useState } from 'react'
+import { startTransition, useEffect, useLayoutEffect, useRef, useState } from 'react'
 import type { InvitationData } from '../invitations/model'
 import InvitationRenderer from '../invitations/InvitationRenderer'
 import { invitationExample } from '../invitations/templateData'
 
 const previewKey = 'shaadi-client-live-preview'
-const isStorePreview = new URLSearchParams(window.location.search).get('store') === '1'
+const previewQuery = new URLSearchParams(window.location.search)
+const isBrowsePreview = previewQuery.get('store') === '1' || previewQuery.get('browse') === '1'
 
 function readPreview(): InvitationData | null {
   const template = Number(new URLSearchParams(window.location.search).get('template'))
@@ -20,9 +21,11 @@ function readPreview(): InvitationData | null {
 
 export default function ClientLivePreview() {
   const [details, setDetails] = useState<InvitationData | null>(readPreview)
+  const renderedTemplate = useRef(details?.template)
 
   useLayoutEffect(() => {
-    if (isStorePreview) window.scrollTo({ top: 0, left: 0, behavior: 'instant' })
+    if (isBrowsePreview || renderedTemplate.current !== details?.template) window.scrollTo({ top: 0, left: 0, behavior: 'instant' })
+    renderedTemplate.current = details?.template
   }, [details?.template])
 
   useEffect(() => {
@@ -36,8 +39,8 @@ export default function ClientLivePreview() {
   useEffect(() => {
     const updatePreview = (next: InvitationData | null) => {
       // Keep the visible invitation while a different template's lazy renderer
-      // loads. Dashboard/editor updates retain their immediate behavior.
-      if (isStorePreview) startTransition(() => setDetails(next))
+      // loads. Edits within the same template retain their immediate behavior.
+      if (isBrowsePreview || (next && next.template !== renderedTemplate.current)) startTransition(() => setDetails(next))
       else setDetails(next)
     }
     const syncPreview = (event: StorageEvent) => {

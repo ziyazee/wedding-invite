@@ -40,7 +40,7 @@ interface StoreData {
 
 const storePriceFormat = new Intl.NumberFormat('en-IN', { style: 'currency', currency: 'INR', maximumFractionDigits: 0 })
 
-function StoreTemplatePrice({ template }: { template: StoreTemplate }) {
+function storeTemplatePricing(template: StoreTemplate) {
   if (template.price == null) return null
   const price = Number(template.price)
   if (!Number.isFinite(price) || price < 0) return null
@@ -50,10 +50,31 @@ function StoreTemplatePrice({ template }: { template: StoreTemplate }) {
     : template.sale_type === 'percentage'
       ? Math.floor(price * (1 - Math.min(100, discount) / 100))
       : price
+  const discountLabel = sellingPrice < price
+    ? template.sale_type === 'percentage'
+      ? `${Math.min(100, discount)}% OFF`
+      : `${storePriceFormat.format(price - sellingPrice)} OFF`
+    : null
+  return { price, sellingPrice, discountLabel }
+}
+
+function StoreTemplatePrice({ template }: { template: StoreTemplate }) {
+  const pricing = storeTemplatePricing(template)
+  if (!pricing) return null
+  const { price, sellingPrice } = pricing
   return <span className="store-price-badge">
     {sellingPrice < price && <><s>{storePriceFormat.format(price)}</s>{' '}</>}
     {storePriceFormat.format(sellingPrice)}
   </span>
+}
+
+function StoreTemplateBadges({ template }: { template: StoreTemplate }) {
+  const discountLabel = storeTemplatePricing(template)?.discountLabel
+  if (!discountLabel && !template.is_private) return null
+  return <div className="store-card-badges">
+    {discountLabel && <span className="store-discount-badge">{discountLabel}</span>}
+    {template.is_private && <span className="store-exclusive-badge">Exclusive</span>}
+  </div>
 }
 
 function LineIcon({ name }: { name: string }) {
@@ -193,7 +214,6 @@ export default function StoreLanding({ slug }: { slug: string }) {
     <header className="store-header">
       <a className="store-brand" href="#store-top" aria-label={`${company.company_name} home`}>
         {companyLogo && failedLogoSlug !== company.slug ? <img key={company.slug} className="store-logo" src={companyLogo} alt="" onError={() => setFailedLogoSlug(company.slug)}/> : <svg className="store-brand-mark" viewBox="0 0 32 32" fill="none" stroke="currentColor" strokeWidth="1.3" aria-hidden="true"><path d="m5 10 5 5 6-9 6 9 5-5-3 14H8L5 10Zm4 18h14"/></svg>}
-        <span className="store-brand-name">{company.company_name}</span>
       </a>
     </header>
 
@@ -227,7 +247,7 @@ export default function StoreLanding({ slug }: { slug: string }) {
                   <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true"><path d="m3 6 5 4 4-7 4 7 5-4-2 12H5L3 6Zm3 15h12"/></svg>
                   <span>✦ PREMIUM</span>
                 </span>}
-                {template.is_private && <div className="store-card-badges"><span className="store-exclusive-badge">Exclusive</span></div>}
+                <StoreTemplateBadges template={template}/>
                 <StoreTemplatePrice template={template}/>
               </div>
               <button className="store-card-name" onClick={() => chooseTemplate(template.id)}>{template.name}</button>

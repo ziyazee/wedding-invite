@@ -6,6 +6,15 @@ import { destinationHTML } from './newOrderTemplates'
 
 const sources: Record<number, string> = { 9: '/templates/maroon-letter/index.html', 10: '/templates/emerald-parchment/index.html', 11: '/templates/shaadipath-t02/index.html', 12: '/templates/destination-wedding/index.html', 13: '/templates/raabta/index.html', 14: '/templates/qubool/index.html', 15: '/templates/mangal/index.html' }
 
+const openingCovers: Record<number, string> = {
+  13: '/templates/raabta/assets/gate-closed.webp',
+  14: '/templates/qubool/assets/gate/00-gate-p.webp',
+  15: '/templates/mangal/assets/gate/00-gate-p.webp',
+}
+const previewQuery = new URLSearchParams(window.location.search)
+const isBrowsePreview = window.location.pathname === '/client/live-preview'
+  && (previewQuery.get('store') === '1' || previewQuery.get('browse') === '1')
+
 /** Compatibility adapter until these designs move to the native renderer.
  * Update the same document so typing never restarts the opening or music. */
 export default function OrderFrameInvitation({ details, rsvpTarget }: { details: InvitationData; rsvpTarget?: RsvpTarget }) {
@@ -15,6 +24,7 @@ export default function OrderFrameInvitation({ details, rsvpTarget }: { details:
   const [html, setHTML] = useState<string>()
   const currentDetails = useRef(details)
   currentDetails.current = details
+  const openingCover = isBrowsePreview ? openingCovers[details.template] : undefined
   // This prebuilt React export reads its configuration only on mount. Reload
   // for content changes; layout-only edits keep the same document and scroll.
   const contentKey = details.template === 12 ? JSON.stringify({ ...details, textOverrides: undefined }) : ''
@@ -30,12 +40,20 @@ export default function OrderFrameInvitation({ details, rsvpTarget }: { details:
     if (!doc?.body || !doc.querySelector('script')) return
     try {
       applyOrderFrame(doc, details)
+      // Match the loading cover immediately, rather than flashing the gate's
+      // empty tint while its script loads and fades in the same artwork.
+      if (openingCover && doc.querySelector('.gate__art') && !doc.getElementById('browse-opening-cover')) {
+        const style = doc.createElement('style')
+        style.id = 'browse-opening-cover'
+        style.textContent = `.gate__art::after { background-image: url("${openingCover}") !important; opacity: 1 !important; transition: none !important; }`
+        doc.head.appendChild(style)
+      }
       setReady(true)
       setError('')
     } catch {
       setError('The invitation could not load. Please reload the page.')
     }
-  }, [details])
+  }, [details, openingCover])
   useEffect(() => { if (ready) sync() }, [sync, ready])
   const orderId = rsvpTarget?.orderId
   const path = rsvpTarget?.path
@@ -57,7 +75,11 @@ export default function OrderFrameInvitation({ details, rsvpTarget }: { details:
     if (ready && doc) return installOrderFrameRsvp(doc, details.template, orderId && path ? { orderId, path } : undefined)
   }, [ready, details.template, orderId, path, html])
   return <>
-    {!ready && <p role="status">{error || 'Opening your invitation…'}</p>}
+    {openingCover && !ready && <div aria-hidden="true" style={{ position: 'fixed', inset: 0,
+      backgroundColor: '#180a0c', backgroundImage: `url("${openingCover}")`,
+      backgroundSize: details.template === 13 ? '100% 100%' : 'cover',
+      backgroundPosition: 'center 68%', backgroundRepeat: 'no-repeat' }} />}
+    {!ready && (!openingCover || error) && <p role="status" style={openingCover ? { position: 'relative', color: '#fffaf2' } : undefined}>{error || 'Opening your invitation…'}</p>}
     {(details.template !== 12 || html) && <iframe ref={frame} data-order-template={details.template} src={details.template === 12 ? undefined : sources[details.template]} srcDoc={details.template === 12 ? html : undefined} onLoad={sync} title={`${details.groom} & ${details.bride} — Wedding invitation`} allow="autoplay" style={{ position: 'fixed', inset: 0, width: '100%', height: '100%', border: 0, visibility: ready ? 'visible' : 'hidden' }} />}
   </>
 }

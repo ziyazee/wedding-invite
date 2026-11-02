@@ -27,6 +27,8 @@ export default function Design14() {
   const [entryVisible, setEntryVisible] = useState(true)
   const [pending, setPending] = useState(false)
   const [playbackFailed, setPlaybackFailed] = useState(false)
+  const [musicPlaying, setMusicPlaying] = useState(false)
+  const [musicPending, setMusicPending] = useState(false)
   useDesign14TextMotion(host, opened, `${events.length}:${showIllustrations}`)
   useDesign14Motion(host, opened, String(showIllustrations))
 
@@ -106,11 +108,39 @@ export default function Design14() {
     }
   }
 
+  async function toggleMusic() {
+    const music = audio.current
+    if (!music || musicPending) return
+    if (!music.paused) {
+      music.pause()
+      return
+    }
+    setMusicPending(true)
+    try {
+      music.muted = false
+      await music.play()
+      if (!mounted.current) music.pause()
+    } catch {
+      if (mounted.current) setMusicPlaying(false)
+    } finally {
+      if (mounted.current) setMusicPending(false)
+    }
+  }
+
   return (
     <div ref={host} className="d14-react-host">
       <style>{styles}</style>
       {details && <style>{rulesCSS}</style>}
-      <audio ref={audio} id="d14-background-music" src={musicSource} preload="auto" loop />
+      <audio ref={audio} id="d14-background-music" src={musicSource} preload="auto" loop
+        onPlay={() => setMusicPlaying(true)} onPause={() => setMusicPlaying(false)}
+        onEmptied={() => setMusicPlaying(false)} onError={() => setMusicPlaying(false)} />
+      {opened && <button className="d14-music-toggle" type="button" onClick={toggleMusic}
+        disabled={musicPending} aria-controls="d14-background-music"
+        aria-label={musicPlaying ? 'Pause music' : 'Resume music'}>
+        <svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
+          {musicPlaying ? <path d="M7 5h4v14H7zm6 0h4v14h-4z"/> : <path d="m8 5 11 7-11 7z"/>}
+        </svg>
+      </button>}
       {entryVisible && <div className={`d14-entry${opened ? ' is-opening' : ''}`} onTransitionEnd={event => {
         if (opened && event.target === event.currentTarget && event.propertyName === 'opacity') setEntryVisible(false)
       }}>
