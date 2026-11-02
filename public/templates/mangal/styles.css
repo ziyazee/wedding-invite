@@ -187,14 +187,14 @@ body.is-gated .scroller { overflow: hidden; }
 .layer.el.fig-seated { z-index: 50; }
 
 .layer.el.fig-left {
-  inset: auto; left: -20%; right: auto; bottom: 0;
-  width: 70%; height: 75%;
+  inset: auto; left: 0; right: 50%; bottom: 0;
+  height: 70%;
   background-size: contain;
   background-position: center bottom;
 }
 .layer.el.fig-right {
-  inset: auto; left: auto; right: -20%; bottom: 0;
-  width: 70%; height: 75%;
+  inset: auto; left: 50%; right: 0; bottom: 0;
+  height: 70%;
   background-size: contain;
   background-position: center bottom;
 }
@@ -312,11 +312,11 @@ body.is-gated .scroller { overflow: hidden; }
    03-lanternstring: stops at 37% of its canvas, so it is already a shallow
    top band and needs no extra trimming (unlike scene 2's). */
 .panel[data-scene="4"] .layer.el.fig-center {
-  inset: auto; left: auto; right: -8%; bottom: 0;
-  width: 76%; height: 82%;
+  inset: auto; left: 5%; right: 5%; bottom: 0;
+  width: auto; height: 65%;
   background-size: contain;
-  background-position: right bottom;
-  z-index: 45;                 /* above the panel scrim, so they stay solid */
+  background-position: center bottom;
+  z-index: 50;
 }
 .panel[data-scene="4"] .layer.el.toplights {
   height: 40%;
@@ -2045,11 +2045,11 @@ body.is-modal .scroller { overflow: hidden; }
      cards, at full height. */
   .panel--tall .layer.el.fig-center {
     top: auto; bottom: 0;
-    left: auto; right: -14%;
-    width: 96%;
-    height: 44svh;
+    left: 5%; right: 5%;
+    width: auto;
+    height: 65%;
     background-size: contain;
-    background-position: right bottom;
+    background-position: center bottom;
   }
 
   /* Scene 4's couple on a phone. The generic tall-panel rule above happens to
@@ -2084,38 +2084,14 @@ body.is-modal .scroller { overflow: hidden; }
      14svh top and bottom; this adds the figure's band to the bottom so the
      stack clears them — and no more than that, so the couple begins directly
      where the cards end instead of after a gap of empty terrace. */
-  .panel[data-scene="4"] { padding-bottom: calc(14svh + 40svh); }
+  .panel[data-scene="4"] { padding-bottom: 14svh; }
 
   .panel[data-scene="4"] .layer.el.fig-center {
-    top: auto; bottom: 0;
-    /* SIZE IS SET BY `width` ALONE — `height` cannot grow this figure.
-
-       MEASURED on 02-mehendi-moment.webp: the plate is 1536x865 (aspect
-       1.776) and `background-size: contain` fits it to the box's WIDTH long
-       before its height, so the old `height: 34svh` only added dead letterbox
-       above the art — 76px of it — and never made the couple larger.
-
-       The second measurement is the one that sets the number: the drawn
-       couple occupies only x 60.4-94.8% of the plate, the left 60% being
-       fully transparent. So the rendered couple is ~34% of whatever the box
-       is. At the old `width: 96%` that was ~129px on a 390px screen — a third
-       of the frame, which is what read as "too small".
-
-       190% puts the couple at ~255px wide and ~409px tall — about 65% of the
-       frame — while the plate's empty left side simply runs off the left
-       edge, costing nothing. */
-    left: auto; right: 3.5%;
-    width: 190%;
-    height: auto;
-    aspect-ratio: 1536 / 865;
-    /* The right inset must still clear GSAP's idle motion: at
-       data-depth="16" the layer gets `scale(1.047)` plus an x-drift of
-       `depth * idle * 1.35 * 0.55` ~ 12px (trap 1 — the CSS box is not what
-       renders). 3.5% of the now-much-wider box is ~26px, the same absolute
-       clearance the old 9% of a 96% box gave. */
+    inset: auto; left: 5%; right: 5%; bottom: 0;
+    width: auto; height: 65%;
     background-size: contain;
-    background-position: right bottom;
-    z-index: 45;               /* above the scrim, so they stay solid */
+    background-position: center bottom;
+    z-index: 50;
   }
   .layer.el.fig-seated { left: -4%; right: -4%; height: 76%; }
   .layer.el.fig-cl     { left: -8%; width: 112%; height: 100%; }
@@ -2646,13 +2622,11 @@ body.is-modal .scroller { overflow: hidden; }
      anchored so they sit right where `padding-bottom: 40svh` above now ends
      the card stack, with no gap and no overlap. */
   .panel[data-scene="4"] .layer.el.fig-center {
-    inset: auto; left: auto; right: 1%; bottom: 0;
-    width: 105%;
-    height: auto;
-    aspect-ratio: 1536 / 865;
+    inset: auto; left: 5%; right: 5%; bottom: 0;
+    width: auto; height: 65%;
     background-size: contain;
-    background-position: right bottom;
-    z-index: 45;
+    background-position: center bottom;
+    z-index: 50;
   }
 
   /* Scene 7 — the couple is centred in their own canvas (x 32-65%), so the
@@ -3045,4 +3019,61 @@ body.is-modal .scroller { overflow: hidden; }
        bright pool desktop shows. The couple and the text still sit on top. */
     z-index: 42;
   }
+}
+
+/* ── Sacred Mandap figure overrides ────────────────────────────────────
+   Per-scene positioning for portrait images with black backgrounds. */
+
+/* Scene 1 — bride left, groom right */
+.panel[data-scene="1"] .layer.el.fig-left {
+  inset: auto !important; left: -5% !important; right: 50% !important; bottom: 0 !important;
+  height: 65% !important; width: auto !important;
+  background-size: contain !important; background-position: center bottom !important;
+  z-index: 50 !important;
+}
+.panel[data-scene="1"] .layer.el.fig-right {
+  inset: auto !important; left: 36% !important; right: 2% !important; bottom: 0 !important;
+  height: 80% !important; width: auto !important;
+  background-size: contain !important; background-position: center bottom !important;
+  z-index: 50 !important;
+}
+
+/* Scene 3 — couple seated looking up at countdown */
+.panel[data-scene="3"] .layer.el.fig-center {
+  inset: auto !important; left: 20% !important; right: 20% !important; bottom: 0 !important;
+  height: 55% !important; width: auto !important;
+  background-size: contain !important; background-position: center bottom !important;
+  z-index: 50 !important;
+}
+
+/* Scene 4 — couple at celebrations */
+.panel--tall.panel[data-scene="4"] .layer.el.fig-center {
+  inset: auto !important; left: 5% !important; right: 5% !important; bottom: 0 !important;
+  height: 65% !important; width: auto !important;
+  background-size: contain !important; background-position: center bottom !important;
+  z-index: 50 !important;
+}
+
+/* Scene 6 — ceremony moment */
+.panel[data-scene="6"] .layer.el.fig-center {
+  inset: auto !important; left: 10% !important; right: 20% !important; bottom: 0 !important;
+  height: 65% !important; width: auto !important;
+  background-size: contain !important; background-position: center bottom !important;
+  z-index: 50 !important;
+}
+
+/* Scene 7 — couple close-up at RSVP */
+.panel--tall.panel[data-scene="7"] .layer.el.fig-center {
+  inset: auto !important; left: 20% !important; right: 5% !important; bottom: 0 !important;
+  height: 70% !important; width: auto !important;
+  background-size: contain !important; background-position: center bottom !important;
+  z-index: 50 !important;
+}
+
+/* Scene 8 — couple seated, blessings */
+.panel--tall.panel--finale .layer.el.fig-seated {
+  inset: auto !important; left: 18% !important; right: 18% !important; bottom: 0 !important;
+  height: 55% !important; width: auto !important;
+  background-size: contain !important; background-position: center bottom !important;
+  z-index: 50 !important;
 }

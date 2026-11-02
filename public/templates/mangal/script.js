@@ -885,6 +885,7 @@
     if (!audio) return;
     audio.muted = false;
     audio.volume = 0.55;
+    audio.currentTime = 5;
     audio.play().then(() => {
       musicOn = true;
       reflectMusic();
@@ -903,6 +904,7 @@
       reflectMusic();
     } else {
       audio.muted = false;
+      if (audio.currentTime < 5) audio.currentTime = 5;
       audio.play().then(() => { musicOn = true; reflectMusic(); }).catch(() => {});
     }
   });

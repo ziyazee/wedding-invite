@@ -2,6 +2,7 @@ import { useEffect, useRef } from 'react'
 import { useInvitationDetails } from '../invitations/context'
 import { invitationExample } from '../invitations/templateData'
 import { invitationTemplateSrc } from '../invitations/templateFrame'
+import { companyWhatsAppURL } from '../invitations/model'
 
 function findWeddingDate(value: unknown): string | null {
   if (!value || typeof value !== 'object') return null
@@ -102,9 +103,8 @@ export default function Design13() {
             const esc = (s: string) => s.replace(/[&<>"']/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]!))
             const footer = iframeDoc.createElement('footer')
             footer.className = 'designed-by-footer'
-            const phone = (details.companyPhone || '').replace(/\D/g, '')
-            const whatsappPhone = phone.length === 10 ? `91${phone}` : phone.length >= 11 && phone.length <= 15 ? phone : ''
-            footer.innerHTML = `<span class="designed-by-label">Invitation by</span>${details.companyLogo ? (whatsappPhone ? `<a href="https://wa.me/${whatsappPhone}" target="_blank" rel="noreferrer" aria-label="Contact ${esc(details.companyName || 'company')} on WhatsApp"><img class="designed-by-logo" src="${esc(details.companyLogo)}" alt="${esc(details.companyName || 'Company')}"/></a>` : `<img class="designed-by-logo" src="${esc(details.companyLogo)}" alt="${esc(details.companyName || 'Company')}"/>`) : `<span class="designed-by-name">${esc(details.companyName!)}</span>`}`
+            const whatsappURL = companyWhatsAppURL(details.companyPhone)
+            footer.innerHTML = `<span class="designed-by-label">Invitation by</span>${details.companyLogo ? (whatsappURL ? `<a href="${whatsappURL}" target="_blank" rel="noreferrer" aria-label="Contact ${esc(details.companyName || 'company')} on WhatsApp"><img class="designed-by-logo" src="${esc(details.companyLogo)}" alt="${esc(details.companyName || 'Company')}"/></a>` : `<img class="designed-by-logo" src="${esc(details.companyLogo)}" alt="${esc(details.companyName || 'Company')}"/>`) : `<span class="designed-by-name">${esc(details.companyName!)}</span>`}`
             const style = iframeDoc.createElement('style')
             style.textContent = `.designed-by-footer{display:flex;align-items:center;justify-content:center;gap:6px;padding:14px 16px;background:rgba(0,0,0,.03);border-top:1px solid rgba(0,0,0,.06);font-family:system-ui,-apple-system,sans-serif}.designed-by-label{font-size:11px;letter-spacing:.04em;color:rgba(0,0,0,.4);text-transform:uppercase}.designed-by-logo{max-height:22px;width:auto;object-fit:contain;opacity:.7}.designed-by-name{font-size:13px;font-weight:600;color:rgba(0,0,0,.5)}`
             iframeDoc.head.appendChild(style)

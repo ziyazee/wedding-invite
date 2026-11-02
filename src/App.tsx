@@ -27,7 +27,7 @@ const ShaadiPathT02 = lazySitePage(() => import('./pages/ShaadiPathT02'))
 const DestinationWedding = lazySitePage(() => import('./pages/DestinationWedding'))
 const Raabta = lazySitePage(() => import('./pages/Raabta'))
 const Qubool = lazySitePage(() => import('./pages/Qubool'))
-const SacredMandap = lazySitePage(() => import('./pages/SacredMandap'))
+const Mangal = lazySitePage(() => import('./pages/Mangal'))
 // Future use cases
 const BirthdayInvite = lazySitePage(() => import('./pages/BirthdayInvite'))
 const HousewarmingInvite = lazySitePage(() => import('./pages/HousewarmingInvite'))
@@ -133,7 +133,7 @@ export default function App() {
       <Route path="/destination-wedding" element={<DestinationWedding />} />
       <Route path="/raabta" element={<Raabta />} />
       <Route path="/qubool" element={<Qubool />} />
-      <Route path="/sacred-mandap" element={<SacredMandap />} />
+      <Route path="/mangal" element={<Mangal />} />
       {/* Future use cases */}
       <Route path="/birthday" element={<BirthdayInvite />} />
       <Route path="/housewarming" element={<HousewarmingInvite />} />
@@ -145,7 +145,7 @@ export default function App() {
       <Route path="/maitri" element={<Design11 />} />
       <Route path="/kiran" element={<Design12 />} />
       <Route path="/ivory-arch" element={<Design15 />} />
-      <Route path="/sacred-mandap" element={<Design16 />} />
+      <Route path="/mangal" element={<Design16 />} />
       <Route path="/gulabi-mandap" element={<Design17 />} />
       <Route path="/royal-grace" element={<RoyalGrace />} />
       <Route path="/:orderNumber/:slug" element={<GeneratedInvitation />} />

@@ -1,4 +1,4 @@
-import { formatDate, formatTime } from './model'
+import { companyWhatsAppURL, formatDate, formatTime } from './model'
 import type { InvitationData } from './model'
 import { downloadCalendar } from './calendar'
 import designedByFooterCSS from './components/DesignedByFooter.css?inline'
@@ -111,9 +111,8 @@ export function applyNewOrderTemplate(doc: Document, d: InvitationData) {
     footerHost.innerHTML = ''
     const label = doc.createElement('span'); label.className = 'designed-by-label'; label.textContent = 'Invitation by '
     footerHost.append(label)
-    const phone = (d.companyPhone || '').replace(/\D/g, '')
-    const whatsappPhone = phone.length === 10 ? `91${phone}` : phone.length >= 11 && phone.length <= 15 ? phone : ''
-    if (d.companyLogo) { const img = doc.createElement('img'); img.className = 'designed-by-logo'; img.src = d.companyLogo; img.alt = d.companyName || 'Company'; if (whatsappPhone) { const link = doc.createElement('a'); link.href = `https://wa.me/${whatsappPhone}`; link.target = '_blank'; link.rel = 'noreferrer'; link.setAttribute('aria-label', `Contact ${d.companyName || 'company'} on WhatsApp`); link.append(img); footerHost.append(link) } else footerHost.append(img) }
+    const whatsappURL = companyWhatsAppURL(d.companyPhone)
+    if (d.companyLogo) { const img = doc.createElement('img'); img.className = 'designed-by-logo'; img.src = d.companyLogo; img.alt = d.companyName || 'Company'; if (whatsappURL) { const link = doc.createElement('a'); link.href = whatsappURL; link.target = '_blank'; link.rel = 'noreferrer'; link.setAttribute('aria-label', `Contact ${d.companyName || 'company'} on WhatsApp`); link.append(img); footerHost.append(link) } else footerHost.append(img) }
     else { const name = doc.createElement('span'); name.className = 'designed-by-name'; name.textContent = d.companyName!; footerHost.append(name) }
   }
 

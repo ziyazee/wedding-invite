@@ -4,7 +4,7 @@ import type { RsvpTarget } from './rsvp'
 import { applyOrderFrame, installOrderFrameRsvp } from './orderFrameAdapter'
 import { destinationHTML } from './newOrderTemplates'
 
-const sources: Record<number, string> = { 9: '/templates/maroon-letter/index.html', 10: '/templates/emerald-parchment/index.html', 11: '/templates/shaadipath-t02/index.html', 12: '/templates/destination-wedding/index.html', 13: '/templates/raabta/index.html', 14: '/templates/qubool/index.html', 15: '/templates/sacred-mandap/index.html' }
+const sources: Record<number, string> = { 9: '/templates/maroon-letter/index.html', 10: '/templates/emerald-parchment/index.html', 11: '/templates/shaadipath-t02/index.html', 12: '/templates/destination-wedding/index.html', 13: '/templates/raabta/index.html', 14: '/templates/qubool/index.html', 15: '/templates/mangal/index.html' }
 
 /** Compatibility adapter until these designs move to the native renderer.
  * Update the same document so typing never restarts the opening or music. */

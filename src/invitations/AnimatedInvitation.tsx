@@ -1,6 +1,6 @@
 import { useEffect, useRef, useState } from 'react'
 import type { InvitationData } from './model'
-import { formatDate, formatTime, mapURL, weddingISO } from './model'
+import { companyWhatsAppURL, formatDate, formatTime, mapURL, weddingISO } from './model'
 import { downloadCalendar } from './calendar'
 import { saveOrderRsvp, type RsvpSubmitRequest, type RsvpTarget } from './rsvp'
 import { markEditorDocument, updateEditorDocument } from './editorDocument'
@@ -147,8 +147,8 @@ export default function AnimatedInvitation({details:d,rsvpTarget}:{details:Invit
    doc.querySelectorAll('footer').forEach(footer=>{if(footer!==bloomFooter&&footer!==embroideredFooter)footer.style.display='none'})
    if(d.companyLogo||d.companyName){
     const dbf=doc.createElement('footer');dbf.className='designed-by-footer'
-    const phone=(d.companyPhone||'').replace(/\D/g,'');const whatsappPhone=phone.length===10?`91${phone}`:phone.length>=11&&phone.length<=15?phone:''
-    dbf.innerHTML=`<span class="designed-by-label">Invitation by</span>${d.companyLogo?(whatsappPhone?`<a href="https://wa.me/${whatsappPhone}" target="_blank" rel="noreferrer" aria-label="Contact ${escape(d.companyName||'company')} on WhatsApp"><img class="designed-by-logo" src="${escape(d.companyLogo)}" alt="${escape(d.companyName||'Company')}"/></a>`:`<img class="designed-by-logo" src="${escape(d.companyLogo)}" alt="${escape(d.companyName||'Company')}"/>`):`<span class="designed-by-name">${escape(d.companyName!)}</span>`}`
+    const whatsappURL=companyWhatsAppURL(d.companyPhone)
+    dbf.innerHTML=`<span class="designed-by-label">Invitation by</span>${d.companyLogo?(whatsappURL?`<a href="${whatsappURL}" target="_blank" rel="noreferrer" aria-label="Contact ${escape(d.companyName||'company')} on WhatsApp"><img class="designed-by-logo" src="${escape(d.companyLogo)}" alt="${escape(d.companyName||'Company')}"/></a>`:`<img class="designed-by-logo" src="${escape(d.companyLogo)}" alt="${escape(d.companyName||'Company')}"/>`):`<span class="designed-by-name">${escape(d.companyName!)}</span>`}`
     const dbfStyle=doc.createElement('style');dbfStyle.textContent=`.designed-by-footer{display:flex;align-items:center;justify-content:center;gap:6px;padding:14px 16px;background:rgba(0,0,0,.03);border-top:1px solid rgba(0,0,0,.06);font-family:system-ui,-apple-system,sans-serif}.designed-by-label{font-size:11px;letter-spacing:.04em;color:rgba(0,0,0,.4);text-transform:uppercase}.designed-by-logo{max-height:22px;width:auto;object-fit:contain;opacity:.7}.designed-by-name{font-size:13px;font-weight:600;color:rgba(0,0,0,.5)}`
     doc.head.append(dbfStyle);doc.body.append(dbf)
    }

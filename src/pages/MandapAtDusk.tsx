@@ -54,7 +54,7 @@ export default function Design18() {
 
   useEffect(() => {
     const previousTitle = document.title
-    document.title = `${firstName} & ${secondName} — Sacred Mandap`
+    document.title = `${firstName} & ${secondName} — Mangal`
     return () => { document.title = previousTitle }
   }, [firstName, secondName])
 

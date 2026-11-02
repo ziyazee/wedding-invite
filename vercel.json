@@ -1,5 +1,9 @@
 {
   "$schema": "https://openapi.vercel.sh/vercel.json",
+  "proxy": {
+    "entrypoint": "proxy.ts",
+    "matcher": ["/", "/invite/:path*"]
+  },
   "headers": [
     {
       "source": "/assets/(.*)",

@@ -66,7 +66,7 @@ export default function Design16() {
 
   useEffect(() => {
     const previousTitle = document.title
-    document.title = `${details.groom} & ${details.bride} — Sacred Mandap`
+    document.title = `${details.groom} & ${details.bride} — Mangal`
     return () => { document.title = previousTitle }
   }, [details.groom, details.bride])
 

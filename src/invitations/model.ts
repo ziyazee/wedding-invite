@@ -16,7 +16,7 @@ export const designs = [
   { id: 12, name: 'Destination Wedding', description: 'A cinematic destination wedding invitation with couple photos and travel details.', route: '/destination-wedding', image: '/templates/destination-wedding/wedding/background_gate.webp', color: '#1a3a2a' },
   { id: 13, name: 'Raabta', description: 'Moonlit mosque scenery with floating lanterns and ornate arches.', route: '/raabta', image: '/templates/raabta/assets/mosque-scene.webp', color: '#1b2838' },
   { id: 14, name: 'Qubool', description: 'Ornate jaali patterns with a cinematic gate reveal.', route: '/qubool', image: '/templates/qubool/assets/gate/00-gate.webp', color: '#2a1f1a' },
-  { id: 15, name: 'Sacred Mandap', description: 'Cinematic mandap scenes with sacred fire and vermillion-gold palette.', route: '/sacred-mandap', image: '/templates/sacred-mandap/assets/gate/00-gate-p.png', color: '#8B1A1A' },
+  { id: 15, name: 'Mangal', description: 'Cinematic mandap scenes with sacred fire and vermillion-gold palette.', route: '/mangal', image: '/templates/mangal/assets/gate/00-gate-p.png', color: '#8B1A1A' },
 ] as const
 export interface WeddingMoment { id: string; time: string; title: string; description: string; location: string }
 export interface Celebration { id?: string; title: string; date: string; time?: string; venue: string; address: string; map: string; schedule?: WeddingMoment[] }
@@ -35,6 +35,12 @@ export interface InvitationData {
   venue: string; address: string; map: string; message: string; groomFamily: string; brideFamily: string;
   dressCode: string; giftNote: string; music: string; gallery: string; events: Celebration[];
   companyLogo?: string; companyName?: string; companyPhone?: string;
+}
+export const COMPANY_WHATSAPP_MESSAGE = 'Hi, I need a wedding invitation like this. Could you share the details and pricing?'
+export function companyWhatsAppURL(phone?: string): string | undefined {
+  const digits = phone?.replace(/\D/g, '') || ''
+  const number = digits.length === 10 ? `91${digits}` : digits.length >= 11 && digits.length <= 15 ? digits : ''
+  return number ? `https://wa.me/${number}?text=${encodeURIComponent(COMPANY_WHATSAPP_MESSAGE)}` : undefined
 }
 export interface SavedInvitation { slug: string; details: InvitationData; createdAt: string; orderId?: string }
 export const weddingISO = (d: InvitationData) => `${d.date}T${d.time || '00:00'}:00${d.offset}`
@@ -75,7 +81,7 @@ export function inviteUrl(slug: string): string {
   }
   return `https://${slug}.shaadiinvites.in`
 }
-export const reservedSlugs = new Set(['assets','images','fonts','dashboard','client','admin','login','create','preview','invite','newdesign','royal-grace','api','arjunmeera','rohankavya','aarongrace','danielsarah','vikramananya','nikhiladiti','embroidered-garden','secret-garden','majestic','bloom','the-artful-love-story','arjunbhavana','a-timeless-union','mandap-at-dusk','maroon-letter','emerald-parchment','royal-jodhpur','destination-wedding','raabta','qubool','blossom-and-oud','noor','sunehri','yasmin','maitri','kiran','ivory-arch','sacred-mandap','gulabi-mandap','birthday','housewarming'])
+export const reservedSlugs = new Set(['assets','images','fonts','dashboard','client','admin','login','create','preview','invite','newdesign','royal-grace','api','arjunmeera','rohankavya','aarongrace','danielsarah','vikramananya','nikhiladiti','embroidered-garden','secret-garden','majestic','bloom','the-artful-love-story','arjunbhavana','a-timeless-union','mandap-at-dusk','maroon-letter','emerald-parchment','royal-jodhpur','destination-wedding','raabta','qubool','blossom-and-oud','noor','sunehri','yasmin','maitri','kiran','ivory-arch','mangal','gulabi-mandap','birthday','housewarming'])
 export function validateDetails(value: unknown, allowRetired = false): InvitationData {
   if (!value || typeof value !== 'object') throw new Error('Invitation details are required.')
   const d = value as InvitationData
