@@ -1,20 +1,29 @@
-import { useEffect, useState } from 'react'
+import { startTransition, useEffect, useLayoutEffect, useState } from 'react'
 import type { InvitationData } from '../invitations/model'
 import InvitationRenderer from '../invitations/InvitationRenderer'
+import { invitationExample } from '../invitations/templateData'
 
 const previewKey = 'shaadi-client-live-preview'
+const isStorePreview = new URLSearchParams(window.location.search).get('store') === '1'
 
 function readPreview(): InvitationData | null {
+  const template = Number(new URLSearchParams(window.location.search).get('template'))
+  const fallback = invitationExample(template) ?? null
   try {
     const value = sessionStorage.getItem(previewKey)
-    return value ? JSON.parse(value) as InvitationData : null
+    const saved = value ? JSON.parse(value) as InvitationData : null
+    return template && saved?.template !== template ? fallback : saved ?? fallback
   } catch {
-    return null
+    return fallback
   }
 }
 
 export default function ClientLivePreview() {
   const [details, setDetails] = useState<InvitationData | null>(readPreview)
+
+  useLayoutEffect(() => {
+    if (isStorePreview) window.scrollTo({ top: 0, left: 0, behavior: 'instant' })
+  }, [details?.template])
 
   useEffect(() => {
     if (new URLSearchParams(window.location.search).get('editor') !== '1') return
@@ -25,11 +34,18 @@ export default function ClientLivePreview() {
   }, [])
 
   useEffect(() => {
+    const updatePreview = (next: InvitationData | null) => {
+      // Keep the visible invitation while a different template's lazy renderer
+      // loads. Dashboard/editor updates retain their immediate behavior.
+      if (isStorePreview) startTransition(() => setDetails(next))
+      else setDetails(next)
+    }
     const syncPreview = (event: StorageEvent) => {
-      if (event.key === previewKey) setDetails(readPreview())
+      if (event.key === previewKey) updatePreview(readPreview())
     }
     const syncMessage = (event: MessageEvent) => {
-      if (event.data?.type === 'shaadi-preview-update' && event.data.data) setDetails(event.data.data as InvitationData)
+      if (event.origin !== window.location.origin || event.source !== window.parent) return
+      if (event.data?.type === 'shaadi-preview-update' && event.data.data) updatePreview(event.data.data as InvitationData)
     }
     window.addEventListener('storage', syncPreview)
     window.addEventListener('message', syncMessage)

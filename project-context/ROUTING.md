@@ -4,7 +4,7 @@ Source: `src/App.tsx`
 
 ## Route Resolution Order
 
-1. **Subdomain check** (`getInviteSlug`): If hostname is `*.shaadiinvites.in` (not `www`), extract slug → `SubdomainResolver` (resolves to store or invitation)
+1. **Subdomain check** (`getInviteSlug`): If hostname is `*.shaadiinvites.in` (not `www`), extract slug → `SubdomainResolver` (resolves to store or invitation). The exact `/client/live-preview` path bypasses this check to render store invitation previews on the same origin.
 2. **Query param fallback**: `?invite=slug` parameter also triggers subdomain path
 3. **SPA routes**: Standard React Router path matching
 

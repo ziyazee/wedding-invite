@@ -1,8 +1,9 @@
-import { useEffect, useLayoutEffect, useRef, useState } from 'react'
+import { useEffect, useLayoutEffect, useMemo, useRef, useState } from 'react'
 import { isSupabaseConfigured, supabase } from '../lib/supabase'
 import { storeInvitationExample } from '../invitations/templateData'
 import { TEMPLATE_INTRO_VIDEOS, TEMPLATE_INTRO_IMAGES } from '../lib/templateCardData'
 import './StoreLanding.css'
+import SiteFonts from '../SiteFonts'
 
 interface StoreCompany {
   id: number
@@ -26,7 +27,7 @@ interface StoreTemplate {
   is_private: boolean
   display_order: number
   price: number | null
-  sale_type: string | null
+  sale_type: 'none' | 'percentage' | 'fixed' | null
   sale_value: number | null
   is_premium: boolean
   demo_data: Record<string, unknown> | null
@@ -37,9 +38,28 @@ interface StoreData {
   templates: StoreTemplate[]
 }
 
+const storePriceFormat = new Intl.NumberFormat('en-IN', { style: 'currency', currency: 'INR', maximumFractionDigits: 0 })
+
+function StoreTemplatePrice({ template }: { template: StoreTemplate }) {
+  if (template.price == null) return null
+  const price = Number(template.price)
+  if (!Number.isFinite(price) || price < 0) return null
+  const discount = Math.max(0, Number(template.sale_value) || 0)
+  const sellingPrice = template.sale_type === 'fixed'
+    ? Math.max(0, price - discount)
+    : template.sale_type === 'percentage'
+      ? Math.floor(price * (1 - Math.min(100, discount) / 100))
+      : price
+  return <span className="store-price-badge">
+    {sellingPrice < price && <><s>{storePriceFormat.format(price)}</s>{' '}</>}
+    {storePriceFormat.format(sellingPrice)}
+  </span>
+}
+
 function LineIcon({ name }: { name: string }) {
   const paths: Record<string, string> = {
     grid: 'M3 3h6v6H3zM15 3h6v6h-6zM3 15h6v6H3zM15 15h6v6h-6z',
+    classic: 'M3 9 12 3l9 6H3Zm2 2v9m5-9v9m4-9v9m5-9v9M3 21h18',
     lotus: 'M12 21C5 17 6 9 12 3c6 6 7 14 0 18ZM12 21C4 21 1 15 2 10c6 0 9 5 10 11Zm0 0c8 0 11-6 10-11-6 0-9 5-10 11Z',
     moon: 'M20 16A9 9 0 0 1 9 3a9 9 0 1 0 11 13Z',
     cross: 'M10 3h4v6h5v4h-5v9h-4v-9H5V9h5Z',
@@ -51,9 +71,8 @@ function LineIcon({ name }: { name: string }) {
   return <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.25" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true"><path d={paths[name] || paths.ornament}/></svg>
 }
 
-function ButtonArrow() { return <svg className="button-arrow" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.6" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true"><path d="M4 12h15M13 5l7 7-7 7"/></svg> }
-
 function categoryIconFor(category: string) {
+  if (/classic/i.test(category)) return 'classic'
   if (/hindu/i.test(category)) return 'lotus'
   if (/muslim/i.test(category)) return 'moon'
   if (/christian/i.test(category)) return 'cross'
@@ -64,10 +83,16 @@ export default function StoreLanding({ slug }: { slug: string }) {
   const [data, setData] = useState<StoreData | null>(null)
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState('')
+  const [failedLogoSlug, setFailedLogoSlug] = useState<string | null>(null)
   const [selected, setSelected] = useState<number | null>(null)
   const [category, setCategory] = useState('All')
+  const categoryBar = useRef<HTMLDivElement>(null)
+  const templateGrid = useRef<HTMLDivElement>(null)
+  const categoryTransition = useRef(false)
+  const [categoryHighlight, setCategoryHighlight] = useState<{ left: number; width: number } | null>(null)
   const [previewLoaded, setPreviewLoaded] = useState(false)
   const phoneScreen = useRef<HTMLDivElement>(null)
+  const previewFrame = useRef<HTMLIFrameElement>(null)
   const [screenScale, setScreenScale] = useState(0.42)
 
   useEffect(() => {
@@ -86,30 +111,77 @@ export default function StoreLanding({ slug }: { slug: string }) {
   useLayoutEffect(() => {
     const screen = phoneScreen.current
     if (!screen) return
-    const resize = () => setScreenScale(Math.min(screen.clientWidth / 402, screen.clientHeight / 874))
+    const resize = () => setScreenScale(screen.getBoundingClientRect().width / 402)
     resize()
     const observer = new ResizeObserver(resize)
     observer.observe(screen)
     return () => observer.disconnect()
-  }, [])
+  }, [loading, error])
+
+  useLayoutEffect(() => {
+    const bar = categoryBar.current
+    const active = bar?.querySelector<HTMLButtonElement>('button[aria-pressed="true"]')
+    if (!bar || !active) return
+    const measure = () => setCategoryHighlight({ left: active.offsetLeft, width: active.offsetWidth })
+    measure()
+    const observer = new ResizeObserver(measure)
+    observer.observe(bar)
+    observer.observe(active)
+    return () => observer.disconnect()
+  }, [category, data, loading, error])
+
+  useLayoutEffect(() => {
+    const grid = templateGrid.current
+    if (!categoryTransition.current) return
+    if (!grid || window.matchMedia('(prefers-reduced-motion: reduce)').matches) return
+    const animation = grid.animate(
+      [{ opacity: 0.9 }, { opacity: 1 }],
+      { duration: 280, easing: 'ease-out' },
+    )
+    return () => {
+      animation.cancel()
+    }
+  }, [category])
 
   const company = data?.company
+  const companyAsset = company ? encodeURIComponent(company.slug) : undefined
+  const companyLogo = companyAsset ? `/company-logos/${companyAsset}.png` : undefined
+  const heroBanner = companyAsset ? `/landing/${companyAsset}.png` : undefined
   const templates = data?.templates ?? []
-  const accent = company?.brand_color || '#a5753c'
+  const accent = company?.brand_color || '#754522'
   const categories = ['All', ...new Set(templates.map(t => t.category).filter(Boolean))]
   const filtered = templates.filter(t => category === 'All' || t.category === category)
   const currentTemplate = templates.find(t => t.id === selected) ?? templates[0]
-  const previewData = currentTemplate ? storeInvitationExample(currentTemplate.id, currentTemplate.demo_data) : undefined
+  const previewData = useMemo(() => currentTemplate ? storeInvitationExample(currentTemplate.id, currentTemplate.demo_data) : undefined, [currentTemplate])
+
+  useLayoutEffect(() => {
+    const syncPreview = () => {
+      if (previewData) previewFrame.current?.contentWindow?.postMessage({ type: 'shaadi-preview-update', data: previewData }, window.location.origin)
+    }
+    const onPreviewReady = (event: MessageEvent) => {
+      if (event.origin !== window.location.origin || event.source !== previewFrame.current?.contentWindow) return
+      if (event.data?.type !== 'shaadi-preview-ready') return
+      syncPreview()
+      setPreviewLoaded(true)
+    }
+    window.addEventListener('message', onPreviewReady)
+    syncPreview()
+    return () => window.removeEventListener('message', onPreviewReady)
+  }, [previewData])
 
   useLayoutEffect(() => {
     if (!previewData) return
     try { sessionStorage.setItem('shaadi-client-live-preview', JSON.stringify(previewData)) } catch {}
   }, [previewData])
 
-  const whatsappLink = company?.phone ? `https://wa.me/${company.phone.replace(/\D/g, '')}?text=${encodeURIComponent('Hi, I saw your invitation templates and would like to know more!')}` : null
+  function chooseCategory(next: string) {
+    if (next === category) return
+    categoryTransition.current = true
+    setCategory(next)
+  }
 
   function chooseTemplate(id: number) {
-    if (id !== selected) { setSelected(id); setPreviewLoaded(false) }
+    if (id !== selected) setSelected(id)
     if (window.matchMedia('(max-width: 760px)').matches) document.getElementById('store-preview')?.scrollIntoView({ behavior: window.matchMedia('(prefers-reduced-motion: reduce)').matches ? 'auto' : 'smooth' })
   }
 
@@ -117,62 +189,70 @@ export default function StoreLanding({ slug }: { slug: string }) {
   if (error || !company) return <main className="store-page store-error"><h1>Store not found</h1><p>{error || 'This store does not exist.'}</p></main>
 
   return <div className="store-page" style={{ '--store-accent': accent } as React.CSSProperties}>
+    <SiteFonts/>
     <header className="store-header">
-      {company.logo_path ? <img className="store-logo" src={company.logo_path} alt={company.company_name}/> : <span className="store-brand-name">{company.company_name}</span>}
-      {whatsappLink && <a className="store-cta" href={whatsappLink} target="_blank" rel="noreferrer">Contact Us <ButtonArrow/></a>}
+      <a className="store-brand" href="#store-top" aria-label={`${company.company_name} home`}>
+        {companyLogo && failedLogoSlug !== company.slug ? <img key={company.slug} className="store-logo" src={companyLogo} alt="" onError={() => setFailedLogoSlug(company.slug)}/> : <svg className="store-brand-mark" viewBox="0 0 32 32" fill="none" stroke="currentColor" strokeWidth="1.3" aria-hidden="true"><path d="m5 10 5 5 6-9 6 9 5-5-3 14H8L5 10Zm4 18h14"/></svg>}
+        <span className="store-brand-name">{company.company_name}</span>
+      </a>
     </header>
 
     <main className="store-content">
       <div className="store-catalog">
-        <section className="store-hero" style={company.hero_image_path ? { backgroundImage: `url(${company.hero_image_path})` } : undefined}>
+        <section id="store-top" className="store-hero" style={heroBanner ? { backgroundImage: `url(${JSON.stringify(heroBanner)})` } : undefined}>
           <div className="store-hero-overlay"/>
           <div className="store-hero-copy">
             <h1>{company.company_name}</h1>
-            {company.tagline && <p className="store-tagline">{company.tagline}</p>}
-            <a className="store-cta" href="#store-templates" onClick={e => { e.preventDefault(); document.getElementById('store-templates')?.scrollIntoView({ behavior: 'smooth' }) }}>Browse Templates <ButtonArrow/></a>
+            <p className="store-tagline">{company.tagline?.trim() || 'Beautiful invitations for your special day'}</p>
           </div>
         </section>
 
         <section className="store-templates" id="store-templates" aria-labelledby="store-templates-title">
-          {categories.length > 2 && <div className="store-filters" role="group" aria-label="Template categories">
-            {categories.map(label => <button key={label} className={category === label ? 'active' : ''} aria-pressed={category === label} onClick={() => setCategory(label)}><span aria-hidden="true"><LineIcon name={categoryIconFor(label)}/></span>{label}</button>)}
-          </div>}
           <div className="store-templates-heading">
             <h2 id="store-templates-title">Our Invitation Collection</h2>
             <span>{filtered.length} {filtered.length === 1 ? 'Design' : 'Designs'}</span>
           </div>
-          <div className="store-template-list">
-            {filtered.map(template => <article className={`store-card${selected === template.id ? ' is-selected' : ''}`} key={template.id}>
+          {categories.length > 2 && <div ref={categoryBar} className="store-filters" role="group" aria-label="Template categories">
+            {categoryHighlight && <span className="store-filter-highlight" aria-hidden="true" style={{ width: categoryHighlight.width, transform: `translateX(${categoryHighlight.left}px)` }}/>}
+            {categories.map(label => <button key={label} className={category === label ? 'active' : ''} aria-pressed={category === label} onClick={() => chooseCategory(label)}><span aria-hidden="true"><LineIcon name={categoryIconFor(label)}/></span>{label}</button>)}
+          </div>}
+          <div ref={templateGrid} className="store-template-list">
+            {filtered.map(template => <article className={`store-card${selected === template.id ? ' is-selected' : ''}${template.is_premium ? ' has-premium' : ''}`} key={template.id}>
               <div className="store-card-image">
                 {TEMPLATE_INTRO_VIDEOS[template.id]
                   ? <video src={TEMPLATE_INTRO_VIDEOS[template.id]} poster={template.thumbnail_url} autoPlay muted loop playsInline aria-hidden="true" ref={el => { if (el) { el.muted = true; el.setAttribute('muted', ''); el.play().catch(() => {}) } }}/>
                   : <img src={TEMPLATE_INTRO_IMAGES[template.id] ?? template.thumbnail_url} alt={`${template.name} invitation`} loading="lazy"/>}
                 <button className="store-card-select" aria-label={`Preview ${template.name}`} aria-pressed={selected === template.id} onClick={() => chooseTemplate(template.id)}/>
-                {template.is_private && <span className="store-exclusive-badge">Exclusive</span>}
-                {template.price != null && <span className="store-price-badge">{template.sale_value ? <><s>₹{template.price}</s> ₹{template.sale_type === 'flat' ? template.price - template.sale_value : Math.round(template.price * (1 - template.sale_value / 100))}</> : <>₹{template.price}</>}</span>}
+                {template.is_premium && <span className="store-premium-ribbon">
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true"><path d="m3 6 5 4 4-7 4 7 5-4-2 12H5L3 6Zm3 15h12"/></svg>
+                  <span>✦ PREMIUM</span>
+                </span>}
+                {template.is_private && <div className="store-card-badges"><span className="store-exclusive-badge">Exclusive</span></div>}
+                <StoreTemplatePrice template={template}/>
               </div>
               <button className="store-card-name" onClick={() => chooseTemplate(template.id)}>{template.name}</button>
               <p className="store-card-category">{template.category}</p>
             </article>)}
           </div>
-          {filtered.length === 0 && <div className="store-empty"><p>No templates in this category yet.</p><button onClick={() => setCategory('All')}>View all templates</button></div>}
+          {filtered.length === 0 && <div className="store-empty"><p>No templates in this category yet.</p><button onClick={() => chooseCategory('All')}>View all templates</button></div>}
         </section>
-        <footer className="store-footer">
+        <footer className="store-footer" id="store-vendors">
           <span>Powered by <strong>Shaadi Invites</strong></span>
-          {whatsappLink && <a href={whatsappLink} target="_blank" rel="noreferrer">Get in touch <ButtonArrow/></a>}
         </footer>
       </div>
 
       <aside id="store-preview" className="store-preview" aria-label="Live invitation preview">
         <div className="phone-stage"><div className="iphone-frame"><div className="iphone-screen" ref={phoneScreen}>
           {!previewLoaded && currentTemplate && <img className="phone-placeholder" src={currentTemplate.thumbnail_url} alt="Loading preview"/>}
-          {currentTemplate && <iframe key={selected} src="/client/live-preview" title={`${currentTemplate.name}: preview`} allow="autoplay; fullscreen" style={{ transform: `scale(${screenScale})`, opacity: previewLoaded ? 1 : 0 }} onLoad={() => setPreviewLoaded(true)} allowFullScreen/>}
+          {currentTemplate && <iframe ref={previewFrame} src="/client/live-preview?store=1" title={`${currentTemplate.name}: preview`} allow="autoplay; fullscreen" style={{ transform: `scale(${screenScale})`, opacity: previewLoaded ? 1 : 0 }} onLoad={() => {
+            if (previewData) previewFrame.current?.contentWindow?.postMessage({ type: 'shaadi-preview-update', data: previewData }, window.location.origin)
+            setPreviewLoaded(true)
+          }} allowFullScreen/>}
           <div className="dynamic-island" aria-hidden="true"><span/></div>
         </div></div></div>
         {currentTemplate && <div className="store-preview-info">
           <h3>{currentTemplate.name}</h3>
           <p>{currentTemplate.category}</p>
-          {whatsappLink && <a className="store-cta" href={whatsappLink} target="_blank" rel="noreferrer">Order This Template <ButtonArrow/></a>}
         </div>}
       </aside>
     </main>

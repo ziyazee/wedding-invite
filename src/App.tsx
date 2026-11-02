@@ -1,4 +1,4 @@
-import { Navigate, Route, Routes, useParams } from 'react-router-dom'
+import { Navigate, Route, Routes, useLocation, useParams } from 'react-router-dom'
 import { lazy, Suspense, useEffect, useState } from 'react'
 import { lazySitePage } from './SiteFonts'
 import InvitationViewport from './invitations/InvitationViewport'
@@ -93,7 +93,10 @@ function SubdomainResolver({ slug }: { slug: string }) {
 }
 
 export default function App() {
-  const inviteSlug = getInviteSlug()
+  const { pathname } = useLocation()
+  // Store previews must reach the shared renderer on the same origin so they
+  // can read the selected invitation from sessionStorage.
+  const inviteSlug = pathname === '/client/live-preview' ? null : getInviteSlug()
   if (inviteSlug) {
     return (
       <InvitationViewport><Suspense fallback={null}>
