@@ -32,6 +32,10 @@ const templates = new WeakMap<Document, HTMLElement>()
 const signatures = new WeakMap<Document, string>()
 
 export function applyNewOrderTemplate(doc: Document, d: InvitationData) {
+  const firstName = d.brideFirst ? d.bride : d.groom
+  const secondName = d.brideFirst ? d.groom : d.bride
+  const firstFamily = d.brideFirst ? d.brideFamily : d.groomFamily
+  const secondFamily = d.brideFirst ? d.groomFamily : d.brideFamily
   const mark = (el: Element, section: string, field: string) => {
     el.setAttribute('data-invite-text', `t${d.template}.${section}.${field}`)
     el.setAttribute('data-invite-label', `${section} · ${field}`)
@@ -43,34 +47,37 @@ export function applyNewOrderTemplate(doc: Document, d: InvitationData) {
   })
   const hide = (selector: string) => doc.querySelectorAll<HTMLElement>(selector).forEach(el => { el.hidden = true })
   if (d.template === 13) {
-    copy('#heroGroom,#p1Name,#gateCtagroom,#blessingGroom', d.groom, 'couple', 'groom'); copy('#heroBride,#p2Name,#gateCTAbride,#blessingBride', d.bride, 'couple', 'bride')
-    doc.querySelector('#heroGroom')?.setAttribute('data-person1', d.groom); doc.querySelector('#heroBride')?.setAttribute('data-person2', d.bride)
+    copy('#heroGroom,#p1Name,#gateCtagroom,#blessingGroom', firstName, 'couple', d.brideFirst ? 'bride' : 'groom'); copy('#heroBride,#p2Name,#gateCTAbride,#blessingBride', secondName, 'couple', d.brideFirst ? 'groom' : 'bride')
+    doc.querySelector('#heroGroom')?.setAttribute('data-person1', firstName); doc.querySelector('#heroBride')?.setAttribute('data-person2', secondName)
     copy('.hero-blessing', d.message, 'opening', 'message')
-    copy('#blessingGroomFamily', d.groomFamily, 'families', 'groom'); copy('#blessingBrideFamily', d.brideFamily, 'families', 'bride')
-    doc.querySelectorAll<HTMLElement>('.invite-person-block').forEach((block, i) => { const family = block.querySelector<HTMLElement>('.invite-person-family'); if(family) block.hidden = !(i === 0 ? d.groomFamily : d.brideFamily).trim() })
+    copy('#blessingGroomFamily', firstFamily, 'families', d.brideFirst ? 'bride' : 'groom'); copy('#blessingBrideFamily', secondFamily, 'families', d.brideFirst ? 'groom' : 'bride')
+    doc.querySelectorAll<HTMLElement>('.invite-person-block').forEach((block, i) => { const family = block.querySelector<HTMLElement>('.invite-person-family'); if(family) block.hidden = !(i === 0 ? firstFamily : secondFamily).trim() })
     copy('#inviteDateText,#countdownDateDisplay', formatDate(d.date), 'date', 'wedding')
     copy('.scene-things .thing-row:first-of-type .thing-val', d.venue, 'venue', 'name')
     const rows = doc.querySelectorAll<HTMLElement>('.thing-row')
     if (rows[0]) { const name = rows[0].querySelector('.thing-val'), address = rows[0].querySelector('.thing-desc'); if(name){name.textContent=d.venue;mark(name,'venue','name')} if(address){address.textContent=d.address;mark(address,'venue','address')} }
     rows.forEach((row, index) => { if(index > 0)row.hidden=true })
     hide('.scene-couple,.scene-insta,.scene-video,.rsvp-block:has([data-aamantran="wish"]),#wishAllOverlay')
-  } else if (d.template === 14) {
-    copy('.gate__names', `${d.groom} & ${d.bride}`, 'gate', 'names'); copy('.names', `${d.groom} & ${d.bride}`, 'opening', 'names')
+  } else if (d.template === 14 || d.template === 15) {
+    copy('.gate__names', `${firstName} & ${secondName}`, 'gate', 'names'); copy('.names', `${firstName} & ${secondName}`, 'opening', 'names')
     copy('.gate__date,.date-big,.footer__date', formatDate(d.date), 'date', 'wedding')
-    copy('.footer__names', `${d.groom} & ${d.bride}`, 'closing', 'names')
+    copy('.footer__names', `${firstName} & ${secondName}`, 'closing', 'names')
     copy('.lede--story', d.message, 'welcome', 'message')
     doc.querySelectorAll<HTMLElement>('.family').forEach((family, index) => {
       const personName = family.querySelector<HTMLElement>('.family__person-name')
       if (personName) {
-        const name = index === 0 ? d.groom : d.bride
+        const person = index === 0 ? (d.brideFirst ? 'bride' : 'groom') : (d.brideFirst ? 'groom' : 'bride')
+        const name = person === 'groom' ? d.groom : d.bride
         if (personName.textContent !== name) personName.textContent = name
-        mark(personName, 'families', index === 0 ? 'groom-name' : 'bride-name')
+        mark(personName, 'families', `${person}-name`)
         personName.style.whiteSpace = 'pre-line'
         personName.style.overflowWrap = 'anywhere'
       }
       const rows = family.querySelectorAll<HTMLElement>('.family__name')
-      rows.forEach((row, i) => { row.textContent = i === 0 ? (index === 0 ? d.groomFamily : d.brideFamily) : ''; row.hidden = i > 0; if(i===0)mark(row,'families',index===0?'groom':'bride') })
-      family.hidden = !(index === 0 ? d.groomFamily : d.brideFamily).trim()
+      const person = index === 0 ? (d.brideFirst ? 'bride' : 'groom') : (d.brideFirst ? 'groom' : 'bride')
+      const familyText = person === 'groom' ? d.groomFamily : d.brideFamily
+      rows.forEach((row, i) => { row.textContent = i === 0 ? familyText : ''; row.hidden = i > 0; if(i===0)mark(row,'families',person) })
+      family.hidden = !familyText.trim()
     })
     hide('.blessing,.blessing__names,.know__item:has(a[href^="tel:"]),.film,.wishwall,.wishmodal,[data-aamantran="wish"]')
     copy('[data-scene="3"] .lede', d.venue, 'venue', 'name')
@@ -83,7 +90,7 @@ export function applyNewOrderTemplate(doc: Document, d: InvitationData) {
   }
 
   let footerHost = doc.querySelector<HTMLElement>('#designed-by-footer')
-  if (d.template === 14) {
+  if (d.template === 13 || d.template === 14 || d.template === 15) {
     if (!footerHost) {
       footerHost = doc.createElement('footer')
       footerHost.id = 'designed-by-footer'
@@ -91,6 +98,7 @@ export function applyNewOrderTemplate(doc: Document, d: InvitationData) {
       footerHost.style.backgroundColor = '#fff'
       doc.querySelector('#scroller')?.append(footerHost)
     }
+    footerHost.classList.add('designed-by-footer')
     footerHost.hidden = !(d.companyLogo || d.companyName)
     if (!doc.querySelector('#order-company-footer-style')) {
       const style = doc.createElement('style')
@@ -103,13 +111,15 @@ export function applyNewOrderTemplate(doc: Document, d: InvitationData) {
     footerHost.innerHTML = ''
     const label = doc.createElement('span'); label.className = 'designed-by-label'; label.textContent = 'Invitation by '
     footerHost.append(label)
-    if (d.companyLogo) { const img = doc.createElement('img'); img.className = 'designed-by-logo'; img.src = d.companyLogo; img.alt = d.companyName || 'Company'; footerHost.append(img) }
+    const phone = (d.companyPhone || '').replace(/\D/g, '')
+    const whatsappPhone = phone.length === 10 ? `91${phone}` : phone.length >= 11 && phone.length <= 15 ? phone : ''
+    if (d.companyLogo) { const img = doc.createElement('img'); img.className = 'designed-by-logo'; img.src = d.companyLogo; img.alt = d.companyName || 'Company'; if (whatsappPhone) { const link = doc.createElement('a'); link.href = `https://wa.me/${whatsappPhone}`; link.target = '_blank'; link.rel = 'noreferrer'; link.setAttribute('aria-label', `Contact ${d.companyName || 'company'} on WhatsApp`); link.append(img); footerHost.append(link) } else footerHost.append(img) }
     else { const name = doc.createElement('span'); name.className = 'designed-by-name'; name.textContent = d.companyName!; footerHost.append(name) }
   }
 
   if (d.template !== 12) {
     const host = doc.querySelector(d.template === 13 ? '.functions-run' : '.functions')
-    const signature = JSON.stringify([d.events, d.dressCode, d.groom, d.bride, d.offset])
+    const signature = JSON.stringify([d.events, d.dressCode, d.groom, d.bride, d.brideFirst, d.offset])
     if (host && signatures.get(doc) !== signature) {
       if (!templates.has(doc) && host.firstElementChild) templates.set(doc, host.firstElementChild.cloneNode(true) as HTMLElement)
       const original = templates.get(doc)
@@ -135,7 +145,7 @@ export function applyNewOrderTemplate(doc: Document, d: InvitationData) {
           card.querySelectorAll<HTMLElement>('.fn-dress,.fn__meta').forEach(el=>{el.hidden=!d.dressCode.trim()})
           card.querySelectorAll<HTMLAnchorElement>('a').forEach(el=>{el.hidden=!event.map.trim();el.href=event.map||'#';mark(el,section,'directions')})
           card.querySelectorAll('button.fn-map,button.fn__map').forEach(el=>el.remove())
-          const button=doc.createElement('button');button.type='button';button.className=d.template===13?'fn-map':'fn__map';button.textContent='Add to calendar';mark(button,section,'calendar');button.onclick=()=>downloadCalendar(event,d.offset,`${d.groom} & ${d.bride}`)
+          const button=doc.createElement('button');button.type='button';button.className=d.template===13?'fn-map':'fn__map';button.textContent='Add to calendar';mark(button,section,'calendar');button.onclick=()=>downloadCalendar(event,d.offset,`${firstName} & ${secondName}`)
           ;(card.querySelector('.function-card')||card).append(button)
           return card
         })
@@ -151,20 +161,20 @@ export function applyNewOrderTemplate(doc: Document, d: InvitationData) {
   if(extras.dataset.content!==extraKey){
     extras.dataset.content=extraKey;extras.replaceChildren();extras.setAttribute('data-invite-section','notes')
     let hasNote=false
-    for(const [field,value] of [['dress',d.dressCode],['gift',d.giftNote]]){if(d.template===14||(field==='dress'&&d.template===13))continue;if(value.trim()){if(!hasNote&&d.template===13){const h=doc.createElement('h3');h.className='notes-title';h.textContent='Short Note';extras.append(h);hasNote=true}const p=doc.createElement('p');p.textContent=value;mark(p,'notes',field);extras.append(p)}}
+    for(const [field,value] of [['dress',d.dressCode],['gift',d.giftNote]]){if(d.template===14||d.template===15||(field==='dress'&&d.template===13))continue;if(value.trim()){if(!hasNote&&d.template===13){const h=doc.createElement('h3');h.className='notes-title';h.textContent='Short Note';extras.append(h);hasNote=true}const p=doc.createElement('p');p.textContent=value;mark(p,'notes',field);extras.append(p)}}
     for(const [field,title,url] of [['gallery','Our photo gallery',d.gallery],['directions','Wedding directions',d.map]])if(url.trim()){const a=doc.createElement('a');a.href=url;a.target='_blank';a.rel='noopener noreferrer';a.textContent=title;mark(a,'notes',field);extras.append(a)}
     extras.hidden=!extras.childElementCount
   }
   if(d.template===12&&!doc.querySelector('#order-rsvp-host')){const host=doc.createElement('section');host.id='order-rsvp-host';host.className='order-extra';doc.body.append(host)}
   doc.querySelectorAll<HTMLElement>('.scene,.panel,.gate,#root > div > section,#order-rsvp-host').forEach((section,index)=>{
-    if(!section.hasAttribute('data-invite-section'))section.setAttribute('data-invite-section',`scene-${d.template===14 ? section.dataset.scene || 'gate' : index}`)
+    if(!section.hasAttribute('data-invite-section'))section.setAttribute('data-invite-section',`scene-${d.template===14||d.template===15 ? section.dataset.scene || 'gate' : index}`)
   })
 }
 
 /** Fixed authored scenes keep their IDs independently of event count. Native
  * event cards are marked while personalized, using persisted celebration IDs. */
 export function markNewOrderText(root: HTMLElement, d: InvitationData) {
-  if (d.template < 12 || d.template > 14) return
+  if (d.template < 12 || d.template > 15) return
   const normalize = (value: string) => value.trim().replace(/\s+/g, ' ').toLowerCase()
   const fields: [string, string][] = [
     ['groom',d.groom],['bride',d.bride],['groom-family',d.groomFamily],['bride-family',d.brideFamily],

@@ -15,8 +15,10 @@ const safeURL = (value: string) => /^https?:\/\//i.test(value.trim()) ? value.tr
 
 export function applyOrderFrame(doc: Document, d: InvitationData) {
   if (!doc.defaultView) return
+  const firstName = d.brideFirst ? d.bride : d.groom
+  const secondName = d.brideFirst ? d.groom : d.bride
   ;(doc.defaultView as OrderWindow).orderInvitation = d
-  doc.title = `${d.groom} & ${d.bride} — Wedding invitation`
+  doc.title = `${firstName} & ${secondName} — Wedding invitation`
   const text = (selector: string, value: string) => doc.querySelectorAll<HTMLElement>(selector).forEach(el => {
     if (el.textContent !== value) el.textContent = value
     el.style.whiteSpace = 'pre-line'
@@ -61,9 +63,9 @@ export function applyOrderFrame(doc: Document, d: InvitationData) {
     text('#iBrideParents', d.brideFamily); text('#iGroomParents', d.groomFamily)
     doc.querySelectorAll<HTMLElement>('.fam-side').forEach((el, i) => { el.hidden = !(i === 0 ? d.brideFamily : d.groomFamily).trim() })
     text('.i-bless', d.message)
-    text('.ft-names', `${d.bride} & ${d.groom}`)
+    text('.ft-names', `${firstName} & ${secondName}`)
     text('.ft-date', `${formatDate(d.date)} · ${d.venue}`)
-    const hashtag = `#${d.bride.replace(/\s/g, '')}Weds${d.groom.replace(/\s/g, '')}`
+    const hashtag = `#${firstName.replace(/\s/g, '')}Weds${secondName.replace(/\s/g, '')}`
     text('#ttkHashtag,.tt-ig a', hashtag)
     const facts = doc.querySelectorAll<HTMLElement>('.tt')
     facts.forEach(el => {
@@ -92,7 +94,7 @@ export function applyOrderFrame(doc: Document, d: InvitationData) {
   doc.querySelectorAll<HTMLAnchorElement>('a[href*="calendar.google.com"],a[href$=".ics"],a[data-order-main-calendar]').forEach(el => {
     el.dataset.orderMainCalendar = ''
     el.href = '#'
-    el.onclick = e => { e.preventDefault(); downloadCalendar({ ...d.events[0], date: d.date, time: d.time, venue: d.venue, address: d.address }, d.offset, `${d.groom} & ${d.bride}`) }
+    el.onclick = e => { e.preventDefault(); downloadCalendar({ ...d.events[0], date: d.date, time: d.time, venue: d.venue, address: d.address }, d.offset, `${firstName} & ${secondName}`) }
   })
 }
 
@@ -120,7 +122,7 @@ function eventCard(doc: Document, event: Celebration, d: InvitationData) {
     const map = doc.createElement('a'); map.href = event.map; map.textContent = 'Directions'; map.target = '_blank'; map.rel = 'noopener noreferrer'; card.append(map)
   }
   const calendar = doc.createElement('button'); calendar.type = 'button'; calendar.textContent = 'Add to calendar'
-  calendar.onclick = () => downloadCalendar(event, d.offset, `${d.groom} & ${d.bride}`)
+  calendar.onclick = () => downloadCalendar(event, d.offset, `${d.brideFirst ? d.bride : d.groom} & ${d.brideFirst ? d.groom : d.bride}`)
   card.append(calendar)
   return card
 }
@@ -147,7 +149,7 @@ function updateEvents(doc: Document, d: InvitationData) {
       if (map) { map.hidden = !safeURL(event.map); if (safeURL(event.map)) map.href = event.map; else map.removeAttribute('href') }
       card.querySelector('[data-order-calendar]')?.remove()
       const button = doc.createElement('button'); button.dataset.orderCalendar = ''; button.className = 'detail-map f-heading'; button.textContent = 'Add to calendar'
-      button.onclick = () => downloadCalendar(event, d.offset, `${d.groom} & ${d.bride}`)
+      button.onclick = () => downloadCalendar(event, d.offset, `${d.brideFirst ? d.bride : d.groom} & ${d.brideFirst ? d.groom : d.bride}`)
       card.querySelector('.event-details')?.append(button)
     }
     doc.querySelector('#order-extra-events')?.remove()
@@ -197,10 +199,10 @@ function updateExtras(doc: Document, d: InvitationData) {
 }
 
 export function installOrderFrameRsvp(doc: Document, template: number, target?: RsvpTarget) {
-  const host = doc.querySelector(template === 12 ? '#order-rsvp-host' : template === 13 ? '#order-rsvp-host,#rsvpSection .rsvp-action-area' : template === 14 ? '#order-rsvp-host,[data-scene="7"] .card:has([data-aamantran="rsvp"])' : template === 9 ? '#rsvp-section' : template === 10 ? '#rsvp-form-wrap' : '#rsvp .container')
+  const host = doc.querySelector(template === 12 ? '#order-rsvp-host' : template === 13 ? '#order-rsvp-host,#rsvpSection .rsvp-action-area' : template === 14 || template === 15 ? '#order-rsvp-host,[data-scene="7"] .card:has([data-aamantran="rsvp"])' : template === 9 ? '#rsvp-section' : template === 10 ? '#rsvp-form-wrap' : '#rsvp .container')
   if (!host || host.querySelector('.order-rsvp')) return () => {}
   if(template>=12)host.id='order-rsvp-host'
-  if (template === 14) {
+  if (template === 14 || template === 15) {
     const form = doc.createElement('form'); form.className = 'order-rsvp rsvp-form'
     const title = doc.createElement('h2'); title.className = 'scene-title rsvp-heading'
     title.append('Will you be attending ')

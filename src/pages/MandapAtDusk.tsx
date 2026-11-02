@@ -18,6 +18,12 @@ function Arrow() {
 
 export default function Design18() {
   const details = useInvitationDetails() || demo
+  const firstName = details.brideFirst ? details.bride : details.groom
+  const secondName = details.brideFirst ? details.groom : details.bride
+  const firstFamily = details.brideFirst ? details.brideFamily : details.groomFamily
+  const secondFamily = details.brideFirst ? details.groomFamily : details.brideFamily
+  const firstRole = details.brideFirst ? 'BRIDE' : 'GROOM'
+  const secondRole = details.brideFirst ? 'GROOM' : 'BRIDE'
   const video = useRef<HTMLVideoElement>(null)
   const skipIntro = useRef(false)
   const audio = useRef<HTMLAudioElement>(null)
@@ -48,9 +54,9 @@ export default function Design18() {
 
   useEffect(() => {
     const previousTitle = document.title
-    document.title = `${details.groom} & ${details.bride} — Sacred Mandap`
+    document.title = `${firstName} & ${secondName} — Sacred Mandap`
     return () => { document.title = previousTitle }
-  }, [details.groom, details.bride])
+  }, [firstName, secondName])
 
   useEffect(() => {
     const interval = window.setInterval(() => setNow(Date.now()), 1000)
@@ -92,7 +98,7 @@ export default function Design18() {
       </button>
       <button className="d18-music" aria-label={music ? 'Pause music' : 'Play music'} onClick={() => music ? audio.current?.pause() : void audio.current?.play().catch(() => {})}>{music ? 'Ⅱ' : '♫'}</button>
       {phase === 'open' && <div className="d18-ending-copy" aria-live="polite">
-        <h1><span>{details.groom}</span><i>&</i><span>{details.bride}</span></h1>
+        <h1><span>{firstName}</span><i>&</i><span>{secondName}</span></h1>
       </div>}
     </section>
 
@@ -104,11 +110,11 @@ export default function Design18() {
         <h2 className="d18-script">Two souls.<br />One beautiful journey.</h2>
         <p className="d18-message">{details.message}</p>
         <p>Your presence, prayers, and love will make our day complete.</p>
-        {(details.groomFamily || details.brideFamily) && <div className="d18-families">
-          {details.groomFamily && <p data-family="groom"><small>GROOM’S FAMILY</small>{details.groomFamily}</p>}
-          {details.brideFamily && <p data-family="bride"><small>BRIDE’S FAMILY</small>{details.brideFamily}</p>}
+        {(firstFamily || secondFamily) && <div className="d18-families">
+          {firstFamily && <p data-family={firstRole.toLowerCase()}><small>{firstRole}’S FAMILY</small>{firstFamily}</p>}
+          {secondFamily && <p data-family={secondRole.toLowerCase()}><small>{secondRole}’S FAMILY</small>{secondFamily}</p>}
         </div>}
-        <Flourish /><span className="d18-signature d18-script"><span>{details.groom}</span><i>&</i><span>{details.bride}</span></span>
+        <Flourish /><span className="d18-signature d18-script"><span>{firstName}</span><i>&</i><span>{secondName}</span></span>
         <img className="d18-couple-art" src="/templates/mandap-at-dusk/couple-watercolor.png" alt="" aria-hidden="true" loading="lazy" />
       </section>
 
@@ -128,7 +134,7 @@ export default function Design18() {
           <h3 className="d18-script">{event.title}</h3>
           <div className="d18-event-date"><strong>{formatDate(event.date, { day: '2-digit' })}</strong><span>{formatDate(event.date, { weekday: 'long', month: 'long', year: 'numeric' })}{event.time && <small>{formatTime(event.time)}</small>}</span></div>
           <Flourish /><h4>{event.venue}</h4>{event.address !== event.venue && <p className="d18-address">{event.address}</p>}
-          <div className="d18-event-actions"><a href={mapURL(event.venue, event.address, event.map)} target="_blank" rel="noreferrer">Directions <Arrow /></a><button onClick={() => downloadCalendar(event, details.offset, `${details.groom} & ${details.bride}`)}>Save the date <span>＋</span></button></div>
+        <div className="d18-event-actions"><a href={mapURL(event.venue, event.address, event.map)} target="_blank" rel="noreferrer">Directions <Arrow /></a><button onClick={() => downloadCalendar(event, details.offset, `${firstName} & ${secondName}`)}>Save the date <span>＋</span></button></div>
         </article>)}
       </section>
 
@@ -140,7 +146,7 @@ export default function Design18() {
 
       <footer className="d18-footer d18-reveal">
         <p className="d18-kicker">MADE WITH LOVE FOR OUR FAMILY AND FRIENDS</p><Flourish />
-        <h2 className="d18-script">Forever & ever</h2><p className="d18-footer-names"><span>{details.groom}</span><i>&</i><span>{details.bride}</span></p>
+        <h2 className="d18-script">Forever & ever</h2><p className="d18-footer-names"><span>{firstName}</span><i>&</i><span>{secondName}</span></p>
         <p>{formatDate(details.date)} · {details.address}</p><a href={mapURL(details.venue, details.address, details.map)} target="_blank" rel="noreferrer">{details.venue} <Arrow /></a>
       </footer>
       </div>

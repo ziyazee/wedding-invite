@@ -17,6 +17,7 @@ const themes: Record<number,{names:string[];floral:string;frame:string;bg:string
 }
 const escape=(value:string)=>value.replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]!))
 export default function AnimatedInvitation({details:d,rsvpTarget}:{details:InvitationData;rsvpTarget?:RsvpTarget}){
+ const firstName=d.brideFirst?d.bride:d.groom;const secondName=d.brideFirst?d.groom:d.bride
  const [html,setHTML]=useState('');const [error,setError]=useState('');const frame=useRef<HTMLIFrameElement>(null)
  const editorSource=useRef<Document | null>(null)
  const currentDetails=useRef(d)
@@ -28,12 +29,12 @@ export default function AnimatedInvitation({details:d,rsvpTarget}:{details:Invit
    const folder=templateFolder[d.template];if(!folder)throw new Error('Could not load the invitation design.')
    const response=await fetch(`/templates/${folder}/index.html`,{signal:abort.signal});if(!response.ok)throw new Error('Could not load the invitation design.')
    const doc=new DOMParser().parseFromString(await response.text(),'text/html');const theme=themes[d.template]
-   const title=`${d.groom} & ${d.bride}`;doc.title=title
+   const title=`${firstName} & ${secondName}`;doc.title=title
    const walker=doc.createTreeWalker(doc.body,NodeFilter.SHOW_TEXT)
    while(walker.nextNode()){
     const node=walker.currentNode;if(['SCRIPT','STYLE'].includes(node.parentElement?.tagName||''))continue
     let text=node.textContent||''
-    text=text.replaceAll(theme.names[0],d.groom).replaceAll(theme.names[1],d.bride)
+    text=text.replaceAll(theme.names[0],firstName).replaceAll(theme.names[1],secondName)
     text=text.replace(/June 12, 2027|October 3, 2026|September 18, 2027|27 September 2026/g,formatDate(d.date))
     node.textContent=text
    }
@@ -71,7 +72,7 @@ export default function AnimatedInvitation({details:d,rsvpTarget}:{details:Invit
      if(d.template===6){
       openingNames.setAttribute('data-names-layout','stacked')
       openingNames.classList.add('atelier-names-stacked')
-      openingNames.innerHTML=`<span>${escape(d.groom)}</span><span>&amp;</span><span>${escape(d.bride)}</span>`
+      openingNames.innerHTML=`<span>${escape(firstName)}</span><span>&amp;</span><span>${escape(secondName)}</span>`
      }else{
       openingNames.classList.add('atelier-bloom-names','atelier-bloom-opening-names')
       openingNames.setAttribute('data-names-layout','stacked')
@@ -93,7 +94,8 @@ export default function AnimatedInvitation({details:d,rsvpTarget}:{details:Invit
    const personal=doc.createElement('div');personal.className=`atelier-personal atelier-template-${d.template}`
    const events=d.template===6?[...d.events]:[...d.events].sort((a,b)=>`${a.date}${a.time}`.localeCompare(`${b.date}${b.time}`))
    const eventHTML=events.map(e=>{const index=d.events.indexOf(e);return `<article class="atelier-event" ${theme.frame?`style="background-image:url('${theme.frame}')"`:''}><div class="atelier-event-copy"><p class="atelier-eyebrow">${escape(formatDate(e.date,{weekday:'long'}))}</p><h2 class="font-script">${escape(e.title)}</h2><p class="atelier-date">${escape(formatDate(e.date))}</p><p>${escape(formatTime(e.time ?? ''))}</p><h3>${escape(e.venue)}</h3><p>${escape(e.address)}</p><div class="atelier-links"><a href="${escape(mapURL(e.venue,e.address,e.map))}" target="_blank" rel="noreferrer">Directions ↗</a><button data-personal-calendar="${index}">Save the date +</button></div></div></article>`}).join('')
-   personal.innerHTML=`<div class="atelier-welcome"><p class="atelier-eyebrow">Together with our families</p><h2 class="font-script">${escape(title)}</h2><p>${escape(d.message)}</p>${d.groomFamily||d.brideFamily?`<p>${escape(d.groomFamily)}<br>${escape(d.brideFamily)}</p>`:''}</div><div class="atelier-events">${eventHTML}</div><p class="atelier-zone">All times UTC${escape(d.offset)}</p>${d.dressCode?`<div class="atelier-note"><h2 class="font-script">Dress code</h2><p>${escape(d.dressCode)}</p></div>`:''}${d.giftNote?`<div class="atelier-note"><h2 class="font-script">A little note</h2><p>${escape(d.giftNote)}</p></div>`:''}${d.gallery?`<div class="atelier-note"><a href="${escape(d.gallery)}" target="_blank" rel="noreferrer">Our photo gallery ↗</a></div>`:''}<div class="atelier-note"><h2 class="font-script"><span>${escape(d.groom)}</span><i>&</i><span>${escape(d.bride)}</span></h2><p>${escape(formatDate(d.date))}</p></div>`
+   const firstFamily=d.brideFirst?d.brideFamily:d.groomFamily;const secondFamily=d.brideFirst?d.groomFamily:d.brideFamily
+   personal.innerHTML=`<div class="atelier-welcome"><p class="atelier-eyebrow">Together with our families</p><h2 class="font-script">${escape(title)}</h2><p>${escape(d.message)}</p>${firstFamily||secondFamily?`<p>${escape(firstFamily)}<br>${escape(secondFamily)}</p>`:''}</div><div class="atelier-events">${eventHTML}</div><p class="atelier-zone">All times UTC${escape(d.offset)}</p>${d.dressCode?`<div class="atelier-note"><h2 class="font-script">Dress code</h2><p>${escape(d.dressCode)}</p></div>`:''}${d.giftNote?`<div class="atelier-note"><h2 class="font-script">A little note</h2><p>${escape(d.giftNote)}</p></div>`:''}${d.gallery?`<div class="atelier-note"><a href="${escape(d.gallery)}" target="_blank" rel="noreferrer">Our photo gallery ↗</a></div>`:''}<div class="atelier-note"><h2 class="font-script"><span>${escape(firstName)}</span><i>&</i><span>${escape(secondName)}</span></h2><p>${escape(formatDate(d.date))}</p></div>`
    if(d.template===6||d.template===7){
     personal.querySelectorAll('.atelier-event').forEach((card,index)=>{
      const event=events[index]
@@ -136,7 +138,7 @@ export default function AnimatedInvitation({details:d,rsvpTarget}:{details:Invit
    if(embroideredFooter)personal.after(embroideredFooter)
    doc.querySelectorAll('.atelier-opening-names').forEach(block=>{
     const children=Array.from(block.children)
-    for(const [index,value] of [[0,d.groom],[2,d.bride]] as const){
+    for(const [index,value] of [[0,firstName],[2,secondName]] as const){
      const child=children[index]
      if(child)(child.querySelector('h2,h3')||child).setAttribute('data-name-input',value)
     }
@@ -145,7 +147,8 @@ export default function AnimatedInvitation({details:d,rsvpTarget}:{details:Invit
    doc.querySelectorAll('footer').forEach(footer=>{if(footer!==bloomFooter&&footer!==embroideredFooter)footer.style.display='none'})
    if(d.companyLogo||d.companyName){
     const dbf=doc.createElement('footer');dbf.className='designed-by-footer'
-    dbf.innerHTML=`<span class="designed-by-label">Designed by</span>${d.companyLogo?`<img class="designed-by-logo" src="${escape(d.companyLogo)}" alt="${escape(d.companyName||'Company')}"/>`:`<span class="designed-by-name">${escape(d.companyName!)}</span>`}`
+    const phone=(d.companyPhone||'').replace(/\D/g,'');const whatsappPhone=phone.length===10?`91${phone}`:phone.length>=11&&phone.length<=15?phone:''
+    dbf.innerHTML=`<span class="designed-by-label">Invitation by</span>${d.companyLogo?(whatsappPhone?`<a href="https://wa.me/${whatsappPhone}" target="_blank" rel="noreferrer" aria-label="Contact ${escape(d.companyName||'company')} on WhatsApp"><img class="designed-by-logo" src="${escape(d.companyLogo)}" alt="${escape(d.companyName||'Company')}"/></a>`:`<img class="designed-by-logo" src="${escape(d.companyLogo)}" alt="${escape(d.companyName||'Company')}"/>`):`<span class="designed-by-name">${escape(d.companyName!)}</span>`}`
     const dbfStyle=doc.createElement('style');dbfStyle.textContent=`.designed-by-footer{display:flex;align-items:center;justify-content:center;gap:6px;padding:14px 16px;background:rgba(0,0,0,.03);border-top:1px solid rgba(0,0,0,.06);font-family:system-ui,-apple-system,sans-serif}.designed-by-label{font-size:11px;letter-spacing:.04em;color:rgba(0,0,0,.4);text-transform:uppercase}.designed-by-logo{max-height:22px;width:auto;object-fit:contain;opacity:.7}.designed-by-name{font-size:13px;font-weight:600;color:rgba(0,0,0,.5)}`
     doc.head.append(dbfStyle);doc.body.append(dbf)
    }
@@ -223,17 +226,17 @@ export default function AnimatedInvitation({details:d,rsvpTarget}:{details:Invit
  },[d,rsvpTarget?.orderId,rsvpTarget?.path,editorPreview])
  if(error)return <div className="studio-empty" role="alert">{error}<p><button onClick={()=>location.reload()}>Try again</button></p></div>
  if(!html)return <div className="studio-empty" role="status">Preparing your invitation…</div>
- return <iframe ref={frame} srcDoc={html} title={`${d.groom} & ${d.bride} wedding invitation`} allow="autoplay" style={{position:'fixed',inset:0,width:'100%',height:'100%',border:0}} onLoad={()=>{
+ return <iframe ref={frame} srcDoc={html} title={`${firstName} & ${secondName} wedding invitation`} allow="autoplay" style={{position:'fixed',inset:0,width:'100%',height:'100%',border:0}} onLoad={()=>{
   frame.current?.contentDocument?.addEventListener('click',event=>{
    const target=event.target as HTMLElement
    const latest=currentDetails.current
    if(target.closest('[data-wedding-calendar]')){
     event.preventDefault()
-    downloadCalendar({title:'Wedding',date:latest.date,time:latest.time,venue:latest.venue,address:latest.address,map:latest.map},latest.offset,`${latest.groom} & ${latest.bride}`)
+    downloadCalendar({title:'Wedding',date:latest.date,time:latest.time,venue:latest.venue,address:latest.address,map:latest.map},latest.offset,latest.brideFirst?`${latest.bride} & ${latest.groom}`:`${latest.groom} & ${latest.bride}`)
     return
    }
    const button=target.closest<HTMLElement>('[data-personal-calendar]')
-   if(button){event.preventDefault();const item=latest.events[Number(button.dataset.personalCalendar)];if(item)downloadCalendar(item,latest.offset,`${latest.groom} & ${latest.bride}`)}
+   if(button){event.preventDefault();const item=latest.events[Number(button.dataset.personalCalendar)];if(item)downloadCalendar(item,latest.offset,latest.brideFirst?`${latest.bride} & ${latest.groom}`:`${latest.groom} & ${latest.bride}`)}
   })
   const invitationDocument=frame.current?.contentDocument
   if(invitationDocument)installCardContentFit(invitationDocument)

@@ -27,6 +27,7 @@ const ShaadiPathT02 = lazySitePage(() => import('./pages/ShaadiPathT02'))
 const DestinationWedding = lazySitePage(() => import('./pages/DestinationWedding'))
 const Raabta = lazySitePage(() => import('./pages/Raabta'))
 const Qubool = lazySitePage(() => import('./pages/Qubool'))
+const SacredMandap = lazySitePage(() => import('./pages/SacredMandap'))
 // Future use cases
 const BirthdayInvite = lazySitePage(() => import('./pages/BirthdayInvite'))
 const HousewarmingInvite = lazySitePage(() => import('./pages/HousewarmingInvite'))
@@ -132,6 +133,7 @@ export default function App() {
       <Route path="/destination-wedding" element={<DestinationWedding />} />
       <Route path="/raabta" element={<Raabta />} />
       <Route path="/qubool" element={<Qubool />} />
+      <Route path="/sacred-mandap" element={<SacredMandap />} />
       {/* Future use cases */}
       <Route path="/birthday" element={<BirthdayInvite />} />
       <Route path="/housewarming" element={<HousewarmingInvite />} />

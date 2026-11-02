@@ -90,8 +90,8 @@ function Countdown() {
 export default function RoyalGrace() {
   useGoogleFonts('https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,500;0,600;1,400;1,500;1,600&family=Cinzel:wght@400;500;600&family=Dancing+Script:wght@400;500&display=swap')
   const details = useInvitationDetails()
-  const groom = details?.groom || 'Groom'
-  const bride = details?.bride || 'Bride'
+  const groom = details?.brideFirst ? details.bride : details?.groom || 'Groom'
+  const bride = details?.brideFirst ? details.groom : details?.bride || 'Bride'
   const couple = `${groom} & ${bride}`
   const events = details ? [...details.events].sort((a,b)=>`${a.date}T${a.time}`.localeCompare(`${b.date}T${b.time}`)).map((event,index)=>({
     layoutKey: event.id || `legacy-${details.events.indexOf(event)}`,

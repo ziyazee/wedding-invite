@@ -46,6 +46,8 @@ function applyOpeningDate(frame: HTMLIFrameElement | null, details: unknown) {
 
 export default function Design13() {
   const details = useInvitationDetails() || invitationExample(8) || null
+  const firstName = details?.brideFirst ? details.bride : details?.groom
+  const secondName = details?.brideFirst ? details.groom : details?.bride
   const frameRef = useRef<HTMLIFrameElement>(null)
   const templateSrc = invitationTemplateSrc('/templates/the-artful-love-story/index.html', 8, details)
   const initialTemplateSrc = useRef(templateSrc)
@@ -54,7 +56,7 @@ export default function Design13() {
 
   useEffect(() => {
     const previousTitle = document.title
-    document.title = details ? `${details.groom} & ${details.bride} — Wedding Invitation` : 'Wedding Invitation'
+    document.title = details ? `${firstName} & ${secondName} — Wedding Invitation` : 'Wedding Invitation'
 
     const w = window.innerWidth <= 640 ? 640 : window.innerWidth <= 960 ? 960 : 1600
     const preloadPaths = [
@@ -100,7 +102,9 @@ export default function Design13() {
             const esc = (s: string) => s.replace(/[&<>"']/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]!))
             const footer = iframeDoc.createElement('footer')
             footer.className = 'designed-by-footer'
-            footer.innerHTML = `<span class="designed-by-label">Designed by</span>${details.companyLogo ? `<img class="designed-by-logo" src="${esc(details.companyLogo)}" alt="${esc(details.companyName || 'Company')}"/>` : `<span class="designed-by-name">${esc(details.companyName!)}</span>`}`
+            const phone = (details.companyPhone || '').replace(/\D/g, '')
+            const whatsappPhone = phone.length === 10 ? `91${phone}` : phone.length >= 11 && phone.length <= 15 ? phone : ''
+            footer.innerHTML = `<span class="designed-by-label">Invitation by</span>${details.companyLogo ? (whatsappPhone ? `<a href="https://wa.me/${whatsappPhone}" target="_blank" rel="noreferrer" aria-label="Contact ${esc(details.companyName || 'company')} on WhatsApp"><img class="designed-by-logo" src="${esc(details.companyLogo)}" alt="${esc(details.companyName || 'Company')}"/></a>` : `<img class="designed-by-logo" src="${esc(details.companyLogo)}" alt="${esc(details.companyName || 'Company')}"/>`) : `<span class="designed-by-name">${esc(details.companyName!)}</span>`}`
             const style = iframeDoc.createElement('style')
             style.textContent = `.designed-by-footer{display:flex;align-items:center;justify-content:center;gap:6px;padding:14px 16px;background:rgba(0,0,0,.03);border-top:1px solid rgba(0,0,0,.06);font-family:system-ui,-apple-system,sans-serif}.designed-by-label{font-size:11px;letter-spacing:.04em;color:rgba(0,0,0,.4);text-transform:uppercase}.designed-by-logo{max-height:22px;width:auto;object-fit:contain;opacity:.7}.designed-by-name{font-size:13px;font-weight:600;color:rgba(0,0,0,.5)}`
             iframeDoc.head.appendChild(style)

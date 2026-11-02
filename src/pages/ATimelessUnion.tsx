@@ -13,8 +13,8 @@ export default function Design14() {
   const details = useInvitationDetails()
   const query = new URLSearchParams(window.location.search)
   const personalizedQuery = query.has('groom') && query.has('bride')
-  const groom = details?.groom || (personalizedQuery && query.get('groom')) || 'Arjun'
-  const bride = details?.bride || (personalizedQuery && query.get('bride')) || 'Bhavana'
+  const groom = details?.brideFirst ? details.bride : details?.groom || (personalizedQuery && query.get('groom')) || 'Arjun'
+  const bride = details?.brideFirst ? details.groom : details?.bride || (personalizedQuery && query.get('bride')) || 'Bhavana'
   const events = details ? details.events : referenceEvents
   const showIllustrations = details?.showCoupleIllustrations !== false
   const musicSource = details?.music || (personalizedQuery && query.get('music')) || '/templates/a-timeless-union/assets/rinnehtiauuttzor38lg.mp3'
@@ -125,7 +125,7 @@ export default function Design14() {
         <div data-d14-root="" className="d14-JfqWY d14-72rtr7" style={{ minHeight: '100vh', width: 'auto' }}>
           <div className="d14-i1vx06">
             {details ? <OpeningScene groom={groom} bride={bride} date={details.date} opened={opened} /> : <ReferenceOpeningScene groom={groom} bride={bride} />}
-            {details ? <WelcomeScene groom={groom} bride={bride} groomFamily={details.groomFamily} brideFamily={details.brideFamily} message={details.message} /> : <ReferenceWelcomeScene groom={groom} bride={bride} />}
+            {details ? <WelcomeScene groom={groom} bride={bride} groomFamily={details.brideFirst ? details.brideFamily : details.groomFamily} brideFamily={details.brideFirst ? details.groomFamily : details.brideFamily} message={details.message} /> : <ReferenceWelcomeScene groom={groom} bride={bride} />}
             {showIllustrations && <CoupleScene />}
             {details ? <Celebrations opened={opened} events={events} offset={details.offset} couple={`${groom} & ${bride}`} showIllustrations={showIllustrations} /> : <ReferenceCelebrations opened={opened} events={referenceEvents} />}
             {details && <TimelessNotes dressCode={details.dressCode} note={details.giftNote} />}

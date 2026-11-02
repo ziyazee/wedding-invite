@@ -50,11 +50,14 @@ function AmbientVideo({ src, poster, className, paused: forcePaused = false }: {
 function Names({ details: d, section, family = false }: { details: InvitationData; section: string; family?: boolean }) {
   const root = useRef<HTMLDivElement>(null)
   const stacked = family && !!(d.groomFamily.trim() || d.brideFamily.trim())
-  useEmbroideredGardenNames(root, JSON.stringify([d.groom, d.bride, d.textOverrides]), stacked)
+  const people = d.brideFirst
+    ? [{ name: d.bride, familyText: d.brideFamily, person: 'bride' }, { name: d.groom, familyText: d.groomFamily, person: 'groom' }]
+    : [{ name: d.groom, familyText: d.groomFamily, person: 'groom' }, { name: d.bride, familyText: d.brideFamily, person: 'bride' }]
+  useEmbroideredGardenNames(root, JSON.stringify([d.groom, d.bride, d.brideFirst, d.textOverrides]), stacked)
   return <div ref={root} className={`eg-names ${stacked ? 'eg-stacked' : ''}`}>
-    <div><Copy as="span" field={`${section}.groom`} label={`Groom · ${section}`} data-eg-name="">{d.groom}</Copy>{family && d.groomFamily.trim() && <Copy as="p" field={`${section}.groomFamily`} className="eg-family">{d.groomFamily}</Copy>}</div>
+    <div><Copy as="span" field={`${section}.${people[0].person}`} label={`${people[0].person === 'groom' ? 'Groom' : 'Bride'} · ${section}`} data-eg-name="">{people[0].name}</Copy>{family && people[0].familyText.trim() && <Copy as="p" field={`${section}.${people[0].person}Family`} className="eg-family">{people[0].familyText}</Copy>}</div>
     <Copy field={`${section}.separator`} className="eg-ampersand">&amp;</Copy>
-    <div><Copy as="span" field={`${section}.bride`} label={`Bride · ${section}`} data-eg-name="">{d.bride}</Copy>{family && d.brideFamily.trim() && <Copy as="p" field={`${section}.brideFamily`} className="eg-family">{d.brideFamily}</Copy>}</div>
+    <div><Copy as="span" field={`${section}.${people[1].person}`} label={`${people[1].person === 'groom' ? 'Groom' : 'Bride'} · ${section}`} data-eg-name="">{people[1].name}</Copy>{family && people[1].familyText.trim() && <Copy as="p" field={`${section}.${people[1].person}Family`} className="eg-family">{people[1].familyText}</Copy>}</div>
   </div>
 }
 
@@ -97,7 +100,7 @@ function EventCard({ event, eventKey, details: d, first }: { event: Celebration;
       <Copy as="p" field={`${prefix}.time`}>{formatTime(event.time ?? '')}</Copy>
       <Copy as="h3" field={`${prefix}.venue`}>{wrapCardText(event.venue, 24)}</Copy>
       <Copy as="p" field={`${prefix}.address`}>{wrapCardText(event.address, 32)}</Copy>
-      <div className="eg-links">{event.map.trim() && <Copy as="a" field={`${prefix}.directions`} href={mapURL(event.venue, event.address, event.map)} target="_blank" rel="noreferrer">Directions ↗</Copy>}<Copy as="button" type="button" field={`${prefix}.calendar`} onClick={() => downloadCalendar(event, d.offset, `${d.groom} & ${d.bride}`)}>Add to calendar</Copy></div>
+      <div className="eg-links">{event.map.trim() && <Copy as="a" field={`${prefix}.directions`} href={mapURL(event.venue, event.address, event.map)} target="_blank" rel="noreferrer">Directions ↗</Copy>}<Copy as="button" type="button" field={`${prefix}.calendar`} onClick={() => downloadCalendar(event, d.offset, d.brideFirst ? `${d.bride} & ${d.groom}` : `${d.groom} & ${d.bride}`)}>Add to calendar</Copy></div>
     </div>
     {first && <div className="eg-garland-wrap" aria-hidden="true"><InvitationMedia className="eg-garland" src={`${ASSETS}dresscode-hanging-garland-opt.webp`} alt="" /></div>}
   </Section>
@@ -110,7 +113,7 @@ export default function EmbroideredGarden({ details: d, rsvpTarget }: { details:
   const [opened, setOpened] = useState(false)
   const [coverHidden, setCoverHidden] = useState(false)
   const [namesVisible, setNamesVisible] = useState(false)
-  const couple = `${d.groom} & ${d.bride}`
+  const couple = d.brideFirst ? `${d.bride} & ${d.groom}` : `${d.groom} & ${d.bride}`
   const events = d.events.map((event, index) => ({ event, key: event.id || `legacy-${index}` }))
   const structure = JSON.stringify([events.map(e => e.key), !!d.dressCode.trim(), !!d.giftNote.trim(), !!d.gallery.trim()])
 
@@ -175,9 +178,9 @@ export default function EmbroideredGarden({ details: d, rsvpTarget }: { details:
       <InvitationMedia kind="video" className="eg-hero-video" ref={heroVideo} src={`${ASSETS}intro-doors-opt.mp4`} poster={`${ASSETS}intro-curtains-opt.webp`} muted playsInline preload="auto" />
       <div className="eg-hero-copy">
         <div className="eg-opening-names">
-          <Copy as="span" field="opening.groom" data-eg-opening-name="" className={namesVisible ? 'eg-name-visible' : ''}>{d.groom}</Copy>
+          <Copy as="span" field={d.brideFirst ? 'opening.bride' : 'opening.groom'} data-eg-opening-name="" className={namesVisible ? 'eg-name-visible' : ''}>{d.brideFirst ? d.bride : d.groom}</Copy>
           <Copy as="span" field="opening.separator" data-eg-opening-name="" className={namesVisible ? 'eg-name-visible' : ''}>&amp;</Copy>
-          <Copy as="span" field="opening.bride" data-eg-opening-name="" className={namesVisible ? 'eg-name-visible' : ''}>{d.bride}</Copy>
+          <Copy as="span" field={d.brideFirst ? 'opening.groom' : 'opening.bride'} data-eg-opening-name="" className={namesVisible ? 'eg-name-visible' : ''}>{d.brideFirst ? d.groom : d.bride}</Copy>
         </div>
         <div className={`eg-opening-date${namesVisible ? ' eg-name-visible' : ''}`} data-eg-opening-name="" aria-label={formatDate(d.date)}>
           <Copy field="opening.day">{part('day')}</Copy>
@@ -236,7 +239,7 @@ export default function EmbroideredGarden({ details: d, rsvpTarget }: { details:
 
     {/* Personal closing note */}
     <Section data-invite-section="closing-native" className="eg-closing-note">
-      <Copy field="closing-native.names" className="eg-closing-names"><span>{d.groom}</span><i>&amp;</i><span>{d.bride}</span></Copy>
+      <Copy field="closing-native.names" className="eg-closing-names"><span>{d.brideFirst ? d.bride : d.groom}</span><i>&amp;</i><span>{d.brideFirst ? d.groom : d.bride}</span></Copy>
     </Section>
 
     {/* Footer with chateau */}

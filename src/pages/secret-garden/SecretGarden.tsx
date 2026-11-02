@@ -42,11 +42,14 @@ function AmbientVideo({ src, poster, className }: { src: string; poster?: string
 function Names({ details: d, section, family = false }: { details: InvitationData; section: string; family?: boolean }) {
   const root = useRef<HTMLDivElement>(null)
   const stacked = family && !!(d.groomFamily.trim() || d.brideFamily.trim())
-  useSecretGardenNames(root, JSON.stringify([d.groom, d.bride, d.textOverrides]), stacked)
+  const people = d.brideFirst
+    ? [{ name: d.bride, familyText: d.brideFamily, person: 'bride' }, { name: d.groom, familyText: d.groomFamily, person: 'groom' }]
+    : [{ name: d.groom, familyText: d.groomFamily, person: 'groom' }, { name: d.bride, familyText: d.brideFamily, person: 'bride' }]
+  useSecretGardenNames(root, JSON.stringify([d.groom, d.bride, d.brideFirst, d.textOverrides]), stacked)
   return <div ref={root} role={section === 'opening' ? 'heading' : undefined} aria-level={section === 'opening' ? 1 : undefined} className={`sg-names ${stacked ? 'sg-stacked' : ''}`}>
-    <div><Copy as="span" field={`${section}.groom`} label={`Groom · ${section}`} data-sg-name="">{d.groom}</Copy>{family && d.groomFamily.trim() && <Copy as="p" field={`${section}.groomFamily`} className="sg-family">{d.groomFamily}</Copy>}</div>
+    <div><Copy as="span" field={`${section}.${people[0].person}`} label={`${people[0].person === 'groom' ? 'Groom' : 'Bride'} · ${section}`} data-sg-name="">{people[0].name}</Copy>{family && people[0].familyText.trim() && <Copy as="p" field={`${section}.${people[0].person}Family`} className="sg-family">{people[0].familyText}</Copy>}</div>
     <Copy field={`${section}.separator`} className="sg-ampersand">&amp;</Copy>
-    <div><Copy as="span" field={`${section}.bride`} label={`Bride · ${section}`} data-sg-name="">{d.bride}</Copy>{family && d.brideFamily.trim() && <Copy as="p" field={`${section}.brideFamily`} className="sg-family">{d.brideFamily}</Copy>}</div>
+    <div><Copy as="span" field={`${section}.${people[1].person}`} label={`${people[1].person === 'groom' ? 'Groom' : 'Bride'} · ${section}`} data-sg-name="">{people[1].name}</Copy>{family && people[1].familyText.trim() && <Copy as="p" field={`${section}.${people[1].person}Family`} className="sg-family">{people[1].familyText}</Copy>}</div>
   </div>
 }
 
@@ -63,7 +66,7 @@ function EventCard({ event, eventKey, details: d }: { event: Celebration; eventK
       {event.time && <Copy as="p" field={`${prefix}.time`}>{formatTime(event.time)}</Copy>}
       <Copy as="h3" field={`${prefix}.venue`}>{wrapCardText(event.venue, 24)}</Copy>
       <Copy as="p" field={`${prefix}.address`}>{wrapCardText(event.address, 32)}</Copy>
-      <div className="sg-event-links">{event.map.trim() && <Copy as="a" field={`${prefix}.directions`} href={event.map} target="_blank" rel="noreferrer">Directions ↗</Copy>}<Copy as="button" type="button" field={`${prefix}.calendar`} onClick={() => downloadCalendar(event, d.offset, `${d.groom} & ${d.bride}`)}>Add to calendar</Copy></div>
+      <div className="sg-event-links">{event.map.trim() && <Copy as="a" field={`${prefix}.directions`} href={event.map} target="_blank" rel="noreferrer">Directions ↗</Copy>}<Copy as="button" type="button" field={`${prefix}.calendar`} onClick={() => downloadCalendar(event, d.offset, d.brideFirst ? `${d.bride} & ${d.groom}` : `${d.groom} & ${d.bride}`)}>Add to calendar</Copy></div>
     </div>
   </Section>
 }
@@ -71,7 +74,7 @@ function EventCard({ event, eventKey, details: d }: { event: Celebration; eventK
 export default function SecretGarden({ details: d, rsvpTarget }: { details: InvitationData; rsvpTarget?: RsvpTarget }) {
   const root = useRef<HTMLElement>(null)
   const heroVideo = useRef<HTMLVideoElement>(null)
-  const couple = `${d.groom} & ${d.bride}`
+  const couple = d.brideFirst ? `${d.bride} & ${d.groom}` : `${d.groom} & ${d.bride}`
   const wedding = { title: 'Wedding', date: d.date, time: d.time, venue: d.venue, address: d.address, map: d.map }
   const events = d.events.map((event, index) => ({ event, key: event.id || `legacy-${index}` })).sort((a, b) => `${a.event.date}T${a.event.time}`.localeCompare(`${b.event.date}T${b.event.time}`))
 
@@ -177,7 +180,7 @@ export default function SecretGarden({ details: d, rsvpTarget }: { details: Invi
 
       {/* ── Closing ── */}
       <Section data-invite-section="closing" className="sg-closing">
-        <Copy as="h2" field="closing.couple" className="sg-closing-names"><span>{d.groom}</span><i>&</i><span>{d.bride}</span></Copy>
+        <Copy as="h2" field="closing.couple" className="sg-closing-names"><span>{d.brideFirst ? d.bride : d.groom}</span><i>&</i><span>{d.brideFirst ? d.groom : d.bride}</span></Copy>
         <Copy as="p" field="closing.date" className="sg-eyebrow">{formatDate(d.date)}</Copy>
         <InvitationMedia className="sg-footer-flowers" src="/templates/secret-garden/assets/footer-flowers.png" alt="An embroidered arrangement of white roses and greenery" />
       </Section>
