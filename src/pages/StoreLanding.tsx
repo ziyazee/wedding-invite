@@ -173,7 +173,11 @@ export default function StoreLanding({ slug }: { slug: string }) {
   const categories = ['All', ...new Set(templates.map(t => t.category).filter(Boolean))]
   const filtered = templates.filter(t => category === 'All' || t.category === category)
   const currentTemplate = templates.find(t => t.id === selected) ?? templates[0]
-  const previewData = useMemo(() => currentTemplate ? storeInvitationExample(currentTemplate.id, currentTemplate.demo_data) : undefined, [currentTemplate])
+  const previewData = useMemo(() => {
+    const example = currentTemplate ? storeInvitationExample(currentTemplate.id, currentTemplate.demo_data) : undefined
+    if (!example || !company) return undefined
+    return { ...example, companyLogo, companyName: company.company_name, companyPhone: company.phone || undefined }
+  }, [currentTemplate, company, companyLogo])
 
   useLayoutEffect(() => {
     const syncPreview = () => {

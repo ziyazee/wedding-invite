@@ -30,10 +30,6 @@ const initialExtraEvents: Celebration[] = [
   { title: 'Wedding Reception', date: '2026-12-21', time: '19:00', venue: 'Shoolin Palace', address: 'Airport Road, Mangalore', map: 'https://maps.app.goo.gl/ARcdN5shsLC5og2f8' },
   { title: "Bride's Reception — Chikmagaluru", date: '2026-12-24', time: '11:00', venue: 'Heritage Convention Hall', address: 'Chikmagaluru', map: 'https://maps.app.goo.gl/NbvAqoYtcacD5Xas6' },
 ]
-const companyLogoFiles: Record<string, string> = {
-  'city mart': 'city mart.png',
-  'king of cards': 'King of cards.png',
-}
 const statusTitle: Record<string, string> = { CREATED: 'New', IN_PROGRESS: 'In progress', READY: 'Published', REJECTED: 'Needs changes' }
 const CATEGORY_ORDER = ['Classic', 'Royal Hindu', 'Hindu', 'Muslim', 'Christian', 'Garden', 'Indian']
 
@@ -57,7 +53,7 @@ function ClientWorkspace({ showHiddenTemplates = false }: { showHiddenTemplates?
   const [orders, setOrders] = useState<Order[]>([])
   const [viewOrder, setViewOrder] = useState<Order | null>(null)
   const [allTemplates, setAllTemplates] = useState<Template[]>([])
-  const [company, setCompany] = useState<{ id: number; company_name: string; contact_name: string | null; logo_path: string | null; phone: string | null } | null>(null)
+  const [company, setCompany] = useState<{ id: number; company_name: string; contact_name: string | null; slug: string | null; phone: string | null } | null>(null)
   const [templateSettings, setTemplateSettings] = useState<Record<number, TemplateSettings>>({})
   const [companyLogo, setCompanyLogo] = useState('/logo.png')
   const [details, setDetails] = useState(initial)
@@ -147,7 +143,7 @@ function ClientWorkspace({ showHiddenTemplates = false }: { showHiddenTemplates?
     if (firstTemplate) { setSelected(current => current ?? firstTemplate.id); setPreviewId(current => current ?? firstTemplate.id) }
     setOrders((ordersResult.data || []) as Order[])
     if (data.user.email) {
-      const { data: companyData } = await supabase.from('companies').select('id,company_name,contact_name,logo_path,phone').ilike('email', data.user.email).maybeSingle()
+      const { data: companyData } = await supabase.from('companies').select('id,company_name,contact_name,slug,phone').ilike('email', data.user.email).maybeSingle()
       setCompany(companyData)
       if (companyData?.id) {
         const [{ data: settingsData, error: settingsError }, { data: defaultsData, error: defaultsError }] = await Promise.all([
@@ -159,10 +155,7 @@ function ClientWorkspace({ showHiddenTemplates = false }: { showHiddenTemplates?
         if (defaultsError) setError(defaultsError.message)
         else setTemplateDefaults(Object.fromEntries((defaultsData || []).map(row => [row.template_id, row.demo_data as Record<string, unknown>])))
       } else { setTemplateSettings({}); setTemplateDefaults({}) }
-      const logoFile = companyData?.company_name
-        ? companyLogoFiles[companyData.company_name.trim().replace(/\s+/g, ' ').toLowerCase()]
-        : undefined
-      setCompanyLogo(logoFile ? `/company-logos/${encodeURIComponent(logoFile)}` : '/logo.png')
+      setCompanyLogo(companyData?.slug ? `/company-logos/${encodeURIComponent(companyData.slug)}.png` : '/logo.png')
     }
     setLoading(false)
   }, [showHiddenTemplates])
@@ -266,10 +259,10 @@ function ClientWorkspace({ showHiddenTemplates = false }: { showHiddenTemplates?
     return () => observer.disconnect()
   }, [tab, previewTemplate?.id, loading])
   const companyBranding = useMemo(() => ({
-    ...(companyLogo !== '/logo.png' ? { companyLogo } : company?.logo_path ? { companyLogo: company.logo_path } : {}),
+    companyLogo: company?.slug ? `/company-logos/${encodeURIComponent(company.slug)}.png` : undefined,
     ...(company?.company_name ? { companyName: company.company_name } : {}),
     ...(company?.phone ? { companyPhone: company.phone } : {}),
-  }), [companyLogo, company?.logo_path, company?.company_name, company?.phone])
+  }), [company?.slug, company?.company_name, company?.phone])
   const livePreviewDetails = useMemo<InvitationData>(() => {
     return {
       ...details,
@@ -517,11 +510,11 @@ Additional rules:
     try {
       const { data: { user } } = await supabase.auth.getUser()
       if (!user) throw new Error('Your session expired. Please sign in again.')
-      const { data: companyRow, error: companyError } = await supabase.from('companies').select('id,phone').ilike('email', user.email || '').maybeSingle()
+      const { data: companyRow, error: companyError } = await supabase.from('companies').select('id,slug,phone').ilike('email', user.email || '').maybeSingle()
       if (companyError || !companyRow) throw new Error('Your account is not linked to a company yet.')
       const companyId = companyRow.id
       const phone = '+91' + phoneNumber.trim().replace(/[^\d]/g,'')
-      const formData = validateDetails({ ...details, template: selected, events: [{ title: weddingEventTitle, date: details.date, time: details.time, venue: details.venue, address: details.address, map: details.map }, ...extraEvents], companyLogo: companyLogo !== '/logo.png' ? companyLogo : (company?.logo_path || undefined), companyName: company?.company_name || undefined, companyPhone: companyRow.phone || company?.phone || undefined })
+      const formData = validateDetails({ ...details, template: selected, events: [{ title: weddingEventTitle, date: details.date, time: details.time, venue: details.venue, address: details.address, map: details.map }, ...extraEvents], companyLogo: companyRow.slug ? `/company-logos/${encodeURIComponent(companyRow.slug)}.png` : undefined, companyName: company?.company_name || undefined, companyPhone: companyRow.phone || company?.phone || undefined })
       const templateCode = templates.find(template => template.id === selected)?.template_code
       if (!templateCode) throw new Error('That design is no longer available. Choose another template.')
       const { data, error: insertError } = await supabase.from('orders').insert({ company_id: companyId, template_code: templateCode, created_by: user.id, groom_name: formData.groom, bride_name: formData.bride, phone_number: phone, form_data: formData }).select('*').single()

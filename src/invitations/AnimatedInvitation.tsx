@@ -10,6 +10,7 @@ import { personalizeBloom } from './personalizeBloom'
 import { personalizeEG } from './personalizeEG'
 import { installOpeningNamesFit } from './installOpeningNamesFit'
 import { installRsvpForm } from './installRsvpForm'
+import { installFooterLogoFallback } from './components/footerLogoFallback'
 const templateFolder: Record<number, string> = { 6: 'embroidered-garden', 7: 'bloom' }
 const themes: Record<number,{names:string[];floral:string;frame:string;bg:string;ink:string}>={
  6:{names:['Camille','Antoine'],floral:'/templates/embroidered-garden/assets/embroidered-swans-hero-v2-optimized.webp',frame:'/templates/embroidered-garden/assets/ceremony-reception-bg-v2.webp',bg:'#F5F0E8',ink:'#536249'},
@@ -239,6 +240,7 @@ export default function AnimatedInvitation({details:d,rsvpTarget}:{details:Invit
    if(button){event.preventDefault();const item=latest.events[Number(button.dataset.personalCalendar)];if(item)downloadCalendar(item,latest.offset,latest.brideFirst?`${latest.bride} & ${latest.groom}`:`${latest.groom} & ${latest.bride}`)}
   })
   const invitationDocument=frame.current?.contentDocument
+  if(invitationDocument)installFooterLogoFallback(invitationDocument)
   if(invitationDocument)installCardContentFit(invitationDocument)
   if(invitationDocument)installBloomFit(invitationDocument)
   if(invitationDocument)installOpeningNamesFit(invitationDocument)

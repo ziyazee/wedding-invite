@@ -2,6 +2,7 @@ import { companyWhatsAppURL, formatDate, formatTime } from './model'
 import type { InvitationData } from './model'
 import { downloadCalendar } from './calendar'
 import designedByFooterCSS from './components/DesignedByFooter.css?inline'
+import { installFooterLogoFallback } from './components/footerLogoFallback'
 
 export function destinationConfig(d: InvitationData) {
   return {
@@ -114,6 +115,7 @@ export function applyNewOrderTemplate(doc: Document, d: InvitationData) {
     const whatsappURL = companyWhatsAppURL(d.companyPhone)
     if (d.companyLogo) { const img = doc.createElement('img'); img.className = 'designed-by-logo'; img.src = d.companyLogo; img.alt = d.companyName || 'Company'; if (whatsappURL) { const link = doc.createElement('a'); link.href = whatsappURL; link.target = '_blank'; link.rel = 'noreferrer'; link.setAttribute('aria-label', `Contact ${d.companyName || 'company'} on WhatsApp`); link.append(img); footerHost.append(link) } else footerHost.append(img) }
     else { const name = doc.createElement('span'); name.className = 'designed-by-name'; name.textContent = d.companyName!; footerHost.append(name) }
+    installFooterLogoFallback(doc)
   }
 
   if (d.template !== 12) {

@@ -4,6 +4,10 @@ Last updated: 2026-11-02. Targeted source/worktree review only; no build, tests,
 
 ## Project and local workflow
 
+- Standalone `/bloom` supplies Shaadi Invites branding (`/logo.png`) to its demo footer. Published orders and company previews retain their own company branding; the shared sample data is unchanged. No browser verification run.
+
+- Invitation footer logos use `companies.slug` to resolve `/company-logos/{slug}.png`, matching the storefront. Dashboard previews and new orders use this path instead of company-name mappings or `logo_path`; storefront phone previews also pass company branding. Apply `202611030001_public_invitation_company_logo.sql` then `202611030002_public_invitation_company_branding.sql` so existing published orders receive the current company logo, name, and phone. React and iframe footers fall back to the company name when an image fails. Migrations not applied; no builds, tests, or browser verification run.
+
 - The approved company storefront is one shared template in `StoreLanding.tsx` / `StoreLanding.css`. Resolve the company URL slug through `get_store_landing`: company name and slug come from `companies`; prices, discounts and premium status come from `company_template_settings`, joined by company ID and template ID. Logo and banner files use the company slug: `public/company-logos/{slug}.png` and `public/landing/{slug}.png`. These replace database image-path overrides in the storefront. Missing logos show the crown; missing banners leave the ivory background. Never duplicate the page per company. Existing company accent, tagline and contact phone remain supported.
 - Storefront has a sticky company-only header, four larger cards per desktop row (three tablet, two mobile), a centered compact category bar, and a sticky phone preview. Navigation, Browse Templates, feature descriptions and vendor login were removed. Category selection uses `#8B5E3B` with a sliding highlight; collection transitions stay visible without shuffling cards. Premium cards use a purple diagonal ribbon. The real preview uses a 402×820 viewport and shared SiteFonts. No build or browser verification was run.
 
