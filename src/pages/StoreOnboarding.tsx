@@ -114,11 +114,11 @@ export default function StoreOnboarding({ onChange }: { onChange: () => void }) 
     <header><div><span className="workspace-kicker">GROW YOUR STORE NETWORK</span><h2>Onboard a store</h2><p>Set up its storefront, branding, collection and owner access.</p></div><button className="primary-action" onClick={() => { setResume(undefined); setAccess(undefined); setOpening(true) }}>+ New store</button></header>
     {error && <p className="workspace-alert" role="alert">{error}</p>}
     {records.length > 0 && <details><summary>Recent store setups ({records.length})</summary><div className="store-setup-list">{records.map(record => <article key={record.id}>
-      <div><strong>{record.details.company_name}</strong><small>{record.details.slug}.shaadiinvites.in · {record.completed_at ? record.companies.storefront_enabled ? 'Public' : 'Private draft' : 'Setup incomplete'}</small></div>
+      <div><strong>{record.details.company_name}</strong><small>{record.details.slug}.shaadiinvites.in · {record.completed_at ? record.companies?.storefront_enabled ? 'Public' : 'Private draft' : 'Setup incomplete'}</small></div>
       {!record.completed_at ? <button className="secondary-action" onClick={() => { setResume(record); setOpening(true) }}>Resume setup</button> : <div className="store-setup-actions">
         <button className="secondary-action" disabled={!!busyId} onClick={() => void ownerLink(record)}>New owner setup link</button>
-        <button className="secondary-action" disabled={!!busyId} onClick={() => void visibility(record)}>{record.companies.storefront_enabled ? 'Make private' : 'Publish storefront'}</button>
-        {record.companies.storefront_enabled && <a href={`https://${record.details.slug}.shaadiinvites.in`} target="_blank" rel="noreferrer">Open store ↗</a>}
+        <button className="secondary-action" disabled={!!busyId} onClick={() => void visibility(record)}>{record.companies?.storefront_enabled ? 'Make private' : 'Publish storefront'}</button>
+        {record.companies?.storefront_enabled && <a href={`https://${record.details.slug}.shaadiinvites.in`} target="_blank" rel="noreferrer">Open store ↗</a>}
       </div>}
     </article>)}</div></details>}
     {access && <div className="store-setup-access" role="status"><strong>Owner access for {access.company_name}</strong><p>Share this single-use password setup link with {access.email}. It replaces any previous setup link. No email has been sent.</p><button className="secondary-action" onClick={() => { void navigator.clipboard.writeText(access.setup_url).then(() => setCopied(true)).catch(() => setError('Could not copy. Select and copy the link below.')) }}>{copied ? 'Copied' : 'Copy owner setup link'}</button><input aria-label="Owner setup link" readOnly value={access.setup_url} onFocus={event => event.currentTarget.select()} /></div>}
