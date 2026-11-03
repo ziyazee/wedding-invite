@@ -22,6 +22,7 @@ const TEMPLATE_IMAGE_SLOTS: Record<number, ImageSlot[]> = {
   17: [
     { file: '2.png', label: 'Family page background', type: 'image' },
     { file: '3.png', label: 'Countdown background', type: 'image' },
+    { file: '4.png', label: 'Celebrations background', type: 'image' },
     { file: 'opening-poster.jpg', label: 'Opening poster', type: 'image' },
     { file: 'opening.mp4', label: 'Opening video', type: 'video' },
     { file: 'music.mp3', label: 'Background music', type: 'audio' },

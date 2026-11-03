@@ -24,7 +24,7 @@ const TEMPLATE_FOLDERS: Record<number, string> = {
 
 const TEMPLATE_IMAGE_SLOTS: Record<number, string[]> = {
   1: ['welcome.jpg', 'general.jpg', 'end.png', 'opening-poster.jpg', 'opening.mp4'],
-  17: ['2.png', '3.png', 'opening-poster.jpg', 'opening.mp4', 'music.mp3'],
+  17: ['2.png', '3.png', '4.png', 'opening-poster.jpg', 'opening.mp4', 'music.mp3'],
 }
 
 const ALLOWED_CONTENT_TYPES: Record<string, string[]> = {

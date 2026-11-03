@@ -252,6 +252,28 @@
 }
 
 .tajmahal-template__fourth-page {
+  position: relative;
+  display: grid;
+  isolation: isolate;
+  background: #0b1930;
+}
+
+/* One sticky background spans all card snap positions in the main scroller. */
+.tajmahal-template__fourth-backdrop {
+  position: sticky;
+  top: 0;
+  grid-area: 1 / 1;
+  align-self: start;
+  display: grid;
+  height: 100vh;
+  height: 100dvh;
+  place-items: center;
+  pointer-events: none;
+}
+
+.tajmahal-template__fifth-page,
+.tajmahal-template__sixth-page,
+.tajmahal-template__seventh-page {
   display: grid;
   min-height: 100vh;
   min-height: 100dvh;
@@ -262,11 +284,240 @@
   background: #0b1930;
 }
 
-.tajmahal-template__fourth-image {
+.tajmahal-template__fourth-image,
+.tajmahal-template__fifth-image,
+.tajmahal-template__sixth-image,
+.tajmahal-template__seventh-image {
   display: block;
   width: min(100vw, 56.25dvh);
   height: min(100dvh, 177.7778vw);
   object-fit: contain;
+}
+
+.tajmahal-template__fifth-canvas,
+.tajmahal-template__sixth-canvas,
+.tajmahal-template__seventh-canvas {
+  position: relative;
+  width: min(100vw, 56.25dvh);
+  height: min(100dvh, 177.7778vw);
+  overflow: hidden;
+}
+
+/* Qubool's portrait Nikah composition, anchored to this scene's artwork. */
+.tajmahal-template__fifth-couple {
+  position: absolute;
+  z-index: 1;
+  left: -5%;
+  bottom: -4%;
+  width: 128%;
+  height: 62%;
+  object-fit: contain;
+  object-position: center bottom;
+  pointer-events: none;
+  translate: 0 var(--nikah-scroll-y, 0%);
+  transform-origin: 50% 100%;
+  animation: tajmahal-nikah-drift 4.8s ease-in-out infinite alternate;
+  will-change: translate, transform;
+}
+
+@keyframes tajmahal-nikah-drift {
+  from { transform: translateX(0) scale(1); }
+  to { transform: translateX(5.5%) scale(1.048); }
+}
+
+/* Qubool's garden couple: enlarge the transparent canvas, keep feet grounded. */
+.tajmahal-template__sixth-couple {
+  position: absolute;
+  z-index: 1;
+  left: -56.9795%;
+  top: auto;
+  bottom: 0;
+  width: 175.959%;
+  max-width: none;
+  height: 51.02811%;
+  object-fit: contain;
+  object-position: center bottom;
+  pointer-events: none;
+  translate: 0 var(--garden-scroll-y, 0%);
+  transform-origin: 50% 100%;
+  animation: tajmahal-garden-drift 4.8s ease-in-out infinite alternate;
+  will-change: translate, transform;
+}
+
+@keyframes tajmahal-garden-drift {
+  from { transform: translateX(-2.75%) scale(1); }
+  to { transform: translateX(2.75%) scale(1.048); }
+}
+
+/* Qubool's seated finale, independently positioned within this portrait canvas. */
+.tajmahal-template__seventh-couple {
+  position: absolute;
+  z-index: 1;
+  left: -40%;
+  bottom: -3%;
+  width: 160%;
+  max-width: none;
+  height: 42%;
+  object-fit: contain;
+  object-position: center bottom;
+  pointer-events: none;
+  translate: 0 var(--terrace-scroll-y, 0%);
+  transform-origin: 50% 100%;
+  animation: tajmahal-terrace-drift 4.8s ease-in-out infinite alternate;
+  will-change: translate, transform;
+}
+
+@keyframes tajmahal-terrace-drift {
+  from { transform: translateX(-2.6%) scale(1); }
+  to { transform: translateX(2.6%) scale(1.045); }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .tajmahal-template__fifth-couple,
+  .tajmahal-template__sixth-couple,
+  .tajmahal-template__seventh-couple {
+    animation: none;
+    translate: none;
+  }
+}
+
+.tajmahal-template__celebration-stack {
+  position: relative;
+  z-index: 1;
+  grid-area: 1 / 1;
+  min-width: 0;
+}
+
+.tajmahal-template__celebration-slide {
+  position: relative;
+  height: 100vh;
+  height: 100dvh;
+  scroll-snap-align: start;
+  scroll-snap-stop: always;
+}
+
+.tajmahal-template__celebration-card {
+  position: absolute;
+  top: 42%;
+  left: 50%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  width: min(82vw, 46.125dvh);
+  gap: 2px;
+  color: #f3dfc7;
+  text-align: center;
+  text-shadow: 0 2px 12px #07132580;
+  transform: translate(-50%, -50%);
+}
+
+.tajmahal-template__celebration-card h2 {
+  margin: 0 0 4px;
+  font-family: 'Great Vibes', cursive;
+  font-size: 2.25rem;
+  font-weight: 400;
+  line-height: 1.05;
+}
+
+.tajmahal-template__event-date {
+  display: flex;
+  margin: 0;
+  align-items: center;
+  gap: 12px;
+}
+
+.tajmahal-template__event-day {
+  font-size: 2.875rem;
+  line-height: 1;
+}
+
+.tajmahal-template__event-month-year {
+  display: flex;
+  flex-direction: column;
+  gap: 0;
+  padding-left: 12px;
+  border-left: 1px solid #f3dfc7b3;
+  font-size: 1.375rem;
+  line-height: 1.1;
+  text-align: left;
+}
+
+.tajmahal-template__event-year {
+  font-size: 0.875rem;
+  letter-spacing: 0.2em;
+}
+
+.tajmahal-template__event-weekday {
+  margin: 2px 0 0;
+  font-size: 0.8125rem;
+  line-height: 1.1;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+}
+
+.tajmahal-template__event-time {
+  margin: 0;
+  font-size: 1.25rem;
+  line-height: 1.1;
+}
+
+.tajmahal-template__event-location {
+  width: 100%;
+  margin-top: 4px;
+}
+
+.tajmahal-template__event-location h3 {
+  margin: 0;
+  font-size: 1.375rem;
+  font-weight: 500;
+  line-height: 1.2;
+  overflow-wrap: anywhere;
+  text-wrap: balance;
+}
+
+.tajmahal-template__event-location p {
+  margin: 2px 0 0;
+  font-size: 1.125rem;
+  line-height: 1.15;
+  text-wrap: balance;
+}
+
+.tajmahal-template__event-actions {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: center;
+  gap: 1em;
+  margin-top: 6px;
+  font-size: 0.9375rem;
+}
+
+.tajmahal-template__event-actions a,
+.tajmahal-template__event-actions button {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.6em;
+  padding: 0.3em 0.1em;
+  border: 0;
+  border-bottom: 1px solid #dbb77a80;
+  background: transparent;
+  color: inherit;
+  font: inherit;
+  line-height: 1.2;
+  white-space: nowrap;
+  text-decoration: none;
+  cursor: pointer;
+}
+
+.tajmahal-template__event-actions span[aria-hidden="true"] {
+  color: #e8c58d;
+}
+
+.tajmahal-template__event-actions :focus-visible {
+  outline: 1px solid #e8c58d;
+  outline-offset: 4px;
 }
 
 .tajmahal-template__countdown-canvas {
@@ -419,9 +670,13 @@
 }
 
 /* Saved defaults from public/edits/17.json */
-[data-invite-text="t17.families.heading"] { font-size: 16px; }
-[data-invite-text="t17.families.groom"] { font-size: 28px; }
-[data-invite-text="t17.families.groom-family"] { font-size: 14px; }
-[data-invite-text="t17.families.bride"] { font-size: 29px; }
-[data-invite-text="t17.families.bride-family"] { font-size: 13px; translate: 0 0.6518vh; }
-[data-invite-text="t17.families.message"] { font-size: 10px; translate: 0 0.1576vh; }
+.tajmahal-template [data-invite-text="t17.families.heading"] { font-size: 16px; }
+.tajmahal-template [data-invite-text="t17.families.groom"] { font-size: 28px; }
+.tajmahal-template [data-invite-text="t17.families.groom-family"] { font-size: 14px; }
+.tajmahal-template [data-invite-text="t17.families.bride"] { font-size: 29px; }
+.tajmahal-template [data-invite-text="t17.families.bride-family"] { font-size: 13px; translate: 0 0.651794713dvh; }
+.tajmahal-template [data-invite-text="t17.families.message"] { font-size: 10px; }
+.tajmahal-template .tajmahal-template__families-page.is-visible [data-invite-text="t17.families.message"] {
+  translate: 0 0.157595008dvh;
+}
+

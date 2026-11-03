@@ -1,6 +1,7 @@
 import { useEffect, useRef, useState, type MouseEvent } from "react";
 import { useInvitationDetails } from "../invitations/context";
-import { formatDate, weddingISO } from "../invitations/model";
+import { formatDate, formatTime, mapURL, weddingISO } from "../invitations/model";
+import { downloadCalendar } from "../invitations/calendar";
 import { invitationExample } from "../invitations/templateData";
 import "./Tajmahal.css";
 
@@ -12,6 +13,12 @@ export default function Tajmahal() {
   const audioRef = useRef<HTMLAudioElement>(null);
   const countdownPageRef = useRef<HTMLElement>(null);
   const coupleLayerRef = useRef<HTMLImageElement>(null);
+  const fifthPageRef = useRef<HTMLElement>(null);
+  const fifthCoupleRef = useRef<HTMLImageElement>(null);
+  const sixthPageRef = useRef<HTMLElement>(null);
+  const sixthCoupleRef = useRef<HTMLImageElement>(null);
+  const seventhPageRef = useRef<HTMLElement>(null);
+  const seventhCoupleRef = useRef<HTMLImageElement>(null);
   const hasStarted = useRef(false);
   const [musicPlaying, setMusicPlaying] = useState(false);
   const [posterVisible, setPosterVisible] = useState(true);
@@ -54,6 +61,96 @@ export default function Tajmahal() {
           (window.innerHeight - bounds.top) / (window.innerHeight + bounds.height),
         ));
         layer.style.setProperty("--couple-scroll-y", `${(progress * 16) - 8}%`);
+      });
+    };
+
+    scroller.addEventListener("scroll", updateParallax, { passive: true });
+    window.addEventListener("resize", updateParallax);
+    updateParallax();
+    return () => {
+      cancelAnimationFrame(frame);
+      scroller.removeEventListener("scroll", updateParallax);
+      window.removeEventListener("resize", updateParallax);
+    };
+  }, []);
+
+  useEffect(() => {
+    const page = fifthPageRef.current;
+    const couple = fifthCoupleRef.current;
+    const scroller = page?.closest<HTMLElement>(".tajmahal-template");
+    if (!page || !couple || !scroller) return;
+    if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) return;
+
+    let frame = 0;
+    const updateParallax = () => {
+      cancelAnimationFrame(frame);
+      frame = requestAnimationFrame(() => {
+        const bounds = page.getBoundingClientRect();
+        const top = bounds.top - scroller.getBoundingClientRect().top;
+        const progress = Math.max(0, Math.min(1,
+          (scroller.clientHeight - top) / (scroller.clientHeight + bounds.height),
+        ));
+        couple.style.setProperty("--nikah-scroll-y", `${(progress - 0.5) * 16}%`);
+      });
+    };
+
+    scroller.addEventListener("scroll", updateParallax, { passive: true });
+    window.addEventListener("resize", updateParallax);
+    updateParallax();
+    return () => {
+      cancelAnimationFrame(frame);
+      scroller.removeEventListener("scroll", updateParallax);
+      window.removeEventListener("resize", updateParallax);
+    };
+  }, []);
+
+  useEffect(() => {
+    const page = sixthPageRef.current;
+    const couple = sixthCoupleRef.current;
+    const scroller = page?.closest<HTMLElement>(".tajmahal-template");
+    if (!page || !couple || !scroller) return;
+    if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) return;
+
+    let frame = 0;
+    const updateParallax = () => {
+      cancelAnimationFrame(frame);
+      frame = requestAnimationFrame(() => {
+        const bounds = page.getBoundingClientRect();
+        const top = bounds.top - scroller.getBoundingClientRect().top;
+        const progress = Math.max(0, Math.min(1,
+          (scroller.clientHeight - top) / (scroller.clientHeight + bounds.height),
+        ));
+        couple.style.setProperty("--garden-scroll-y", `${(progress - 0.5) * 16}%`);
+      });
+    };
+
+    scroller.addEventListener("scroll", updateParallax, { passive: true });
+    window.addEventListener("resize", updateParallax);
+    updateParallax();
+    return () => {
+      cancelAnimationFrame(frame);
+      scroller.removeEventListener("scroll", updateParallax);
+      window.removeEventListener("resize", updateParallax);
+    };
+  }, []);
+
+  useEffect(() => {
+    const page = seventhPageRef.current;
+    const couple = seventhCoupleRef.current;
+    const scroller = page?.closest<HTMLElement>(".tajmahal-template");
+    if (!page || !couple || !scroller) return;
+    if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) return;
+
+    let frame = 0;
+    const updateParallax = () => {
+      cancelAnimationFrame(frame);
+      frame = requestAnimationFrame(() => {
+        const bounds = page.getBoundingClientRect();
+        const top = bounds.top - scroller.getBoundingClientRect().top;
+        const progress = Math.max(0, Math.min(1,
+          (scroller.clientHeight - top) / (scroller.clientHeight + bounds.height),
+        ));
+        couple.style.setProperty("--terrace-scroll-y", `${(progress - 0.5) * 15}%`);
       });
     };
 
@@ -175,8 +272,66 @@ export default function Tajmahal() {
           </div>
         </div>
       </section>
-      <section className="tajmahal-template__fourth-page" data-invite-section="t17.scene4" aria-label="Wedding scene four">
-        <img className="tajmahal-template__fourth-image" src="/templates/tajmahal/assets/4.png" alt="" aria-hidden="true" />
+      <section className="tajmahal-template__fourth-page" data-invite-section="t17.scene4" aria-label="Wedding celebrations">
+        <div className="tajmahal-template__fourth-backdrop" aria-hidden="true">
+          <img className="tajmahal-template__fourth-image" src="/templates/tajmahal/assets/4.png" alt="" />
+        </div>
+        <div className="tajmahal-template__celebration-stack">
+          {details.events.map((event, index) => {
+            const sectionId = `t17.event-${event.id || `legacy-${index}`}`;
+            const field = (name: string, label: string) => ({
+              "data-invite-text": `${sectionId}.${name}`,
+              "data-invite-label": `${event.title} · ${label}`,
+            });
+            const text = (name: string, value: string) => edited(`${sectionId}.${name}`, value);
+            return <div className="tajmahal-template__celebration-slide" key={event.id ?? index} data-invite-section={sectionId} role="group" aria-label={event.title}>
+              <div className="tajmahal-template__celebration-card">
+                <h2 {...field("title", "Celebration title")}>{text("title", event.title)}</h2>
+                {event.date && <>
+                  <time className="tajmahal-template__event-date" dateTime={event.date}>
+                    <span className="tajmahal-template__event-day" {...field("day", "Day")}>{text("day", formatDate(event.date, { day: "numeric" }))}</span>
+                    <span className="tajmahal-template__event-month-year">
+                      <span {...field("month", "Month")}>{text("month", formatDate(event.date, { month: "long" }))}</span>
+                      <span className="tajmahal-template__event-year" {...field("year", "Year")}>{text("year", formatDate(event.date, { year: "numeric" }))}</span>
+                    </span>
+                  </time>
+                  <p className="tajmahal-template__event-weekday" {...field("weekday", "Weekday")}>{text("weekday", formatDate(event.date, { weekday: "long" }))}</p>
+                </>}
+                {event.time && <p className="tajmahal-template__event-time" {...field("time", "Time")}>{text("time", formatTime(event.time))}</p>}
+                <div className="tajmahal-template__event-location">
+                  <h3 {...field("venue", "Venue")}>{text("venue", event.venue)}</h3>
+                  {event.address && <p {...field("address", "Address")}>{text("address", event.address)}</p>}
+                </div>
+                <div className="tajmahal-template__event-actions">
+                  {(event.map || event.venue || event.address) && <a href={mapURL(event.venue, event.address, event.map)} target="_blank" rel="noreferrer" aria-label={`Directions to ${event.title}`}>
+                    <span {...field("directions", "Directions label")}>{text("directions", "Directions")}</span>
+                  </a>}
+                  {event.date && <button type="button" onClick={() => downloadCalendar(event, details.offset, `${details.groom} & ${details.bride}`)} aria-label={`Save the date for ${event.title}`}>
+                    <span {...field("calendar", "Save the date label")}>{text("calendar", "Save the date")}</span> <span aria-hidden="true">+</span>
+                  </button>}
+                </div>
+              </div>
+            </div>;
+          })}
+        </div>
+      </section>
+      <section ref={fifthPageRef} className="tajmahal-template__fifth-page" data-invite-section="t17.scene5" aria-label="Wedding scene five">
+        <div className="tajmahal-template__fifth-canvas">
+          <img className="tajmahal-template__fifth-image" src="/templates/tajmahal/assets/5.png" alt="" aria-hidden="true" />
+          <img ref={fifthCoupleRef} className="tajmahal-template__fifth-couple" src="/templates/tajmahal/assets/5-couple.webp" alt="" aria-hidden="true" draggable={false} />
+        </div>
+      </section>
+      <section ref={sixthPageRef} className="tajmahal-template__sixth-page" data-invite-section="t17.scene6" aria-label="Wedding scene six">
+        <div className="tajmahal-template__sixth-canvas">
+          <img className="tajmahal-template__sixth-image" src="/templates/tajmahal/assets/6.png" alt="" aria-hidden="true" />
+          <img ref={sixthCoupleRef} className="tajmahal-template__sixth-couple" src="/templates/tajmahal/assets/6-couple.webp" alt="" aria-hidden="true" draggable={false} />
+        </div>
+      </section>
+      <section ref={seventhPageRef} className="tajmahal-template__seventh-page" data-invite-section="t17.scene7" aria-label="Wedding scene seven">
+        <div className="tajmahal-template__seventh-canvas">
+          <video className="tajmahal-template__seventh-image" src="/templates/tajmahal/assets/7.mp4" autoPlay loop muted playsInline aria-hidden="true" />
+          <img ref={seventhCoupleRef} className="tajmahal-template__seventh-couple" src="/templates/tajmahal/assets/7-couple.webp" alt="" aria-hidden="true" draggable={false} />
+        </div>
       </section>
     </main>
   );

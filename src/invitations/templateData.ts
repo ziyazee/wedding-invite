@@ -59,7 +59,10 @@ templateInvitationData[17] = {
   groomFamily: 'Mr. Rajesh Sharma\nMrs. Sunita Sharma',
   brideFamily: 'Mr. Vikram Patel\nMrs. Meera Patel',
   message: 'We are both so happy that you will be with us as we begin our life together. Since our engagement, the love and blessings we have received from our families and friends have touched us more deeply than we can say. We would like to thank each of you sincerely for your kindness, your warmth and your prayers. We would be honoured to have you with us at our wedding, and we look forward to celebrating with you.',
-  events: [],
+  events: ['Mehendi', 'Nikah & Wedding', 'Reception'].map((title, index) => ({
+    id: `celebration-${index + 1}`, title, date: '2026-12-20', time: '11:00',
+    venue: 'Royal Convention Centre', address: 'Downtown', map: '',
+  })),
 }
 
 export function invitationExample(templateId: number): InvitationData | undefined {

@@ -22,6 +22,156 @@
     },
     "t17.families.bride": {
       "fontSize": 29
+    },
+    "t17.event-celebration-1.title": {
+      "fontSize": 36,
+      "x": 0,
+      "y": 0
+    },
+    "t17.event-celebration-1.day": {
+      "fontSize": 46,
+      "x": 0,
+      "y": 0
+    },
+    "t17.event-celebration-1.month": {
+      "fontSize": 22,
+      "x": 0,
+      "y": 0
+    },
+    "t17.event-celebration-1.year": {
+      "fontSize": 14,
+      "x": 0,
+      "y": 0
+    },
+    "t17.event-celebration-1.weekday": {
+      "fontSize": 13,
+      "x": 0,
+      "y": 0
+    },
+    "t17.event-celebration-1.time": {
+      "fontSize": 20,
+      "x": 0,
+      "y": 0
+    },
+    "t17.event-celebration-1.venue": {
+      "fontSize": 22,
+      "x": 0,
+      "y": 0
+    },
+    "t17.event-celebration-1.address": {
+      "fontSize": 18,
+      "x": 0,
+      "y": 0
+    },
+    "t17.event-celebration-1.directions": {
+      "fontSize": 15,
+      "x": 0,
+      "y": 0
+    },
+    "t17.event-celebration-1.calendar": {
+      "fontSize": 15,
+      "x": 0,
+      "y": 0
+    },
+    "t17.event-celebration-2.title": {
+      "fontSize": 36,
+      "x": 0,
+      "y": 0
+    },
+    "t17.event-celebration-2.day": {
+      "fontSize": 46,
+      "x": 0,
+      "y": 0
+    },
+    "t17.event-celebration-2.month": {
+      "fontSize": 22,
+      "x": 0,
+      "y": 0
+    },
+    "t17.event-celebration-2.year": {
+      "fontSize": 14,
+      "x": 0,
+      "y": 0
+    },
+    "t17.event-celebration-2.weekday": {
+      "fontSize": 13,
+      "x": 0,
+      "y": 0
+    },
+    "t17.event-celebration-2.time": {
+      "fontSize": 20,
+      "x": 0,
+      "y": 0
+    },
+    "t17.event-celebration-2.venue": {
+      "fontSize": 22,
+      "x": 0,
+      "y": 0
+    },
+    "t17.event-celebration-2.address": {
+      "fontSize": 18,
+      "x": 0,
+      "y": 0
+    },
+    "t17.event-celebration-2.directions": {
+      "fontSize": 15,
+      "x": 0,
+      "y": 0
+    },
+    "t17.event-celebration-2.calendar": {
+      "fontSize": 15,
+      "x": 0,
+      "y": 0
+    },
+    "t17.event-celebration-3.title": {
+      "fontSize": 36,
+      "x": 0,
+      "y": 0
+    },
+    "t17.event-celebration-3.day": {
+      "fontSize": 46,
+      "x": 0,
+      "y": 0
+    },
+    "t17.event-celebration-3.month": {
+      "fontSize": 22,
+      "x": 0,
+      "y": 0
+    },
+    "t17.event-celebration-3.year": {
+      "fontSize": 14,
+      "x": 0,
+      "y": 0
+    },
+    "t17.event-celebration-3.weekday": {
+      "fontSize": 13,
+      "x": 0,
+      "y": 0
+    },
+    "t17.event-celebration-3.time": {
+      "fontSize": 20,
+      "x": 0,
+      "y": 0
+    },
+    "t17.event-celebration-3.venue": {
+      "fontSize": 22,
+      "x": 0,
+      "y": 0
+    },
+    "t17.event-celebration-3.address": {
+      "fontSize": 18,
+      "x": 0,
+      "y": 0
+    },
+    "t17.event-celebration-3.directions": {
+      "fontSize": 15,
+      "x": 0,
+      "y": 0
+    },
+    "t17.event-celebration-3.calendar": {
+      "fontSize": 15,
+      "x": 0,
+      "y": 0
     }
   }
 }
