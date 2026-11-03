@@ -7,7 +7,7 @@
   --serif: 'Cormorant Garamond', Georgia, serif;
   --sans: Inter, Arial, sans-serif;
   min-height: 100svh;
-  background: var(--cream) url('/landing/store-paper.svg') repeat;
+  background: var(--cream) url('/client-landing-bg.png') no-repeat center top / cover fixed;
   color: var(--ink);
   font-family: var(--serif);
   overflow-wrap: break-word;
@@ -49,19 +49,19 @@
 
 /* One continuous selector: icon and label sit side by side. */
 .store-templates { padding-top: 24px; scroll-margin-top: 24px; }
-.store-filters { position: relative; isolation: isolate; display: flex; width: 640px; max-width: 100%; min-height: 44px; padding: 2px; border: 1px solid #ddc5b4; background: #faf5eb; border-radius: 10px; margin: 0 auto 24px; overflow-x: auto; scrollbar-width: thin; }
-.store-filter-highlight { position: absolute; left: 0; top: 2px; bottom: 2px; border-radius: 8px; background: #8B5E3B; pointer-events: none; transition: transform 420ms cubic-bezier(.22,1,.36,1), width 420ms cubic-bezier(.22,1,.36,1); }
+.store-filters { position: relative; isolation: isolate; display: flex; width: 640px; max-width: 100%; min-height: 44px; padding: 2px; border: 1px solid #e8d0c8; background: #fdf5f2; border-radius: 10px; margin: 0 auto 24px; overflow-x: auto; scrollbar-width: thin; }
+.store-filter-highlight { position: absolute; left: 0; top: 2px; bottom: 2px; border-radius: 8px; background: #c4956e; pointer-events: none; transition: transform 420ms cubic-bezier(.22,1,.36,1), width 420ms cubic-bezier(.22,1,.36,1); }
 .store-filters button { position: relative; display: flex; align-items: center; justify-content: center; gap: 10px; flex: 1 0 auto; min-width: 100px; background: transparent; border: 0; border-radius: 8px; padding: 7px 14px; font: 500 17px/1.2 var(--serif); white-space: nowrap; color: var(--ink); }
-.store-filters button + button::before { content: ''; position: absolute; left: 0; top: 30%; height: 40%; border-left: 1px solid #e2cbbb; transition: opacity 240ms ease; }
-.store-filters button { z-index: 1; color: #874733; transition: color 240ms ease, background-color 240ms ease; }
-.store-filters button.active { color: #fffaf2; }
-.store-filters button.active span { color: #fffaf2; }
+.store-filters button + button::before { content: ''; position: absolute; left: 0; top: 30%; height: 40%; border-left: 1px solid #e8d0c8; transition: opacity 240ms ease; }
+.store-filters button { z-index: 1; color: #9b6e5a; transition: color 240ms ease, background-color 240ms ease; }
+.store-filters button.active { color: #fff; }
+.store-filters button.active span { color: #fff; }
 @media(hover:hover) {
-  .store-filters button:not(.active):hover { background: #f0dfd0; }
+  .store-filters button:not(.active):hover { background: #f5e4dc; }
   .store-page .store-card-name:hover { color: var(--gold); }
 }
 .store-filters button.active::before, .store-filters button.active + button::before { opacity: 0; }
-.store-filters button span { display: flex; color: #874733; transition: color 240ms ease; }
+.store-filters button span { display: flex; color: #9b6e5a; transition: color 240ms ease; }
 .store-filters svg { display: block; width: 18px; height: 18px; flex: none; }
 .store-filters button:focus-visible { outline-offset: -3px; }
 .store-templates-heading { display: grid; grid-template-columns: 80px minmax(0,1fr) 80px; align-items: baseline; gap: 16px; margin-bottom: 20px; }
@@ -97,7 +97,7 @@
 .store-empty button { border: 0; background: none; color: var(--gold); margin-top: 8px; }
 
 /* 290 × 575px phone; the iframe has a true mobile viewport, without stretching. */
-.store-preview { position: sticky; top: 128px; margin-top: 56px; margin-right: calc(var(--store-column-gap) - var(--store-side-padding) - 8px); padding: 0; min-width: 0; }
+.store-preview { position: sticky; top: 138px; margin-top: 64px; margin-right: calc(var(--store-column-gap) - var(--store-side-padding) - 8px); padding: 0; min-width: 0; }
 .store-page .phone-stage { width: 290px; max-width: 100%; margin: 0 auto; }
 .store-page .iphone-frame { padding: 7px; background: #181715; border: 2px solid #b89b72; border-radius: 46px; box-shadow: 0 0 0 1px #fdf9f1, 0 10px 22px #3926191c; }
 .store-page .iphone-screen { position: relative; aspect-ratio: 402/820; overflow: hidden; border-radius: 37px; background: #faf7f1; }
