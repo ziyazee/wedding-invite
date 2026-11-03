@@ -584,9 +584,12 @@
 .client-workspace.has-client-preview.show-client-details .client-workflow-controls button:disabled { opacity: .45; cursor: default; }
 .client-workspace.has-client-preview.show-client-details .client-workflow-controls .client-workflow-next { border-color: #3c5148; background: #3c5148; color: #fff; }
 .client-workspace.has-client-preview.show-client-details .client-workflow-controls button[hidden] { display: none; }
-.client-workspace.has-client-preview.show-client-details:not(.reviewing-client-order) .order-form .form-submit-row { display: none; }
-.client-workspace.has-client-preview.show-client-details.reviewing-client-order .order-form .form-submit-row { display: grid; grid-column: 1 / -1; grid-template-columns: repeat(2, minmax(0, 1fr)); }
-.client-workspace.has-client-preview.show-client-details.reviewing-client-order .order-form .form-submit-row .primary-action { display: inline-flex; width: 100%; }
+.client-workspace.has-client-preview.show-client-details:not(.reviewing-client-order):not(.editing-order) .order-form .form-submit-row { display: none; }
+.client-workspace.has-client-preview.show-client-details.reviewing-client-order .order-form .form-submit-row,
+.client-workspace.has-client-preview.show-client-details.editing-order .order-form .form-submit-row { display: grid; grid-column: 1 / -1; grid-template-columns: minmax(0, 1fr); }
+.client-workspace.has-client-preview.show-client-details.reviewing-client-order .order-form .form-submit-row { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+.client-workspace.has-client-preview.show-client-details.reviewing-client-order .order-form .form-submit-row .primary-action,
+.client-workspace.has-client-preview.show-client-details.editing-order .order-form .form-submit-row .primary-action { display: inline-flex; width: 100%; }
 .client-workspace.has-client-preview.show-client-details .workspace-main { padding-bottom: 34px; }
 .client-workspace.has-client-preview.show-client-details .client-workflow-controls { position: static; z-index: auto; grid-column: 1 / -1; display: flex; align-items: center; justify-content: center; width: 100%; margin: 18px 0 0; padding: 0; border: 0; border-radius: 0; background: transparent; box-shadow: none; backdrop-filter: none; }
 .client-workspace.has-client-preview.show-client-details .client-workflow-progress { display: block; }
