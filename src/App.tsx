@@ -54,6 +54,7 @@ function getInviteSlug(): string | null {
   return new URLSearchParams(window.location.search).get('invite')
 }
 const Login = lazySitePage(() => import('./pages/Login'))
+const AccountSetup = lazySitePage(() => import('./pages/AccountSetup'))
 const ClientDashboard = lazySitePage(() => import('./pages/ClientDashboard'))
 const ClientDashboardTesting = lazySitePage(() => import('./pages/ClientDashboard').then(m => ({ default: m.ClientDashboardTesting })))
 const Edits = lazySitePage(() => import('./pages/Edits'))
@@ -109,6 +110,7 @@ export default function App() {
       <Route path="/" element={<Landing />} />
       <Route path="/privacy" element={<Privacy />} />
       <Route path="/login" element={<Login />} />
+      <Route path="/account/setup" element={<AccountSetup />} />
       <Route path="/client/dashboard" element={<ClientDashboard />} />
       <Route path="/testing567" element={<ClientDashboardTesting />} />
       <Route path="/edits" element={<Edits />} />

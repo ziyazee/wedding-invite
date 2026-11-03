@@ -1,6 +1,7 @@
 import { useEffect, useMemo, useState } from 'react'
 import { supabase } from '../lib/supabase'
 import './AdminCompanies.css'
+import StoreOnboarding from './StoreOnboarding'
 
 const ORDER_PRICE = 499
 type Company = {
@@ -35,6 +36,11 @@ const dateTimeLabel = (value: string) => new Intl.DateTimeFormat('en-IN', { day:
 const money = (value: number) => new Intl.NumberFormat('en-IN', { style: 'currency', currency: 'INR', maximumFractionDigits: 0 }).format(value)
 
 export default function AdminCompaniesPanel() {
+  const [revision, setRevision] = useState(0)
+  return <><StoreOnboarding onChange={() => setRevision(value => value + 1)} /><CompanyActivity key={revision} /></>
+}
+
+function CompanyActivity() {
   const [companies, setCompanies] = useState<Company[]>([])
   const [selectedId, setSelectedId] = useState<number | null>(null)
   const [activities, setActivities] = useState<Activity[]>([])

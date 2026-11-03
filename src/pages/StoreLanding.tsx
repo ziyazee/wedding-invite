@@ -1,5 +1,6 @@
 import { useEffect, useLayoutEffect, useMemo, useRef, useState } from 'react'
 import { isSupabaseConfigured, supabase } from '../lib/supabase'
+import { companyAssetURL } from '../lib/companyAssets'
 import { storeInvitationExample } from '../invitations/templateData'
 import { TEMPLATE_INTRO_VIDEOS, TEMPLATE_INTRO_IMAGES } from '../lib/templateCardData'
 import './StoreLanding.css'
@@ -13,6 +14,7 @@ interface StoreCompany {
   brand_color: string | null
   hero_image_path: string | null
   logo_path: string | null
+  branding_base_url?: string | null
   phone: string | null
 }
 
@@ -70,10 +72,10 @@ function StoreTemplatePrice({ template }: { template: StoreTemplate }) {
 
 function StoreTemplateBadges({ template }: { template: StoreTemplate }) {
   const discountLabel = storeTemplatePricing(template)?.discountLabel
-  if (!discountLabel && !template.is_private) return null
+  if (!discountLabel && !template.is_private && !template.is_premium) return null
   return <div className="store-card-badges">
     {discountLabel && <span className="store-discount-badge">{discountLabel}</span>}
-    {template.is_private && <span className="store-exclusive-badge">Exclusive</span>}
+    {(template.is_private || template.is_premium) && <span className="store-exclusive-badge">{template.is_private ? 'Exclusive' : 'Premium'}</span>}
   </div>
 }
 
@@ -165,9 +167,8 @@ export default function StoreLanding({ slug }: { slug: string }) {
   }, [category])
 
   const company = data?.company
-  const companyAsset = company ? encodeURIComponent(company.slug) : undefined
-  const companyLogo = companyAsset ? `/company-logos/${companyAsset}.png` : undefined
-  const heroBanner = companyAsset ? `/landing/${companyAsset}.png` : undefined
+  const companyLogo = companyAssetURL(company, 'logo')
+  const heroBanner = companyAssetURL(company, 'banner')
   const templates = data?.templates ?? []
   const accent = company?.brand_color || '#754522'
   const categories = ['All', ...new Set(templates.map(t => t.category).filter(Boolean))]

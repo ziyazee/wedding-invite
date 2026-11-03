@@ -10,6 +10,7 @@ import { loadTemplateCatalog } from '../invitations/templateCatalog'
 import type { InvitationTemplate } from '../invitations/templateCatalog'
 import { TEMPLATE_INTRO_VIDEOS, TEMPLATE_INTRO_IMAGES, TEMPLATE_THUMBNAIL_OVERRIDES } from '../lib/templateCardData'
 import { isSupabaseConfigured, supabase } from '../lib/supabase'
+import { companyAssetURL } from '../lib/companyAssets'
 import { DashboardAccess, signOutToLogin } from './DashboardAccess'
 import './Workspaces.css'
 import './ClientDashboard.css'
@@ -53,7 +54,7 @@ function ClientWorkspace({ showHiddenTemplates = false }: { showHiddenTemplates?
   const [orders, setOrders] = useState<Order[]>([])
   const [viewOrder, setViewOrder] = useState<Order | null>(null)
   const [allTemplates, setAllTemplates] = useState<Template[]>([])
-  const [company, setCompany] = useState<{ id: number; company_name: string; contact_name: string | null; slug: string | null; phone: string | null } | null>(null)
+  const [company, setCompany] = useState<{ id: number; company_name: string; contact_name: string | null; slug: string | null; phone: string | null; branding_base_url: string | null; catalog_restricted: boolean } | null>(null)
   const [templateSettings, setTemplateSettings] = useState<Record<number, TemplateSettings>>({})
   const [companyLogo, setCompanyLogo] = useState('/logo.png')
   const [details, setDetails] = useState(initial)
@@ -105,13 +106,21 @@ function ClientWorkspace({ showHiddenTemplates = false }: { showHiddenTemplates?
     if (!supabase || !isSupabaseConfigured) { setError('Connect Supabase to load your company dashboard.'); setLoading(false); return }
     const { data, error: authError } = await supabase.auth.getUser()
     if (authError || !data.user) { setLoading(false); return }
-    const [templatesResult, ordersResult] = await Promise.all([
+    const [templatesResult, ordersResult, companyResult] = await Promise.all([
       loadTemplateCatalog(!showHiddenTemplates).then(data => ({ data, error: null as { message: string } | null })).catch(error => ({ data: [] as Template[], error: { message: error instanceof Error ? error.message : 'Could not load templates.' } })),
       supabase.from('orders').select('*').order('created_at', { ascending: false }),
+      supabase.from('companies').select('id,company_name,contact_name,slug,phone,branding_base_url,catalog_restricted').ilike('email', data.user.email || '').maybeSingle(),
     ])
     if (templatesResult.error) setError(templatesResult.error.message)
     if (ordersResult.error) setError(ordersResult.error.message)
-    const activeTemplates = templatesResult.data
+    const companyData = companyResult.data
+    let activeTemplates = templatesResult.data
+    if (companyResult.error) { setError(companyResult.error.message); activeTemplates = [] }
+    if (companyData?.catalog_restricted) {
+      const { data: access, error: accessError } = await supabase.from('company_template_access').select('template_id').eq('company_id', companyData.id)
+      if (accessError) { setError(accessError.message); activeTemplates = [] }
+      else { const allowed = new Set((access || []).map(item => item.template_id)); activeTemplates = activeTemplates.filter(template => allowed.has(template.id)) }
+    }
     setAllTemplates(activeTemplates)
     if(!draftRestored.current&&!templatesResult.error){
       const key=`shaadi-client-draft-v1:${data.user.id}`
@@ -143,7 +152,6 @@ function ClientWorkspace({ showHiddenTemplates = false }: { showHiddenTemplates?
     if (firstTemplate) { setSelected(current => current ?? firstTemplate.id); setPreviewId(current => current ?? firstTemplate.id) }
     setOrders((ordersResult.data || []) as Order[])
     if (data.user.email) {
-      const { data: companyData } = await supabase.from('companies').select('id,company_name,contact_name,slug,phone').ilike('email', data.user.email).maybeSingle()
       setCompany(companyData)
       if (companyData?.id) {
         const [{ data: settingsData, error: settingsError }, { data: defaultsData, error: defaultsError }] = await Promise.all([
@@ -155,7 +163,7 @@ function ClientWorkspace({ showHiddenTemplates = false }: { showHiddenTemplates?
         if (defaultsError) setError(defaultsError.message)
         else setTemplateDefaults(Object.fromEntries((defaultsData || []).map(row => [row.template_id, row.demo_data as Record<string, unknown>])))
       } else { setTemplateSettings({}); setTemplateDefaults({}) }
-      setCompanyLogo(companyData?.slug ? `/company-logos/${encodeURIComponent(companyData.slug)}.png` : '/logo.png')
+      setCompanyLogo(companyAssetURL(companyData, 'logo') || '/logo.png')
     }
     setLoading(false)
   }, [showHiddenTemplates])
@@ -259,10 +267,10 @@ function ClientWorkspace({ showHiddenTemplates = false }: { showHiddenTemplates?
     return () => observer.disconnect()
   }, [tab, previewTemplate?.id, loading])
   const companyBranding = useMemo(() => ({
-    companyLogo: company?.slug ? `/company-logos/${encodeURIComponent(company.slug)}.png` : undefined,
+    companyLogo: companyAssetURL(company, 'logo'),
     ...(company?.company_name ? { companyName: company.company_name } : {}),
     ...(company?.phone ? { companyPhone: company.phone } : {}),
-  }), [company?.slug, company?.company_name, company?.phone])
+  }), [company])
   const livePreviewDetails = useMemo<InvitationData>(() => {
     return {
       ...details,
@@ -510,11 +518,11 @@ Additional rules:
     try {
       const { data: { user } } = await supabase.auth.getUser()
       if (!user) throw new Error('Your session expired. Please sign in again.')
-      const { data: companyRow, error: companyError } = await supabase.from('companies').select('id,slug,phone').ilike('email', user.email || '').maybeSingle()
+      const { data: companyRow, error: companyError } = await supabase.from('companies').select('id,slug,phone,branding_base_url').ilike('email', user.email || '').maybeSingle()
       if (companyError || !companyRow) throw new Error('Your account is not linked to a company yet.')
       const companyId = companyRow.id
       const phone = '+91' + phoneNumber.trim().replace(/[^\d]/g,'')
-      const formData = validateDetails({ ...details, template: selected, events: [{ title: weddingEventTitle, date: details.date, time: details.time, venue: details.venue, address: details.address, map: details.map }, ...extraEvents], companyLogo: companyRow.slug ? `/company-logos/${encodeURIComponent(companyRow.slug)}.png` : undefined, companyName: company?.company_name || undefined, companyPhone: companyRow.phone || company?.phone || undefined })
+      const formData = validateDetails({ ...details, template: selected, events: [{ title: weddingEventTitle, date: details.date, time: details.time, venue: details.venue, address: details.address, map: details.map }, ...extraEvents], companyLogo: companyAssetURL(companyRow, 'logo'), companyName: company?.company_name || undefined, companyPhone: companyRow.phone || company?.phone || undefined })
       const templateCode = templates.find(template => template.id === selected)?.template_code
       if (!templateCode) throw new Error('That design is no longer available. Choose another template.')
       const { data, error: insertError } = await supabase.from('orders').insert({ company_id: companyId, template_code: templateCode, created_by: user.id, groom_name: formData.groom, bride_name: formData.bride, phone_number: phone, form_data: formData }).select('*').single()

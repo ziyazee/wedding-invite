@@ -1,0 +1,44 @@
+.store-onboarding-manager,.store-onboarding{margin:0 0 24px;padding:24px;border:1px solid #dfe6df;border-radius:16px;background:#fff;color:#354c43}
+.store-onboarding-manager>header,.store-onboarding-heading{display:flex;align-items:center;justify-content:space-between;gap:20px}
+.store-onboarding-manager h2,.store-onboarding h2{margin:8px 0;font:500 28px/1.2 Inter,Arial,sans-serif;letter-spacing:-.03em}
+.store-onboarding-manager p,.store-onboarding-heading p,.store-step-note{font-size:13px;line-height:1.6;color:#68776f}
+.store-onboarding-manager summary{margin-top:22px;cursor:pointer;font-size:13px}
+.store-setup-list{display:grid;gap:10px;margin-top:14px}
+.store-setup-list article{display:flex;align-items:center;justify-content:space-between;gap:20px;padding:14px;background:#f8faf7;border-radius:8px}
+.store-setup-list strong{font-size:14px}.store-setup-list small{display:block;margin-top:5px;font-size:11px;color:#68776f;overflow-wrap:anywhere}
+.store-setup-actions{display:flex;align-items:center;flex-wrap:wrap;gap:10px}.store-setup-actions a{font-size:12px}
+.store-onboarding-steps{display:grid;grid-template-columns:repeat(4,1fr);gap:12px;margin:26px 0;padding:0;list-style:none}
+.store-onboarding-steps li{display:flex;align-items:center;gap:8px;font-size:12px;color:#7a857d;border-bottom:2px solid #e7ece5;padding-bottom:12px}
+.store-onboarding-steps li[aria-current]{color:#354c43;border-color:#354c43;font-weight:600}
+.store-onboarding-steps li>span{display:grid;place-items:center;width:25px;height:25px;background:#f0f3ed;border-radius:50%;flex:none}
+.store-onboarding-steps li[aria-current]>span{background:#354c43;color:white}
+.store-onboarding fieldset{border:0;padding:0;margin:0;min-width:0}
+.store-onboarding-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:24px}
+.store-onboarding label{display:flex;flex-direction:column;gap:8px;min-width:0;font-size:13px;font-weight:500}
+.store-onboarding label>span,.store-onboarding label small{color:#78867d;font-size:12px;font-weight:400;line-height:1.5}
+.store-onboarding input:not([type=checkbox]),.store-onboarding select,.store-setup-access input{box-sizing:border-box;width:100%;padding:11px 12px;border:1px solid #cdd8ce;border-radius:7px;background:white;color:#354c43;font-family:inherit;font-size:14px;line-height:1.4;min-height:44px}
+.store-onboarding input:focus-visible,.store-onboarding select:focus-visible{outline:2px solid #9ab39e;outline-offset:2px}
+.store-onboarding input[type=color]{max-width:110px;padding:5px;height:44px}
+.store-onboarding input[type=file]{font-size:12px}
+.store-onboarding input[type=checkbox]{width:17px;height:17px;accent-color:#354c43;flex:none}
+.store-onboarding .store-checkbox{display:flex;flex-direction:row;align-items:center;gap:9px}
+.store-upload-logo{max-width:180px;height:100px;object-fit:contain;align-self:flex-start;border:1px solid #e6eae4;padding:10px}
+.store-upload-banner{width:100%;max-height:160px;object-fit:cover;border-radius:7px}
+.store-template-options{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:16px}
+.store-template-options article{border:1px solid #e1e7de;border-radius:12px;padding:18px;align-self:start}
+.store-template-options article.selected{border-color:#b2c5b3;background:#fcfdfb}
+.store-onboarding .store-template-select{display:flex;flex-direction:row;align-items:center;gap:12px}
+.store-template-select strong{color:#354c43;font-size:14px}.store-template-select small{display:block;font-size:11px;margin-top:4px}
+.store-template-pricing{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:14px;margin-top:20px}
+.store-template-pricing p{grid-column:1/-1;display:flex;justify-content:space-between;margin:0;padding-top:10px;border-top:1px solid #e4e9e1;font-size:12px}
+.store-template-pricing p strong{font-size:15px}
+.store-review-brand{display:flex;align-items:center;gap:24px;padding:28px;border:1px solid;border-radius:12px;background:#faf8f1;background-size:cover;background-position:center}
+.store-review-brand img{width:92px;max-height:92px;object-fit:contain}.store-review-brand h3{font-size:26px;margin:9px 0}.store-review-brand span{font-size:10px;letter-spacing:.15em}.store-review-brand p{font-size:14px}.store-review-brand small{font-size:12px;overflow-wrap:anywhere}
+.store-review-details,.store-onboarding-success dl{display:grid;grid-template-columns:150px 1fr;gap:12px;margin:25px 0;font-size:13px}
+.store-review-details dt,.store-onboarding-success dt{color:#7b877e}.store-review-details dd,.store-onboarding-success dd{margin:0;overflow-wrap:anywhere}
+.store-review-collection{padding:18px;border:1px solid #e1e7de;border-radius:10px}.store-review-collection h3{font-size:16px;margin:0 0 12px}.store-review-collection>div{display:flex;justify-content:space-between;gap:16px;padding:10px 0;border-top:1px solid #edf0e9;font-size:13px}
+.store-publish-option{margin-top:25px}
+.store-onboarding-controls{display:flex;align-items:center;justify-content:space-between;gap:18px;margin-top:30px;padding-top:20px;border-top:1px solid #e4e9df}.store-onboarding-controls>span{font-size:12px;color:#7b877e}.store-onboarding-controls>div{display:flex;gap:12px}
+.store-setup-access,.store-resume-assets{margin:20px 0;padding:20px;background:#f1f5ef;border-radius:10px}.store-setup-access input{margin-top:14px;font-size:12px}.store-setup-access strong{font-size:15px}.store-resume-assets{display:grid;gap:14px}.store-resume-assets p{font-size:13px;line-height:1.6;margin:0}
+.store-onboarding button:disabled{opacity:.55;cursor:wait}.store-onboarding-heading h2:focus{outline:none}
+@media(max-width:760px){.store-onboarding-manager,.store-onboarding{padding:18px}.store-onboarding-manager>header,.store-setup-list article{align-items:flex-start;flex-direction:column}.store-onboarding-grid,.store-template-options{grid-template-columns:1fr}.store-onboarding-steps{gap:8px}.store-onboarding-steps li{font-size:10px;flex-direction:column;align-items:flex-start}.store-review-brand{padding:18px;gap:14px}.store-review-brand img{width:65px}.store-review-details,.store-onboarding-success dl{grid-template-columns:110px 1fr}.store-onboarding-controls{flex-wrap:wrap}}
