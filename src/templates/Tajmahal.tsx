@@ -175,6 +175,9 @@ export default function Tajmahal() {
           </div>
         </div>
       </section>
+      <section className="tajmahal-template__fourth-page" data-invite-section="t17.scene4" aria-label="Wedding scene four">
+        <img className="tajmahal-template__fourth-image" src="/templates/tajmahal/assets/4.png" alt="" aria-hidden="true" />
+      </section>
     </main>
   );
 }
