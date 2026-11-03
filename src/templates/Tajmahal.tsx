@@ -13,6 +13,7 @@ export default function Tajmahal() {
   const audioRef = useRef<HTMLAudioElement>(null);
   const countdownPageRef = useRef<HTMLElement>(null);
   const coupleLayerRef = useRef<HTMLImageElement>(null);
+  const celebrationsPageRef = useRef<HTMLElement>(null);
   const fifthPageRef = useRef<HTMLElement>(null);
   const fifthCoupleRef = useRef<HTMLImageElement>(null);
   const sixthPageRef = useRef<HTMLElement>(null);
@@ -209,6 +210,23 @@ export default function Tajmahal() {
     };
   }, []);
 
+  useEffect(() => {
+    const page = celebrationsPageRef.current;
+    const scroller = page?.closest<HTMLElement>(".tajmahal-template");
+    if (!page || !scroller) return;
+
+    const observer = new IntersectionObserver(entries => {
+      entries.forEach(entry => {
+        if (!entry.isIntersecting) return;
+        entry.target.classList.add("is-visible");
+        observer.unobserve(entry.target);
+      });
+    }, { root: scroller, threshold: 0.15 });
+
+    page.querySelectorAll(".tajmahal-template__celebration-card:not(.is-visible)").forEach(card => observer.observe(card));
+    return () => observer.disconnect();
+  }, [details.events]);
+
   function playOpening(event: MouseEvent<HTMLButtonElement>) {
     event.currentTarget.blur();
     setPromptVisible(false);
@@ -317,7 +335,7 @@ export default function Tajmahal() {
           </div>
         </div>
       </section>
-      <section className="tajmahal-template__fourth-page" data-invite-section="t17.scene4" aria-label="Wedding celebrations">
+      <section ref={celebrationsPageRef} className="tajmahal-template__fourth-page" data-invite-section="t17.scene4" aria-label="Wedding celebrations">
         <div className="tajmahal-template__fourth-backdrop" aria-hidden="true">
           <img className="tajmahal-template__fourth-image" src="/templates/tajmahal/assets/4.png" alt="" />
         </div>

@@ -2,11 +2,17 @@
   height: 100vh;
   height: 100dvh;
   overflow-y: auto;
+  -webkit-overflow-scrolling: touch;
   overscroll-behavior-y: contain;
+  scroll-behavior: smooth;
   scroll-snap-type: y mandatory;
   background: #f5eee5;
   color: #49342f;
   font-family: 'Cormorant Garamond', Georgia, serif;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .tajmahal-template { scroll-behavior: auto; }
 }
 
 .tajmahal-template__entry {
@@ -253,18 +259,18 @@
 
 .tajmahal-template__fourth-page {
   position: relative;
-  display: grid;
+  display: block;
   isolation: isolate;
   background: #0b1930;
 }
 
-/* One sticky background spans all card snap positions in the main scroller. */
+/* Keep the sticky artwork and text in block flow, avoiding overlapping grid
+   items during Safari's momentum scrolling. The negative margin lets the first
+   slide start at the same position as the background without adding a stop. */
 .tajmahal-template__fourth-backdrop {
   position: sticky;
   top: 0;
   z-index: 0;
-  grid-area: 1 / 1;
-  align-self: start;
   display: grid;
   height: 100vh;
   height: 100dvh;
@@ -385,7 +391,8 @@
 .tajmahal-template__celebration-stack {
   position: relative;
   z-index: 1;
-  grid-area: 1 / 1;
+  margin-top: -100vh;
+  margin-top: -100dvh;
   min-width: 0;
 }
 
@@ -406,6 +413,9 @@
 
 .tajmahal-template__celebration-card {
   position: relative;
+  z-index: 1;
+  /* Paint each small text block independently above the sticky artwork. */
+  transform: translateZ(0);
   display: flex;
   flex-shrink: 0;
   flex-direction: column;
@@ -416,6 +426,25 @@
   color: #f3dfc7;
   text-align: center;
   text-shadow: 0 2px 12px #07132580;
+}
+
+.tajmahal-template__celebration-card.is-visible > * {
+  animation: tajmahal-celebration-fade-up 950ms ease backwards;
+}
+
+.tajmahal-template__celebration-card.is-visible > :nth-child(2) { animation-delay: 140ms; }
+.tajmahal-template__celebration-card.is-visible > :nth-child(3) { animation-delay: 280ms; }
+.tajmahal-template__celebration-card.is-visible > :nth-child(4) { animation-delay: 420ms; }
+.tajmahal-template__celebration-card.is-visible > :nth-child(5) { animation-delay: 560ms; }
+.tajmahal-template__celebration-card.is-visible > :nth-child(6) { animation-delay: 700ms; }
+
+@keyframes tajmahal-celebration-fade-up {
+  from { opacity: 0; transform: translateY(18px); }
+  to { opacity: 1; transform: none; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .tajmahal-template__celebration-card.is-visible > * { animation: none; }
 }
 
 .tajmahal-template__celebration-card h2 {
