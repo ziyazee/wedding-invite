@@ -555,7 +555,7 @@ Additional rules:
       const templateCode = templates.find(template => template.id === selected)?.template_code
       if (!templateCode) throw new Error('That design is no longer available. Choose another template.')
       if (editingOrderId) {
-        const { data: updated, error: updateError } = await supabase.rpc('update_company_order', { p_order_id: editingOrderId, p_form_data: formData, p_phone_number: phone })
+        const { error: updateError } = await supabase.rpc('update_company_order', { p_order_id: editingOrderId, p_form_data: formData, p_phone_number: phone })
         if (updateError) throw updateError
         setEditingOrderId(null); setSelected(null); setDetails(initial); setPhoneNumber(defaultPhoneNumber); setWeddingEventTitle(initialWeddingEvent); setExtraEvents(initialExtraEvents); setShowDetails(false); setFormStep(0); setTab('Orders'); setReview(false); setPdfPrefilled(false); setPdfBrideFirst(false); setNotice('Order updated successfully.'); await refresh()
       } else {
