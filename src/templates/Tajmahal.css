@@ -262,6 +262,7 @@
 .tajmahal-template__fourth-backdrop {
   position: sticky;
   top: 0;
+  z-index: 0;
   grid-area: 1 / 1;
   align-self: start;
   display: grid;
@@ -390,17 +391,23 @@
 
 .tajmahal-template__celebration-slide {
   position: relative;
+  z-index: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-sizing: border-box;
   height: 100vh;
   height: 100dvh;
+  padding-bottom: 16vh;
+  padding-bottom: 16dvh;
   scroll-snap-align: start;
   scroll-snap-stop: always;
 }
 
 .tajmahal-template__celebration-card {
-  position: absolute;
-  top: 42%;
-  left: 50%;
+  position: relative;
   display: flex;
+  flex-shrink: 0;
   flex-direction: column;
   align-items: center;
   justify-content: center;
@@ -409,7 +416,6 @@
   color: #f3dfc7;
   text-align: center;
   text-shadow: 0 2px 12px #07132580;
-  transform: translate(-50%, -50%);
 }
 
 .tajmahal-template__celebration-card h2 {

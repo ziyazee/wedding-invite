@@ -19,6 +19,7 @@ export default function Tajmahal() {
   const sixthCoupleRef = useRef<HTMLImageElement>(null);
   const seventhPageRef = useRef<HTMLElement>(null);
   const seventhCoupleRef = useRef<HTMLImageElement>(null);
+  const seventhVideoRef = useRef<HTMLVideoElement>(null);
   const hasStarted = useRef(false);
   const [musicPlaying, setMusicPlaying] = useState(false);
   const [posterVisible, setPosterVisible] = useState(true);
@@ -161,6 +162,50 @@ export default function Tajmahal() {
       cancelAnimationFrame(frame);
       scroller.removeEventListener("scroll", updateParallax);
       window.removeEventListener("resize", updateParallax);
+    };
+  }, []);
+
+  useEffect(() => {
+    const video = seventhVideoRef.current;
+    const page = seventhPageRef.current;
+    const scroller = page?.closest<HTMLElement>(".tajmahal-template");
+    if (!video || !page || !scroller) return;
+
+    // Set both the DOM properties and attributes before mobile playback attempts.
+    video.defaultMuted = true;
+    video.muted = true;
+    video.playsInline = true;
+    video.setAttribute("muted", "");
+    video.setAttribute("playsinline", "");
+
+    const playBackground = () => {
+      if (document.hidden || !video.paused) return;
+      video.muted = true;
+      // A blocked attempt is retried on readiness, scene entry, or a user gesture.
+      void video.play().catch(() => {});
+    };
+    let sceneVisible = false;
+    const observer = new IntersectionObserver(([entry]) => {
+      sceneVisible = entry.isIntersecting;
+      if (sceneVisible) playBackground();
+    }, { root: scroller, threshold: 0.1 });
+    const resumeVisibleBackground = () => {
+      if (sceneVisible) playBackground();
+    };
+
+    observer.observe(page);
+    video.addEventListener("canplay", playBackground);
+    // The opening tap also gives this video a playback attempt in a user gesture.
+    scroller.addEventListener("click", playBackground, { passive: true });
+    scroller.addEventListener("touchend", playBackground, { passive: true });
+    document.addEventListener("visibilitychange", resumeVisibleBackground);
+    playBackground();
+    return () => {
+      observer.disconnect();
+      video.removeEventListener("canplay", playBackground);
+      scroller.removeEventListener("click", playBackground);
+      scroller.removeEventListener("touchend", playBackground);
+      document.removeEventListener("visibilitychange", resumeVisibleBackground);
     };
   }, []);
 
@@ -329,7 +374,7 @@ export default function Tajmahal() {
       </section>
       <section ref={seventhPageRef} className="tajmahal-template__seventh-page" data-invite-section="t17.scene7" aria-label="Wedding scene seven">
         <div className="tajmahal-template__seventh-canvas">
-          <video className="tajmahal-template__seventh-image" src="/templates/tajmahal/assets/7.mp4" autoPlay loop muted playsInline aria-hidden="true" />
+          <video ref={seventhVideoRef} className="tajmahal-template__seventh-image" src="/templates/tajmahal/assets/7.mp4" poster="/templates/tajmahal/assets/7.png" preload="auto" autoPlay loop muted playsInline controls={false} aria-hidden="true" />
           <img ref={seventhCoupleRef} className="tajmahal-template__seventh-couple" src="/templates/tajmahal/assets/7-couple.webp" alt="" aria-hidden="true" draggable={false} />
         </div>
       </section>
