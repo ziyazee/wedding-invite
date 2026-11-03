@@ -83,7 +83,7 @@ function CompanyActivity() {
       if (cancelled) return
       if (ordersResult.error || pdfResult.error) setError(ordersResult.error?.message || pdfResult.error?.message || 'Unable to load recent company activity.')
       const orderEvents: Activity[] = ((ordersResult.data || []) as { id: number; groom_name: string; bride_name: string; status: string; created_at: string }[]).map(order => ({ id: order.id, kind: 'order', title: `${order.groom_name} & ${order.bride_name}`, detail: `Order · ${order.status.replaceAll('_', ' ').toLowerCase()}`, created_at: order.created_at }))
-      const pdfEvents: Activity[] = ((pdfResult.data || []) as { id: number; filename: string; created_at: string }[]).map(upload => ({ id: upload.id, kind: 'pdf', title: upload.filename, detail: 'Invitation PDF uploaded', created_at: upload.created_at }))
+      const pdfEvents: Activity[] = ((pdfResult.data || []) as { id: number; filename: string; created_at: string }[]).map(upload => ({ id: upload.id, kind: 'pdf', title: upload.filename, detail: 'Invitation file uploaded', created_at: upload.created_at }))
       setActivities([...orderEvents, ...pdfEvents].sort((a, b) => b.created_at.localeCompare(a.created_at)).slice(0, 8))
       setActivityLoading(false)
     }
@@ -111,13 +111,13 @@ function CompanyActivity() {
         <div className="admin-company-metrics">
           <article><span>Orders this month</span><strong>{selected.month_orders}</strong><small>{money(selected.month_orders * ORDER_PRICE)} revenue</small></article>
           <article><span>Total orders</span><strong>{selected.total_orders}</strong><small>{money(selected.total_orders * ORDER_PRICE)} total revenue</small></article>
-          <article><span>PDF uploads</span><strong>{selected.pdf_uploads}</strong><small>Tracked uploads</small></article>
+          <article><span>Invitation uploads</span><strong>{selected.pdf_uploads}</strong><small>Tracked uploads</small></article>
         </div>
         <section className="admin-company-activity"><header><div><span className="workspace-kicker">COMPANY ACTIVITY</span><h4>Recent activity</h4></div>{selected.last_activity_at && <small>Last active {dateTimeLabel(selected.last_activity_at)}</small>}</header>
-          {activityLoading ? <p className="admin-activity-empty">Loading recent activity…</p> : activities.length ? <ul>{activities.map(activity => <li key={`${activity.kind}-${activity.id}`}><span className={`admin-activity-icon ${activity.kind}`}>{activity.kind === 'pdf' ? 'PDF' : '↗'}</span><span><strong>{activity.title}</strong><small>{activity.detail}</small></span><time>{dateTimeLabel(activity.created_at)}</time></li>)}</ul> : <p className="admin-activity-empty">No orders or PDF uploads recorded yet.</p>}
+          {activityLoading ? <p className="admin-activity-empty">Loading recent activity…</p> : activities.length ? <ul>{activities.map(activity => <li key={`${activity.kind}-${activity.id}`}><span className={`admin-activity-icon ${activity.kind}`}>{activity.kind === 'pdf' ? 'FILE' : '↗'}</span><span><strong>{activity.title}</strong><small>{activity.detail}</small></span><time>{dateTimeLabel(activity.created_at)}</time></li>)}</ul> : <p className="admin-activity-empty">No orders or invitation uploads recorded yet.</p>}
         </section>
       </section> : <div className="admin-company-detail admin-company-no-selection">Select a company to see its details.</div>}
     </div>
-    <p className="admin-company-revenue-note">Revenue estimate is calculated at the current fixed rate of ₹499 per submitted order. PDF upload activity is tracked from the date the activity log is enabled.</p>
+    <p className="admin-company-revenue-note">Revenue estimate is calculated at the current fixed rate of ₹499 per submitted order. Invitation upload activity is tracked from the date the activity log is enabled.</p>
   </div>
 }

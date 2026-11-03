@@ -92,10 +92,26 @@ export default function StoreOnboarding({ onChange }: { onChange: () => void }) 
     if (!supabase || busyId) return
     setBusyId(record.id); setError('')
     try {
-      const { error } = await supabase.rpc('admin_set_storefront_enabled', { p_company_id: record.company_id, p_enabled: !record.companies.storefront_enabled })
+      const { error } = await supabase.rpc('admin_set_storefront_enabled', { p_company_id: record.company_id, p_enabled: !record.companies?.storefront_enabled })
       if (error) throw error
       setRevision(value => value + 1); onChange()
     } catch (cause) { setError(cause instanceof Error ? cause.message : 'Unable to change storefront visibility.') }
+    finally { setBusyId('') }
+  }
+  async function deleteCompany(record: SetupRecord) {
+    if (!supabase || busyId) return
+    if (!window.confirm(`Delete "${record.details.company_name}" and all its orders? This cannot be undone.`)) return
+    setBusyId(record.id); setError('')
+    try {
+      if (record.company_id) {
+        const { error: rpcErr } = await supabase.rpc('admin_delete_company', { p_company_id: record.company_id })
+        if (rpcErr) throw rpcErr
+      } else {
+        const { error: reqErr } = await supabase.from('store_onboarding_requests').delete().eq('id', record.id)
+        if (reqErr) throw reqErr
+      }
+      setRevision(value => value + 1); onChange()
+    } catch (cause) { setError(cause instanceof Error ? cause.message : 'Unable to delete this company.') }
     finally { setBusyId('') }
   }
   async function ownerLink(record: SetupRecord) {
@@ -115,10 +131,11 @@ export default function StoreOnboarding({ onChange }: { onChange: () => void }) 
     {error && <p className="workspace-alert" role="alert">{error}</p>}
     {records.length > 0 && <details><summary>Recent store setups ({records.length})</summary><div className="store-setup-list">{records.map(record => <article key={record.id}>
       <div><strong>{record.details.company_name}</strong><small>{record.details.slug}.shaadiinvites.in · {record.completed_at ? record.companies?.storefront_enabled ? 'Public' : 'Private draft' : 'Setup incomplete'}</small></div>
-      {!record.completed_at ? <button className="secondary-action" onClick={() => { setResume(record); setOpening(true) }}>Resume setup</button> : <div className="store-setup-actions">
+      {!record.completed_at ? <div className="store-setup-actions"><button className="secondary-action" onClick={() => { setResume(record); setOpening(true) }}>Resume setup</button><button className="secondary-action danger" disabled={!!busyId} onClick={() => void deleteCompany(record)}>Delete</button></div> : <div className="store-setup-actions">
         <button className="secondary-action" disabled={!!busyId} onClick={() => void ownerLink(record)}>New owner setup link</button>
         <button className="secondary-action" disabled={!!busyId} onClick={() => void visibility(record)}>{record.companies?.storefront_enabled ? 'Make private' : 'Publish storefront'}</button>
         {record.companies?.storefront_enabled && <a href={`https://${record.details.slug}.shaadiinvites.in`} target="_blank" rel="noreferrer">Open store ↗</a>}
+        <button className="secondary-action danger" disabled={!!busyId} onClick={() => void deleteCompany(record)}>Delete</button>
       </div>}
     </article>)}</div></details>}
     {access && <div className="store-setup-access" role="status"><strong>Owner access for {access.company_name}</strong><p>Share this single-use password setup link with {access.email}. It replaces any previous setup link. No email has been sent.</p><button className="secondary-action" onClick={() => { void navigator.clipboard.writeText(access.setup_url).then(() => setCopied(true)).catch(() => setError('Could not copy. Select and copy the link below.')) }}>{copied ? 'Copied' : 'Copy owner setup link'}</button><input aria-label="Owner setup link" readOnly value={access.setup_url} onFocus={event => event.currentTarget.select()} /></div>}

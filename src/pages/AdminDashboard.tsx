@@ -1,6 +1,6 @@
 import { useCallback, useEffect, useMemo, useState } from 'react'
 import type { FormEvent, ReactNode } from 'react'
-import { designs, slugVariants, inviteUrl, validateDetails } from '../invitations/model'
+import { designs, slugVariants, inviteUrl, withCurrentInviteUrl, validateDetails } from '../invitations/model'
 import type { InvitationData } from '../invitations/model'
 import InvitationRenderer from '../invitations/InvitationRenderer'
 import { isSupabaseConfigured, supabase } from '../lib/supabase'
@@ -49,7 +49,7 @@ function AdminWorkspace() {
     ])
     if(result.error)setError(result.error.message)
     else {
-      const rows=(result.data||[]) as Order[]
+      const rows=((result.data||[]) as Order[]).map(withCurrentInviteUrl)
       setOrders(rows);if(selected){const current=rows.find(item=>item.id===selected.id);if(current)setSelected(current)}
     }
     setStats({total:result.count||0,created:createdCount.count||0,progress:progressCount.count||0,ready:readyCount.count||0,rejected:rejectedCount.count||0})
@@ -73,7 +73,7 @@ function AdminWorkspace() {
     try {
       const {data,error:saveError}=await supabase.from('orders').update(patch).eq('id',selected.id).select('*, companies(company_name)').single()
       if(saveError){if(!silent)setError(saveError.message);return false}
-      const updated=data as Order
+      const updated=withCurrentInviteUrl(data as Order)
       setSelected(updated);setOrders(old=>old.map(o=>o.id===selected.id?updated:o));setNotice(success);return true
     } catch(cause) { if(!silent)setError(cause instanceof Error?cause.message:'Unable to update the order. Please retry.');return false }
     finally { setBusy(false) }

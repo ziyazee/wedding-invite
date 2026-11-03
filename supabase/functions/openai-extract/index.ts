@@ -34,15 +34,44 @@ Deno.serve(async (req) => {
     )
   }
 
-  let body: { pdf: string; filename?: string; prompt?: string }
+  let body: { pdf?: string; image?: string; mimeType?: string; filename?: string; prompt?: string }
   try {
     body = await req.json()
   } catch {
     return new Response(JSON.stringify({ error: 'Invalid request body.' }), { status: 400, headers: CORS })
   }
 
-  if (!body.pdf) {
-    return new Response(JSON.stringify({ error: 'Missing PDF data.' }), { status: 400, headers: CORS })
+  if (!body || typeof body !== 'object') {
+    return new Response(JSON.stringify({ error: 'Invalid request body.' }), { status: 400, headers: CORS })
+  }
+  // Keep accepting the original PDF payload while supporting image inputs.
+  const mimeType = body.mimeType ?? 'application/pdf'
+  const isPdf = mimeType === 'application/pdf'
+  if (!['application/pdf', 'image/jpeg', 'image/png', 'image/webp'].includes(mimeType)) {
+    return new Response(JSON.stringify({ error: 'Choose a PDF, JPG, PNG, or WebP invitation.' }), { status: 400, headers: CORS })
+  }
+  const fileData = isPdf ? body.pdf : body.image
+  if (typeof fileData !== 'string' || !fileData.length) {
+    return new Response(JSON.stringify({ error: 'Missing invitation file data.' }), { status: 400, headers: CORS })
+  }
+  const limitBytes = (isPdf ? 20 : 5) * 1024 * 1024
+  const padding = fileData.endsWith('==') ? 2 : fileData.endsWith('=') ? 1 : 0
+  if (fileData.length > Math.ceil(limitBytes / 3) * 4 || fileData.length / 4 * 3 - padding > limitBytes) {
+    return new Response(JSON.stringify({ error: isPdf ? 'Choose a PDF under 20 MB.' : 'Choose an image under 5 MB.' }), { status: 413, headers: CORS })
+  }
+  if (fileData.length % 4 !== 0 || !/^[A-Za-z0-9+/]+={0,2}$/.test(fileData)) {
+    return new Response(JSON.stringify({ error: 'Invalid invitation file data.' }), { status: 400, headers: CORS })
+  }
+  const signature = atob(fileData.slice(0, 16))
+  const matchesType = isPdf ? signature.startsWith('%PDF-')
+    : mimeType === 'image/jpeg' ? signature.startsWith('\xff\xd8\xff')
+    : mimeType === 'image/png' ? signature.startsWith('\x89PNG\r\n\x1a\n')
+    : signature.startsWith('RIFF') && signature.slice(8, 12) === 'WEBP'
+  if (!matchesType) {
+    return new Response(JSON.stringify({ error: 'The file content does not match its format. Choose a valid PDF, JPG, PNG, or WebP file.' }), { status: 400, headers: CORS })
+  }
+  if (body.prompt !== undefined && typeof body.prompt !== 'string') {
+    return new Response(JSON.stringify({ error: 'Invalid extraction prompt.' }), { status: 400, headers: CORS })
   }
 
   try {
@@ -57,8 +86,8 @@ Deno.serve(async (req) => {
         model: 'claude-sonnet-5-5',
         max_tokens: 4096,
         messages: [{ role: 'user', content: [
-          { type: 'document', source: { type: 'base64', media_type: 'application/pdf', data: body.pdf }, cache_control: { type: 'ephemeral' } },
-          { type: 'text', text: body.prompt ?? 'Extract all text content from this PDF.' },
+          { type: isPdf ? 'document' : 'image', source: { type: 'base64', media_type: mimeType, data: fileData }, cache_control: { type: 'ephemeral' } },
+          { type: 'text', text: body.prompt ?? 'Extract all text content from this invitation.' },
         ] }],
       }),
     })
@@ -77,7 +106,7 @@ Deno.serve(async (req) => {
     return new Response(JSON.stringify({ text: raw }), { headers: CORS })
   } catch (err) {
     return new Response(
-      JSON.stringify({ error: err instanceof Error ? err.message : 'Failed to process PDF.' }),
+      JSON.stringify({ error: err instanceof Error ? err.message : 'Failed to process invitation.' }),
       { status: 500, headers: CORS },
     )
   }

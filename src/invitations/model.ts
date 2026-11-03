@@ -82,6 +82,13 @@ export function inviteUrl(slug: string): string {
   }
   return `https://www.shaadiinvites.in/${slug}`
 }
+// Saved URLs may predate the move from invitation subdomains to paths.
+// Keep the reserved path as the source of truth for every displayed/shared link.
+export function withCurrentInviteUrl<T extends { published_path: string | null; published_url: string | null }>(order: T): T {
+  return order.published_path && order.published_url
+    ? { ...order, published_url: inviteUrl(order.published_path) }
+    : order
+}
 export function companyPreviewUrl(companySlug: string): string {
   const w = globalThis as any
   const host: string = w.location?.hostname ?? ''

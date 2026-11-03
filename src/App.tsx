@@ -93,7 +93,7 @@ function SubdomainResolver({ slug }: { slug: string }) {
   if (pathname === '/preview') return <CompanyPreview slug={slug} />
   if (!target) return null
   if (target === 'store') return <StoreLanding slug={slug} />
-  return null
+  return <GeneratedInvitation overrideSlug={slug} />
 }
 
 export default function App() {

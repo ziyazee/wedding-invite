@@ -1,7 +1,7 @@
 import { createContext, useContext, useCallback, useEffect, useLayoutEffect, useMemo, useRef, useState, lazy, Suspense } from 'react'
 import type { FormEvent, ReactElement } from 'react'
 import { createPortal } from 'react-dom'
-import { cardTextLimit, nameTextLimit, designs, TEMPLATE_DISPLAY_ORDER, slugVariants, inviteUrl, companyPreviewUrl, validateDetails } from '../invitations/model'
+import { cardTextLimit, nameTextLimit, designs, TEMPLATE_DISPLAY_ORDER, slugVariants, inviteUrl, withCurrentInviteUrl, companyPreviewUrl, validateDetails } from '../invitations/model'
 import type { Celebration, InvitationData } from '../invitations/model'
 import type { TextLayout } from '../invitations/textLayout'
 import { readTextLayout } from '../invitations/textLayout'
@@ -11,6 +11,7 @@ import type { InvitationTemplate } from '../invitations/templateCatalog'
 import { TEMPLATE_INTRO_VIDEOS, TEMPLATE_INTRO_IMAGES, TEMPLATE_THUMBNAIL_OVERRIDES } from '../lib/templateCardData'
 import { isSupabaseConfigured, supabase } from '../lib/supabase'
 import { companyAssetURL } from '../lib/companyAssets'
+import { invitationUploadAccept, invitationUploadMimeType } from '../lib/invitationUpload'
 import { DashboardAccess, signOutToLogin } from './DashboardAccess'
 import './Workspaces.css'
 import './ClientDashboard.css'
@@ -152,7 +153,7 @@ function ClientWorkspace({ showHiddenTemplates = false }: { showHiddenTemplates?
     }
     const firstTemplate = activeTemplates[0]
     if (firstTemplate) { setSelected(current => current ?? firstTemplate.id); setPreviewId(current => current ?? firstTemplate.id) }
-    setOrders((ordersResult.data || []) as Order[])
+    setOrders(((ordersResult.data || []) as Order[]).map(withCurrentInviteUrl))
     if (data.user.email) {
       setCompany(companyData)
       if (companyData?.id) {
@@ -417,8 +418,9 @@ function ClientWorkspace({ showHiddenTemplates = false }: { showHiddenTemplates?
     try {
       const { data, error: publishError } = await supabase.rpc('publish_company_order_with_candidates', { p_order_id: order.id, p_candidate_paths: candidates })
       if (publishError) throw publishError
-      const path = data?.published_path || candidates[0]
-      const published = { ...order, status: 'READY', published_path: path, published_url: data?.published_url || inviteUrl(path), published_at: data?.published_at || new Date().toISOString() }
+      const path = data?.published_path
+      if (!path) throw new Error('Publishing did not return an invitation URL. Please refresh the order and try again.')
+      const published = { ...order, status: 'READY', published_path: path, published_url: inviteUrl(path), published_at: data?.published_at || new Date().toISOString() }
       setViewOrder(published)
       setOrders(current => current.map(item => item.id === order.id ? published : item))
       setNotice('Your invitation is live and ready to share.')
@@ -456,7 +458,7 @@ function ClientWorkspace({ showHiddenTemplates = false }: { showHiddenTemplates?
       setWaError(err instanceof Error ? err.message : 'Failed to send. Please try again.')
     } finally { setWaSending(false) }
   }
-  const pdfExtractPrompt = `You are analyzing a wedding invitation PDF. Follow these steps carefully, then output JSON.
+  const pdfExtractPrompt = `You are analyzing a wedding invitation PDF or image. Follow these steps carefully, then output JSON.
 
 STEP 1 — Find the couple getting married:
 Look for two names displayed prominently, connected by "weds", "with", "&", or similar. These are the BRIDE and GROOM. They are usually styled in large or decorative text.
@@ -488,10 +490,10 @@ Additional rules:
 - message: "message" is a condensed, elegant version — maximum 3 lines (~150 characters). "messageFull" is the complete blessing or religious text as written, preserving the full paragraph.
 - Empty string for any field not found.`
 
-  async function callExtract(base64: string, filename: string): Promise<PdfExtracted> {
+  async function callExtract(base64: string, filename: string, mimeType: string): Promise<PdfExtracted> {
     if (!supabase) throw new Error('Supabase client not available.')
     const { data, error: fnError } = await supabase.functions.invoke('openai-extract', {
-      body: { pdf: base64, filename, prompt: pdfExtractPrompt },
+      body: { ...(mimeType === 'application/pdf' ? { pdf: base64 } : { image: base64 }), mimeType, filename, prompt: pdfExtractPrompt },
     })
     if (fnError) {
       const context = fnError.context
@@ -511,9 +513,10 @@ Additional rules:
   }
 
   async function handlePdfUpload(file: File) {
-    if (file.type !== 'application/pdf' && !file.name.toLowerCase().endsWith('.pdf')) { setPdfError('Please choose a PDF file.'); setPdfResult(null); return }
+    if (pdfExtracting) return
     setPdfExtracting(true); setPdfError(''); setPdfResult(null)
     try {
+      const mimeType = invitationUploadMimeType(file)
       const base64 = await new Promise<string>((resolve, reject) => {
         const reader = new FileReader()
         reader.onload = () => { const result = reader.result as string; resolve(result.split(',')[1]) }
@@ -522,14 +525,14 @@ Additional rules:
       })
       if (!supabase) throw new Error('No Supabase client available.')
       const { data: authData, error: authError } = await supabase.auth.getUser()
-      if (authError || !authData.user || !company?.id) throw new Error('Unable to confirm your company account for this PDF upload.')
+      if (authError || !authData.user || !company?.id) throw new Error('Unable to confirm your company account for this invitation upload.')
       const { error: activityError } = await supabase.from('company_pdf_uploads').insert({ company_id: company.id, uploaded_by: authData.user.id, filename: file.name })
-      if (activityError) throw new Error(`Could not record this PDF upload: ${activityError.message}`)
-      const extracted = await callExtract(base64, file.name)
+      if (activityError) throw new Error(`Could not record this invitation upload: ${activityError.message}`)
+      const extracted = await callExtract(base64, file.name, mimeType)
       setPdfUseFull(new Set())
       setPdfResult(extracted)
     } catch (err) {
-      setPdfError(err instanceof Error ? err.message : 'Failed to extract text from PDF.')
+      setPdfError(err instanceof Error ? err.message : 'Failed to extract text from the invitation.')
       setPdfResult(null)
     } finally { setPdfExtracting(false) }
   }
@@ -596,7 +599,7 @@ Additional rules:
     <header className="client-topbar"><label className="client-top-search"><span aria-hidden="true">⌕</span><input value={templateSearch} onChange={event=>{setTemplateSearch(event.target.value);setTab('Templates');setSelected(null)}} placeholder={tab==='Orders'?'Search orders…':tab==='Settings'?'Search settings…':'Search templates by name, category or style…'} aria-label="Search invitation designs"/></label>
     <div className="workspace-account"><span className="client-account-name">{company?.company_name || 'Company'}</span><span className="client-account-avatar" aria-hidden="true"><svg viewBox="0 0 24 24"><circle cx="12" cy="8" r="4"/><path d="M4.5 21a7.5 7.5 0 0 1 15 0"/></svg></span></div></header>
     <aside className="workspace-sidebar"><a href="/" className="client-brand"><img src={showHiddenTemplates ? '/logo-landing.png' : companyLogo} alt={company?.company_name || 'Shaadi Invites'} onError={()=>setCompanyLogo('/logo.png')}/></a><nav className="client-section-nav" aria-label="Client dashboard">{(['Overview','Templates','Orders','Settings'] as const).map(item=><button type="button" key={item} className={tab===item?'active':''} onClick={()=>{setTab(item);setSelected(item==='Templates'?(chosen?.id||allTemplates[0]?.id||null):null);setError('')}}><span aria-hidden="true">{navIcons[item]}</span>{item==='Overview'?'Dashboard':item}</button>)}</nav><section className="client-sidebar-note"><span>♕ CLIENT SUPPORT</span><h2>Need a hand?</h2><p>Our team can help you create a beautiful invitation.</p><a href="https://wa.me/917975948093?text=Hey%20I%20need%20an%20invitation%21" target="_blank" rel="noreferrer">Contact support <b>↗</b></a></section><button className="workspace-logout" aria-label="Log out" onClick={() => void signOutToLogin()}><span aria-hidden="true"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/><polyline points="16 17 21 12 16 7"/><line x1="21" y1="12" x2="9" y2="12"/></svg></span><span>Log out</span></button></aside>
-    <section className={`workspace-main ${tab==='Orders'?'orders-page':''}`}><header className="workspace-top"><div>{tab==='Templates'&&showDetails&&<button type="button" className="client-form-back" onClick={()=>{setShowDetails(false);setReview(false);setEditingOrderId(null)}}>← Back to templates</button>}<span className="workspace-kicker">{tab==='Orders'?'ORDERS':tab==='Templates'?(showDetails?'PERSONALISE YOUR INVITATION':'THE ART OF A BEAUTIFUL BEGINNING'):''}</span><h1>{tab==='Templates'?(showDetails?(editingOrderId?'Edit your invitation':'Create your invitation'):'Choose a Template'):tab==='Overview'?'Your invitation studio':tab}</h1></div>{tab==='Templates'&&<input ref={pdfInputRef} type="file" accept=".pdf,application/pdf" hidden onChange={e=>{const f=e.target.files?.[0];if(f)void handlePdfUpload(f);e.target.value=''}}/>}{tab==='Templates'&&!showDetails&&<><button type="button" className={`client-upload-pdf-ai${pdfExtracting?' ai-extracting':''}`} disabled={pdfExtracting} onClick={()=>pdfInputRef.current?.click()} onDragOver={e=>e.preventDefault()} onDrop={e=>{e.preventDefault();const f=e.dataTransfer.files?.[0];if(f)void handlePdfUpload(f)}}><span className="ai-invite-illustration" aria-hidden="true"><img src="/upload-card-design.png" alt=""/></span><span className="ai-label"><strong>{pdfExtracting?'Extracting…':'Upload your invitation'}</strong><small>Bring your design to life with AI</small></span>{!pdfExtracting&&<span className="ai-upload-btn">Upload design</span>}</button></>}{tab==='Orders'&&<button type="button" className="orders-new-order" onClick={()=>{setTab('Templates');setSelected(chosen?.id||allTemplates[0]?.id||null)}}><span aria-hidden="true">＋</span> New Order</button>}{tab==='Templates'&&showDetails&&!editingOrderId&&workflowHost&&createPortal(<div className="client-workflow-controls"><span className="client-workflow-progress" aria-hidden="true"></span><button type="button" className="client-workflow-back" disabled={review?false:formStep===0} onClick={()=>review?setReview(false):setFormStep(step=>Math.max(0,step-1))}>{review?<><ReviewActionIcon edit/>Edit details</>:'← Back'}</button><button type="button" className="client-workflow-next" hidden={review} onClick={advanceFormStep}>Continue →</button></div>,workflowHost)}{tab==='Templates'&&showDetails&&!editingOrderId&&<button type="button" className={`client-upload-pdf-ai client-upload-form${pdfExtracting?' ai-extracting':''}`} disabled={pdfExtracting} onClick={()=>pdfInputRef.current?.click()}><span className="ai-invite-illustration" aria-hidden="true"><img src="/upload-card-design.png" alt=""/></span><span className="ai-label"><strong>{pdfExtracting?'Extracting…':'Upload your invitation'}</strong><small>Bring your design to life with AI</small></span>{!pdfExtracting&&<span className="ai-upload-btn">Upload design</span>}</button>}{tab==='Templates'&&<span className="client-design-count">{allTemplates.length} carefully curated invitations</span>}</header>
+    <section className={`workspace-main ${tab==='Orders'?'orders-page':''}`}><header className="workspace-top"><div>{tab==='Templates'&&showDetails&&<button type="button" className="client-form-back" onClick={()=>{setShowDetails(false);setReview(false);setEditingOrderId(null)}}>← Back to templates</button>}<span className="workspace-kicker">{tab==='Orders'?'ORDERS':tab==='Templates'?(showDetails?'PERSONALISE YOUR INVITATION':'THE ART OF A BEAUTIFUL BEGINNING'):''}</span><h1>{tab==='Templates'?(showDetails?(editingOrderId?'Edit your invitation':'Create your invitation'):'Choose a Template'):tab==='Overview'?'Your invitation studio':tab}</h1></div>{tab==='Templates'&&<input ref={pdfInputRef} type="file" accept={invitationUploadAccept} hidden onChange={e=>{const f=e.target.files?.[0];if(f)void handlePdfUpload(f);e.target.value=''}}/>}{tab==='Templates'&&!showDetails&&<><button type="button" className={`client-upload-pdf-ai${pdfExtracting?' ai-extracting':''}`} disabled={pdfExtracting} onClick={()=>pdfInputRef.current?.click()} onDragOver={e=>e.preventDefault()} onDrop={e=>{e.preventDefault();const f=e.dataTransfer.files?.[0];if(f)void handlePdfUpload(f)}}><span className="ai-invite-illustration" aria-hidden="true"><img src="/upload-card-design.png" alt=""/></span><span className="ai-label"><strong>{pdfExtracting?'Extracting…':'Upload your invitation'}</strong><small>PDF, JPG, PNG or WebP · Extract details with AI</small></span>{!pdfExtracting&&<span className="ai-upload-btn">Upload design</span>}</button></>}{tab==='Orders'&&<button type="button" className="orders-new-order" onClick={()=>{setTab('Templates');setSelected(chosen?.id||allTemplates[0]?.id||null)}}><span aria-hidden="true">＋</span> New Order</button>}{tab==='Templates'&&showDetails&&!editingOrderId&&workflowHost&&createPortal(<div className="client-workflow-controls"><span className="client-workflow-progress" aria-hidden="true"></span><button type="button" className="client-workflow-back" disabled={review?false:formStep===0} onClick={()=>review?setReview(false):setFormStep(step=>Math.max(0,step-1))}>{review?<><ReviewActionIcon edit/>Edit details</>:'← Back'}</button><button type="button" className="client-workflow-next" hidden={review} onClick={advanceFormStep}>Continue →</button></div>,workflowHost)}{tab==='Templates'&&showDetails&&!editingOrderId&&<button type="button" className={`client-upload-pdf-ai client-upload-form${pdfExtracting?' ai-extracting':''}`} disabled={pdfExtracting} onClick={()=>pdfInputRef.current?.click()}><span className="ai-invite-illustration" aria-hidden="true"><img src="/upload-card-design.png" alt=""/></span><span className="ai-label"><strong>{pdfExtracting?'Extracting…':'Upload your invitation'}</strong><small>PDF, JPG, PNG or WebP · Extract details with AI</small></span>{!pdfExtracting&&<span className="ai-upload-btn">Upload design</span>}</button>}{tab==='Templates'&&<span className="client-design-count">{allTemplates.length} carefully curated invitations</span>}</header>
       {tab==='Templates'&&<div className="client-catalog-controls"><div className="client-filter-chips"><button type="button" className={categoryFilter==='ALL'?'active':''} onClick={()=>selectCategory('ALL')}>All <span className="category-chip-count">{allTemplates.length}</span></button>{categories.map(category=><button type="button" key={category} className={categoryFilter===category?'active':''} onClick={()=>selectCategory(category)}><span className="category-chip-icon" aria-hidden="true">{categoryChipIcons[category] ?? <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round"><circle cx="12" cy="12" r="3"/><path d="M12 2v3M12 19v3M2 12h3M19 12h3"/></svg>}</span>{category}</button>)}</div><label className="client-sort-control">Sort by<select value={templateSort} onChange={event=>setTemplateSort(event.target.value as 'CURATED'|'NAME')}><option value="CURATED">Curated</option><option value="NAME">Name</option></select></label></div>}
       {tab==='Templates'&&chosen&&<div className="client-selected-gallery"><div className="client-selected-gallery-title"><span className="workspace-kicker">THE COLLECTION</span><button type="button" onClick={()=>setShowDetails(false)}>{showDetails?'Hide details':'Choose a template'}</button></div><div key={categoryFilter} className={`client-selected-card-grid category-slide-from-${categoryDirection}`}>{templates.map(template=><article key={template.id} className={`client-selected-card ${template.id===previewTemplate?.id?'active':''}`}><button type="button" className="client-card-preview-trigger" onClick={()=>setPreviewId(template.id)} aria-label={`Preview ${template.name} on the mobile screen`}><span className="client-selected-thumb">{TEMPLATE_INTRO_VIDEOS[template.id]?<video src={TEMPLATE_INTRO_VIDEOS[template.id]} poster={TEMPLATE_THUMBNAIL_OVERRIDES[template.id]??template.thumbnail_url} autoPlay muted loop playsInline aria-label={`${template.name} intro preview`}/>:<img src={TEMPLATE_THUMBNAIL_OVERRIDES[template.id]??TEMPLATE_INTRO_IMAGES[template.id]??template.thumbnail_url} alt=""/>}{templateSettings[template.id]?.is_premium&&<span className="client-template-premium-badge">PREMIUM</span>}</span><span className="client-template-card-meta"><span className="client-template-card-copy"><strong>{template.name}</strong><small>{template.category}</small></span><TemplatePrice setting={templateSettings[template.id]}/></span></button><button type="button" className="client-selected-card-order" onClick={()=>chooseTemplate(template.id)}>Get this design <span aria-hidden="true">→</span></button></article>)}</div></div>}
       {tab !== 'Settings' && error && <p className="workspace-alert" role="alert">{error}</p>}{tab === 'Templates' && notice && <p className="workspace-success" role="status">{notice}</p>}
@@ -693,7 +696,7 @@ Additional rules:
 }
 
 type DemoEvent = { title: string; date: string; time: string; venue: string; address: string }
-function TemplateDemoEditor({ templateId, templateName, companyId: _companyId, existing, saving, onSave, onReset, onClose, onExtractPdf }: { templateId: number; templateName: string; companyId: number; existing: Record<string, unknown> | null; saving: boolean; onSave: (data: Record<string, unknown>) => Promise<void>; onReset: () => Promise<void>; onClose: () => void; onExtractPdf: (base64: string, filename: string) => Promise<{ groom?: string; groomFullName?: string; bride?: string; brideFullName?: string; groomFamily?: string; brideFamily?: string; date?: string; time?: string; venue?: string; address?: string; message?: string; dressCode?: string; events?: { title?: string; date?: string; time?: string; venue?: string; address?: string }[] }> }) {
+function TemplateDemoEditor({ templateId, templateName, companyId: _companyId, existing, saving, onSave, onReset, onClose, onExtractPdf }: { templateId: number; templateName: string; companyId: number; existing: Record<string, unknown> | null; saving: boolean; onSave: (data: Record<string, unknown>) => Promise<void>; onReset: () => Promise<void>; onClose: () => void; onExtractPdf: (base64: string, filename: string, mimeType: string) => Promise<{ groom?: string; groomFullName?: string; bride?: string; brideFullName?: string; groomFamily?: string; brideFamily?: string; date?: string; time?: string; venue?: string; address?: string; message?: string; dressCode?: string; events?: { title?: string; date?: string; time?: string; venue?: string; address?: string }[] }> }) {
   const example = invitationExample(templateId)
   const pdfRef = useRef<HTMLInputElement>(null)
   const [pdfExtracting, setPdfExtracting] = useState(false)
@@ -714,15 +717,17 @@ function TemplateDemoEditor({ templateId, templateName, companyId: _companyId, e
     return saved?.length ? saved : []
   })
   async function handlePdf(file: File) {
+    if (pdfExtracting) return
     setPdfExtracting(true); setPdfError('')
     try {
+      const mimeType = invitationUploadMimeType(file)
       const base64 = await new Promise<string>((resolve, reject) => {
         const reader = new FileReader()
         reader.onload = () => { const r = reader.result as string; resolve(r.split(',')[1]) }
         reader.onerror = () => reject(new Error('Failed to read file.'))
         reader.readAsDataURL(file)
       })
-      const result = await onExtractPdf(base64, file.name)
+      const result = await onExtractPdf(base64, file.name, mimeType)
       if (result.groom) setGroom(result.groom)
       if (result.bride) setBride(result.bride)
       if (result.groomFamily) setGroomFamily(result.groomFamily)
@@ -734,7 +739,7 @@ function TemplateDemoEditor({ templateId, templateName, companyId: _companyId, e
       if (result.message) setMessage(result.message)
       if (result.dressCode) setDressCode(result.dressCode)
       if (result.events?.length) setEvents(result.events.map(ev => ({ title: ev.title || '', date: ev.date || '', time: ev.time || '', venue: ev.venue || '', address: ev.address || '' })))
-    } catch (err) { setPdfError(err instanceof Error ? err.message : 'Failed to extract from PDF.') }
+    } catch (err) { setPdfError(err instanceof Error ? err.message : 'Failed to extract from the invitation.') }
     finally { setPdfExtracting(false) }
   }
   function handleSave() {
@@ -760,8 +765,8 @@ function TemplateDemoEditor({ templateId, templateName, companyId: _companyId, e
       <button className="dialog-close" onClick={onClose} aria-label="Close">×</button>
       <div className="demo-editor-header">
         <div><span className="workspace-kicker">CUSTOMIZE DEMO DATA</span><h2 id="demo-editor-title">{templateName}</h2></div>
-        <input ref={pdfRef} type="file" accept=".pdf,application/pdf" hidden onChange={e => { const f = e.target.files?.[0]; if (f) handlePdf(f); e.target.value = '' }}/>
-        <button type="button" className="demo-editor-pdf" disabled={pdfExtracting} onClick={() => pdfRef.current?.click()}>{pdfExtracting ? 'Extracting…' : '📄 Upload PDF'}</button>
+        <input ref={pdfRef} type="file" accept={invitationUploadAccept} hidden onChange={e => { const f = e.target.files?.[0]; if (f) handlePdf(f); e.target.value = '' }}/>
+        <button type="button" className="demo-editor-pdf" disabled={pdfExtracting} onClick={() => pdfRef.current?.click()}>{pdfExtracting ? 'Extracting…' : 'Upload PDF or image'}</button>
       </div>
       {pdfError && <p className="workspace-alert" role="alert">{pdfError}</p>}
       <p className="demo-editor-hint">Set custom names and details for your store's template preview. Empty fields fall back to the standard example.</p>
