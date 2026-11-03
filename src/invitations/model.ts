@@ -1,6 +1,7 @@
 import { readTextLayout } from './textLayout.ts'
 import type { TextLayout } from './textLayout.ts'
 
+export const TEMPLATE_DISPLAY_ORDER: Record<number, number> = { 2:1, 6:2, 13:3, 14:4, 7:5, 5:6, 1:7, 3:8, 15:9, 4:10 }
 export const designs = [
   { id: 1, name: 'Royal Grace', description: 'Sage and ivory stationery with pearls and delicate botanical relief.', route: '/royal-grace', image: '/templates/royal-grace/opening-poster.jpg', color: '#8b9274' },
   { id: 2, name: 'Majestic', description: 'Pearl accents, chandeliers and grand garden scenes.', route: '/majestic', image: '/templates/majestic/assets/hero-poster-DkA1j00-.jpg', color: '#e9dfca' },

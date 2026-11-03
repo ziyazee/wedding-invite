@@ -1,7 +1,7 @@
 import { createContext, useContext, useCallback, useEffect, useLayoutEffect, useMemo, useRef, useState, lazy, Suspense } from 'react'
 import type { FormEvent, ReactElement } from 'react'
 import { createPortal } from 'react-dom'
-import { cardTextLimit, nameTextLimit, designs, slugVariants, inviteUrl, companyPreviewUrl, validateDetails } from '../invitations/model'
+import { cardTextLimit, nameTextLimit, designs, TEMPLATE_DISPLAY_ORDER, slugVariants, inviteUrl, companyPreviewUrl, validateDetails } from '../invitations/model'
 import type { Celebration, InvitationData } from '../invitations/model'
 import type { TextLayout } from '../invitations/textLayout'
 import { readTextLayout } from '../invitations/textLayout'
@@ -256,7 +256,7 @@ function ClientWorkspace({ showHiddenTemplates = false }: { showHiddenTemplates?
       return a.localeCompare(b)
     })
   }, [allTemplates])
-  const templates = allTemplates.filter(template => (categoryFilter === 'ALL' || template.category === categoryFilter) && `${template.name} ${template.category}`.toLowerCase().includes(templateSearch.trim().toLowerCase())).sort((a,b)=>templateSort==='NAME'?a.name.localeCompare(b.name):a.id-b.id)
+  const templates = allTemplates.filter(template => (categoryFilter === 'ALL' || template.category === categoryFilter) && `${template.name} ${template.category}`.toLowerCase().includes(templateSearch.trim().toLowerCase())).sort((a,b)=>templateSort==='NAME'?a.name.localeCompare(b.name):(TEMPLATE_DISPLAY_ORDER[a.id]??999)-(TEMPLATE_DISPLAY_ORDER[b.id]??999))
   const chosen = allTemplates.find(template => template.id === selected)
   const previewTemplate = allTemplates.find(template => template.id === previewId) || chosen || allTemplates[0]
   useLayoutEffect(() => {

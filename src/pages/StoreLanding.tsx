@@ -2,6 +2,7 @@ import { useEffect, useLayoutEffect, useMemo, useRef, useState } from 'react'
 import { isSupabaseConfigured, supabase } from '../lib/supabase'
 import { companyAssetURL } from '../lib/companyAssets'
 import { storeInvitationExample } from '../invitations/templateData'
+import { TEMPLATE_DISPLAY_ORDER } from '../invitations/model'
 import { TEMPLATE_INTRO_VIDEOS, TEMPLATE_INTRO_IMAGES } from '../lib/templateCardData'
 import './StoreLanding.css'
 import SiteFonts from '../SiteFonts'
@@ -169,7 +170,7 @@ export default function StoreLanding({ slug }: { slug: string }) {
   const company = data?.company
   const companyLogo = companyAssetURL(company, 'logo')
   const heroBanner = companyAssetURL(company, 'banner')
-  const templates = data?.templates ?? []
+  const templates = [...(data?.templates ?? [])].sort((a, b) => (TEMPLATE_DISPLAY_ORDER[a.id] ?? 999) - (TEMPLATE_DISPLAY_ORDER[b.id] ?? 999))
   const accent = company?.brand_color || '#754522'
   const categories = ['All', ...new Set(templates.map(t => t.category).filter(Boolean))]
   const filtered = templates.filter(t => category === 'All' || t.category === category)
