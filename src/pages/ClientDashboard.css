@@ -22,6 +22,10 @@
 .client-publish-prompt p { margin: 0; color: #777e75; font-size: 10px; }
 .client-publish-prompt .primary-action { width: 100%; border-color: var(--client-green); background: var(--client-green); }
 .client-publish-prompt .primary-action:hover { background: var(--client-green-hover); }
+.client-publish-prompt .secondary-action { display: inline-flex; align-items: center; gap: 6px; width: 100%; justify-content: center; padding: 10px; border: 1px solid var(--client-green); border-radius: 6px; background: #fff; color: var(--client-green); font-size: 12px; font-weight: 600; cursor: pointer; transition: background .15s; }
+.client-publish-prompt .secondary-action:hover { background: #f3f8f5; }
+.client-publish-prompt .secondary-action:disabled { opacity: .55; cursor: default; }
+.client-publish-prompt .secondary-action svg { flex-shrink: 0; }
 .client-workspace button, .client-workspace input, .client-workspace select, .client-workspace textarea { font: inherit; }
 .client-workspace.has-client-preview { grid-template-columns: 206px minmax(0, 1fr) 376px; }
 

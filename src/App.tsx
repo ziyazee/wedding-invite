@@ -44,6 +44,7 @@ const Design17 = lazySitePage(() => import('./pages/Design17'))
 const RoyalGrace = lazy(() => import('./pages/RoyalGrace'))
 const GeneratedInvitation = lazy(() => import('./pages/GeneratedInvitation'))
 const StoreLanding = lazy(() => import('./pages/StoreLanding'))
+const CompanyPreview = lazy(() => import('./pages/CompanyPreview'))
 const Privacy = lazy(() => import('./pages/Privacy'))
 
 function getInviteSlug(): string | null {
@@ -71,6 +72,7 @@ function SingleSegmentRoute() {
 const SUBDOMAIN_CACHE_KEY = 'si:subdomain:'
 
 function SubdomainResolver({ slug }: { slug: string }) {
+  const { pathname } = useLocation()
   const [target, setTarget] = useState<'store' | 'invitation' | null>(() => {
     try { return sessionStorage.getItem(SUBDOMAIN_CACHE_KEY + slug) as 'store' | 'invitation' | null } catch { return null }
   })
@@ -88,9 +90,10 @@ function SubdomainResolver({ slug }: { slug: string }) {
     return () => { cancelled = true }
   }, [slug, target])
 
+  if (pathname === '/preview') return <CompanyPreview slug={slug} />
   if (!target) return null
   if (target === 'store') return <StoreLanding slug={slug} />
-  return <GeneratedInvitation overrideSlug={slug} />
+  return null
 }
 
 export default function App() {

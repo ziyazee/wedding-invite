@@ -1,7 +1,7 @@
 import { createContext, useContext, useCallback, useEffect, useLayoutEffect, useMemo, useRef, useState, lazy, Suspense } from 'react'
 import type { FormEvent, ReactElement } from 'react'
 import { createPortal } from 'react-dom'
-import { cardTextLimit, nameTextLimit, designs, slugVariants, inviteUrl, validateDetails } from '../invitations/model'
+import { cardTextLimit, nameTextLimit, designs, slugVariants, inviteUrl, companyPreviewUrl, validateDetails } from '../invitations/model'
 import type { Celebration, InvitationData } from '../invitations/model'
 import type { TextLayout } from '../invitations/textLayout'
 import { readTextLayout } from '../invitations/textLayout'
@@ -380,6 +380,17 @@ function ClientWorkspace({ showHiddenTemplates = false }: { showHiddenTemplates?
     const { error: saveError } = await supabase.from('company_template_settings').upsert(rows, { onConflict: 'company_id,template_id' })
     if (saveError) setError(saveError.message)
   }
+  async function previewOrder(order: Order) {
+    if (!supabase || !company?.slug) return
+    setBusy(true); setError('')
+    try {
+      const { error: previewError } = await supabase.rpc('set_company_preview', { p_form_data: order.form_data, p_template_code: order.template_code })
+      if (previewError) throw previewError
+      window.open(companyPreviewUrl(company.slug), '_blank')
+    } catch (cause) {
+      setError(cause instanceof Error ? cause.message : 'Unable to load preview.')
+    } finally { setBusy(false) }
+  }
   async function publishClientOrder(order: Order) {
     if (!supabase) return
     setBusy(true); setError(''); setNotice('')
@@ -601,7 +612,7 @@ Additional rules:
     {waError&&<p className="wa-error" role="alert">{waError}</p>}
   </div>
 </section>:viewOrder.status!=='CREATED'&&viewOrder.status!=='READY'&&viewOrder.expires_at&&new Date(viewOrder.expires_at)<=new Date()?<p className="workspace-alert">This invitation link has expired. Contact Shaadi Invites to renew it.</p>:viewOrder.status!=='CREATED'&&viewOrder.status!=='READY'&&<p className="form-note">Your invitation is being prepared. The public link will appear here after publication.</p>}
-{!(viewOrder.status==='READY'&&viewOrder.published_url&&(!viewOrder.expires_at||new Date(viewOrder.expires_at)>new Date()))&&<dl><dt>Wedding date</dt><dd>{viewOrder.form_data.date} · {viewOrder.form_data.time}</dd><dt>Venue</dt><dd>{viewOrder.form_data.venue}, {viewOrder.form_data.address}</dd><dt>Celebrations</dt><dd><ul className="publish-celebration-list">{viewOrder.form_data.events?.length ? viewOrder.form_data.events.map((event,index)=><li key={index}>{event.title} · {event.date} · {event.venue}</li>) : <li>Wedding</li>}</ul></dd><dt><span className="publish-whatsapp-label"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.6" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true"><path d="M21 11.5a9 9 0 0 1-13.4 7.8L3 21l1.6-4.7A9 9 0 1 1 21 11.5Z"/><path d="m8 7 2 3-1 1a8 8 0 0 0 4 4l1-1 3 1c-1 3-4 2-6 0s-5-5-3-8Z"/></svg>WhatsApp</span></dt><dd>{viewOrder.phone_number?.trim().replace(/^\+91\s*/, '+91 ') || '—'}</dd></dl>}{viewOrder.rejection_reason&&<p className="workspace-alert"><strong>Studio note:</strong> {viewOrder.rejection_reason}</p>}{viewOrder.status==='CREATED'&&<div className="client-publish-prompt"><label>Wedding invitation URL<input readOnly value={viewOrder.published_url || (viewOrder.published_path ? inviteUrl(viewOrder.published_path) : 'Will be assigned when published')}/></label><p>Publish this invitation to make the link live.</p><button type="button" className="primary-action" disabled={busy} onClick={()=>void publishClientOrder(viewOrder)}>{busy?'Publishing…':'Publish invitation →'}</button></div>}</section></div>}
+{!(viewOrder.status==='READY'&&viewOrder.published_url&&(!viewOrder.expires_at||new Date(viewOrder.expires_at)>new Date()))&&<dl><dt>Wedding date</dt><dd>{viewOrder.form_data.date} · {viewOrder.form_data.time}</dd><dt>Venue</dt><dd>{viewOrder.form_data.venue}, {viewOrder.form_data.address}</dd><dt>Celebrations</dt><dd><ul className="publish-celebration-list">{viewOrder.form_data.events?.length ? viewOrder.form_data.events.map((event,index)=><li key={index}>{event.title} · {event.date} · {event.venue}</li>) : <li>Wedding</li>}</ul></dd><dt><span className="publish-whatsapp-label"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.6" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true"><path d="M21 11.5a9 9 0 0 1-13.4 7.8L3 21l1.6-4.7A9 9 0 1 1 21 11.5Z"/><path d="m8 7 2 3-1 1a8 8 0 0 0 4 4l1-1 3 1c-1 3-4 2-6 0s-5-5-3-8Z"/></svg>WhatsApp</span></dt><dd>{viewOrder.phone_number?.trim().replace(/^\+91\s*/, '+91 ') || '—'}</dd></dl>}{viewOrder.rejection_reason&&<p className="workspace-alert"><strong>Studio note:</strong> {viewOrder.rejection_reason}</p>}{viewOrder.status==='CREATED'&&<div className="client-publish-prompt">{company?.slug&&<><button type="button" className="secondary-action" disabled={busy} onClick={()=>void previewOrder(viewOrder)}><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg>{busy?'Opening preview…':'Preview invitation'}</button><p className="form-note">Opens in a new tab. Review the invitation before publishing.</p></>}<label>Wedding invitation URL<input readOnly value={viewOrder.published_url || (viewOrder.published_path ? inviteUrl(viewOrder.published_path) : 'Will be assigned when published')}/></label><p>Publish this invitation to make the link live.</p><button type="button" className="primary-action" disabled={busy} onClick={()=>void publishClientOrder(viewOrder)}>{busy?'Publishing…':'Publish invitation →'}</button></div>}</section></div>}
       {tab === 'Overview' && <div className="overview-dashboard"><section className="client-overview-welcome"><div><span className="workspace-kicker">WELCOME BACK</span><h2>Your invitation studio</h2><p>Create beautiful digital wedding invitations and manage all your orders in one place.</p></div><button type="button" className="client-overview-primary" onClick={() => { setTab('Templates'); setSelected(chosen?.id || allTemplates[0]?.id || null) }}>＋ Create an invitation</button></section><div className="metric-grid">{[
         {label:'Total orders',value:counts.total,icon:<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.6" strokeLinecap="round" strokeLinejoin="round"><rect x="3" y="3" width="18" height="18" rx="3"/><path d="M8 10h8M8 14h5"/></svg>,tone:'blue',change:monthOrderChange},
         {label:'Total revenue',value:formatRevenue(datedOrders),icon:<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.6" strokeLinecap="round" strokeLinejoin="round"><path d="M12 2v20M6 6h9a3 3 0 0 1 0 6H6M8 12h8a3 3 0 0 1 0 6H6"/></svg>,tone:'green',change:revenueCoverage(datedOrders,revenueChangeLabel(monthRevenue,previousMonthRevenue,'last month'))},

@@ -77,9 +77,17 @@ export function inviteUrl(slug: string): string {
   const w = globalThis as any
   const host: string = w.location?.hostname ?? ''
   if (host && !host.endsWith('.shaadiinvites.in') && host !== 'shaadiinvites.in') {
-    return `${w.location.origin}/?invite=${slug}`
+    return `${w.location.origin}/${slug}`
   }
-  return `https://${slug}.shaadiinvites.in`
+  return `https://www.shaadiinvites.in/${slug}`
+}
+export function companyPreviewUrl(companySlug: string): string {
+  const w = globalThis as any
+  const host: string = w.location?.hostname ?? ''
+  if (host && !host.endsWith('.shaadiinvites.in') && host !== 'shaadiinvites.in') {
+    return `${w.location.origin}/preview?invite=${companySlug}`
+  }
+  return `https://${companySlug}.shaadiinvites.in/preview`
 }
 export const reservedSlugs = new Set(['assets','images','fonts','dashboard','client','admin','login','create','preview','invite','newdesign','royal-grace','api','arjunmeera','rohankavya','aarongrace','danielsarah','vikramananya','nikhiladiti','embroidered-garden','secret-garden','majestic','bloom','the-artful-love-story','arjunbhavana','a-timeless-union','mandap-at-dusk','maroon-letter','emerald-parchment','royal-jodhpur','destination-wedding','raabta','qubool','blossom-and-oud','noor','sunehri','yasmin','maitri','kiran','ivory-arch','mangal','gulabi-mandap','birthday','housewarming'])
 export function validateDetails(value: unknown, allowRetired = false): InvitationData {

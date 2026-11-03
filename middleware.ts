@@ -16,16 +16,25 @@ export default async function middleware(req: Request) {
   const host = req.headers.get('host') ?? ''
   const ua = req.headers.get('user-agent') ?? ''
 
-  // Only intercept subdomain requests from known social crawlers.
-  if (
-    !host.endsWith('.shaadiinvites.in') ||
-    host === 'www.shaadiinvites.in' ||
-    !BOTS.test(ua)
-  ) {
+  if (!BOTS.test(ua)) return next()
+
+  // Path-based invitation URLs on the main domain: www.shaadiinvites.in/{slug}
+  const url = new URL(req.url)
+  const isMainHost = host === 'www.shaadiinvites.in' || host === 'shaadiinvites.in'
+  const pathSlug = isMainHost ? url.pathname.replace(/^\//, '').replace(/\/.*$/, '') : ''
+
+  // Company subdomains still serve store landings — skip those.
+  const isCompanySubdomain = host.endsWith('.shaadiinvites.in') && !isMainHost
+
+  let slug = ''
+  if (pathSlug && /^[a-z][a-z0-9.-]{0,79}$/.test(pathSlug)) {
+    slug = pathSlug
+  } else if (isCompanySubdomain) {
+    // Legacy: allow OG tags for store subdomains if needed in the future.
+    return next()
+  } else {
     return next()
   }
-
-  const slug = host.slice(0, host.indexOf('.shaadiinvites.in'))
   const supabaseUrl = process.env.VITE_SUPABASE_URL ?? ''
   const supabaseKey = process.env.VITE_SUPABASE_ANON_KEY ?? ''
 
@@ -72,7 +81,7 @@ export default async function middleware(req: Request) {
       : groom && bride
         ? `You're invited to the wedding of ${groom} and ${bride}.`
         : 'You are invited. Open this wedding invitation.'
-  const canonical = `https://${slug}.shaadiinvites.in`
+  const canonical = `https://www.shaadiinvites.in/${slug}`
   const ogImage = `https://shaadiinvites.in/api/og?slug=${encodeURIComponent(slug)}`
 
   const html = `<!doctype html>
