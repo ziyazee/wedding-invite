@@ -59,7 +59,7 @@ export function applyNewOrderTemplate(doc: Document, d: InvitationData) {
     if (rows[0]) { const name = rows[0].querySelector('.thing-val'), address = rows[0].querySelector('.thing-desc'); if(name){name.textContent=d.venue;mark(name,'venue','name')} if(address){address.textContent=d.address;mark(address,'venue','address')} }
     rows.forEach((row, index) => { if(index > 0)row.hidden=true })
     hide('.scene-couple,.scene-insta,.scene-video,.rsvp-block:has([data-aamantran="wish"]),#wishAllOverlay')
-  } else if (d.template === 14 || d.template === 15) {
+  } else if (d.template === 14 || d.template === 15 || d.template === 16) {
     copy('.gate__names', `${firstName} & ${secondName}`, 'gate', 'names'); copy('.names', `${firstName} & ${secondName}`, 'opening', 'names')
     copy('.gate__date,.date-big,.footer__date', formatDate(d.date), 'date', 'wedding')
     copy('.footer__names', `${firstName} & ${secondName}`, 'closing', 'names')
@@ -91,7 +91,7 @@ export function applyNewOrderTemplate(doc: Document, d: InvitationData) {
   }
 
   let footerHost = doc.querySelector<HTMLElement>('#designed-by-footer')
-  if (d.template === 13 || d.template === 14 || d.template === 15) {
+  if (d.template === 13 || d.template === 14 || d.template === 15 || d.template === 16) {
     if (!footerHost) {
       footerHost = doc.createElement('footer')
       footerHost.id = 'designed-by-footer'
@@ -162,20 +162,20 @@ export function applyNewOrderTemplate(doc: Document, d: InvitationData) {
   if(extras.dataset.content!==extraKey){
     extras.dataset.content=extraKey;extras.replaceChildren();extras.setAttribute('data-invite-section','notes')
     let hasNote=false
-    for(const [field,value] of [['dress',d.dressCode],['gift',d.giftNote]]){if(d.template===14||d.template===15||(field==='dress'&&d.template===13))continue;if(value.trim()){if(!hasNote&&d.template===13){const h=doc.createElement('h3');h.className='notes-title';h.textContent='Short Note';extras.append(h);hasNote=true}const p=doc.createElement('p');p.textContent=value;mark(p,'notes',field);extras.append(p)}}
+    for(const [field,value] of [['dress',d.dressCode],['gift',d.giftNote]]){if(d.template===14||d.template===15||d.template===16||(field==='dress'&&d.template===13))continue;if(value.trim()){if(!hasNote&&d.template===13){const h=doc.createElement('h3');h.className='notes-title';h.textContent='Short Note';extras.append(h);hasNote=true}const p=doc.createElement('p');p.textContent=value;mark(p,'notes',field);extras.append(p)}}
     for(const [field,title,url] of [['gallery','Our photo gallery',d.gallery],['directions','Wedding directions',d.map]])if(url.trim()){const a=doc.createElement('a');a.href=url;a.target='_blank';a.rel='noopener noreferrer';a.textContent=title;mark(a,'notes',field);extras.append(a)}
     extras.hidden=!extras.childElementCount
   }
   if(d.template===12&&!doc.querySelector('#order-rsvp-host')){const host=doc.createElement('section');host.id='order-rsvp-host';host.className='order-extra';doc.body.append(host)}
   doc.querySelectorAll<HTMLElement>('.scene,.panel,.gate,#root > div > section,#order-rsvp-host').forEach((section,index)=>{
-    if(!section.hasAttribute('data-invite-section'))section.setAttribute('data-invite-section',`scene-${d.template===14||d.template===15 ? section.dataset.scene || 'gate' : index}`)
+    if(!section.hasAttribute('data-invite-section'))section.setAttribute('data-invite-section',`scene-${d.template===14||d.template===15||d.template===16 ? section.dataset.scene || 'gate' : index}`)
   })
 }
 
 /** Fixed authored scenes keep their IDs independently of event count. Native
  * event cards are marked while personalized, using persisted celebration IDs. */
 export function markNewOrderText(root: HTMLElement, d: InvitationData) {
-  if (d.template < 12 || d.template > 15) return
+  if (d.template < 12 || d.template > 16) return
   const normalize = (value: string) => value.trim().replace(/\s+/g, ' ').toLowerCase()
   const fields: [string, string][] = [
     ['groom',d.groom],['bride',d.bride],['groom-family',d.groomFamily],['bride-family',d.brideFamily],

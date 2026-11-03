@@ -34,6 +34,20 @@ templateInvitationData[15] = {
   }],
 }
 
+templateInvitationData[16] = {
+  ...examples[1],
+  template: 16,
+  groom: 'Navneet',
+  bride: 'Jasleen',
+  date: '2027-02-14',
+  venue: 'Haveli Heritage',
+  address: 'GT Road, Amritsar, Punjab',
+  events: [{
+    id: 'wedding', title: 'Wedding Ceremony', date: '2027-02-14', time: '11:00',
+    venue: 'Haveli Heritage', address: 'GT Road, Amritsar, Punjab', map: '',
+  }],
+}
+
 export function invitationExample(templateId: number): InvitationData | undefined {
   return templateInvitationData[templateId]
 }

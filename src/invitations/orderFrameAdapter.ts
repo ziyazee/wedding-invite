@@ -199,10 +199,10 @@ function updateExtras(doc: Document, d: InvitationData) {
 }
 
 export function installOrderFrameRsvp(doc: Document, template: number, target?: RsvpTarget) {
-  const host = doc.querySelector(template === 12 ? '#order-rsvp-host' : template === 13 ? '#order-rsvp-host,#rsvpSection .rsvp-action-area' : template === 14 || template === 15 ? '#order-rsvp-host,[data-scene="7"] .card:has([data-aamantran="rsvp"])' : template === 9 ? '#rsvp-section' : template === 10 ? '#rsvp-form-wrap' : '#rsvp .container')
+  const host = doc.querySelector(template === 12 ? '#order-rsvp-host' : template === 13 ? '#order-rsvp-host,#rsvpSection .rsvp-action-area' : template === 14 || template === 15 || template === 16 ? '#order-rsvp-host,[data-scene="7"] .card:has([data-aamantran="rsvp"])' : template === 9 ? '#rsvp-section' : template === 10 ? '#rsvp-form-wrap' : '#rsvp .container')
   if (!host || host.querySelector('.order-rsvp')) return () => {}
   if(template>=12)host.id='order-rsvp-host'
-  if (template === 14 || template === 15) {
+  if (template === 14 || template === 15 || template === 16) {
     const form = doc.createElement('form'); form.className = 'order-rsvp rsvp-form'
     const title = doc.createElement('h2'); title.className = 'scene-title rsvp-heading'
     title.append('Will you be attending ')

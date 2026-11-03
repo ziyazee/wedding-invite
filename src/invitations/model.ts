@@ -1,7 +1,7 @@
 import { readTextLayout } from './textLayout.ts'
 import type { TextLayout } from './textLayout.ts'
 
-export const TEMPLATE_DISPLAY_ORDER: Record<number, number> = { 2:1, 6:2, 13:3, 14:4, 7:5, 5:6, 1:7, 3:8, 15:9, 4:10 }
+export const TEMPLATE_DISPLAY_ORDER: Record<number, number> = { 2:1, 6:2, 13:3, 14:4, 7:5, 5:6, 1:7, 3:8, 15:9, 4:10, 16:11 }
 export const designs = [
   { id: 1, name: 'Royal Grace', description: 'Sage and ivory stationery with pearls and delicate botanical relief.', route: '/royal-grace', image: '/templates/royal-grace/opening-poster.jpg', color: '#8b9274' },
   { id: 2, name: 'Majestic', description: 'Pearl accents, chandeliers and grand garden scenes.', route: '/majestic', image: '/templates/majestic/assets/hero-poster-DkA1j00-.jpg', color: '#e9dfca' },
@@ -18,6 +18,7 @@ export const designs = [
   { id: 13, name: 'Raabta', description: 'Moonlit mosque scenery with floating lanterns and ornate arches.', route: '/raabta', image: '/templates/raabta/assets/mosque-scene.webp', color: '#1b2838' },
   { id: 14, name: 'Qubool', description: 'Ornate jaali patterns with a cinematic gate reveal.', route: '/qubool', image: '/templates/qubool/assets/gate/00-gate.webp', color: '#2a1f1a' },
   { id: 15, name: 'Mangal', description: 'Cinematic mandap scenes with sacred fire and vermillion-gold palette.', route: '/mangal', image: '/templates/mangal/assets/gate/00-gate-p.webp', color: '#8B1A1A' },
+  { id: 16, name: 'Viah', description: 'Bold Punjabi wedding vibes with hot pink, gold, and phulkari motifs.', route: '/viah', image: '/templates/viah/assets/gate/00-gate-p.webp', color: '#FF1493' },
 ] as const
 export interface WeddingMoment { id: string; time: string; title: string; description: string; location: string }
 export interface Celebration { id?: string; title: string; date: string; time?: string; venue: string; address: string; map: string; schedule?: WeddingMoment[] }
@@ -97,7 +98,7 @@ export function companyPreviewUrl(companySlug: string): string {
   }
   return `https://${companySlug}.shaadiinvites.in/preview`
 }
-export const reservedSlugs = new Set(['assets','images','fonts','dashboard','client','admin','login','create','preview','invite','newdesign','royal-grace','api','arjunmeera','rohankavya','aarongrace','danielsarah','vikramananya','nikhiladiti','embroidered-garden','secret-garden','majestic','bloom','the-artful-love-story','arjunbhavana','a-timeless-union','mandap-at-dusk','maroon-letter','emerald-parchment','royal-jodhpur','destination-wedding','raabta','qubool','blossom-and-oud','noor','sunehri','yasmin','maitri','kiran','ivory-arch','mangal','gulabi-mandap','birthday','housewarming'])
+export const reservedSlugs = new Set(['assets','images','fonts','dashboard','client','admin','login','create','preview','invite','newdesign','royal-grace','api','arjunmeera','rohankavya','aarongrace','danielsarah','vikramananya','nikhiladiti','embroidered-garden','secret-garden','majestic','bloom','the-artful-love-story','arjunbhavana','a-timeless-union','mandap-at-dusk','maroon-letter','emerald-parchment','royal-jodhpur','destination-wedding','raabta','qubool','blossom-and-oud','noor','sunehri','yasmin','maitri','kiran','ivory-arch','mangal','gulabi-mandap','viah','birthday','housewarming'])
 export function validateDetails(value: unknown, allowRetired = false): InvitationData {
   if (!value || typeof value !== 'object') throw new Error('Invitation details are required.')
   const d = value as InvitationData

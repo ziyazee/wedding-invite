@@ -3,12 +3,14 @@ import { validateDetails } from '../invitations/model'
 import type { InvitationData } from '../invitations/model'
 import InvitationRenderer from '../invitations/InvitationRenderer'
 import { isSupabaseConfigured, supabase } from '../lib/supabase'
+import { companyPreviewError } from '../lib/companyPreview'
 
 export default function CompanyPreview({ slug }: { slug: string }) {
   const [details, setDetails] = useState<InvitationData | null>(null)
   const [error, setError] = useState('')
 
   useEffect(() => {
+    setDetails(null); setError('')
     if (!supabase || !isSupabaseConfigured) { setError('Preview is not available on this host.'); return }
     let cancelled = false
     void (async () => {
@@ -19,7 +21,7 @@ export default function CompanyPreview({ slug }: { slug: string }) {
         if (!data?.details) { setError('No preview available. Open an order and click Preview in the dashboard first.'); return }
         setDetails(validateDetails(data.details, true))
       } catch (e) {
-        if (!cancelled) setError(e instanceof Error ? e.message : 'Unable to load preview.')
+        if (!cancelled) setError(companyPreviewError(e))
       }
     })()
     return () => { cancelled = true }

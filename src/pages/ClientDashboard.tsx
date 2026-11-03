@@ -11,6 +11,7 @@ import type { InvitationTemplate } from '../invitations/templateCatalog'
 import { TEMPLATE_INTRO_VIDEOS, TEMPLATE_INTRO_IMAGES, TEMPLATE_THUMBNAIL_OVERRIDES } from '../lib/templateCardData'
 import { isSupabaseConfigured, supabase } from '../lib/supabase'
 import { companyAssetURL } from '../lib/companyAssets'
+import { companyPreviewError } from '../lib/companyPreview'
 import { invitationUploadAccept, invitationUploadMimeType } from '../lib/invitationUpload'
 import { DashboardAccess, signOutToLogin } from './DashboardAccess'
 import './Workspaces.css'
@@ -385,14 +386,24 @@ function ClientWorkspace({ showHiddenTemplates = false }: { showHiddenTemplates?
     if (saveError) setError(saveError.message)
   }
   async function previewOrder(order: Order) {
-    if (!supabase || !company?.slug) return
+    if (busy) return
+    if (!supabase || !company?.slug) { setError('Your company preview address is unavailable. Refresh the dashboard and try again.'); return }
     setBusy(true); setError('')
+    let previewWindow: Window | null = null
     try {
+      // Open while the click still has user activation; awaiting the RPC first
+      // can cause browsers to block the new tab.
+      previewWindow = window.open('about:blank', '_blank')
+      if (!previewWindow) throw new Error('Allow pop-ups for this site, then click Preview invitation again.')
+      previewWindow.opener = null
+      previewWindow.document.title = 'Preparing invitation preview…'
+      previewWindow.document.body.textContent = 'Preparing invitation preview…'
       const { error: previewError } = await supabase.rpc('set_company_preview', { p_form_data: order.form_data, p_template_code: order.template_code })
       if (previewError) throw previewError
-      window.open(companyPreviewUrl(company.slug), '_blank')
+      if (!previewWindow.closed) previewWindow.location.replace(companyPreviewUrl(company.slug))
     } catch (cause) {
-      setError(cause instanceof Error ? cause.message : 'Unable to load preview.')
+      previewWindow?.close()
+      setError(companyPreviewError(cause))
     } finally { setBusy(false) }
   }
   function startEditOrder(order: Order) {

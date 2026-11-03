@@ -10,7 +10,7 @@ export default function DesignedByFooter() {
   const name = details?.companyName
   const whatsappURL = companyWhatsAppURL(details?.companyPhone)
   if (!details?.companyLogo && !name) return null
-  if (details?.template === 13 || details?.template === 14 || details?.template === 15) return null
+  if (details?.template === 13 || details?.template === 14 || details?.template === 15 || details?.template === 16) return null
   const branding = logo
     ? <img className="designed-by-logo" src={logo} alt={name || 'Company'} onError={() => setFailedLogo(logo)} />
     : <span className="designed-by-name">{name || 'Company'}</span>

@@ -15,6 +15,7 @@ export const TEMPLATE_INTRO_IMAGES: Record<number, string> = {
   12: '/templates/destination-wedding/wedding/background_main.webp',
   13: '/templates/raabta/assets/mosque-scene.webp',
   14: '/templates/qubool/assets/scene1/01-jaali-dawn.webp',
+  16: '/templates/viah/assets/scene1/01-haveli-dawn-p.webp',
 }
 
 export const TEMPLATE_THUMBNAIL_OVERRIDES: Record<number, string> = {

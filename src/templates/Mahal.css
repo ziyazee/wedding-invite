@@ -1,0 +1,87 @@
+.mahal-template {
+  min-height: 100vh;
+  background: #100d0b;
+}
+
+.mahal-template__entry {
+  display: grid;
+  min-height: 100vh;
+  min-height: 100dvh;
+  place-items: center;
+  overflow: hidden;
+  background: #100d0b;
+}
+
+.mahal-template__entry-video {
+  display: block;
+  width: auto;
+  height: min(100vh, 177.7778vw);
+  height: min(100dvh, 177.7778vw);
+  max-width: 100vw;
+  max-height: 100dvh;
+  aspect-ratio: 9 / 16;
+  object-fit: contain;
+  pointer-events: none;
+}
+
+.mahal-template__entry-trigger {
+  display: grid;
+  width: min(100vw, 56.25dvh);
+  height: min(100dvh, 177.7778vw);
+  place-items: center;
+  padding: 0;
+  overflow: hidden;
+  border: 0;
+  background: transparent;
+  cursor: pointer;
+}
+
+.mahal-template__entry-trigger:focus-visible {
+  outline: 2px solid #f7efe3;
+  outline-offset: -4px;
+}
+
+.mahal-template__music {
+  position: absolute;
+  z-index: 2;
+  right: calc(3% + 36px);
+  bottom: calc(7.2% - 5px);
+  display: grid;
+  width: 46px;
+  height: 46px;
+  place-items: center;
+  border: 1px solid #f7efe388;
+  border-radius: 50%;
+  background: #100d0bd9;
+  color: #f7efe3;
+  cursor: pointer;
+  font: 20px Georgia, serif;
+}
+
+.mahal-template__music:focus-visible {
+  outline: 2px solid #f7efe3;
+  outline-offset: 4px;
+}
+
+.mahal-template__sr-only {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+  border: 0;
+}
+
+.mahal-template__hero {
+  min-height: 100vh;
+  display: grid;
+  align-content: center;
+  justify-items: center;
+  gap: 1rem;
+  padding: 2rem;
+  color: #f7efe3;
+  text-align: center;
+}

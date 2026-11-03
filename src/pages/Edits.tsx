@@ -24,7 +24,7 @@ const TEMPLATE_FOLDERS: Record<number, string> = {
   1: 'royal-grace', 2: 'majestic', 3: 'a-timeless-union', 4: 'mandap-at-dusk',
   5: 'secret-garden', 6: 'embroidered-garden', 7: 'bloom', 8: 'the-artful-love-story',
   9: 'maroon-letter', 10: 'emerald-parchment', 11: 'shaadipath-t02', 12: 'destination-wedding',
-  13: 'raabta', 14: 'qubool',
+  13: 'raabta', 14: 'qubool', 16: 'viah',
 }
 
 const OrderTextEditor = lazy(() => import('./OrderTextEditor'))

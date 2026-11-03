@@ -60,7 +60,7 @@ function renderTemplate(details: InvitationData, animatedDetails: InvitationData
   const { template } = details
 
   // Iframe-based templates with text overlay editing
-  if ([9, 10, 11, 12, 13, 14, 15].includes(template)) {
+  if ([9, 10, 11, 12, 13, 14, 15, 16].includes(template)) {
     return <TextLayoutLayer details={details} layout={details.textOverrides}><OrderFrameInvitation key={template} details={details} rsvpTarget={rsvpTarget} /></TextLayoutLayer>
   }
 

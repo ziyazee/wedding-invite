@@ -4,12 +4,13 @@ import type { RsvpTarget } from './rsvp'
 import { applyOrderFrame, installOrderFrameRsvp } from './orderFrameAdapter'
 import { destinationHTML } from './newOrderTemplates'
 
-const sources: Record<number, string> = { 9: '/templates/maroon-letter/index.html', 10: '/templates/emerald-parchment/index.html', 11: '/templates/shaadipath-t02/index.html', 12: '/templates/destination-wedding/index.html', 13: '/templates/raabta/index.html', 14: '/templates/qubool/index.html', 15: '/templates/mangal/index.html' }
+const sources: Record<number, string> = { 9: '/templates/maroon-letter/index.html', 10: '/templates/emerald-parchment/index.html', 11: '/templates/shaadipath-t02/index.html', 12: '/templates/destination-wedding/index.html', 13: '/templates/raabta/index.html', 14: '/templates/qubool/index.html', 15: '/templates/mangal/index.html', 16: '/templates/viah/index.html' }
 
 const openingCovers: Record<number, string> = {
   13: '/templates/raabta/assets/gate-closed.webp',
   14: '/templates/qubool/assets/gate/00-gate-p.webp',
   15: '/templates/mangal/assets/gate/00-gate-p.webp',
+  16: '/templates/viah/assets/gate/00-gate-p.webp',
 }
 const previewQuery = new URLSearchParams(window.location.search)
 const isBrowsePreview = window.location.pathname === '/client/live-preview'
@@ -58,7 +59,7 @@ export default function OrderFrameInvitation({ details, rsvpTarget }: { details:
   const orderId = rsvpTarget?.orderId
   const path = rsvpTarget?.path
   useEffect(() => {
-    if(!ready || ![13,14,15].includes(details.template))return
+    if(!ready || ![13,14,15,16].includes(details.template))return
     const tick=()=>{
       const doc=frame.current?.contentDocument,d=currentDetails.current
       if(!doc)return

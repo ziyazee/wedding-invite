@@ -20,6 +20,7 @@ const ATimelessUnion = lazySitePage(() => import('./pages/ATimelessUnion'))
 const ATimelessUnionPreview = lazySitePage(() => import('./pages/ATimelessUnionPreview'))
 const CelebrationsEmbed = lazySitePage(() => import('./pages/a-timeless-union/CelebrationsEmbed'))
 const MandapAtDuskPreview = lazySitePage(() => import('./pages/MandapAtDuskPreview'))
+const Mahal = lazySitePage(() => import('./templates/Mahal'))
 // Testing templates
 const MaroonLetter = lazySitePage(() => import('./pages/MaroonLetter'))
 const EmeraldParchment = lazySitePage(() => import('./pages/EmeraldParchment'))
@@ -28,6 +29,7 @@ const DestinationWedding = lazySitePage(() => import('./pages/DestinationWedding
 const Raabta = lazySitePage(() => import('./pages/Raabta'))
 const Qubool = lazySitePage(() => import('./pages/Qubool'))
 const Mangal = lazySitePage(() => import('./pages/Mangal'))
+const Viah = lazySitePage(() => import('./pages/Viah'))
 // Future use cases
 const BirthdayInvite = lazySitePage(() => import('./pages/BirthdayInvite'))
 const HousewarmingInvite = lazySitePage(() => import('./pages/HousewarmingInvite'))
@@ -134,6 +136,7 @@ export default function App() {
       <Route path="/arjunbhavana" element={<ATimelessUnion />} />
       <Route path="/a-timeless-union" element={<ATimelessUnionPreview />} />
       <Route path="/mandap-at-dusk" element={<MandapAtDuskPreview />} />
+      <Route path="/mahal" element={<Mahal />} />
       {/* Testing templates */}
       <Route path="/maroon-letter" element={<MaroonLetter />} />
       <Route path="/emerald-parchment" element={<EmeraldParchment />} />
@@ -142,6 +145,7 @@ export default function App() {
       <Route path="/raabta" element={<Raabta />} />
       <Route path="/qubool" element={<Qubool />} />
       <Route path="/mangal" element={<Mangal />} />
+      <Route path="/viah" element={<Viah />} />
       {/* Future use cases */}
       <Route path="/birthday" element={<BirthdayInvite />} />
       <Route path="/housewarming" element={<HousewarmingInvite />} />
