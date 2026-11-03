@@ -10,7 +10,7 @@ import './Workspaces.css'
 import './ClientDashboard.css'
 import './Edits.css'
 
-type ImageSlot = { file: string; label: string; type: 'image' | 'video' }
+type ImageSlot = { file: string; label: string; type: 'image' | 'video' | 'audio' }
 const TEMPLATE_IMAGE_SLOTS: Record<number, ImageSlot[]> = {
   1: [
     { file: 'welcome.jpg', label: 'Welcome background', type: 'image' },
@@ -19,12 +19,19 @@ const TEMPLATE_IMAGE_SLOTS: Record<number, ImageSlot[]> = {
     { file: 'opening-poster.jpg', label: 'Opening poster', type: 'image' },
     { file: 'opening.mp4', label: 'Opening video', type: 'video' },
   ],
+  17: [
+    { file: '2.png', label: 'Family page background', type: 'image' },
+    { file: '3.png', label: 'Countdown background', type: 'image' },
+    { file: 'opening-poster.jpg', label: 'Opening poster', type: 'image' },
+    { file: 'opening.mp4', label: 'Opening video', type: 'video' },
+    { file: 'music.mp3', label: 'Background music', type: 'audio' },
+  ],
 }
 const TEMPLATE_FOLDERS: Record<number, string> = {
   1: 'royal-grace', 2: 'majestic', 3: 'a-timeless-union', 4: 'mandap-at-dusk',
   5: 'secret-garden', 6: 'embroidered-garden', 7: 'bloom', 8: 'the-artful-love-story',
   9: 'maroon-letter', 10: 'emerald-parchment', 11: 'shaadipath-t02', 12: 'destination-wedding',
-  13: 'raabta', 14: 'qubool', 16: 'viah',
+  13: 'raabta', 14: 'qubool', 16: 'viah', 17: 'tajmahal/assets',
 }
 
 const OrderTextEditor = lazy(() => import('./OrderTextEditor'))
@@ -54,7 +61,9 @@ function ImageEditor({ folder, slots, cacheKey, onUpload }: { folder: string | u
         <div className="edits-image-thumb">
           {slot.type === 'video'
             ? <video src={src} muted playsInline preload="metadata" className="edits-image-preview" />
-            : <img src={src} alt={slot.label} className="edits-image-preview" loading="lazy" />}
+            : slot.type === 'audio'
+              ? <audio src={src} controls preload="metadata" className="edits-image-preview" />
+              : <img src={src} alt={slot.label} className="edits-image-preview" loading="lazy" />}
         </div>
         <div className="edits-image-info">
           <strong>{slot.label}</strong>
@@ -66,7 +75,7 @@ function ImageEditor({ folder, slots, cacheKey, onUpload }: { folder: string | u
         <input
           ref={el => { fileRefs.current[i] = el }}
           type="file"
-          accept={slot.type === 'video' ? 'video/mp4' : 'image/jpeg,image/png,image/webp'}
+          accept={slot.type === 'video' ? 'video/mp4' : slot.type === 'audio' ? 'audio/mpeg,.mp3' : 'image/jpeg,image/png,image/webp'}
           style={{ display: 'none' }}
           onChange={async e => {
             const file = e.target.files?.[0]
@@ -101,7 +110,18 @@ function EditsWorkspace() {
   useEffect(() => {
     let cancelled = false
     loadTemplateCatalog(false).then(data => {
-      if (!cancelled) setTemplates(data)
+      if (!cancelled) {
+        const tajmahal = data.some(template => template.id === 17) ? [] : [{
+          id: 17,
+          template_code: 'tajmahal',
+          name: 'Tajmahal',
+          category: 'Indian',
+          thumbnail_url: '/templates/tajmahal/assets/opening-poster.jpg',
+          preview_url: '/tajmahal',
+          is_active: false,
+        }]
+        setTemplates([...data, ...tajmahal].sort((a, b) => a.id - b.id))
+      }
     }).catch(fetchError => {
       if (!cancelled) setError(fetchError instanceof Error ? fetchError.message : 'Could not load templates.')
     }).finally(() => { if (!cancelled) setLoading(false) })
@@ -181,7 +201,7 @@ function EditsWorkspace() {
       if (!response.ok) throw new Error(result?.error || 'Could not save template edits.')
       const merged = readTextLayout(result?.layout)
       setTextLayout(merged)
-      setSaveStatus(`Saved to public/edits/${selected}.json`)
+        setSaveStatus(`Saved to public/edits/${selected}.json`)
       setTimeout(() => setSaveStatus(status => status.startsWith('Saved') ? '' : status), 5000)
     } catch (error) {
       setSaveStatus(error instanceof Error ? error.message : 'Could not save template edits.')

@@ -1,0 +1,27 @@
+{
+  "version": 1,
+  "elements": {
+    "t17.families.message": {
+      "fontSize": 10,
+      "x": 0,
+      "y": 0.0015759500813429632
+    },
+    "t17.families.bride-family": {
+      "fontSize": 13,
+      "x": 0,
+      "y": 0.006517947129308496
+    },
+    "t17.families.heading": {
+      "fontSize": 16
+    },
+    "t17.families.groom": {
+      "fontSize": 28
+    },
+    "t17.families.groom-family": {
+      "fontSize": 14
+    },
+    "t17.families.bride": {
+      "fontSize": 29
+    }
+  }
+}

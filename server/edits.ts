@@ -19,10 +19,12 @@ const TEMPLATE_FOLDERS: Record<number, string> = {
   12: 'destination-wedding',
   13: 'raabta',
   14: 'qubool',
+  17: 'tajmahal/assets',
 }
 
 const TEMPLATE_IMAGE_SLOTS: Record<number, string[]> = {
   1: ['welcome.jpg', 'general.jpg', 'end.png', 'opening-poster.jpg', 'opening.mp4'],
+  17: ['2.png', '3.png', 'opening-poster.jpg', 'opening.mp4', 'music.mp3'],
 }
 
 const ALLOWED_CONTENT_TYPES: Record<string, string[]> = {
@@ -30,6 +32,7 @@ const ALLOWED_CONTENT_TYPES: Record<string, string[]> = {
   '.png': ['image/png'],
   '.webp': ['image/webp'],
   '.mp4': ['video/mp4'],
+  '.mp3': ['audio/mpeg'],
 }
 
 export function editsAPI(): Plugin {
@@ -106,7 +109,7 @@ export function editsAPI(): Plugin {
 
         const match = url.match(/^\/(\d+)$/)
         const templateId = match ? Number(match[1]) : NaN
-        if (req.method !== 'POST' || !Number.isInteger(templateId) || templateId < 1 || templateId > 14) {
+        if (req.method !== 'POST' || !((templateId >= 1 && templateId <= 14) || templateId === 17)) {
           send(405, { error: 'A valid template ID and POST request are required.' })
           return
         }

@@ -1,0 +1,145 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>A Celebration of Love</title>
+    <style>
+      * { box-sizing: border-box; }
+      body { margin: 0; }
+      .tajmahal-template { height: 100vh; height: 100dvh; overflow-y: auto; overscroll-behavior-y: contain; scroll-snap-type: y mandatory; background: #f5eee5; color: #49342f; font-family: 'Cormorant Garamond',Georgia,serif; }
+      .tajmahal-template__entry { position: relative; display: grid; min-height: 100vh; min-height: 100dvh; scroll-snap-align: start; scroll-snap-stop: always; place-items: center; overflow: hidden; background: #100d0b; }
+      .tajmahal-template__entry-trigger { position: relative; display: grid; width: min(100vw,56.25dvh); height: min(100dvh,177.7778vw); place-items: center; padding: 0; overflow: hidden; border: 0; background: transparent; cursor: pointer; -webkit-tap-highlight-color: transparent; }
+      .tajmahal-template__entry-trigger:focus-visible { outline: 2px solid #f7efe3; outline-offset: -4px; }
+      .tajmahal-template__entry-video,.tajmahal-template__entry-poster { position: absolute; inset: 0; display: block; width: 100%; height: 100%; object-fit: contain; pointer-events: none; }
+      .tajmahal-template__tap-prompt { position: absolute; z-index: 1; right: 12px; bottom: clamp(34px,9vh,76px); left: 12px; width: fit-content; max-width: calc(100% - 24px); margin: auto; color: #f7efe3; font: 400 clamp(12px,3vw,16px)/1.2 'Cormorant Garamond',Georgia,serif; letter-spacing: .015em; text-align: center; text-shadow: 0 2px 12px #000b; pointer-events: none; transition: opacity 500ms ease; animation: tajmahal-tap-float 2.6s ease-in-out infinite; }
+      .tajmahal-template__tap-prompt.is-hidden { opacity: 0; }
+      @keyframes tajmahal-tap-float { 0%,100% { transform: translateY(0); } 50% { transform: translateY(-8px); } }
+      .tajmahal-template__music { position: absolute; z-index: 2; right: calc(3% + 36px); bottom: calc(7.2% - 5px); display: grid; width: 46px; height: 46px; place-items: center; border: 1px solid #f7efe388; border-radius: 50%; background: #100d0bd9; color: #f7efe3; cursor: pointer; font: 20px Georgia,serif; }
+      .tajmahal-template__ending-copy { position: absolute; z-index: 3; top: 15%; left: 50%; width: min(88%,540px); transform: translateX(-50%); color: #fff8ef; text-align: center; text-shadow: 0 2px 18px #160c0acc; pointer-events: none; }
+      .tajmahal-template__ending-copy > * { opacity: 0; animation: tajmahal-ending-fade-up 1.6s ease both; }
+      .tajmahal-template__ending-copy > :nth-child(2) { animation-delay: .4s; }
+      .tajmahal-template__ending-copy > :nth-child(3) { animation-delay: .8s; }
+      .tajmahal-template__ending-copy > :nth-child(4) { animation-delay: 1.2s; }
+      .tajmahal-template__ending-name { margin: 0; font-size: clamp(2rem,9vw,4.5rem); line-height: 1; }
+      .tajmahal-template__ending-weds { display: block; margin: .45rem 0; color: #f1d6ab; font-size: clamp(1.2rem,4vw,1.8rem); font-style: italic; }
+      .tajmahal-template__ending-detail { margin: .65rem 0 0; font-size: clamp(.85rem,3vw,1.1rem); letter-spacing: .08em; }
+      @keyframes tajmahal-ending-fade-up { from { opacity: 0; transform: translateY(22px); } to { opacity: 1; transform: translateY(0); } }
+      @media (prefers-reduced-motion: reduce) { .tajmahal-template__tap-prompt { animation: none; } }
+      .tajmahal-template__cover { display: grid; min-height: 100vh; align-content: center; justify-items: center; gap: 1.5rem; padding: 2rem; text-align: center; }
+      .tajmahal-template__eyebrow,.tajmahal-template__details { margin: 0; color: #f3dfc7; font-size: .8rem; letter-spacing: .18em; text-transform: uppercase; }
+      .tajmahal-template__arch { display: grid; width: min(100%,34rem); min-height: min(70vh,44rem); align-content: center; justify-items: center; gap: 1.5rem; padding: 3rem 1.5rem; border: 1px solid #b8956d; border-radius: 50% 50% 0 0 / 34% 34% 0 0; outline: 1px solid #b8956d66; outline-offset: 8px; }
+      .tajmahal-template__arch h1 { margin: 0; color: #6b3f36; font-size: clamp(2rem,8vw,3.6rem); font-weight: 400; }
+      .tajmahal-template__names { margin: 0; font-size: clamp(1.4rem,6vw,2.3rem); }
+      .tajmahal-template__names span { padding-inline: .3em; color: #ae8563; }
+      .tajmahal-template__families-page { display: flex; min-height: 100vh; min-height: 100dvh; scroll-snap-align: start; scroll-snap-stop: always; flex-direction: column; align-items: center; justify-content: flex-start; gap: clamp(.5rem,1.5vh,1rem); padding: clamp(6rem,14vh,9rem) clamp(1.5rem,12vw,5rem) 2rem; background: #101a30 url('/templates/tajmahal/assets/2.png') center/contain no-repeat; text-align: center; }
+      .tajmahal-template__families-page .tajmahal-template__eyebrow { color: #f2d9aa; font-size: clamp(1.25rem,4.5vw,1.8rem); font-style: italic; letter-spacing: .02em; text-transform: none; }
+      .tajmahal-template__families-heading { margin: 0; color: #fff8ef; font-size: clamp(2.2rem,8vw,3.4rem); font-weight: 500; line-height: 1.05; }
+      .tajmahal-template__ornament { color: #d5a660; font-size: clamp(.9rem,3vw,1.2rem); letter-spacing: .08em; line-height: 1; }
+      .tajmahal-template__ornament--small { display: block; margin: .1rem 0 .45rem; font-size: .9rem; }
+      .tajmahal-template__family-grid { display: flex; width: min(100%,600px); flex-direction: column; align-items: center; gap: clamp(.8rem,2vh,1.2rem); }
+      .tajmahal-template__family h2 { margin: 0; color: #fff8ef; font-size: clamp(2.1rem,7vw,3rem); font-weight: 400; line-height: 1.05; }
+      .tajmahal-template__family p { margin: 0; color: #fff8ef; font-size: clamp(1rem,3.5vw,1.2rem); font-weight: 600; line-height: 1.65; white-space: pre-line; }
+      .tajmahal-template__family-message { width: min(100%,590px); margin: 0; color: #f2d9aa; font-size: clamp(.95rem,3.1vw,1.2rem); font-style: italic; line-height: 1.48; }
+      .tajmahal-template__family-date { margin: 0; color: #f3dfc7; font-size: .8rem; letter-spacing: .18em; text-transform: uppercase; }
+      @media (max-width:520px) { .tajmahal-template__families-page { padding-inline: 14vw; } }
+      [data-invite-text="t17.families.heading"] { font-size: 16px; }
+      [data-invite-text="t17.families.groom"] { font-size: 28px; }
+      [data-invite-text="t17.families.groom-family"] { font-size: 14px; }
+      [data-invite-text="t17.families.bride"] { font-size: 29px; }
+      [data-invite-text="t17.families.bride-family"] { font-size: 13px; translate: 0 .6518vh; }
+      [data-invite-text="t17.families.message"] { font-size: 10px; translate: 0 .1576vh; }
+      .tajmahal-template__countdown-page { display: grid; min-height: 100vh; min-height: 100dvh; place-items: center; scroll-snap-align: start; scroll-snap-stop: always; overflow: hidden; background: #0b1930; }
+      .tajmahal-template__countdown-canvas { position: relative; width: min(100vw,56.25dvh); height: min(100dvh,177.7778vw); background: url('/templates/tajmahal/assets/3.png') center/100% 100% no-repeat; }
+      .tajmahal-template__countdown-grid { position: absolute; top: 34.7%; left: 11.7%; display: grid; width: 76.5%; height: 13%; grid-template-columns: repeat(4,minmax(0,1fr)); gap: 4.4%; }
+      .tajmahal-template__countdown-item { display: flex; min-width: 0; flex-direction: column; align-items: center; justify-content: center; gap: .2rem; color: #1c1210; text-align: center; }
+      .tajmahal-template__countdown-item strong { font-size: clamp(1.2rem,5.2vw,2.5rem); font-weight: 500; line-height: 1; }
+      .tajmahal-template__countdown-item span { font-size: clamp(.4rem,1.65vw,.82rem); font-weight: 700; letter-spacing: .09em; line-height: 1.1; text-transform: uppercase; }
+    </style>
+  </head>
+  <body>
+    <main class="tajmahal-template">
+      <section class="tajmahal-template__entry" aria-label="Tajmahal wedding invitation opening video">
+        <audio id="tajmahal-audio" src="/templates/tajmahal/assets/music.mp3" loop preload="none"></audio>
+        <button class="tajmahal-template__entry-trigger" id="tajmahal-play" type="button" aria-label="Tap here to begin the celebration">
+          <video class="tajmahal-template__entry-video" id="tajmahal-opening-video" src="/templates/tajmahal/assets/opening.mp4" poster="/templates/tajmahal/assets/opening-poster.jpg" preload="auto" playsinline muted aria-label="Opening video"></video>
+          <img class="tajmahal-template__entry-poster" id="tajmahal-opening-poster" src="/templates/tajmahal/assets/opening-poster.jpg" alt="" />
+          <span class="tajmahal-template__tap-prompt" id="tajmahal-prompt">Tap here to begin the celebration</span>
+        </button>
+        <button class="tajmahal-template__music" id="tajmahal-music-toggle" type="button" aria-label="Play music">♫</button>
+        <div class="tajmahal-template__ending-copy" id="tajmahal-ending-copy" aria-live="polite" hidden>
+          <p class="tajmahal-template__ending-name">Ziya</p>
+          <span class="tajmahal-template__ending-weds">Weds</span>
+          <p class="tajmahal-template__ending-name">Nooha</p>
+          <p class="tajmahal-template__ending-detail">20 December 2026</p>
+        </div>
+      </section>
+      <section class="tajmahal-template__families-page" aria-labelledby="tajmahal-families-title">
+        <p class="tajmahal-template__eyebrow" data-invite-text="t17.families.heading">Together with our Families</p>
+        <span class="tajmahal-template__ornament" aria-hidden="true">──── ❀ ────</span>
+        <h1 id="tajmahal-families-title" class="tajmahal-template__families-heading" data-invite-text="t17.families.groom">Ziya</h1>
+        <div class="tajmahal-template__family-grid">
+          <div class="tajmahal-template__family"><span class="tajmahal-template__ornament tajmahal-template__ornament--small" aria-hidden="true">──── ❀ ────</span><p data-invite-text="t17.families.groom-family">Mr. Rajesh Sharma<br />Mrs. Sunita Sharma</p></div>
+          <div class="tajmahal-template__family"><h2 data-invite-text="t17.families.bride">Nooha</h2><span class="tajmahal-template__ornament tajmahal-template__ornament--small" aria-hidden="true">──── ❀ ────</span><p data-invite-text="t17.families.bride-family">Mr. Vikram Patel<br />Mrs. Meera Patel</p></div>
+        </div>
+        <span class="tajmahal-template__ornament" aria-hidden="true">──── ❀ ────</span>
+        <p class="tajmahal-template__family-message" data-invite-text="t17.families.message">We are both so happy that you will be with us as we begin our life together. Since our engagement, the love and blessings we have received from our families and friends have touched us more deeply than we can say. We would like to thank each of you sincerely for your kindness, your warmth and your prayers. We would be honoured to have you with us at our wedding, and we look forward to celebrating with you.</p>
+        <span class="tajmahal-template__ornament" aria-hidden="true">──── ❀ ────</span>
+      </section>
+      <section class="tajmahal-template__countdown-page" id="tajmahal-countdown" data-countdown-target="2026-12-20T11:00:00+05:30" aria-label="Wedding countdown">
+        <div class="tajmahal-template__countdown-canvas">
+          <div class="tajmahal-template__countdown-grid" aria-live="off">
+            <div class="tajmahal-template__countdown-item"><strong data-countdown-unit="days">00</strong><span>Days</span></div>
+            <div class="tajmahal-template__countdown-item"><strong data-countdown-unit="hours">00</strong><span>Hours</span></div>
+            <div class="tajmahal-template__countdown-item"><strong data-countdown-unit="minutes">00</strong><span>Minutes</span></div>
+            <div class="tajmahal-template__countdown-item"><strong data-countdown-unit="seconds">00</strong><span>Seconds</span></div>
+          </div>
+        </div>
+      </section>
+    </main>
+    <script>
+      var tajmahalVideo = document.getElementById('tajmahal-opening-video');
+      var tajmahalAudio = document.getElementById('tajmahal-audio');
+      var tajmahalPoster = document.getElementById('tajmahal-opening-poster');
+      var tajmahalPrompt = document.getElementById('tajmahal-prompt');
+      var tajmahalHasStarted = false;
+      var tajmahalEnding = document.getElementById('tajmahal-ending-copy');
+      var tajmahalCountdownTarget = new Date(document.getElementById('tajmahal-countdown').dataset.countdownTarget).getTime();
+      function updateTajmahalCountdown() {
+        var remaining = Math.max(0, tajmahalCountdownTarget - Date.now());
+        var values = [Math.floor(remaining / 86400000), Math.floor(remaining / 3600000) % 24, Math.floor(remaining / 60000) % 60, Math.floor(remaining / 1000) % 60];
+        ['days', 'hours', 'minutes', 'seconds'].forEach(function (unit, index) {
+          document.querySelector('[data-countdown-unit="' + unit + '"]').textContent = String(values[index]).padStart(2, '0');
+        });
+      }
+      updateTajmahalCountdown();
+      window.setInterval(updateTajmahalCountdown, 1000);
+      tajmahalVideo.addEventListener('playing', function () { tajmahalPoster.classList.add('is-hidden'); });
+      function showTajmahalEnding() { tajmahalEnding.hidden = false; }
+      tajmahalVideo.addEventListener('timeupdate', function () {
+        if (tajmahalVideo.duration > 0 && tajmahalVideo.duration - tajmahalVideo.currentTime <= 3) showTajmahalEnding();
+      });
+      tajmahalVideo.addEventListener('ended', showTajmahalEnding);
+      document.getElementById('tajmahal-play').addEventListener('click', function () {
+        document.activeElement.blur();
+        tajmahalPrompt.classList.add('is-hidden');
+        tajmahalAudio.volume = 0.35;
+        tajmahalAudio.play().catch(function () {});
+        tajmahalVideo.muted = true;
+        if (!tajmahalHasStarted) { tajmahalVideo.currentTime = 1.5; tajmahalHasStarted = true; }
+        tajmahalVideo.play().catch(function () {});
+      });
+      document.getElementById('tajmahal-music-toggle').addEventListener('click', function (event) {
+        if (tajmahalAudio.paused) {
+          tajmahalAudio.volume = 0.35;
+          tajmahalAudio.play().catch(function () {});
+        } else {
+          tajmahalAudio.pause();
+        }
+      });
+      var tajmahalMusicButton = document.getElementById('tajmahal-music-toggle');
+      tajmahalAudio.addEventListener('play', function () { tajmahalMusicButton.setAttribute('aria-label', 'Pause music'); tajmahalMusicButton.textContent = 'Ⅱ'; });
+      tajmahalAudio.addEventListener('pause', function () { tajmahalMusicButton.setAttribute('aria-label', 'Play music'); tajmahalMusicButton.textContent = '♫'; });
+    </script>
+  </body>
+</html>

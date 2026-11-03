@@ -1,6 +1,6 @@
 # Wedding invitation project context
 
-Last updated: 2026-11-02. Targeted source/worktree review only; no build, tests, browser review, or database verification was performed. These notes are not a full repository audit.
+Last updated: 2026-11-04. Tajmahal is registered as template ID 17 with `is_active=false`; migration `202611040002_add_tajmahal_template.sql` adds it to the catalog, but has not been applied. `/edits` has a local inactive fallback for testing; the preview route is `/tajmahal`. Preview defaults are Ziya and Nooha, 20 December 2026. The opening video starts at 1.5 seconds with a matching poster frame and tap prompt; the entry, family page, and countdown page use vertical scroll snapping. Its music button plays `/templates/tajmahal/assets/music.mp3`. Groom, “Weds,” bride, and wedding date fade up in sequence at the top center during the video’s final three seconds. The second page is a centered family and invitation message layout over `assets/2.png`; the third shows a live days/hours/minutes/seconds countdown over `assets/3.png`, with an independently scrolling and gently drifting couple layer from `assets/3-couple.webp`. Text and image editing are wired for template ID 17, and the saved typography/position defaults from `public/edits/17.json` are reflected in the template CSS. No build, tests, or browser verification performed. These notes are not a full repository audit.
 
 ## Project and local workflow
 

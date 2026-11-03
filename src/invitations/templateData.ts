@@ -48,6 +48,20 @@ templateInvitationData[16] = {
   }],
 }
 
+templateInvitationData[17] = {
+  ...examples[1],
+  template: 17,
+  groom: 'Ziya',
+  bride: 'Nooha',
+  date: '2026-12-20',
+  venue: '',
+  address: '',
+  groomFamily: 'Mr. Rajesh Sharma\nMrs. Sunita Sharma',
+  brideFamily: 'Mr. Vikram Patel\nMrs. Meera Patel',
+  message: 'We are both so happy that you will be with us as we begin our life together. Since our engagement, the love and blessings we have received from our families and friends have touched us more deeply than we can say. We would like to thank each of you sincerely for your kindness, your warmth and your prayers. We would be honoured to have you with us at our wedding, and we look forward to celebrating with you.',
+  events: [],
+}
+
 export function invitationExample(templateId: number): InvitationData | undefined {
   return templateInvitationData[templateId]
 }

@@ -1,0 +1,409 @@
+.tajmahal-template {
+  height: 100vh;
+  height: 100dvh;
+  overflow-y: auto;
+  overscroll-behavior-y: contain;
+  scroll-snap-type: y mandatory;
+  background: #f5eee5;
+  color: #49342f;
+  font-family: 'Cormorant Garamond', Georgia, serif;
+}
+
+.tajmahal-template__entry {
+  position: relative;
+  display: grid;
+  min-height: 100vh;
+  min-height: 100dvh;
+  scroll-snap-align: start;
+  scroll-snap-stop: always;
+  place-items: center;
+  overflow: hidden;
+  background: #100d0b;
+}
+
+.tajmahal-template__entry-trigger {
+  position: relative;
+  display: grid;
+  width: min(100vw, 56.25dvh);
+  height: min(100dvh, 177.7778vw);
+  place-items: center;
+  padding: 0;
+  overflow: hidden;
+  border: 0;
+  background: transparent;
+  cursor: pointer;
+  -webkit-tap-highlight-color: transparent;
+}
+
+.tajmahal-template__entry-trigger:focus-visible {
+  outline: 2px solid #f7efe3;
+  outline-offset: -4px;
+}
+
+.tajmahal-template__entry-video,
+.tajmahal-template__entry-poster {
+  position: absolute;
+  inset: 0;
+  display: block;
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+  pointer-events: none;
+}
+
+.tajmahal-template__tap-prompt {
+  position: absolute;
+  z-index: 1;
+  right: 12px;
+  bottom: clamp(34px, 9vh, 76px);
+  left: 12px;
+  width: fit-content;
+  max-width: calc(100% - 24px);
+  margin: auto;
+  color: #f7efe3;
+  font: 400 clamp(12px, 3vw, 16px)/1.2 'Cormorant Garamond', Georgia, serif;
+  letter-spacing: 0.015em;
+  text-align: center;
+  text-shadow: 0 2px 12px #000b;
+  pointer-events: none;
+  transition: opacity 500ms ease;
+  animation: tajmahal-tap-float 2.6s ease-in-out infinite;
+}
+
+.tajmahal-template__tap-prompt.is-hidden { opacity: 0; }
+
+@keyframes tajmahal-tap-float {
+  0%, 100% { transform: translateY(0); }
+  50% { transform: translateY(-8px); }
+}
+
+.tajmahal-template__music {
+  position: absolute;
+  z-index: 2;
+  right: calc(3% + 36px);
+  bottom: calc(7.2% - 5px);
+  display: grid;
+  width: 46px;
+  height: 46px;
+  place-items: center;
+  border: 1px solid #f7efe388;
+  border-radius: 50%;
+  background: #100d0bd9;
+  color: #f7efe3;
+  cursor: pointer;
+  font: 20px Georgia, serif;
+}
+
+.tajmahal-template__ending-copy {
+  position: absolute;
+  z-index: 3;
+  top: 15%;
+  left: 50%;
+  width: min(88%, 540px);
+  transform: translateX(-50%);
+  color: #fff8ef;
+  text-align: center;
+  text-shadow: 0 2px 18px #160c0acc;
+  pointer-events: none;
+}
+
+.tajmahal-template__ending-copy > * {
+  opacity: 0;
+  animation: tajmahal-ending-fade-up 1.6s ease both;
+}
+
+.tajmahal-template__ending-copy > :nth-child(2) { animation-delay: 0.4s; }
+.tajmahal-template__ending-copy > :nth-child(3) { animation-delay: 0.8s; }
+.tajmahal-template__ending-copy > :nth-child(4) { animation-delay: 1.2s; }
+
+.tajmahal-template__ending-name {
+  margin: 0;
+  font-size: clamp(2rem, 9vw, 4.5rem);
+  line-height: 1;
+}
+
+.tajmahal-template__ending-weds {
+  display: block;
+  margin: 0.45rem 0;
+  color: #f1d6ab;
+  font-size: clamp(1.2rem, 4vw, 1.8rem);
+  font-style: italic;
+}
+
+.tajmahal-template__ending-detail {
+  margin: 0.65rem 0 0;
+  font-size: clamp(0.85rem, 3vw, 1.1rem);
+  letter-spacing: 0.08em;
+}
+
+@keyframes tajmahal-ending-fade-up {
+  from { opacity: 0; transform: translateY(22px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .tajmahal-template__tap-prompt { animation: none; }
+  .tajmahal-template__ending-copy > * { animation-duration: 1ms; animation-delay: 0s !important; }
+}
+
+.tajmahal-template__eyebrow {
+  margin: 0;
+  color: #f3dfc7;
+  font-size: 0.8rem;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+}
+
+.tajmahal-template__families-page {
+  display: flex;
+  min-height: 100vh;
+  min-height: 100dvh;
+  scroll-snap-align: start;
+  scroll-snap-stop: always;
+  flex-direction: column;
+  align-items: center;
+  justify-content: flex-start;
+  gap: clamp(0.5rem, 1.5vh, 1rem);
+  padding: clamp(6rem, 14vh, 9rem) clamp(1.5rem, 12vw, 5rem) 2rem;
+  background: #101a30 url('/templates/tajmahal/assets/2.png') center / contain no-repeat;
+  text-align: center;
+}
+
+.tajmahal-template__families-page .tajmahal-template__eyebrow {
+  color: #f2d9aa;
+  font-size: clamp(1.25rem, 4.5vw, 1.8rem);
+  font-style: italic;
+  letter-spacing: 0.02em;
+  text-transform: none;
+}
+
+.tajmahal-template__families-heading {
+  margin: 0;
+  color: #fff8ef;
+  font-size: clamp(2.2rem, 8vw, 3.4rem);
+  font-weight: 500;
+  line-height: 1.05;
+}
+
+.tajmahal-template__ornament {
+  color: #d5a660;
+  font-size: clamp(0.9rem, 3vw, 1.2rem);
+  letter-spacing: 0.08em;
+  line-height: 1;
+}
+
+.tajmahal-template__ornament--small {
+  display: block;
+  margin: 0.1rem 0 0.45rem;
+  font-size: 0.9rem;
+}
+
+.tajmahal-template__family-grid {
+  display: flex;
+  width: min(100%, 600px);
+  flex-direction: column;
+  align-items: center;
+  gap: clamp(0.8rem, 2vh, 1.2rem);
+}
+
+.tajmahal-template__family h2 {
+  margin: 0;
+  color: #fff8ef;
+  font-size: clamp(2.1rem, 7vw, 3rem);
+  font-weight: 400;
+  line-height: 1.05;
+}
+
+.tajmahal-template__family p {
+  margin: 0;
+  color: #fff8ef;
+  font-size: clamp(1rem, 3.5vw, 1.2rem);
+  font-weight: 600;
+  line-height: 1.65;
+  white-space: pre-line;
+}
+
+.tajmahal-template__family-message {
+  width: min(100%, 590px);
+  margin: 0;
+  color: #f2d9aa;
+  font-size: clamp(0.95rem, 3.1vw, 1.2rem);
+  font-style: italic;
+  line-height: 1.48;
+}
+
+.tajmahal-template__family-date {
+  margin: 0;
+  color: #f3dfc7;
+  font-size: 0.8rem;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+}
+
+.tajmahal-template__countdown-page {
+  display: grid;
+  min-height: 100vh;
+  min-height: 100dvh;
+  place-items: center;
+  scroll-snap-align: start;
+  scroll-snap-stop: always;
+  overflow: hidden;
+  background: #0b1930;
+}
+
+.tajmahal-template__countdown-canvas {
+  position: relative;
+  width: min(100vw, 56.25dvh);
+  height: min(100dvh, 177.7778vw);
+  background: url('/templates/tajmahal/assets/3.png') center / 100% 100% no-repeat;
+}
+
+.tajmahal-template__countdown-couple {
+  position: absolute;
+  z-index: 1;
+  left: -10%;
+  bottom: 0;
+  width: 100%;
+  height: 58%;
+  object-fit: contain;
+  object-position: center bottom;
+  pointer-events: none;
+  translate: 0 var(--couple-scroll-y, -8%);
+  transform-origin: 50% 100%;
+  animation: tajmahal-couple-drift 6.4s ease-in-out infinite alternate;
+  will-change: translate, transform;
+}
+
+@keyframes tajmahal-couple-drift {
+  from { transform: translateX(-4px) scale(1); }
+  to { transform: translateX(4px) scale(1.025); }
+}
+
+.tajmahal-template__countdown-grid {
+  position: absolute;
+  z-index: 2;
+  top: 34.7%;
+  left: 11.7%;
+  display: grid;
+  width: 76.5%;
+  height: 13%;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 4.4%;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .tajmahal-template__countdown-couple { animation: none; }
+}
+
+.tajmahal-template__countdown-item {
+  display: flex;
+  min-width: 0;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 0.2rem;
+  color: #1c1210;
+  text-align: center;
+}
+
+.tajmahal-template__countdown-item strong {
+  font-size: clamp(1.2rem, 5.2vw, 2.5rem);
+  font-weight: 500;
+  line-height: 1;
+}
+
+.tajmahal-template__countdown-item span {
+  font-size: clamp(0.4rem, 1.65vw, 0.82rem);
+  font-weight: 700;
+  letter-spacing: 0.09em;
+  line-height: 1.1;
+  text-transform: uppercase;
+}
+
+.tajmahal-template__arch {
+  display: grid;
+  width: min(100%, 34rem);
+  min-height: min(70vh, 44rem);
+  align-content: center;
+  justify-items: center;
+  gap: 1.5rem;
+  padding: 3rem 1.5rem;
+  border: 1px solid #b8956d;
+  border-radius: 50% 50% 0 0 / 34% 34% 0 0;
+  outline: 1px solid #b8956d66;
+  outline-offset: 8px;
+}
+
+.tajmahal-template__arch h1 {
+  margin: 0;
+  color: #6b3f36;
+  font-size: clamp(2rem, 8vw, 3.6rem);
+  font-weight: 400;
+}
+
+.tajmahal-template__names {
+  margin: 0;
+  font-size: clamp(1.4rem, 6vw, 2.3rem);
+}
+
+.tajmahal-template__names span {
+  padding-inline: 0.3em;
+  color: #ae8563;
+}
+
+@media (max-width: 520px) {
+  .tajmahal-template__families-page { padding-inline: 14vw; }
+}
+
+.tajmahal-template__families-page > * {
+  opacity: 0;
+  translate: 0 18px;
+  transition: opacity 850ms ease, translate 850ms ease;
+}
+
+.tajmahal-template__families-page.is-visible > * {
+  opacity: 1;
+  translate: 0 0;
+}
+
+.tajmahal-template__families-page.is-visible > *:nth-child(2) { transition-delay: 220ms; }
+.tajmahal-template__families-page.is-visible > *:nth-child(3) { transition-delay: 440ms; }
+.tajmahal-template__families-page.is-visible > *:nth-child(4) { transition-delay: 660ms; }
+.tajmahal-template__families-page.is-visible > *:nth-child(5) { transition-delay: 880ms; }
+.tajmahal-template__families-page.is-visible > *:nth-child(6) { transition-delay: 1100ms; }
+.tajmahal-template__families-page.is-visible > *:nth-child(7) { transition-delay: 1320ms; }
+.tajmahal-template__families-page.is-visible > *:nth-child(8) { transition-delay: 1540ms; }
+.tajmahal-template__families-page.is-visible > *:nth-child(9) { transition-delay: 1760ms; }
+.tajmahal-template__families-page.is-visible > *:nth-child(10) { transition-delay: 1980ms; }
+
+.tajmahal-template__family-message {
+  opacity: 0;
+  translate: 0 18px;
+  transition: opacity 850ms ease, translate 850ms ease;
+}
+
+.tajmahal-template__families-page.is-visible .tajmahal-template__family-message {
+  opacity: 1;
+  translate: 0 0;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .tajmahal-template__families-page > * {
+    opacity: 1;
+    translate: none;
+    transition: none;
+  }
+  .tajmahal-template__family-message {
+    opacity: 1;
+    translate: none;
+    transition: none;
+  }
+}
+
+/* Saved defaults from public/edits/17.json */
+[data-invite-text="t17.families.heading"] { font-size: 16px; }
+[data-invite-text="t17.families.groom"] { font-size: 28px; }
+[data-invite-text="t17.families.groom-family"] { font-size: 14px; }
+[data-invite-text="t17.families.bride"] { font-size: 29px; }
+[data-invite-text="t17.families.bride-family"] { font-size: 13px; translate: 0 0.6518vh; }
+[data-invite-text="t17.families.message"] { font-size: 10px; translate: 0 0.1576vh; }

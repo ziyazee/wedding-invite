@@ -7,9 +7,14 @@
     <style>
       * { box-sizing: border-box; }
       body { margin: 0; background: #100d0b; }
-      .mahal-template__entry { display: grid; min-height: 100vh; min-height: 100dvh; place-items: center; overflow: hidden; background: #100d0b; }
-      .mahal-template__entry-trigger { display: grid; width: min(100vw, 56.25dvh); height: min(100dvh, 177.7778vw); place-items: center; padding: 0; overflow: hidden; border: 0; background: transparent; cursor: pointer; }
-      .mahal-template__entry-video { display: block; width: auto; height: min(100vh, 177.7778vw); height: min(100dvh, 177.7778vw); max-width: 100vw; max-height: 100dvh; aspect-ratio: 9 / 16; object-fit: contain; pointer-events: none; }
+      .mahal-template__entry { position: relative; display: grid; min-height: 100vh; min-height: 100dvh; place-items: center; overflow: hidden; background: #100d0b; }
+      .mahal-template__entry-trigger { position: relative; display: grid; width: min(100vw, 56.25dvh); height: min(100dvh, 177.7778vw); place-items: center; padding: 0; overflow: hidden; border: 0; background: transparent; cursor: pointer; -webkit-tap-highlight-color: transparent; }
+      .mahal-template__entry-video, .mahal-template__entry-poster { position: absolute; inset: 0; display: block; width: 100%; height: 100%; object-fit: contain; pointer-events: none; }
+      .mahal-template__entry-poster.is-hidden { visibility: hidden; }
+      .mahal-template__tap-prompt { position: absolute; z-index: 1; right: 12px; bottom: clamp(34px, 9vh, 76px); left: 12px; width: fit-content; max-width: calc(100% - 24px); margin: auto; border: 0; color: #f7efe3; font: 400 clamp(12px, 3vw, 16px)/1.2 'Cormorant Garamond',Georgia,serif; letter-spacing: .015em; text-shadow: 0 2px 12px #000b; text-align: center; pointer-events: none; transition: opacity 500ms ease; animation: mahal-tap-float 2.6s ease-in-out infinite; }
+      .mahal-template__tap-prompt.is-hidden { opacity: 0; }
+      @keyframes mahal-tap-float { 0%,100% { transform: translateY(0); } 50% { transform: translateY(-8px); } }
+      @media (prefers-reduced-motion: reduce) { .mahal-template__tap-prompt { animation: none; } }
       .mahal-template__music { position: absolute; z-index: 2; right: calc(3% + 36px); bottom: calc(7.2% - 5px); display: grid; width: 46px; height: 46px; place-items: center; border: 1px solid #f7efe388; border-radius: 50%; background: #100d0bd9; color: #f7efe3; cursor: pointer; font: 20px Georgia,serif; }
       .mahal-template__sr-only { position: absolute; width: 1px; height: 1px; padding: 0; margin: -1px; overflow: hidden; clip: rect(0, 0, 0, 0); white-space: nowrap; border: 0; }
       .mahal-template__hero { min-height: 100vh; display: grid; align-content: center; justify-items: center; gap: 1rem; padding: 2rem; color: #f7efe3; text-align: center; }
@@ -18,9 +23,10 @@
   <body>
     <main class="mahal-template">
       <section class="mahal-template__entry" aria-label="Wedding invitation opening video">
-        <button class="mahal-template__entry-trigger" id="mahal-play" type="button" aria-label="Play wedding invitation video">
+        <button class="mahal-template__entry-trigger" id="mahal-play" type="button" aria-label="Tap here to begin the celebration">
           <video class="mahal-template__entry-video" id="mahal-opening-video" src="/templates/mahal/assets/opening.mp4" poster="/templates/mahal/assets/opening-poster.jpg" preload="auto" playsinline aria-label="Opening video"></video>
-          <span class="mahal-template__sr-only">Tap to play the wedding invitation video</span>
+          <img class="mahal-template__entry-poster" id="mahal-opening-poster" src="/templates/mahal/assets/opening-poster.jpg" alt="" />
+          <span class="mahal-template__tap-prompt">Tap here to begin the celebration</span>
         </button>
         <button class="mahal-template__music" id="mahal-music-toggle" type="button" aria-label="Mute music">♫</button>
       </section>
@@ -33,9 +39,19 @@
     </main>
     <script>
       var mahalVideo = document.getElementById('mahal-opening-video');
+      var mahalPoster = document.getElementById('mahal-opening-poster');
+      var mahalPrompt = document.querySelector('.mahal-template__tap-prompt');
       var mahalMusicEnabled = true;
+      var mahalHasStarted = false;
+      mahalVideo.addEventListener('playing', function () { mahalPoster.classList.add('is-hidden'); });
       document.getElementById('mahal-play').addEventListener('click', function () {
+        document.activeElement.blur();
+        mahalPrompt.classList.add('is-hidden');
         mahalVideo.muted = !mahalMusicEnabled;
+        if (!mahalHasStarted) {
+          mahalVideo.currentTime = 1.5;
+          mahalHasStarted = true;
+        }
         mahalVideo.play().catch(function () {});
       });
       document.getElementById('mahal-music-toggle').addEventListener('click', function (event) {

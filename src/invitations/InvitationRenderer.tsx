@@ -23,6 +23,7 @@ const Design15 = lazy(() => import('../pages/Design15'))
 const Design16 = lazy(() => import('../pages/Design16'))
 const Design17 = lazy(() => import('../pages/Design17'))
 const MandapAtDusk = lazy(() => import('../pages/MandapAtDusk'))
+const Tajmahal = lazy(() => import('../templates/Tajmahal'))
 const TextLayoutLayer = lazy(() => import('./TextLayoutLayer'))
 const OrderFrameInvitation = lazy(() => import('./OrderFrameInvitation'))
 const DesignedByFooter = lazy(() => import('./components/DesignedByFooter'))
@@ -31,6 +32,7 @@ const templateComponent: Record<number, React.LazyExoticComponent<React.Componen
   1: RoyalGrace,
   3: ATimelessUnion,
   4: MandapAtDusk,
+  17: Tajmahal,
   8: ArtfulLoveStory,
   101: NewDesign,
   104: Design4,

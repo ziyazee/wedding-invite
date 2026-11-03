@@ -1,4 +1,4 @@
-import { useRef, useState } from "react";
+import { useRef, useState, type MouseEvent } from "react";
 import "./Mahal.css";
 
 /**
@@ -7,11 +7,20 @@ import "./Mahal.css";
  */
 export default function Mahal() {
   const videoRef = useRef<HTMLVideoElement>(null);
+  const hasStarted = useRef(false);
   const [musicEnabled, setMusicEnabled] = useState(true);
+  const [posterVisible, setPosterVisible] = useState(true);
+  const [promptVisible, setPromptVisible] = useState(true);
 
-  function playOpening() {
+  function playOpening(event: MouseEvent<HTMLButtonElement>) {
+    event.currentTarget.blur();
+    setPromptVisible(false);
     if (!videoRef.current) return;
     videoRef.current.muted = !musicEnabled;
+    if (!hasStarted.current) {
+      videoRef.current.currentTime = 1.5;
+      hasStarted.current = true;
+    }
     void videoRef.current.play().catch(() => {});
   }
 
@@ -26,7 +35,7 @@ export default function Mahal() {
   return (
     <main className="mahal-template">
       <section className="mahal-template__entry" aria-label="Wedding invitation opening video">
-        <button className="mahal-template__entry-trigger" type="button" onClick={playOpening} aria-label="Play wedding invitation video">
+        <button className="mahal-template__entry-trigger" type="button" onClick={playOpening} aria-label="Tap here to begin the celebration">
           <video
             ref={videoRef}
             className="mahal-template__entry-video"
@@ -34,9 +43,11 @@ export default function Mahal() {
             poster="/templates/mahal/assets/opening-poster.jpg"
             preload="auto"
             playsInline
+            onPlaying={() => setPosterVisible(false)}
             aria-label="Opening video"
           />
-          <span className="mahal-template__sr-only">Tap to play the wedding invitation video</span>
+          {posterVisible && <img className="mahal-template__entry-poster" src="/templates/mahal/assets/opening-poster.jpg" alt="" />}
+          <span className={`mahal-template__tap-prompt${promptVisible ? "" : " is-hidden"}`} aria-hidden={!promptVisible}>Tap here to begin the celebration</span>
         </button>
         <button
           className="mahal-template__music"

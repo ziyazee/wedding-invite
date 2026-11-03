@@ -21,6 +21,7 @@ const ATimelessUnionPreview = lazySitePage(() => import('./pages/ATimelessUnionP
 const CelebrationsEmbed = lazySitePage(() => import('./pages/a-timeless-union/CelebrationsEmbed'))
 const MandapAtDuskPreview = lazySitePage(() => import('./pages/MandapAtDuskPreview'))
 const Mahal = lazySitePage(() => import('./templates/Mahal'))
+const Tajmahal = lazySitePage(() => import('./templates/Tajmahal'))
 // Testing templates
 const MaroonLetter = lazySitePage(() => import('./pages/MaroonLetter'))
 const EmeraldParchment = lazySitePage(() => import('./pages/EmeraldParchment'))
@@ -137,6 +138,7 @@ export default function App() {
       <Route path="/a-timeless-union" element={<ATimelessUnionPreview />} />
       <Route path="/mandap-at-dusk" element={<MandapAtDuskPreview />} />
       <Route path="/mahal" element={<Mahal />} />
+      <Route path="/tajmahal" element={<Tajmahal />} />
       {/* Testing templates */}
       <Route path="/maroon-letter" element={<MaroonLetter />} />
       <Route path="/emerald-parchment" element={<EmeraldParchment />} />
