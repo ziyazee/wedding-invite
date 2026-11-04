@@ -182,7 +182,7 @@ export default function SecretGarden({ details: d, rsvpTarget }: { details: Invi
       <Section data-invite-section="closing" className="sg-closing">
         <Copy as="h2" field="closing.couple" className="sg-closing-names"><span>{d.brideFirst ? d.bride : d.groom}</span><i>&</i><span>{d.brideFirst ? d.groom : d.bride}</span></Copy>
         <Copy as="p" field="closing.date" className="sg-eyebrow">{formatDate(d.date)}</Copy>
-        <InvitationMedia className="sg-footer-flowers" src="/templates/secret-garden/assets/footer-flowers.png" alt="An embroidered arrangement of white roses and greenery" />
+        <InvitationMedia className="sg-footer-flowers" src="/templates/secret-garden/assets/footer-flowers.webp" alt="An embroidered arrangement of white roses and greenery" />
       </Section>
 
     </>}
