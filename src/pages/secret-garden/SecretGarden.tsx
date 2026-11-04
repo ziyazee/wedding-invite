@@ -84,45 +84,42 @@ export default function SecretGarden({ details: d, rsvpTarget }: { details: Invi
 
   useEffect(() => { const previous = document.title; document.title = `${couple} — Secret Garden`; return () => { document.title = previous } }, [couple])
 
-  // Two-phase asset preloading
+  // Phase 1: preload hero video + music, gate tap until ready
   useEffect(() => {
-    const links: HTMLLinkElement[] = []
-    const addPreload = (href: string, asValue: string, onDone?: () => void) => {
+    let done = false
+    let loaded = 0
+    const check = () => { if (!done && ++loaded >= 2) { done = true; setReady(true) } }
+
+    fetch('/templates/secret-garden/assets/hero-video.mp4').then(r => r.blob()).then(check, check)
+    fetch(d.music || '/templates/secret-garden/assets/autumn-wind.mp3').then(r => r.blob()).then(check, check)
+
+    const fallback = setTimeout(() => { if (!done) { done = true; setReady(true) } }, 10000)
+    return () => { clearTimeout(fallback) }
+  }, [])
+
+  // Phase 2: preload remaining assets after Phase 1
+  useEffect(() => {
+    if (!ready) return
+    const urls = [
+      '/templates/secret-garden/assets/pearl-clock.webp',
+      '/templates/secret-garden/assets/lights.webp',
+      '/templates/secret-garden/assets/couple.webp',
+      '/templates/secret-garden/assets/ornate-badge-2PyCLI0e.webp',
+      '/templates/secret-garden/assets/food.webp',
+      '/templates/secret-garden/assets/celebrations.mp4',
+      '/templates/secret-garden/assets/dress-code-new.webp',
+      '/templates/secret-garden/assets/footer-flowers.webp',
+    ]
+    const links = urls.map(href => {
       const link = document.createElement('link')
       link.rel = 'preload'
       link.href = href
-      link.setAttribute('as', asValue)
-      if (onDone) { link.onload = onDone; link.onerror = onDone }
+      link.setAttribute('as', href.endsWith('.mp4') ? 'video' : 'image')
       document.head.appendChild(link)
-      links.push(link)
       return link
-    }
-
-    let loaded = 0
-    const phase1 = [
-      { href: '/templates/secret-garden/assets/hero-video.mp4', as: 'video' },
-      { href: d.music || '/templates/secret-garden/assets/autumn-wind.mp3', as: 'fetch' },
-    ]
-    const check = () => {
-      if (++loaded >= phase1.length) {
-        setReady(true)
-        const phase2 = [
-          { href: '/templates/secret-garden/assets/pearl-clock.webp', as: 'image' },
-          { href: '/templates/secret-garden/assets/lights.webp', as: 'image' },
-          { href: '/templates/secret-garden/assets/couple.webp', as: 'image' },
-          { href: '/templates/secret-garden/assets/ornate-badge-2PyCLI0e.webp', as: 'image' },
-          { href: '/templates/secret-garden/assets/food.webp', as: 'image' },
-          { href: '/templates/secret-garden/assets/celebrations.mp4', as: 'video' },
-          { href: '/templates/secret-garden/assets/dress-code-new.webp', as: 'image' },
-          { href: '/templates/secret-garden/assets/footer-flowers.webp', as: 'image' },
-        ]
-        phase2.forEach(p => addPreload(p.href, p.as))
-      }
-    }
-    phase1.forEach(p => addPreload(p.href, p.as, check))
-
+    })
     return () => { links.forEach(link => link.remove()) }
-  }, [])
+  }, [ready])
 
   // Scroll reveal
   const structure = JSON.stringify([events.map(e => e.key), !!d.dressCode.trim()])
