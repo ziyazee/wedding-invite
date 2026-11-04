@@ -81,21 +81,25 @@ export default function SecretGarden({ details: d, rsvpTarget }: { details: Invi
   const [opened, setOpened] = useState(false)
   const [namesVisible, setNamesVisible] = useState(false)
   const [ready, setReady] = useState(false)
+  const tapped = useRef(false)
 
   useEffect(() => { const previous = document.title; document.title = `${couple} — Secret Garden`; return () => { document.title = previous } }, [couple])
 
-  // Phase 1: preload hero video + music, gate tap until ready
+  // Phase 1: gate tap until hero video is buffered enough to play
   useEffect(() => {
+    const video = heroVideo.current
+    if (!video) { setReady(true); return }
     let done = false
-    let loaded = 0
-    const check = () => { if (!done && ++loaded >= 2) { done = true; setReady(true) } }
+    const unlock = () => { if (!done) { done = true; setReady(true) } }
 
-    fetch('/templates/secret-garden/assets/hero-video.mp4').then(r => r.blob()).then(check, check)
-    fetch(d.music || '/templates/secret-garden/assets/autumn-wind.mp3').then(r => r.blob()).then(check, check)
+    if (video.readyState >= 3) { unlock(); return }
+    video.addEventListener('canplaythrough', unlock, { once: true })
 
-    const fallback = setTimeout(() => { if (!done) { done = true; setReady(true) } }, 10000)
-    return () => { clearTimeout(fallback) }
+    const fallback = setTimeout(unlock, 10000)
+    return () => { clearTimeout(fallback); video.removeEventListener('canplaythrough', unlock) }
   }, [])
+
+  useEffect(() => { if (ready && tapped.current && !opened) openInvitation() }, [ready])
 
   // Phase 2: preload remaining assets after Phase 1
   useEffect(() => {
@@ -134,7 +138,8 @@ export default function SecretGarden({ details: d, rsvpTarget }: { details: Invi
   }, [structure, opened])
 
   function openInvitation() {
-    if (opened || !ready) return
+    if (opened) return
+    if (!ready) { tapped.current = true; return }
     setOpened(true)
     const video = heroVideo.current
     const reducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches
@@ -154,7 +159,7 @@ export default function SecretGarden({ details: d, rsvpTarget }: { details: Invi
         <Names details={d} section="opening" />
         <Copy as="p" field="opening.date" className="sg-eyebrow">{formatDate(d.date)}</Copy>
       </div>
-      <button type="button" className={`sg-open-btn${!ready ? ' sg-loading' : ''}`} tabIndex={opened ? -1 : 0} disabled={!ready}>{ready ? 'Tap to open' : 'Loading…'}</button>
+      <button type="button" className="sg-open-btn" tabIndex={opened ? -1 : 0}>Tap to open</button>
     </Section>
 
     {opened && <>
