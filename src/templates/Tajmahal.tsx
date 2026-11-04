@@ -3,10 +3,13 @@ import { useInvitationDetails } from "../invitations/context";
 import { formatDate, formatTime, mapURL, weddingISO } from "../invitations/model";
 import { downloadCalendar } from "../invitations/calendar";
 import { invitationExample } from "../invitations/templateData";
+import { useTajmahalTouchScroll } from "./useTajmahalTouchScroll";
 import "./Tajmahal.css";
 
 /** Starter scaffold for the Tajmahal wedding invitation template. */
 export default function Tajmahal() {
+  const scrollerRef = useRef<HTMLElement>(null);
+  useTajmahalTouchScroll(scrollerRef);
   const details = useInvitationDetails() || invitationExample(17)!;
   const edited = (id: string, original: string) => details.textOverrides?.elements[id]?.content ?? original;
   const videoRef = useRef<HTMLVideoElement>(null);
@@ -264,7 +267,7 @@ export default function Tajmahal() {
   ];
 
   return (
-    <main className="tajmahal-template">
+    <main ref={scrollerRef} className="tajmahal-template">
       <section className="tajmahal-template__entry" data-invite-section="t17.entry" aria-label="Tajmahal wedding invitation opening video">
         <audio ref={audioRef} src="/templates/tajmahal/assets/music.mp3" loop preload="none" onPlay={() => setMusicPlaying(true)} onPause={() => setMusicPlaying(false)} />
         <button className="tajmahal-template__entry-trigger" type="button" onClick={playOpening} aria-label="Tap here to begin the celebration">

@@ -11,6 +11,11 @@
   font-family: 'Cormorant Garamond', Georgia, serif;
 }
 
+.tajmahal-template.is-touch-scrolling {
+  scroll-behavior: auto;
+  scroll-snap-type: none;
+}
+
 @media (prefers-reduced-motion: reduce) {
   .tajmahal-template { scroll-behavior: auto; }
 }
