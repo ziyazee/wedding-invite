@@ -176,7 +176,7 @@
   justify-content: flex-start;
   gap: clamp(0.5rem, 1.5vh, 1rem);
   padding: clamp(6rem, 14vh, 9rem) clamp(1.5rem, 12vw, 5rem) 2rem;
-  background: #101a30 url('/templates/tajmahal/assets/2.png') center / contain no-repeat;
+  background: #101a30 url('/templates/tajmahal/assets/2.webp') center / contain no-repeat;
   text-align: center;
 }
 
@@ -564,7 +564,7 @@
   position: relative;
   width: min(100vw, 56.25dvh);
   height: min(100dvh, 177.7778vw);
-  background: url('/templates/tajmahal/assets/3.png') center / 100% 100% no-repeat;
+  background: url('/templates/tajmahal/assets/3.webp') center / 100% 100% no-repeat;
 }
 
 .tajmahal-template__countdown-couple {

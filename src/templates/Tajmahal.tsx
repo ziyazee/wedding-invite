@@ -340,7 +340,7 @@ export default function Tajmahal() {
       </section>
       <section ref={celebrationsPageRef} className="tajmahal-template__fourth-page" data-invite-section="t17.scene4" aria-label="Wedding celebrations">
         <div className="tajmahal-template__fourth-backdrop" aria-hidden="true">
-          <img className="tajmahal-template__fourth-image" src="/templates/tajmahal/assets/4.png" alt="" />
+          <img className="tajmahal-template__fourth-image" src="/templates/tajmahal/assets/4.webp" alt="" loading="lazy" />
         </div>
         <div className="tajmahal-template__celebration-stack">
           {details.events.map((event, index) => {
@@ -383,19 +383,19 @@ export default function Tajmahal() {
       </section>
       <section ref={fifthPageRef} className="tajmahal-template__fifth-page" data-invite-section="t17.scene5" aria-label="Wedding scene five">
         <div className="tajmahal-template__fifth-canvas">
-          <img className="tajmahal-template__fifth-image" src="/templates/tajmahal/assets/5.png" alt="" aria-hidden="true" />
+          <img className="tajmahal-template__fifth-image" src="/templates/tajmahal/assets/5.webp" alt="" aria-hidden="true" loading="lazy" />
           <img ref={fifthCoupleRef} className="tajmahal-template__fifth-couple" src="/templates/tajmahal/assets/5-couple.webp" alt="" aria-hidden="true" draggable={false} />
         </div>
       </section>
       <section ref={sixthPageRef} className="tajmahal-template__sixth-page" data-invite-section="t17.scene6" aria-label="Wedding scene six">
         <div className="tajmahal-template__sixth-canvas">
-          <img className="tajmahal-template__sixth-image" src="/templates/tajmahal/assets/6.png" alt="" aria-hidden="true" />
+          <img className="tajmahal-template__sixth-image" src="/templates/tajmahal/assets/6.webp" alt="" aria-hidden="true" loading="lazy" />
           <img ref={sixthCoupleRef} className="tajmahal-template__sixth-couple" src="/templates/tajmahal/assets/6-couple.webp" alt="" aria-hidden="true" draggable={false} />
         </div>
       </section>
       <section ref={seventhPageRef} className="tajmahal-template__seventh-page" data-invite-section="t17.scene7" aria-label="Wedding scene seven">
         <div className="tajmahal-template__seventh-canvas">
-          <video ref={seventhVideoRef} className="tajmahal-template__seventh-image" src="/templates/tajmahal/assets/7.mp4" poster="/templates/tajmahal/assets/7.png" preload="auto" autoPlay loop muted playsInline controls={false} aria-hidden="true" />
+          <video ref={seventhVideoRef} className="tajmahal-template__seventh-image" src="/templates/tajmahal/assets/7.mp4" poster="/templates/tajmahal/assets/7.webp" preload="metadata" loop muted playsInline controls={false} aria-hidden="true" />
           <img ref={seventhCoupleRef} className="tajmahal-template__seventh-couple" src="/templates/tajmahal/assets/7-couple.webp" alt="" aria-hidden="true" draggable={false} />
         </div>
       </section>
