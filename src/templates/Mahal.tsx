@@ -11,6 +11,7 @@ export default function Mahal() {
   const [musicEnabled, setMusicEnabled] = useState(true);
   const [posterVisible, setPosterVisible] = useState(true);
   const [promptVisible, setPromptVisible] = useState(true);
+  const [showEnding, setShowEnding] = useState(false);
 
   function playOpening(event: MouseEvent<HTMLButtonElement>) {
     event.currentTarget.blur();
@@ -44,6 +45,11 @@ export default function Mahal() {
             preload="auto"
             playsInline
             onPlaying={() => setPosterVisible(false)}
+            onTimeUpdate={() => {
+              const video = videoRef.current;
+              if (video && video.duration > 0 && video.duration - video.currentTime <= 3) setShowEnding(true);
+            }}
+            onEnded={() => setShowEnding(true)}
             aria-label="Opening video"
           />
           {posterVisible && <img className="mahal-template__entry-poster" src="/templates/mahal/assets/opening-poster.jpg" alt="" />}
@@ -57,6 +63,12 @@ export default function Mahal() {
         >
           {musicEnabled ? "♫" : "♪̸"}
         </button>
+        {showEnding && <div className="mahal-template__ending-copy" aria-live="polite">
+          <p className="mahal-template__ending-name">Harjot Singh</p>
+          <span className="mahal-template__ending-weds">Weds</span>
+          <p className="mahal-template__ending-name">Jasleen Kaur</p>
+          <p className="mahal-template__ending-detail">25 December 2026</p>
+        </div>}
       </section>
       <section className="mahal-template__hero" aria-labelledby="mahal-title">
         <p className="mahal-template__eyebrow">Together with their families</p>

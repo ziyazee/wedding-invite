@@ -14,6 +14,8 @@ Tajmahal’s seventh scene overlays `assets/7-couple.webp` on muted, autoplaying
 
 ## Project and local workflow
 
+- Mahal (`/mahal`) independently mirrors Tajmahal’s opening name reveal: Harjot Singh, “Weds,” Jasleen Kaur, and 25 December 2026 fade up in sequence at the top center during the final three seconds of its opening video. It retains its existing 1.5-second start, tap prompt, poster, and video-audio toggle.
+
 - Invitation extraction accepts PDF (up to 20 MB) and JPG/PNG/WebP images (up to 5 MB) in the client dashboard and template demo editor. `openai-extract` uses Claude document/image content blocks with the same structured extraction and review flow; old PDF request payloads remain supported. Redeploy `supabase/functions/openai-extract/index.ts` along with the frontend to enable images. Existing `company_pdf_uploads` storage and `pdf_uploads` RPC field also count image uploads; admin labels now say invitation uploads, with no schema migration. No build, tests, model calls or deployment performed.
 
 - Admin Companies now includes a four-step store onboarding form (`StoreOnboarding.tsx`): identity, logo/banner uploads, template selection/pricing, and review. `onboard-store` provisions through admin-checked Edge Function calls and service-only transactional RPCs; incomplete requests can resume. Owner access uses a manually shared password setup link and `/account/setup` (no automatic email). New stores default to private storefronts and restrict their catalogue to the selected templates. Apply `202611030003_store_onboarding.sql`, deploy the function and configure Auth redirects before use; see `supabase/STORE_ONBOARDING.md`. No migrations, deployments, builds, tests or browser verification performed.
