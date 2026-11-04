@@ -80,30 +80,11 @@ export default function SecretGarden({ details: d, rsvpTarget }: { details: Invi
 
   const [opened, setOpened] = useState(false)
   const [namesVisible, setNamesVisible] = useState(false)
-  const [ready, setReady] = useState(false)
-  const tapped = useRef(false)
 
   useEffect(() => { const previous = document.title; document.title = `${couple} — Secret Garden`; return () => { document.title = previous } }, [couple])
 
-  // Phase 1: gate tap until hero video is buffered enough to play
+  // Preload assets that appear after opening
   useEffect(() => {
-    const video = heroVideo.current
-    if (!video) { setReady(true); return }
-    let done = false
-    const unlock = () => { if (!done) { done = true; setReady(true) } }
-
-    if (video.readyState >= 3) { unlock(); return }
-    video.addEventListener('canplaythrough', unlock, { once: true })
-
-    const fallback = setTimeout(unlock, 10000)
-    return () => { clearTimeout(fallback); video.removeEventListener('canplaythrough', unlock) }
-  }, [])
-
-  useEffect(() => { if (ready && tapped.current && !opened) openInvitation() }, [ready])
-
-  // Phase 2: preload remaining assets after Phase 1
-  useEffect(() => {
-    if (!ready) return
     const urls = [
       '/templates/secret-garden/assets/pearl-clock.webp',
       '/templates/secret-garden/assets/lights.webp',
@@ -123,7 +104,7 @@ export default function SecretGarden({ details: d, rsvpTarget }: { details: Invi
       return link
     })
     return () => { links.forEach(link => link.remove()) }
-  }, [ready])
+  }, [])
 
   // Scroll reveal
   const structure = JSON.stringify([events.map(e => e.key), !!d.dressCode.trim()])
@@ -139,13 +120,17 @@ export default function SecretGarden({ details: d, rsvpTarget }: { details: Invi
 
   function openInvitation() {
     if (opened) return
-    if (!ready) { tapped.current = true; return }
     setOpened(true)
     const video = heroVideo.current
     const reducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches
     if (reducedMotion || !video) { setNamesVisible(true); return }
     video.currentTime = 0
-    video.play().catch(() => { setNamesVisible(true) })
+    video.play().catch(() => {
+      const tryAgain = () => { video.currentTime = 0; video.play().catch(() => setNamesVisible(true)) }
+      if (video.readyState >= 3) { tryAgain(); return }
+      video.addEventListener('canplaythrough', tryAgain, { once: true })
+      setTimeout(() => { video.removeEventListener('canplaythrough', tryAgain); setNamesVisible(true) }, 5000)
+    })
     window.setTimeout(() => setNamesVisible(true), 4000)
   }
 
