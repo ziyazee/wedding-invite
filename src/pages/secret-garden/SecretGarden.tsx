@@ -80,8 +80,49 @@ export default function SecretGarden({ details: d, rsvpTarget }: { details: Invi
 
   const [opened, setOpened] = useState(false)
   const [namesVisible, setNamesVisible] = useState(false)
+  const [ready, setReady] = useState(false)
 
   useEffect(() => { const previous = document.title; document.title = `${couple} — Secret Garden`; return () => { document.title = previous } }, [couple])
+
+  // Two-phase asset preloading
+  useEffect(() => {
+    const links: HTMLLinkElement[] = []
+    const addPreload = (href: string, asValue: string, onDone?: () => void) => {
+      const link = document.createElement('link')
+      link.rel = 'preload'
+      link.href = href
+      link.setAttribute('as', asValue)
+      if (onDone) { link.onload = onDone; link.onerror = onDone }
+      document.head.appendChild(link)
+      links.push(link)
+      return link
+    }
+
+    let loaded = 0
+    const phase1 = [
+      { href: '/templates/secret-garden/assets/hero-video.mp4', as: 'video' },
+      { href: d.music || '/templates/secret-garden/assets/autumn-wind.mp3', as: 'fetch' },
+    ]
+    const check = () => {
+      if (++loaded >= phase1.length) {
+        setReady(true)
+        const phase2 = [
+          { href: '/templates/secret-garden/assets/pearl-clock.webp', as: 'image' },
+          { href: '/templates/secret-garden/assets/lights.webp', as: 'image' },
+          { href: '/templates/secret-garden/assets/couple.webp', as: 'image' },
+          { href: '/templates/secret-garden/assets/ornate-badge-2PyCLI0e.webp', as: 'image' },
+          { href: '/templates/secret-garden/assets/food.webp', as: 'image' },
+          { href: '/templates/secret-garden/assets/celebrations.mp4', as: 'video' },
+          { href: '/templates/secret-garden/assets/dress-code-new.webp', as: 'image' },
+          { href: '/templates/secret-garden/assets/footer-flowers.webp', as: 'image' },
+        ]
+        phase2.forEach(p => addPreload(p.href, p.as))
+      }
+    }
+    phase1.forEach(p => addPreload(p.href, p.as, check))
+
+    return () => { links.forEach(link => link.remove()) }
+  }, [])
 
   // Scroll reveal
   const structure = JSON.stringify([events.map(e => e.key), !!d.dressCode.trim()])
@@ -96,7 +137,7 @@ export default function SecretGarden({ details: d, rsvpTarget }: { details: Invi
   }, [structure, opened])
 
   function openInvitation() {
-    if (opened) return
+    if (opened || !ready) return
     setOpened(true)
     const video = heroVideo.current
     const reducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches
@@ -110,13 +151,13 @@ export default function SecretGarden({ details: d, rsvpTarget }: { details: Invi
 
     {/* ── Opening Hero ── */}
     <Section data-invite-section="opening" className="sg-hero" onClick={openInvitation}>
-      <InvitationMedia kind="video" className="sg-hero-video" ref={heroVideo} src="/templates/secret-garden/assets/hero-video.mp4" poster="/templates/secret-garden/assets/cover.jpg" muted playsInline preload="metadata" onEnded={() => setNamesVisible(true)} onError={() => { if (opened) setNamesVisible(true) }} />
+      <InvitationMedia kind="video" className="sg-hero-video" ref={heroVideo} src="/templates/secret-garden/assets/hero-video.mp4" poster="/templates/secret-garden/assets/cover.jpg" muted playsInline preload="auto" onEnded={() => setNamesVisible(true)} onError={() => { if (opened) setNamesVisible(true) }} />
       <div className="sg-hero-copy">
         <Copy as="p" field="opening.caption" className="sg-eyebrow">We're getting married</Copy>
         <Names details={d} section="opening" />
         <Copy as="p" field="opening.date" className="sg-eyebrow">{formatDate(d.date)}</Copy>
       </div>
-      <button type="button" className="sg-open-btn" tabIndex={opened ? -1 : 0}>Tap to open</button>
+      <button type="button" className={`sg-open-btn${!ready ? ' sg-loading' : ''}`} tabIndex={opened ? -1 : 0} disabled={!ready}>{ready ? 'Tap to open' : 'Loading…'}</button>
     </Section>
 
     {opened && <>
