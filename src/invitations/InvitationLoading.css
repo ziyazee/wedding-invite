@@ -42,6 +42,17 @@
   animation: invitation-loading-spin 1s linear infinite;
 }
 
+/* Match every loading surface inside Tajmahal to its surrounding document. */
+:root[data-invitation-theme="17"] .invitation-loading {
+  background: var(--invitation-surround-color);
+  color: #f7efe3;
+}
+
+:root[data-invitation-theme="17"] .invitation-loading-indicator {
+  border-color: #f7efe326;
+  border-top-color: #f7efe3;
+}
+
 .invitation-loading-frame { transition: opacity 350ms ease; }
 
 @keyframes invitation-loading-spin { to { transform: rotate(360deg); } }

@@ -39,6 +39,11 @@ if (
   stage.appendChild(frame)
   document.getElementById('root')!.replaceChildren(stage)
 } else {
+  // The named Tajmahal route renders directly, without InvitationRenderer.
+  // Theme its iframe document before React mounts the shared loading screen.
+  if (invitationTemplateFromPath(location.pathname) === 17) {
+    applyInvitationViewportTheme(document, 17)
+  }
   createRoot(document.getElementById('root')!).render(
     <StrictMode>
       <BrowserRouter>
