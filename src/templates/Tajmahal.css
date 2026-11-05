@@ -332,6 +332,89 @@
   to { transform: translateX(5.5%) scale(1.048); }
 }
 
+.tajmahal-template__nikah-details > *,
+.tajmahal-template__rsvp-card > *,
+.tajmahal-template__wishes-content > * {
+  opacity: 0;
+  translate: 0 22px;
+  transition: opacity 850ms ease, translate 850ms ease;
+}
+
+.tajmahal-template__nikah-details.is-visible > *,
+.tajmahal-template__rsvp-card.is-visible > *,
+.tajmahal-template__wishes-content.is-visible > * {
+  opacity: 1;
+  translate: 0 0;
+}
+
+.tajmahal-template__nikah-details.is-visible > :nth-child(2) { transition-delay: 200ms; }
+.tajmahal-template__nikah-details.is-visible > :nth-child(3) { transition-delay: 400ms; }
+.tajmahal-template__nikah-details.is-visible > :nth-child(4) { transition-delay: 600ms; }
+.tajmahal-template__nikah-details.is-visible > :nth-child(5) { transition-delay: 800ms; }
+
+.tajmahal-template__rsvp-card.is-visible > :nth-child(1) { transition-delay: 0ms; }
+
+.tajmahal-template__wishes-content.is-visible > :nth-child(2) { transition-delay: 200ms; }
+.tajmahal-template__wishes-content.is-visible > :nth-child(3) { transition-delay: 400ms; }
+
+@media (prefers-reduced-motion: reduce) {
+  .tajmahal-template__nikah-details > *,
+  .tajmahal-template__rsvp-card > *,
+  .tajmahal-template__wishes-content > * {
+    opacity: 1;
+    translate: none;
+    transition: none;
+  }
+}
+
+.tajmahal-template__nikah-details {
+  position: absolute;
+  z-index: 2;
+  top: 22%;
+  left: 50%;
+  transform: translateX(-50%);
+  width: min(82%, 420px);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 4px;
+  color: #f3dfc7;
+  text-align: center;
+  text-shadow: 0 2px 14px #071325b0;
+}
+
+.tajmahal-template__nikah-details h2 {
+  margin: 0;
+  font-family: 'Great Vibes', cursive;
+  font-size: clamp(1.8rem, 7vw, 2.6rem);
+  font-weight: 400;
+  line-height: 1.1;
+}
+
+.tajmahal-template__nikah-date {
+  font-size: clamp(1rem, 3.5vw, 1.3rem);
+  letter-spacing: 0.06em;
+}
+
+.tajmahal-template__nikah-time {
+  margin: 0;
+  font-size: clamp(1.1rem, 3.8vw, 1.4rem);
+}
+
+.tajmahal-template__nikah-details h3 {
+  margin: 0;
+  font-size: clamp(1.1rem, 4vw, 1.5rem);
+  font-weight: 500;
+  line-height: 1.2;
+}
+
+.tajmahal-template__nikah-address {
+  margin: 0;
+  font-size: clamp(0.9rem, 3vw, 1.15rem);
+  line-height: 1.3;
+  text-wrap: balance;
+}
+
 /* Qubool's garden couple: enlarge the transparent canvas, keep feet grounded. */
 .tajmahal-template__sixth-couple {
   position: absolute;
@@ -386,6 +469,283 @@
     animation: none;
     translate: none;
   }
+}
+
+.tajmahal-template__rsvp-card {
+  position: absolute;
+  z-index: 0;
+  top: 18%;
+  right: 6%;
+  left: auto;
+  width: min(55%, 240px);
+  color: #f3dfc7;
+  text-shadow: 0 2px 14px #071325b0;
+}
+
+.tajmahal-template__rsvp-form {
+  display: grid;
+  gap: clamp(0.7rem, 2.5vw, 1.2rem);
+}
+
+.tajmahal-template__rsvp-form h2 {
+  margin: 0;
+  font-family: 'Cormorant Garamond', Georgia, serif;
+  font-size: clamp(1.3rem, 4.5vw, 1.9rem);
+  font-weight: 400;
+  line-height: 1.15;
+  text-align: center;
+}
+
+.tajmahal-template__rsvp-input,
+.tajmahal-template__rsvp-message {
+  width: 100%;
+  box-sizing: border-box;
+  padding: 0.45rem 0.15rem 0.7rem;
+  color: #f3dfc7;
+  font: 1.05rem 'Cormorant Garamond', Georgia, serif;
+  background: transparent;
+  border: 0;
+  border-bottom: 1px solid #f3dfc7aa;
+  border-radius: 0;
+  outline: none;
+  text-shadow: none;
+}
+
+.tajmahal-template__rsvp-input::placeholder,
+.tajmahal-template__rsvp-message::placeholder {
+  color: #f3dfc799;
+  opacity: 1;
+}
+
+.tajmahal-template__rsvp-input:focus,
+.tajmahal-template__rsvp-message:focus {
+  border-bottom-color: #fff;
+}
+
+.tajmahal-template__rsvp-message {
+  height: 2.7rem;
+  min-height: 2.7rem;
+  resize: none;
+}
+
+.tajmahal-template__rsvp-count-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+  padding: 0.35rem 0.15rem 0.7rem;
+  font: 1.05rem 'Cormorant Garamond', Georgia, serif;
+  border-bottom: 1px solid #f3dfc7aa;
+}
+
+.tajmahal-template__rsvp-count-controls {
+  display: flex;
+  align-items: center;
+  gap: clamp(1rem, 4vw, 2.2rem);
+}
+
+.tajmahal-template__rsvp-count-controls button {
+  padding: 0;
+  color: #f3dfc7;
+  font: 1.3rem/1 'Cormorant Garamond', Georgia, serif;
+  background: none;
+  border: 0;
+  cursor: pointer;
+  text-shadow: none;
+}
+
+.tajmahal-template__rsvp-count-controls input {
+  width: 2.2ch;
+  padding: 0;
+  color: #f3dfc7;
+  font: 1.05rem 'Cormorant Garamond', Georgia, serif;
+  text-align: center;
+  background: transparent;
+  border: 0;
+  appearance: textfield;
+  -moz-appearance: textfield;
+}
+
+.tajmahal-template__rsvp-count-controls input::-webkit-inner-spin-button,
+.tajmahal-template__rsvp-count-controls input::-webkit-outer-spin-button {
+  appearance: none;
+  margin: 0;
+}
+
+.tajmahal-template__rsvp-submit {
+  width: 100%;
+  padding: 0.55rem 1.2rem;
+  color: #0b1930;
+  font: 500 0.95rem 'Cormorant Garamond', Georgia, serif;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  background: #d5a660;
+  border: 0;
+  border-radius: 0;
+  cursor: pointer;
+  transition: opacity 200ms;
+}
+
+.tajmahal-template__rsvp-submit:disabled {
+  opacity: 0.6;
+  cursor: default;
+}
+
+.tajmahal-template__rsvp-status {
+  margin: 0;
+  font-size: 0.95rem;
+  text-align: center;
+}
+
+.tajmahal-template__wishes-content {
+  position: absolute;
+  z-index: 2;
+  top: 20%;
+  left: 50%;
+  transform: translateX(-50%);
+  width: min(82%, 380px);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: clamp(0.6rem, 2vw, 1rem);
+  color: #f3dfc7;
+  text-align: center;
+  text-shadow: 0 2px 12px #071325b0;
+}
+
+.tajmahal-template__wishes-eyebrow {
+  margin: 0;
+  font-size: 0.75rem;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  color: #d5a660;
+}
+
+.tajmahal-template__wishes-title {
+  margin: 0;
+  font-family: 'Great Vibes', cursive;
+  font-size: clamp(1.8rem, 6vw, 2.6rem);
+  font-weight: 400;
+  line-height: 1;
+}
+
+.tajmahal-template__wishes-form {
+  display: grid;
+  width: 100%;
+  gap: 0.6rem;
+  text-align: left;
+}
+
+.tajmahal-template__wishes-form label {
+  display: grid;
+  gap: 0.2rem;
+}
+
+.tajmahal-template__wishes-form label span {
+  font-size: 0.75rem;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: #d5a660;
+}
+
+.tajmahal-template__wishes-form input,
+.tajmahal-template__wishes-form textarea {
+  width: 100%;
+  box-sizing: border-box;
+  padding: 0.35rem 0.1rem;
+  color: #f3dfc7;
+  font: 0.95rem 'Cormorant Garamond', Georgia, serif;
+  background: transparent;
+  border: 0;
+  border-bottom: 1px solid #f3dfc7aa;
+  border-radius: 0;
+  outline: none;
+  resize: none;
+  text-shadow: none;
+}
+
+.tajmahal-template__wishes-form input:focus,
+.tajmahal-template__wishes-form textarea:focus {
+  border-bottom-color: #fff;
+}
+
+.tajmahal-template__wishes-form button[type="submit"] {
+  width: 100%;
+  margin-top: 0.2rem;
+  padding: 0.5rem 1rem;
+  color: #0b1930;
+  font: 500 0.85rem 'Cormorant Garamond', Georgia, serif;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  background: #d5a660;
+  border: 0;
+  cursor: pointer;
+  text-shadow: none;
+}
+
+.tajmahal-template__wishes-form button:disabled {
+  opacity: 0.6;
+  cursor: default;
+}
+
+.tajmahal-template__wishes-status {
+  margin: 0;
+  font-size: 0.85rem;
+  text-align: center;
+}
+
+.tajmahal-template__wishwall {
+  display: grid;
+  width: 100%;
+  grid-template-columns: 1fr 1fr;
+  gap: 0.5rem;
+}
+
+.tajmahal-template__wish {
+  padding: 0.5rem;
+  background: #0b193066;
+  backdrop-filter: blur(6px);
+  -webkit-backdrop-filter: blur(6px);
+  border: 1px solid #f3dfc71a;
+  border-radius: 4px;
+  text-shadow: none;
+}
+
+.tajmahal-template__wish-message {
+  margin: 0;
+  font-size: 0.7rem;
+  font-style: italic;
+  line-height: 1.35;
+  color: #f3dfc7cc;
+}
+
+.tajmahal-template__wish-author {
+  display: block;
+  margin-top: 0.25rem;
+  font-size: 0.65rem;
+  color: #d5a660;
+}
+
+.tajmahal-template__footer {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.3rem;
+  margin-top: 0.3rem;
+}
+
+.tajmahal-template__footer-names {
+  margin: 0;
+  font-family: 'Great Vibes', cursive;
+  font-size: clamp(1.4rem, 5vw, 2rem);
+  font-weight: 400;
+}
+
+.tajmahal-template__footer-date {
+  margin: 0;
+  font-size: 0.8rem;
+  letter-spacing: 0.12em;
+  color: #d5a660;
 }
 
 .tajmahal-template__celebration-stack {

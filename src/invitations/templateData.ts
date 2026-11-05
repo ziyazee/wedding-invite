@@ -51,17 +51,34 @@ templateInvitationData[16] = {
 templateInvitationData[17] = {
   ...examples[1],
   template: 17,
-  groom: 'Ziya',
-  bride: 'Nooha',
-  date: '2026-12-20',
-  venue: '',
-  address: '',
-  groomFamily: 'Mr. Rajesh Sharma\nMrs. Sunita Sharma',
-  brideFamily: 'Mr. Vikram Patel\nMrs. Meera Patel',
+  groom: 'Abu Bakr',
+  bride: 'Zaryab',
+  date: '2026-11-13',
+  venue: 'The Grand Marquee',
+  address: 'Hyderabad',
+  groomFamily: 'G/o Late Mr. Aslam & S/o Late Mr. Jahangir & Mrs. Khushbakht',
+  brideFamily: 'Gd/o Mrs. Kishwar Jahan & D/o Mr. Habib & Mrs. Shamsa',
   message: 'We are both so happy that you will be with us as we begin our life together. Since our engagement, the love and blessings we have received from our families and friends have touched us more deeply than we can say. We would like to thank each of you sincerely for your kindness, your warmth and your prayers. We would be honoured to have you with us at our wedding, and we look forward to celebrating with you.',
-  events: ['Mehendi', 'Nikah & Wedding', 'Reception'].map((title, index) => ({
-    id: `celebration-${index + 1}`, title, date: '2026-12-20', time: '11:00',
-    venue: 'Royal Convention Centre', address: 'Downtown', map: '',
+  events: [
+    { id: 'celebration-1', title: 'Nikkah', date: '2026-11-13', time: '19:00', venue: 'The Grand Marquee', address: 'Hyderabad', map: '' },
+    { id: 'celebration-2', title: 'The Walima Reception', date: '2026-11-14', time: '20:00', venue: 'The Serena Gardens', address: 'Hyderabad', map: '' },
+  ],
+}
+
+templateInvitationData[18] = {
+  ...examples[1],
+  template: 18,
+  groom: 'Arjun',
+  bride: 'Meera',
+  date: '2027-01-15',
+  venue: 'Kumarakom Lake Resort',
+  address: 'Kumarakom, Kottayam, Kerala',
+  groomFamily: 'Mr. Rajesh Menon\nMrs. Lakshmi Menon',
+  brideFamily: 'Mr. Suresh Nair\nMrs. Priya Nair',
+  message: 'With the blessings of our families, we invite you to celebrate the beginning of our forever amidst the serene backwaters of Kerala.',
+  events: ['Mehendi', 'Wedding Ceremony', 'Reception'].map((title, index) => ({
+    id: `celebration-${index + 1}`, title, date: '2027-01-15', time: '11:00',
+    venue: 'Kumarakom Lake Resort', address: 'Kumarakom, Kottayam, Kerala', map: '',
   })),
 }
 

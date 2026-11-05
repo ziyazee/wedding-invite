@@ -27,4 +27,5 @@ export const INVITATION_VIEWPORT_THEMES: Readonly<Record<number, InvitationViewp
   15: { backgroundColor: '#1A0A0A', routes: ['/mangal'] },
   16: { backgroundColor: '#1A0510', routes: ['/viah'] },
   17: { backgroundColor: '#101A30', routes: ['/tajmahal'] },
+  18: { backgroundColor: '#0A1A0F', routes: ['/kerala'] },
 }

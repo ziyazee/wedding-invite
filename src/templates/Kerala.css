@@ -1,0 +1,551 @@
+.kerala-template {
+  height: 100vh;
+  height: 100dvh;
+  overflow-y: auto;
+  -webkit-overflow-scrolling: touch;
+  overscroll-behavior-y: contain;
+  scroll-behavior: smooth;
+  scroll-snap-type: y mandatory;
+  background: #0a1a0f;
+  color: #f5eee5;
+  font-family: 'Cormorant Garamond', Georgia, serif;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .kerala-template { scroll-behavior: auto; }
+}
+
+.kerala-template__entry {
+  position: relative;
+  display: grid;
+  min-height: 100vh;
+  min-height: 100dvh;
+  scroll-snap-align: start;
+  scroll-snap-stop: always;
+  place-items: center;
+  overflow: hidden;
+  background: #0a1a0f;
+}
+
+.kerala-template__entry-trigger {
+  position: relative;
+  display: grid;
+  width: min(100vw, 56.25dvh);
+  height: min(100dvh, 177.7778vw);
+  place-items: center;
+  padding: 0;
+  overflow: hidden;
+  border: 0;
+  background: transparent;
+  cursor: pointer;
+  -webkit-tap-highlight-color: transparent;
+}
+
+.kerala-template__entry-trigger:focus-visible {
+  outline: 2px solid #f7efe3;
+  outline-offset: -4px;
+}
+
+.kerala-template__entry-video,
+.kerala-template__entry-poster {
+  position: absolute;
+  inset: 0;
+  display: block;
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+  pointer-events: none;
+}
+
+.kerala-template__tap-prompt {
+  position: absolute;
+  z-index: 1;
+  right: 12px;
+  bottom: clamp(34px, 9vh, 76px);
+  left: 12px;
+  width: fit-content;
+  max-width: calc(100% - 24px);
+  margin: auto;
+  color: #f7efe3;
+  font: 400 clamp(12px, 3vw, 16px)/1.2 'Cormorant Garamond', Georgia, serif;
+  letter-spacing: 0.015em;
+  text-align: center;
+  text-shadow: 0 2px 12px #000b;
+  pointer-events: none;
+  transition: opacity 500ms ease;
+  animation: kerala-tap-float 2.6s ease-in-out infinite;
+}
+
+.kerala-template__tap-prompt.is-hidden { opacity: 0; }
+
+@keyframes kerala-tap-float {
+  0%, 100% { transform: translateY(0); }
+  50% { transform: translateY(-8px); }
+}
+
+.kerala-template__music {
+  position: absolute;
+  z-index: 2;
+  right: calc(3% + 36px);
+  bottom: calc(7.2% - 5px);
+  display: grid;
+  width: 46px;
+  height: 46px;
+  place-items: center;
+  border: 1px solid #f7efe388;
+  border-radius: 50%;
+  background: #0a1a0fd9;
+  color: #f7efe3;
+  cursor: pointer;
+  font: 20px Georgia, serif;
+}
+
+.kerala-template__ending-copy {
+  position: absolute;
+  z-index: 3;
+  top: 15%;
+  left: 50%;
+  width: min(88%, 540px);
+  transform: translateX(-50%);
+  color: #fff8ef;
+  text-align: center;
+  text-shadow: 0 2px 18px #0a1a0fcc;
+  pointer-events: none;
+}
+
+.kerala-template__ending-copy > * {
+  opacity: 0;
+  animation: kerala-ending-fade-up 1.6s ease both;
+}
+
+.kerala-template__ending-copy > :nth-child(2) { animation-delay: 0.4s; }
+.kerala-template__ending-copy > :nth-child(3) { animation-delay: 0.8s; }
+.kerala-template__ending-copy > :nth-child(4) { animation-delay: 1.2s; }
+
+.kerala-template__ending-name {
+  margin: 0;
+  font-size: clamp(2rem, 9vw, 4.5rem);
+  line-height: 1;
+}
+
+.kerala-template__ending-weds {
+  display: block;
+  margin: 0.45rem 0;
+  color: #e8c58d;
+  font-size: clamp(1.2rem, 4vw, 1.8rem);
+  font-style: italic;
+}
+
+.kerala-template__ending-detail {
+  margin: 0.65rem 0 0;
+  font-size: clamp(0.85rem, 3vw, 1.1rem);
+  letter-spacing: 0.08em;
+}
+
+@keyframes kerala-ending-fade-up {
+  from { opacity: 0; transform: translateY(22px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .kerala-template__tap-prompt { animation: none; }
+  .kerala-template__ending-copy > * { animation-duration: 1ms; animation-delay: 0s !important; }
+}
+
+.kerala-template__eyebrow {
+  margin: 0;
+  color: #e8c58d;
+  font-size: 0.8rem;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+}
+
+.kerala-template__families-page {
+  position: relative;
+  display: flex;
+  min-height: 100vh;
+  min-height: 100dvh;
+  scroll-snap-align: start;
+  scroll-snap-stop: always;
+  flex-direction: column;
+  align-items: center;
+  justify-content: flex-start;
+  gap: clamp(1rem, 2vh, 1.5rem);
+  padding: clamp(7rem, 17vh, 10rem) clamp(1.5rem, 12vw, 5rem) 2rem;
+  background: #0a1a0f url('/templates/kerala/assets/2.png') center / contain no-repeat;
+  text-align: center;
+}
+
+.kerala-template__families-page::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: radial-gradient(ellipse 80% 70% at 50% 45%, #0009 0%, transparent 100%);
+  pointer-events: none;
+}
+
+.kerala-template__families-page > * {
+  position: relative;
+  z-index: 1;
+  opacity: 0;
+  translate: 0 18px;
+  transition: opacity 850ms ease, translate 850ms ease;
+}
+
+.kerala-template__families-page .kerala-template__eyebrow {
+  color: #e8c58d;
+  font-size: clamp(1.25rem, 4.5vw, 1.8rem);
+  font-style: italic;
+  letter-spacing: 0.02em;
+  text-transform: none;
+  text-shadow: 0 2px 12px #0008;
+}
+
+.kerala-template__families-heading {
+  margin: 0;
+  color: #e8c58d;
+  font-size: clamp(2.2rem, 8vw, 3.4rem);
+  font-weight: 500;
+  line-height: 1.05;
+  text-shadow: 0 2px 12px #0008;
+}
+
+.kerala-template__ornament {
+  color: #e8c58d;
+  font-size: clamp(0.9rem, 3vw, 1.2rem);
+  letter-spacing: 0.08em;
+  line-height: 1;
+}
+
+.kerala-template__ornament--small {
+  display: block;
+  margin: 0.1rem 0 0.45rem;
+  font-size: 0.9rem;
+}
+
+.kerala-template__family-grid {
+  display: flex;
+  width: min(100%, 600px);
+  flex-direction: column;
+  align-items: center;
+  gap: clamp(2rem, 4vh, 3rem);
+}
+
+.kerala-template__family h2 {
+  margin: 0;
+  color: #e8c58d;
+  font-size: clamp(2.1rem, 7vw, 3rem);
+  font-weight: 400;
+  line-height: 1.05;
+  text-shadow: 0 2px 12px #0008;
+}
+
+.kerala-template__family p {
+  margin: 0;
+  color: #f0e6d0;
+  font-size: clamp(1rem, 3.5vw, 1.2rem);
+  font-weight: 600;
+  line-height: 1.65;
+  white-space: pre-line;
+  text-shadow: 0 2px 12px #0008;
+}
+
+.kerala-template__family-message {
+  width: min(100%, 590px);
+  margin: 0;
+  color: #e8c58d;
+  font-size: clamp(0.95rem, 3.1vw, 1.2rem);
+  font-style: italic;
+  line-height: 1.48;
+  text-shadow: 0 2px 12px #0008;
+}
+
+.kerala-template__families-page.is-visible > * {
+  opacity: 1;
+  translate: 0 0;
+}
+
+.kerala-template__families-page.is-visible > *:nth-child(2) { transition-delay: 220ms; }
+.kerala-template__families-page.is-visible > *:nth-child(3) { transition-delay: 440ms; }
+.kerala-template__families-page.is-visible > *:nth-child(4) { transition-delay: 660ms; }
+.kerala-template__families-page.is-visible > *:nth-child(5) { transition-delay: 880ms; }
+.kerala-template__families-page.is-visible > *:nth-child(6) { transition-delay: 1100ms; }
+.kerala-template__families-page.is-visible > *:nth-child(7) { transition-delay: 1320ms; }
+.kerala-template__families-page.is-visible > *:nth-child(8) { transition-delay: 1540ms; }
+.kerala-template__families-page.is-visible > *:nth-child(9) { transition-delay: 1760ms; }
+.kerala-template__families-page.is-visible > *:nth-child(10) { transition-delay: 1980ms; }
+
+@media (prefers-reduced-motion: reduce) {
+  .kerala-template__families-page > * {
+    opacity: 1;
+    translate: none;
+    transition: none;
+  }
+}
+
+@media (max-width: 520px) {
+  .kerala-template__families-page { padding-inline: 14vw; }
+}
+
+.kerala-template__countdown-page {
+  position: relative;
+  display: grid;
+  min-height: 100vh;
+  min-height: 100dvh;
+  place-items: center;
+  scroll-snap-align: start;
+  scroll-snap-stop: always;
+  overflow: hidden;
+  background: #0a1a0f url('/templates/kerala/assets/3.png') center / cover no-repeat;
+}
+
+.kerala-template__countdown-page::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background:
+    radial-gradient(130% 100% at 50% 45%, transparent 55%, rgba(10,26,15,.50) 100%),
+    linear-gradient(180deg, rgba(10,26,15,.55) 0%, transparent 34%),
+    linear-gradient(0deg, rgba(10,26,15,.55) 0%, transparent 32%);
+  pointer-events: none;
+}
+
+.kerala-template__countdown-canvas {
+  position: relative;
+  z-index: 1;
+  width: min(100vw, 56.25dvh);
+  height: min(100dvh, 177.7778vw);
+  display: grid;
+  align-items: start;
+  justify-items: end;
+  padding-right: clamp(0.5rem, 2vw, 1.5rem);
+  padding-top: clamp(8rem, 25vh, 15rem);
+}
+
+.kerala-template__countdown-grid {
+  display: grid;
+  width: 80%;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 0;
+}
+
+.kerala-template__countdown-item {
+  display: flex;
+  min-width: 0;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 0.2rem;
+  color: #fff8ef;
+  text-align: center;
+}
+
+.kerala-template__countdown-item strong {
+  font-size: clamp(1.2rem, 5.2vw, 2.5rem);
+  font-weight: 500;
+  line-height: 1;
+}
+
+.kerala-template__countdown-item span {
+  font-size: clamp(0.4rem, 1.65vw, 0.82rem);
+  font-weight: 700;
+  letter-spacing: 0.09em;
+  line-height: 1.1;
+  text-transform: uppercase;
+}
+
+.kerala-template__countdown-couple {
+  position: absolute;
+  bottom: 0;
+  left: 50%;
+  translate: -50% 0;
+  width: 120vw;
+  max-width: none;
+  height: auto;
+  pointer-events: none;
+  transform-origin: 50% 100%;
+  animation: kerala-couple-drift 6s ease-in-out infinite;
+}
+
+@keyframes kerala-couple-drift {
+  0% {
+    transform: translateX(-6px) scale(1);
+  }
+  50% {
+    transform: translateX(6px) scale(1.012);
+  }
+  100% {
+    transform: translateX(-6px) scale(1);
+  }
+}
+
+.kerala-template__celebrations-page {
+  position: relative;
+  display: block;
+  isolation: isolate;
+  background: #0a1a0f;
+}
+
+.kerala-template__celebration-stack {
+  position: relative;
+  z-index: 1;
+  min-width: 0;
+}
+
+.kerala-template__celebration-slide {
+  position: relative;
+  z-index: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-sizing: border-box;
+  height: 100vh;
+  height: 100dvh;
+  padding-bottom: 16vh;
+  padding-bottom: 16dvh;
+  scroll-snap-align: start;
+  scroll-snap-stop: always;
+}
+
+.kerala-template__celebration-card {
+  position: relative;
+  z-index: 1;
+  transform: translateZ(0);
+  display: flex;
+  flex-shrink: 0;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  width: min(82vw, 46.125dvh);
+  gap: 2px;
+  color: #f5eee5;
+  text-align: center;
+  text-shadow: 0 2px 12px #0a1a0f80;
+}
+
+.kerala-template__celebration-card.is-visible > * {
+  animation: kerala-celebration-fade-up 950ms ease backwards;
+}
+
+.kerala-template__celebration-card.is-visible > :nth-child(2) { animation-delay: 140ms; }
+.kerala-template__celebration-card.is-visible > :nth-child(3) { animation-delay: 280ms; }
+.kerala-template__celebration-card.is-visible > :nth-child(4) { animation-delay: 420ms; }
+.kerala-template__celebration-card.is-visible > :nth-child(5) { animation-delay: 560ms; }
+.kerala-template__celebration-card.is-visible > :nth-child(6) { animation-delay: 700ms; }
+
+@keyframes kerala-celebration-fade-up {
+  from { opacity: 0; transform: translateY(18px); }
+  to { opacity: 1; transform: none; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .kerala-template__celebration-card.is-visible > * { animation: none; }
+}
+
+.kerala-template__celebration-card h2 {
+  margin: 0 0 4px;
+  font-family: 'Great Vibes', cursive;
+  font-size: 2.25rem;
+  font-weight: 400;
+  line-height: 1.05;
+}
+
+.kerala-template__event-date {
+  display: flex;
+  margin: 0;
+  align-items: center;
+  gap: 12px;
+}
+
+.kerala-template__event-day {
+  font-size: 2.875rem;
+  line-height: 1;
+}
+
+.kerala-template__event-month-year {
+  display: flex;
+  flex-direction: column;
+  gap: 0;
+  padding-left: 12px;
+  border-left: 1px solid #e8c58db3;
+  font-size: 1.375rem;
+  line-height: 1.1;
+  text-align: left;
+}
+
+.kerala-template__event-year {
+  font-size: 0.875rem;
+  letter-spacing: 0.2em;
+}
+
+.kerala-template__event-weekday {
+  margin: 2px 0 0;
+  font-size: 0.8125rem;
+  line-height: 1.1;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+}
+
+.kerala-template__event-time {
+  margin: 0;
+  font-size: 1.25rem;
+  line-height: 1.1;
+}
+
+.kerala-template__event-location {
+  width: 100%;
+  margin-top: 4px;
+}
+
+.kerala-template__event-location h3 {
+  margin: 0;
+  font-size: 1.375rem;
+  font-weight: 500;
+  line-height: 1.2;
+  overflow-wrap: anywhere;
+  text-wrap: balance;
+}
+
+.kerala-template__event-location p {
+  margin: 2px 0 0;
+  font-size: 1.125rem;
+  line-height: 1.15;
+  text-wrap: balance;
+}
+
+.kerala-template__event-actions {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: center;
+  gap: 1em;
+  margin-top: 6px;
+  font-size: 0.9375rem;
+}
+
+.kerala-template__event-actions a,
+.kerala-template__event-actions button {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.6em;
+  padding: 0.3em 0.1em;
+  border: 0;
+  border-bottom: 1px solid #d4a85080;
+  background: transparent;
+  color: inherit;
+  font: inherit;
+  line-height: 1.2;
+  white-space: nowrap;
+  text-decoration: none;
+  cursor: pointer;
+}
+
+.kerala-template__event-actions span[aria-hidden="true"] {
+  color: #e8c58d;
+}
+
+.kerala-template__event-actions :focus-visible {
+  outline: 1px solid #e8c58d;
+  outline-offset: 4px;
+}

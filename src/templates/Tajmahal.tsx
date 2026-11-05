@@ -3,10 +3,12 @@ import { useInvitationDetails } from "../invitations/context";
 import { formatDate, formatTime, mapURL, weddingISO } from "../invitations/model";
 import { downloadCalendar } from "../invitations/calendar";
 import { invitationExample } from "../invitations/templateData";
+import type { RsvpTarget } from "../invitations/rsvp";
+import { saveOrderRsvp } from "../invitations/rsvp";
 import "./Tajmahal.css";
 
 /** Starter scaffold for the Tajmahal wedding invitation template. */
-export default function Tajmahal() {
+export default function Tajmahal({ rsvpTarget }: { rsvpTarget?: RsvpTarget }) {
   const details = useInvitationDetails() || invitationExample(17)!;
   const edited = (id: string, original: string) => details.textOverrides?.elements[id]?.content ?? original;
   const videoRef = useRef<HTMLVideoElement>(null);
@@ -27,6 +29,21 @@ export default function Tajmahal() {
   const [promptVisible, setPromptVisible] = useState(true);
   const [showEnding, setShowEnding] = useState(false);
   const [now, setNow] = useState(() => Date.now());
+  const [rsvpName, setRsvpName] = useState("");
+  const [rsvpCount, setRsvpCount] = useState(1);
+  const [rsvpMessage, setRsvpMessage] = useState("");
+  const [rsvpStatus, setRsvpStatus] = useState("");
+  const [rsvpBusy, setRsvpBusy] = useState(false);
+  const [wishName, setWishName] = useState("");
+  const [wishMsg, setWishMsg] = useState("");
+  const [wishStatus, setWishStatus] = useState("");
+  const [wishBusy, setWishBusy] = useState(false);
+  const [wishes, setWishes] = useState<{ name: string; message: string }[]>([
+    { name: "Fatima", message: "May Allah bless your union with endless love and happiness. Ameen!" },
+    { name: "Omar", message: "Wishing you both a lifetime of joy and barakah." },
+    { name: "Ayesha", message: "MashaAllah! May your marriage be filled with mercy and tranquility." },
+    { name: "Yusuf", message: "Congratulations! Duas for a beautiful journey together." },
+  ]);
 
   useEffect(() => {
     const timer = window.setInterval(() => setNow(Date.now()), 1000);
@@ -227,6 +244,69 @@ export default function Tajmahal() {
     return () => observer.disconnect();
   }, [details.events]);
 
+  useEffect(() => {
+    const scroller = document.querySelector<HTMLElement>(".tajmahal-template");
+    if (!scroller) return;
+
+    let animating = false;
+    let accDelta = 0;
+    let resetTimer = 0;
+    const THRESHOLD = 50;
+    const DURATION = 1400;
+
+    const selector = ".tajmahal-template__entry,.tajmahal-template__families-page,.tajmahal-template__countdown-page,.tajmahal-template__celebration-slide,.tajmahal-template__fifth-page,.tajmahal-template__sixth-page,.tajmahal-template__seventh-page";
+
+    const pageOffset = (el: HTMLElement) =>
+      el.getBoundingClientRect().top - scroller.getBoundingClientRect().top + scroller.scrollTop;
+
+    const animateTo = (to: number) => {
+      const from = scroller.scrollTop;
+      const dist = to - from;
+      if (Math.abs(dist) < 2) return;
+      animating = true;
+      scroller.style.scrollSnapType = "none";
+      scroller.style.scrollBehavior = "auto";
+      const t0 = performance.now();
+      const tick = (now: number) => {
+        const p = Math.min((now - t0) / DURATION, 1);
+        const ease = p < 0.5 ? 4 * p * p * p : 1 - (-2 * p + 2) ** 3 / 2;
+        scroller.scrollTop = from + dist * ease;
+        if (p < 1) {
+          requestAnimationFrame(tick);
+        } else {
+          scroller.scrollTop = to;
+          scroller.style.scrollSnapType = "";
+          scroller.style.scrollBehavior = "";
+          animating = false;
+        }
+      };
+      requestAnimationFrame(tick);
+    };
+
+    const onWheel = (e: WheelEvent) => {
+      e.preventDefault();
+      if (animating) return;
+      accDelta += e.deltaY;
+      window.clearTimeout(resetTimer);
+      resetTimer = window.setTimeout(() => { accDelta = 0; }, 200);
+      if (Math.abs(accDelta) < THRESHOLD) return;
+      const dir = accDelta > 0 ? 1 : -1;
+      accDelta = 0;
+      const pages = Array.from(scroller.querySelectorAll<HTMLElement>(selector));
+      const top = scroller.scrollTop;
+      let target: number | null = null;
+      if (dir === 1) {
+        for (const pg of pages) { const o = pageOffset(pg); if (o > top + 10) { target = o; break; } }
+      } else {
+        for (let i = pages.length - 1; i >= 0; i--) { const o = pageOffset(pages[i]); if (o < top - 10) { target = o; break; } }
+      }
+      if (target !== null) animateTo(target);
+    };
+
+    scroller.addEventListener("wheel", onWheel, { passive: false });
+    return () => { scroller.removeEventListener("wheel", onWheel); window.clearTimeout(resetTimer); };
+  }, []);
+
   function playOpening(event: MouseEvent<HTMLButtonElement>) {
     event.currentTarget.blur();
     setPromptVisible(false);
@@ -262,6 +342,59 @@ export default function Tajmahal() {
     Math.floor(remaining / 60000) % 60,
     Math.floor(remaining / 1000) % 60,
   ];
+
+  useEffect(() => {
+    const scroller = document.querySelector(".tajmahal-template");
+    if (!scroller) return;
+    const targets = scroller.querySelectorAll(".tajmahal-template__nikah-details,.tajmahal-template__rsvp-card,.tajmahal-template__wishes-content");
+    if (!targets.length) return;
+    const observer = new IntersectionObserver(entries => {
+      entries.forEach(entry => {
+        if (!entry.isIntersecting) return;
+        entry.target.classList.add("is-visible");
+        observer.unobserve(entry.target);
+      });
+    }, { root: scroller, threshold: 0.15 });
+    targets.forEach(t => observer.observe(t));
+    return () => observer.disconnect();
+  }, []);
+
+  function submitWish(e: React.FormEvent) {
+    e.preventDefault();
+    if (wishBusy || !wishName.trim() || !wishMsg.trim()) return;
+    setWishBusy(true);
+    setWishStatus("Sending…");
+    setTimeout(() => {
+      setWishes(prev => [{ name: wishName.trim(), message: wishMsg.trim() }, ...prev]);
+      setWishName("");
+      setWishMsg("");
+      setWishStatus("Thank you for your kind wishes!");
+      setWishBusy(false);
+    }, 600);
+  }
+
+  const nikah = details.events.find(e => /nikah|nikkah|wedding/i.test(e.title)) ?? details.events[1];
+
+  async function submitRsvp(e: React.FormEvent) {
+    e.preventDefault();
+    if (!rsvpTarget || rsvpBusy) return;
+    setRsvpBusy(true);
+    setRsvpStatus("Sending…");
+    try {
+      await saveOrderRsvp(rsvpTarget, {
+        name: rsvpName.trim(),
+        attendance: "yes",
+        count: rsvpCount,
+        guests: [],
+        message: rsvpMessage.trim(),
+      });
+      setRsvpStatus("Thank you! Your RSVP has been received.");
+    } catch (err) {
+      setRsvpStatus(err instanceof Error ? err.message : "Please try again.");
+    } finally {
+      setRsvpBusy(false);
+    }
+  }
 
   return (
     <main className="tajmahal-template">
@@ -378,21 +511,53 @@ export default function Tajmahal() {
           })}
         </div>
       </section>
-      <section ref={fifthPageRef} className="tajmahal-template__fifth-page" data-invite-section="t17.scene5" aria-label="Wedding scene five">
+      <section ref={fifthPageRef} className="tajmahal-template__fifth-page" data-invite-section="t17.scene5" aria-label="Nikah ceremony">
         <div className="tajmahal-template__fifth-canvas">
           <img className="tajmahal-template__fifth-image" src="/templates/tajmahal/assets/5.webp" alt="" aria-hidden="true" loading="lazy" />
+          {nikah && <div className="tajmahal-template__nikah-details">
+            <h2 data-invite-text="t17.scene5.title" data-invite-label="Nikah title">{edited("t17.scene5.title", "Nikah")}</h2>
+            {nikah.date && <time className="tajmahal-template__nikah-date" dateTime={nikah.date}>
+              <span data-invite-text="t17.scene5.date" data-invite-label="Nikah date">{edited("t17.scene5.date", formatDate(nikah.date))}</span>
+            </time>}
+            {nikah.time && <p className="tajmahal-template__nikah-time" data-invite-text="t17.scene5.time" data-invite-label="Nikah time">{edited("t17.scene5.time", formatTime(nikah.time))}</p>}
+            <h3 data-invite-text="t17.scene5.venue" data-invite-label="Nikah venue">{edited("t17.scene5.venue", nikah.venue)}</h3>
+            {nikah.address && <p className="tajmahal-template__nikah-address" data-invite-text="t17.scene5.address" data-invite-label="Nikah address">{edited("t17.scene5.address", nikah.address)}</p>}
+          </div>}
           <img ref={fifthCoupleRef} className="tajmahal-template__fifth-couple" src="/templates/tajmahal/assets/5-couple.webp" alt="" aria-hidden="true" draggable={false} />
         </div>
       </section>
-      <section ref={sixthPageRef} className="tajmahal-template__sixth-page" data-invite-section="t17.scene6" aria-label="Wedding scene six">
+      <section ref={sixthPageRef} className="tajmahal-template__sixth-page" data-invite-section="t17.scene6" aria-label="RSVP">
         <div className="tajmahal-template__sixth-canvas">
           <img className="tajmahal-template__sixth-image" src="/templates/tajmahal/assets/6.webp" alt="" aria-hidden="true" loading="lazy" />
+          <div className="tajmahal-template__rsvp-card">
+            <form className="tajmahal-template__rsvp-form" onSubmit={submitRsvp}>
+              <h2 data-invite-text="t17.rsvp.heading" data-invite-label="RSVP heading">{edited("t17.rsvp.heading", "Will you be attending our wedding?")}</h2>
+              <input className="tajmahal-template__rsvp-input" type="text" required autoComplete="name" placeholder="Your name" aria-label="Your name" value={rsvpName} onChange={e => setRsvpName(e.target.value)} maxLength={120} />
+              <div className="tajmahal-template__rsvp-count-row">
+                <span>Number of guests</span>
+                <div className="tajmahal-template__rsvp-count-controls">
+                  <button type="button" aria-label="Remove one guest" onClick={() => setRsvpCount(c => Math.max(1, c - 1))}>−</button>
+                  <input type="number" min={1} max={10} value={rsvpCount} onChange={e => setRsvpCount(Math.max(1, Math.min(10, Number(e.target.value) || 1)))} aria-label="Number of guests" />
+                  <button type="button" aria-label="Add one guest" onClick={() => setRsvpCount(c => Math.min(10, c + 1))}>+</button>
+                </div>
+              </div>
+              <textarea className="tajmahal-template__rsvp-message" rows={1} placeholder="A personal message for us..." aria-label="A personal message for us" value={rsvpMessage} onChange={e => setRsvpMessage(e.target.value)} maxLength={1000} />
+              <button className="tajmahal-template__rsvp-submit" type="submit" disabled={rsvpBusy}>{rsvpBusy ? "Sending…" : "Submit RSVP"}</button>
+              {rsvpStatus && <p className="tajmahal-template__rsvp-status" role="status" aria-live="polite">{rsvpStatus}</p>}
+            </form>
+          </div>
           <img ref={sixthCoupleRef} className="tajmahal-template__sixth-couple" src="/templates/tajmahal/assets/6-couple.webp" alt="" aria-hidden="true" draggable={false} />
         </div>
       </section>
-      <section ref={seventhPageRef} className="tajmahal-template__seventh-page" data-invite-section="t17.scene7" aria-label="Wedding scene seven">
+      <section ref={seventhPageRef} className="tajmahal-template__seventh-page" data-invite-section="t17.scene7" aria-label="Wishes for the couple">
         <div className="tajmahal-template__seventh-canvas">
           <video ref={seventhVideoRef} className="tajmahal-template__seventh-image" src="/templates/tajmahal/assets/7.mp4" poster="/templates/tajmahal/assets/7.webp" preload="metadata" loop muted playsInline controls={false} aria-hidden="true" />
+          <div className="tajmahal-template__wishes-content">
+            <footer className="tajmahal-template__footer">
+              <p className="tajmahal-template__footer-names" data-invite-text="t17.footer.names" data-invite-label="Couple names">{edited("t17.footer.names", `${details.groom} & ${details.bride}`)}</p>
+              {details.date && <p className="tajmahal-template__footer-date" data-invite-text="t17.footer.date" data-invite-label="Wedding date">{edited("t17.footer.date", formatDate(details.date))}</p>}
+            </footer>
+          </div>
           <img ref={seventhCoupleRef} className="tajmahal-template__seventh-couple" src="/templates/tajmahal/assets/7-couple.webp" alt="" aria-hidden="true" draggable={false} />
         </div>
       </section>
