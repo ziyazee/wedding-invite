@@ -50,30 +50,20 @@
   background: var(--invitation-surround-color, #f7f4ee);
 }
 
-/* Size Tajmahal to the available space without adding artificial margins. */
+/* Full-width Tajmahal: preserve 9:16 without shrinking to viewport height. */
 :root[data-invitation-theme="17"] .invitation-portrait-stage {
-  grid-template-columns: minmax(0, 1fr);
-  grid-template-rows: minmax(0, 1fr);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding-inline: 0;
+  overflow-y: auto;
 }
 
 :root[data-invitation-theme="17"] .invitation-portrait-frame {
+  flex: none;
   min-width: 0;
   min-height: 0;
-  width: min(
-    100%,
-    calc((100svh - env(safe-area-inset-top, 0px) - env(safe-area-inset-bottom, 0px)) * .5625)
-  );
-}
-
-/* Use the stage's actual content box, after safe-area padding, instead of
-   assuming the browser's viewport units equal its visible iframe space. */
-@supports (width: 1cqw) {
-  :root[data-invitation-theme="17"] .invitation-portrait-stage {
-    container-type: size;
-  }
-
-  :root[data-invitation-theme="17"] .invitation-portrait-frame {
-    width: min(100cqw, 56.25cqh);
-    height: min(100cqh, 177.777778cqw);
-  }
+  width: 100%;
+  height: auto;
+  margin-block: auto;
 }
