@@ -118,8 +118,16 @@
   const cardVideos = document.querySelectorAll('[data-bloom-card="video"] video');
   if (cardVideos.length && 'IntersectionObserver' in window) {
     const videoObserver = new IntersectionObserver(entries => entries.forEach(entry => {
-      if (entry.isIntersecting) entry.target.play().catch(() => {});
-      else entry.target.pause();
+      const v = entry.target;
+      if (entry.isIntersecting) {
+        v.play().catch(() => {
+          v.preload = 'auto';
+          v.addEventListener('canplay', () => v.play().catch(() => {}), { once: true });
+          v.load();
+        });
+      } else {
+        v.pause();
+      }
     }), { threshold: 0 });
     cardVideos.forEach(v => videoObserver.observe(v));
   }
