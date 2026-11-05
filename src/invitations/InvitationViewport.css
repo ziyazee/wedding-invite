@@ -16,3 +16,36 @@
   background: #fffaf2;
   box-shadow: 0 0 32px #40352512;
 }
+
+:root[data-invitation-theme="bloom"],
+:root[data-invitation-theme="bloom"] body {
+  background-color: #f8f1e8;
+}
+
+:root[data-invitation-theme="bloom"] .invitation-portrait-stage {
+  isolation: isolate;
+  box-sizing: border-box;
+  padding: env(safe-area-inset-top, 0px) env(safe-area-inset-right, 0px)
+    env(safe-area-inset-bottom, 0px) env(safe-area-inset-left, 0px);
+  background: #f8f1e8;
+}
+
+:root[data-invitation-theme="bloom"] .invitation-portrait-stage::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  z-index: 0;
+  pointer-events: none;
+  background: url('/templates/bloom/assets/intro-video-2-poster.jpg') center / cover no-repeat;
+  opacity: .1;
+}
+
+:root[data-invitation-theme="bloom"] .invitation-portrait-frame {
+  position: relative;
+  z-index: 1;
+  width: min(
+    calc(100vw - env(safe-area-inset-left, 0px) - env(safe-area-inset-right, 0px)),
+    calc((100svh - env(safe-area-inset-top, 0px) - env(safe-area-inset-bottom, 0px)) * .5625)
+  );
+  background: #f8f1e8;
+}

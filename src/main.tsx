@@ -3,6 +3,8 @@ import { createRoot } from 'react-dom/client'
 import { BrowserRouter } from 'react-router-dom'
 import App from './App'
 import './index.css'
+import './invitations/InvitationViewport.css'
+import { applyInvitationViewportTheme } from './invitations/invitationViewportTheme'
 
 window.addEventListener('vite:preloadError', () => { window.location.reload() })
 
@@ -14,12 +16,6 @@ if (
   window.self === window.top &&
   isPublicInvitationRoute()
 ) {
-  const style = document.createElement('style')
-  style.textContent =
-    '.invitation-portrait-stage{position:fixed;inset:0;display:grid;place-items:center;overflow:hidden;background:#f7f4ee}' +
-    '.invitation-portrait-frame{display:block;width:min(100vw,56.25svh);height:auto;aspect-ratio:9/16;border:0;background:#fffaf2;box-shadow:0 0 32px #40352512}'
-  document.head.appendChild(style)
-
   const stage = document.createElement('main')
   stage.className = 'invitation-portrait-stage'
   const frame = document.createElement('iframe')
@@ -27,9 +23,21 @@ if (
   frame.title = 'Wedding invitation'
   frame.allow = 'autoplay; fullscreen'
   frame.allowFullscreen = true
+  let restoreTheme = () => {}
+  const setTemplateTheme = (template?: number) => {
+    restoreTheme()
+    restoreTheme = applyInvitationViewportTheme(document, template)
+  }
+  setTemplateTheme(location.pathname.replace(/\/+$/, '') === '/bloom' ? 7 : undefined)
+  // Published invitations resolve their template inside the portrait frame.
+  window.addEventListener('message', event => {
+    if (event.origin !== location.origin || event.source !== frame.contentWindow) return
+    if (event.data?.type !== 'invitation-viewport-theme' || !Number.isInteger(event.data.template)) return
+    setTemplateTheme(event.data.template)
+  })
   frame.src = location.pathname + location.search + location.hash
   stage.appendChild(frame)
-  document.getElementById('root')!.appendChild(stage)
+  document.getElementById('root')!.replaceChildren(stage)
 } else {
   createRoot(document.getElementById('root')!).render(
     <StrictMode>

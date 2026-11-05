@@ -1,4 +1,4 @@
-import { lazy, Suspense, useMemo } from 'react'
+import { lazy, Suspense, useEffect, useMemo } from 'react'
 import type { InvitationData } from './model'
 import { displayName } from './model'
 import type { RsvpTarget } from './rsvp'
@@ -6,6 +6,7 @@ import { InvitationContext } from './context'
 import SiteFonts from '../SiteFonts'
 import InvitationLoading from './InvitationLoading'
 import InvitationLoadingBoundary from './InvitationLoadingBoundary'
+import { applyInvitationViewportTheme } from './invitationViewportTheme'
 const PersonalMusic = lazy(() => import('./PersonalMusic'))
 const AnimatedInvitation = lazy(() => import('./AnimatedInvitation'))
 const NewDesign = lazy(() => import('../pages/NewDesign'))
@@ -53,6 +54,14 @@ const fallback = <InvitationLoading />
 export default function InvitationRenderer({ details: raw, rsvpTarget }: { details: InvitationData; rsvpTarget?: RsvpTarget }) {
   const details = useMemo<InvitationData>(() => ({ ...raw, groom: displayName(raw.groom), bride: displayName(raw.bride) }), [raw])
   const animatedDetails = useMemo(() => details, [details])
+
+  useEffect(() => {
+    const restoreTheme = applyInvitationViewportTheme(document, details.template)
+    if (window.parent !== window) {
+      window.parent.postMessage({ type: 'invitation-viewport-theme', template: details.template }, window.location.origin)
+    }
+    return restoreTheme
+  }, [details.template])
 
   return <InvitationContext.Provider value={details}><Suspense fallback={fallback}>
     <InvitationLoadingBoundary key={details.template}>
