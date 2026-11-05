@@ -30,7 +30,12 @@ export default defineConfig({
             children: `if (${JSON.stringify(theme.routes)}.includes(location.pathname.replace(/\\/+$/, ''))) {
               document.documentElement.dataset.invitationTheme = '17';
               document.documentElement.style.setProperty('--invitation-surround-color', ${JSON.stringify(theme.backgroundColor)});
-              document.querySelector('meta[name="viewport"]').content += ', viewport-fit=cover';
+              const themeColor = document.querySelector('meta[name="theme-color"]') || document.createElement('meta');
+              themeColor.name = 'theme-color';
+              themeColor.content = ${JSON.stringify(theme.backgroundColor)};
+              if (!themeColor.isConnected) document.head.append(themeColor);
+              const viewportFit = /CriOS\\//.test(navigator.userAgent) ? 'contain' : 'cover';
+              document.querySelector('meta[name="viewport"]').content += ', viewport-fit=' + viewportFit;
             }`,
           },
           {

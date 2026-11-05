@@ -43,9 +43,13 @@ export function applyInvitationViewportTheme(doc: Document, template?: number): 
 
   const restoreColor = setMeta('theme-color', theme.backgroundColor)
   const viewport = doc.querySelector<HTMLMetaElement>('meta[name="viewport"]')?.content || 'width=device-width, initial-scale=1.0'
+  // Chrome on iOS should keep Tajmahal inside the browser's safe rectangle.
+  // Safari retains cover, which is part of its verified browser-tint fix.
+  const viewportFit = template === 17 && /CriOS\//.test(doc.defaultView?.navigator.userAgent ?? '')
+    ? 'contain' : 'cover'
   const viewportWithSafeAreas = /viewport-fit\s*=/i.test(viewport)
-    ? viewport.replace(/viewport-fit\s*=\s*[^,]+/i, 'viewport-fit=cover')
-    : `${viewport}, viewport-fit=cover`
+    ? viewport.replace(/viewport-fit\s*=\s*[^,]+/i, `viewport-fit=${viewportFit}`)
+    : `${viewport}, viewport-fit=${viewportFit}`
   const restoreViewport = setMeta('viewport', viewportWithSafeAreas)
 
   return () => {
