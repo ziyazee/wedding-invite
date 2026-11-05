@@ -47,9 +47,16 @@ export default function Design18() {
       return
     }
     setPhase('playing')
-    if (video.current && video.current.readyState >= 1) video.current.currentTime = 1.95
+    const el = video.current
+    if (!el) { finish(); return }
+    if (el.readyState >= 1) el.currentTime = 1.95
     else skipIntro.current = true
-    void video.current?.play().catch(finish)
+    el.play().catch(() => {
+      const tryAgain = () => { el.play().catch(finish) }
+      if (el.readyState >= 3) { tryAgain(); return }
+      el.addEventListener('canplaythrough', tryAgain, { once: true })
+      setTimeout(() => { el.removeEventListener('canplaythrough', tryAgain); finish() }, 5000)
+    })
   }
 
   useEffect(() => {
@@ -57,6 +64,27 @@ export default function Design18() {
     document.title = `${firstName} & ${secondName} — Mangal`
     return () => { document.title = previousTitle }
   }, [firstName, secondName])
+
+  useEffect(() => {
+    const urls = [
+      '/templates/mandap-at-dusk/seam-garland.webp',
+      '/templates/mandap-at-dusk/border2.webp',
+      '/templates/mandap-at-dusk/ivory-stationery-unframed.webp',
+      '/templates/mandap-at-dusk/burgundy-stationery.webp',
+      '/templates/mandap-at-dusk/couple-watercolor.webp',
+      '/templates/mandap-at-dusk/scratch.webp',
+      '/templates/mandap-at-dusk/post-scratch.webp',
+    ]
+    const links = urls.map(href => {
+      const link = document.createElement('link')
+      link.rel = 'preload'
+      link.href = href
+      link.setAttribute('as', 'image')
+      document.head.appendChild(link)
+      return link
+    })
+    return () => { links.forEach(link => link.remove()) }
+  }, [])
 
   useEffect(() => {
     const interval = window.setInterval(() => setNow(Date.now()), 1000)
@@ -94,7 +122,7 @@ export default function Design18() {
       <video ref={video} className="d18-entry-video" src="/templates/mandap-at-dusk/entry.mp4" poster="/templates/mandap-at-dusk/entry-poster.jpg" muted playsInline disablePictureInPicture preload="metadata" onLoadedMetadata={() => { if (skipIntro.current && video.current) { video.current.currentTime = 1.95; skipIntro.current = false } }} onEnded={finish} onError={() => { if (phase === 'playing') finish() }} />
       <div className="d18-entry-shade" />
       <button className={`d18-enter${phase !== 'closed' ? ' d18-enter-dismissed' : ''}`} aria-label="Open invitation" onClick={openInvitation} disabled={phase !== 'closed'} aria-hidden={phase !== 'closed'} tabIndex={phase === 'closed' ? 0 : -1}>
-        <img src="/templates/mandap-at-dusk/open-invitation-button.png" alt="" width="1080" height="360" draggable={false} />
+        <img src="/templates/mandap-at-dusk/open-invitation-button.webp" alt="" width="1080" height="360" draggable={false} />
       </button>
       <button className="d18-music" aria-label={music ? 'Pause music' : 'Play music'} onClick={() => music ? audio.current?.pause() : void audio.current?.play().catch(() => {})}>{music ? 'Ⅱ' : '♫'}</button>
       {phase === 'open' && <div className="d18-ending-copy" aria-live="polite">
@@ -115,11 +143,11 @@ export default function Design18() {
           {secondFamily && <p data-family={secondRole.toLowerCase()}><small>{secondRole}’S FAMILY</small>{secondFamily}</p>}
         </div>}
         <Flourish /><span className="d18-signature d18-script"><span>{firstName}</span><i>&</i><span>{secondName}</span></span>
-        <img className="d18-couple-art" src="/templates/mandap-at-dusk/couple-watercolor.png" alt="" aria-hidden="true" loading="lazy" />
+        <img className="d18-couple-art" src="/templates/mandap-at-dusk/couple-watercolor.webp" alt="" aria-hidden="true" loading="lazy" />
       </section>
 
       <section className="d18-heart-section d18-reveal" aria-label="Scratch to reveal the wedding date">
-        <HeartDateReveal date={formatDate(details.date, { day: 'numeric', month: 'long', year: 'numeric' })} day={formatDate(details.date, { weekday: 'long' })} time={formatTime(details.time)} tone="rose" coatingImage="/templates/mandap-at-dusk/scratch.png" revealedImage="/templates/mandap-at-dusk/post-scratch.png" />
+        <HeartDateReveal date={formatDate(details.date, { day: 'numeric', month: 'long', year: 'numeric' })} day={formatDate(details.date, { weekday: 'long' })} time={formatTime(details.time)} tone="rose" coatingImage="/templates/mandap-at-dusk/scratch.webp" revealedImage="/templates/mandap-at-dusk/post-scratch.webp" />
       </section>
 
       <section className="d18-countdown d18-reveal">

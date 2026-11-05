@@ -21,7 +21,7 @@ export function personalizeEG(
   if (heading === 'Dress code') {
    note.hidden = !d.dressCode.trim()
    const art = doc.createElement('img')
-   art.src = '/templates/embroidered-garden/assets/dress-code-illustration-v2.webp'
+   art.src = '/templates/embroidered-garden/assets/dress-code-illustration-opt.webp'
    art.alt = 'Embroidered wedding attire illustrations'
    art.loading = 'lazy'
    art.setAttribute('data-couple-illustration', '')
@@ -40,7 +40,7 @@ export function personalizeEG(
   garlandWrap.className = 'atelier-garland-wrap'
   garlandWrap.style.cssText = 'position:absolute;top:100%;left:50%;transform:translate(-50%,-28%);width:130%;max-width:none;z-index:30;pointer-events:none'
   const garland = doc.createElement('img')
-  garland.src = '/templates/embroidered-garden/assets/dresscode-hanging-garland-v2.webp'
+  garland.src = '/templates/embroidered-garden/assets/dresscode-hanging-garland-opt.webp'
   garland.alt = ''
   garland.className = 'swaying-garland'
   garland.setAttribute('aria-hidden', 'true')
@@ -57,7 +57,7 @@ export function personalizeEG(
   card.style.backgroundImage = 'none'
   card.style.display = 'grid'
   const video = doc.createElement('video')
-  video.src = '/templates/embroidered-garden/assets/celebration.mov'
+  video.src = '/templates/embroidered-garden/assets/celebration2.mp4'
   video.autoplay = true
   video.loop = true
   video.muted = true

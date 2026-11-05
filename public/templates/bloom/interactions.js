@@ -115,6 +115,15 @@
     track.addEventListener('pointercancel', () => drag=null);
   }
 
+  const cardVideos = document.querySelectorAll('[data-bloom-card="video"] video');
+  if (cardVideos.length && 'IntersectionObserver' in window) {
+    const videoObserver = new IntersectionObserver(entries => entries.forEach(entry => {
+      if (entry.isIntersecting) entry.target.play().catch(() => {});
+      else entry.target.pause();
+    }), { threshold: 0 });
+    cardVideos.forEach(v => videoObserver.observe(v));
+  }
+
   const form=document.querySelector('#rsvp-form');
   const names=document.querySelector('#guest-names');
   const countOutput=document.querySelector('#guest-count');

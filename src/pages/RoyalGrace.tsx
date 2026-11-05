@@ -122,6 +122,26 @@ export default function RoyalGrace() {
   }, [couple])
 
   useEffect(() => {
+    const urls = [
+      `${ASSETS}couple.webp`,
+      `${ASSETS}sage-stationery-unframed.webp`,
+      `${ASSETS}ivory-stationery-unframed.webp`,
+      `${ASSETS}general.webp`,
+      `${ASSETS}end.webp`,
+      `${ASSETS}stationery-silhouette.svg`,
+    ]
+    const links = urls.map(href => {
+      const link = document.createElement('link')
+      link.rel = 'preload'
+      link.href = href
+      link.setAttribute('as', 'image')
+      document.head.appendChild(link)
+      return link
+    })
+    return () => { links.forEach(link => link.remove()) }
+  }, [])
+
+  useEffect(() => {
     if (!opened || !('IntersectionObserver' in window)) return
     if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) return
     if (new URLSearchParams(window.location.search).get('edit') === '1') return
@@ -155,8 +175,16 @@ export default function RoyalGrace() {
   function openInvitation() {
     if (opened) return
     setOpened(true)
-    if (videoFailed || window.matchMedia('(prefers-reduced-motion: reduce)').matches) { setNamesVisible(true); return }
-    if (video.current) { video.current.currentTime = 1; video.current.play().catch(() => { setVideoFailed(true); setNamesVisible(true) }) }
+    const el = video.current
+    const reducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches
+    if (videoFailed || reducedMotion || !el) { setNamesVisible(true); return }
+    el.currentTime = 1
+    el.play().catch(() => {
+      const tryAgain = () => { el.currentTime = 1; el.play().catch(() => { setVideoFailed(true); setNamesVisible(true) }) }
+      if (el.readyState >= 3) { tryAgain(); return }
+      el.addEventListener('canplaythrough', tryAgain, { once: true })
+      setTimeout(() => { el.removeEventListener('canplaythrough', tryAgain); setVideoFailed(true); setNamesVisible(true) }, 5000)
+    })
   }
 
   useEffect(() => {

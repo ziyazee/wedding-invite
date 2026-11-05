@@ -13,7 +13,7 @@ import { installRsvpForm } from './installRsvpForm'
 import { installFooterLogoFallback } from './components/footerLogoFallback'
 const templateFolder: Record<number, string> = { 6: 'embroidered-garden', 7: 'bloom' }
 const themes: Record<number,{names:string[];floral:string;frame:string;bg:string;ink:string}>={
- 6:{names:['Camille','Antoine'],floral:'/templates/embroidered-garden/assets/embroidered-swans-hero-v2-optimized.webp',frame:'/templates/embroidered-garden/assets/ceremony-reception-bg-v2.webp',bg:'#F5F0E8',ink:'#536249'},
+ 6:{names:['Camille','Antoine'],floral:'/templates/embroidered-garden/assets/embroidered-swans-hero-opt.webp',frame:'/templates/embroidered-garden/assets/ceremony-reception-bg-opt.webp',bg:'#F5F0E8',ink:'#536249'},
  7:{names:['Martina','Javier'],floral:'/templates/bloom/assets/welcome-flowers-Dy0evJgO.webp',frame:'/templates/bloom/assets/programme-frame-B9QNR9GL.webp',bg:'#f4ede1',ink:'#635642'},
 }
 const escape=(value:string)=>value.replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]!))

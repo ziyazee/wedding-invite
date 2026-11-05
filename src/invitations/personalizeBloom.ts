@@ -66,6 +66,13 @@ export async function personalizeBloom(
  bloomCeremony.classList.add('atelier-bloom-ceremony')
  const nativeFrame = bloomCeremony.querySelector<HTMLElement>('[style*="aspect-ratio"]')!
  nativeFrame.setAttribute('data-bloom-card', 'image')
+ nativeFrame.style.backgroundColor = '#F5F0E8'
+ const ceremonyFrame = nativeFrame.parentElement
+ if (ceremonyFrame) {
+  ceremonyFrame.classList.remove('md:max-w-2xl')
+  ceremonyFrame.style.maxWidth = 'none'
+  ceremonyFrame.style.width = '100%'
+ }
  ceremonyCopy!.setAttribute('data-bloom-copy', '')
  sectionHeading.textContent = wrapCardText(weddingEvent.title, 18)
  venue.textContent = wrapCardText(weddingEvent.venue, 24)
@@ -103,8 +110,20 @@ export async function personalizeBloom(
   for (const attribute of ['id','aria-haspopup','aria-expanded','data-state']) calendar.removeAttribute(attribute)
  }
  ceremonyCard.remove()
+ const eventContainer = personal.querySelector<HTMLElement>('.atelier-events')
+ if (eventContainer) {
+  eventContainer.style.maxWidth = 'none'
+  eventContainer.style.width = '100%'
+  eventContainer.style.paddingLeft = '0'
+  eventContainer.style.paddingRight = '0'
+  eventContainer.style.gap = '0'
+ }
  personal.querySelectorAll<HTMLElement>('.atelier-event').forEach(card => {
   card.setAttribute('data-bloom-card', 'video')
+  card.style.backgroundColor = '#F5F0E8'
+  card.style.maxWidth = 'none'
+  card.style.width = '100%'
+  card.style.margin = '0'
   const video = doc.createElement('video')
   video.src = '/templates/bloom/assets/humming.mp4'
   video.autoplay = true

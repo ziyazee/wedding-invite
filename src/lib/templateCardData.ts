@@ -1,6 +1,6 @@
 export const TEMPLATE_INTRO_VIDEOS: Record<number, string> = {
   1: '/templates/royal-grace/opening-mobile.mp4',
-  6: '/templates/embroidered-garden/assets/intro-doors-trimmed.mp4',
+  6: '/templates/embroidered-garden/assets/intro-doors-opt.mp4',
   5: '/templates/secret-garden/assets/hero-video.mp4',
   2: '/templates/majestic/assets/hero-bg-l-slFnvE.mp4',
   7: '/templates/bloom/assets/intro-video-2-a-H3NxSy.mp4',
