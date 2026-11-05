@@ -35,10 +35,10 @@ Audited: 2026-11-05. Referenced assets only (unused files already moved to `publ
 | 10 | Emerald Parchment | 291 KB | 1.1 MB | 987 KB | 2.4 MB | Clean |
 | 13 | Raabta | 2.3 MB | — | 1.6 MB | 3.9 MB | Clean |
 | 11 | Royal Jodhpur | 695 KB | — | 4.0 MB | 4.7 MB | MP3 compress |
-| 15 | Mangal | 4.6 MB | — | 1.5 MB | 6.1 MB | Clean |
-| 14 | Qubool | 5.3 MB | — | 1.6 MB | 6.9 MB | Clean |
-| 12 | Destination Wedding | 7.6 MB | — | 1.6 MB | 9.2 MB | JPG compress |
-| 17 | Tajmahal | 4.0 MB | 6.1 MB | 791 KB | 10.9 MB | 2 PNGs → WebP |
+| 15 | Mangal | 4.6 MB | — | 1.0 MB | 5.5 MB | Done |
+| 14 | Qubool | 5.3 MB | — | 636 KB | 5.9 MB | Done |
+| 12 | Destination Wedding | 3.2 MB | — | 636 KB | 7.6 MB | Done |
+| 17 | Tajmahal | 1.5 MB | 8.0 MB | 772 KB | 10.2 MB | Done |
 | 16 | Viah | 13 MB | — | 1.5 MB | 14.5 MB | 29 PNGs → WebP (zero conversion done) |
 
 ---

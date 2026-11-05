@@ -371,3 +371,147 @@ Architecture note: EG has dual rendering paths. Native React (`EmbroideredGarden
 | `src/lib/templateCardData.ts` | intro-doors-trimmed.mp4 → intro-doors-opt.mp4 |
 | `public/unused/bloom/` | 61 files moved here |
 | `public/unused/embroidered-garden/` | 23 files moved here |
+
+---
+
+## OrderFrame + Native React Templates — Batch 4
+
+### Qubool (template 14)
+
+#### Phase 1 — Asset Optimization
+| Asset | Before | After | Savings |
+|-------|--------|-------|---------|
+| music.mp3 (320→128 kbps) | 1.6 MB | 636 KB | 964 KB |
+| Images | Already all WebP in HTML | — | — |
+
+#### Phase 2 — Loading Strategy (no changes needed)
+- **No preload gate** — gate opens instantly on click (`openGate()` at line 859)
+- **IntersectionObserver lazy loading** — all scene layers loaded when within one-screen lead time
+- **Audio** — `preload="none"`, starts muted
+- **Scene 1 layers** loaded immediately, others lazy
+- **Uses media-visibility.js** for visibility gating
+
+#### Phase 3 — Unused Cleanup
+**5 files moved to `public/unused/qubool/`** (1.8 MB):
+- 4 unreferenced scene5 assets (scene5 section removed from HTML but assets left behind): 05-rose-petals.webp (50K), 01-rose-blur-p.webp (31K), 01-rose-blur.webp (30K), 02-dholak.webp (93K)
+- 1 MP3 backup: music-320kbps.mp3 (1.6M)
+
+**Active assets remaining:** 5.3 MB (WebP images + compressed MP3 + vendor JS)
+
+---
+
+### Destination Wedding (template 12)
+
+#### Phase 1 — Asset Optimization
+| Asset | Before | After | Savings |
+|-------|--------|-------|---------|
+| 4× couple JPGs → WebP | 4.8 MB total | 3.2 MB total | 1.6 MB (33%) |
+| music.mp3 (320→128 kbps) | 1.6 MB | 636 KB | 964 KB |
+
+couple-1: 1.0M→693K, couple-2: 1.5M→1.0M, couple-3: 1.2M→796K, couple-4: 1.1M→716K.
+Updated `index.html` couple_carousel URLs from .jpg to .webp.
+
+#### Phase 2 — Loading Strategy (no changes needed)
+- Standalone React app inside OrderFrame iframe
+- Loading handled by built React bundle
+- Audio loaded on demand
+
+#### Phase 3 — Unused Cleanup
+**5 files moved to `public/unused/destination-wedding/`** (6.4 MB):
+- 4 original JPGs: couple-1.jpg (1.0M), couple-2.jpg (1.5M), couple-3.jpg (1.2M), couple-4.jpg (1.1M)
+- 1 MP3 backup: music-320kbps.mp3 (1.6M)
+
+**Active assets remaining:** 7.6 MB (4 WebP images + compressed MP3 + React bundle)
+
+---
+
+### Mangal (template 15)
+
+#### Phase 1 — Asset Optimization
+| Asset | Before | After | Savings |
+|-------|--------|-------|---------|
+| 8× background PNGs → WebP (data-bg) | 17.5 MB total | 1.1 MB total | 16.4 MB (94%) |
+| Made In Heaven.mp3 (192→128 kbps) | 1.5 MB | 1.0 MB | 500 KB |
+
+Also fixed 8 broken `data-bg` references — HTML referenced non-existent landscape PNGs (e.g., `gate/00-gate.png`), causing 404 fallbacks on desktop. Created proper WebP versions from the `-p.png` sources and updated all `data-bg` attributes.
+
+21 PNGs already had WebP duplicates (created Nov 3). HTML foreground elements (`data-src`), placeholders (`data-bg-p`), and decorative images (`img src`) already referenced WebP. All 21 PNGs on disk were unused originals.
+
+#### Phase 2 — Loading Strategy (no changes needed)
+- **No preload gate** — gate opens instantly on click
+- **IntersectionObserver lazy loading** — all scene layers lazy-loaded with one-screen lead time
+- **Audio** — `preload="none"`, starts muted
+- **Uses media-visibility.js** for visibility gating
+- Same architecture as Qubool (templates 14-16 share the same script.js pattern)
+
+#### Phase 3 — Unused Cleanup
+**22 files moved to `public/unused/mangal/`** (41 MB):
+- 8 portrait placeholder PNGs (-p.png, HTML uses -p.webp): gate, scene1-4, scene6-8 backgrounds
+- 7 foreground element PNGs (HTML uses .webp): scene1/02-her, scene1/03-him, scene3/02-couple-seated, scene4/02-festive-moment, scene6/02-ceremony-moment, scene7/02-couple-close, scene8/02-couple-sit
+- 6 decorative PNGs (HTML uses .webp): golden-bokeh, warm-lampglow, rangoli-motif, om-motif, footer-ornament, diya-float
+- 1 MP3 backup: Made In Heaven-192kbps.mp3 (1.5M)
+- .DS_Store deleted
+
+**Active assets remaining:** ~5.5 MB (29 WebP files + 1 MP3 + vendor JS/CSS)
+
+---
+
+### Tajmahal (template 17)
+
+Architecture note: Native React template (NOT OrderFrame despite being in the same number range). Component at `src/templates/Tajmahal.tsx` with `Tajmahal.css`.
+
+#### Phase 1 — Asset Optimization
+| Asset | Before | After | Savings |
+|-------|--------|-------|---------|
+| opening.mp4 (strip audio) | 6.1 MB | 5.9 MB | 200 KB |
+| 7.mp4 (strip audio) | 3.1 MB | 2.1 MB | 1.0 MB |
+| music.mp3 | 772 KB | — | Already at 105 kbps |
+| Images | All referenced as WebP in TSX/CSS | — | — |
+
+Both videos always played muted (`muted`, `defaultMuted = true`), silent AAC audio tracks stripped.
+
+#### Phase 2 — Loading Strategy (no changes needed)
+- **No preload gate** — tap prompt fires `playOpening()` immediately, video starts at 1.5s mark
+- **Opening video** — `preload="auto"` with poster image, intentional for instant playback
+- **Scene 7 video** — `preload="metadata"` with IntersectionObserver visibility gating (play when visible, no-op catch on block)
+- **Lazy images** — scenes 4-6 images have `loading="lazy"`
+- **Parallax** — cached measurements + requestAnimationFrame, respects `prefers-reduced-motion`
+- **Audio** — `preload="none"`, starts on user tap
+
+#### Phase 3 — Unused Cleanup
+**14 files moved to `public/unused/tajmahal/`** (32 MB):
+- 6 PNGs with WebP duplicates (React uses .webp): 2.png, 3.png, 4.png, 5.png, 6.png, 7.png
+- 6 unreferenced PNGs (zero references anywhere): 22.png, 33.png, 6-1.png, celebration.png, celebration2.png, celebration3.png
+- 2 video backups with audio: opening-with-audio.mp4 (6.1M), 7-with-audio.mp4 (3.1M)
+
+**Active assets remaining:** ~10.2 MB (8 WebP images + 2 MP4s + 1 MP3 + 1 JPG poster)
+
+---
+
+## Combined Impact — All 11 Templates
+
+| Metric | Batch 1-3 (7 templates) | Qubool | Dest. Wedding | Mangal | Tajmahal | **Grand Total** |
+|--------|------------------------|--------|---------------|--------|----------|-----------------|
+| Files removed | 236 | 5 | 5 | 22 | 14 | **282 files** |
+| Deploy size reduced | 210 MB | 1.8 MB | 6.4 MB | 41 MB | 32 MB | **291 MB** |
+| Image optimization | 20 MB | — | 1.6 MB | 16.4 MB | — | **38 MB** |
+| Audio compression | 11.7 MB | 964 KB | 964 KB | 500 KB | — | **14.1 MB** |
+| Video savings | 3.0 MB | — | — | — | 1.2 MB | **4.2 MB** |
+
+### Files Modified — Batch 4
+
+| File | Changes |
+|------|---------|
+| `public/templates/mangal/index.html` | 8 data-bg PNG refs → WebP (fixed broken desktop backgrounds) |
+| `public/templates/destination-wedding/index.html` | 4 couple_carousel URLs .jpg → .webp |
+| `public/templates/mangal/Made In Heaven.mp3` | Re-encoded 192→128 kbps |
+| `public/templates/qubool/music.mp3` | Re-encoded 320→128 kbps |
+| `public/templates/destination-wedding/music.mp3` | Re-encoded 320→128 kbps |
+| `public/templates/destination-wedding/wedding/*.webp` | 4 new WebP conversions from JPGs |
+| `public/templates/mangal/assets/*/*.webp` | 8 new background WebP conversions |
+| `public/templates/tajmahal/assets/opening.mp4` | Stripped silent AAC audio track |
+| `public/templates/tajmahal/assets/7.mp4` | Stripped silent AAC audio track |
+| `public/unused/qubool/` | 5 files moved here |
+| `public/unused/destination-wedding/` | 5 files moved here |
+| `public/unused/mangal/` | 22 files moved here |
+| `public/unused/tajmahal/` | 14 files moved here |

@@ -366,3 +366,85 @@ done
 | recovery-day-divider.png | 122 KB | Zero references |
 
 **Active assets remaining:** 3.5 MB (17 files: 2 videos, 15 images/PNGs)
+
+### Qubool (template 14) — 2026-11-05
+
+**Moved to `public/unused/qubool/`** (1.8 MB total, 5 files):
+
+| File | Size | Reason |
+|------|------|--------|
+| music-320kbps.mp3 | 1.6 MB | Original 320kbps audio before 128kbps compression |
+| scene5/02-dholak.webp | 93 KB | Scene5 removed from HTML, asset unreferenced |
+| scene5/05-rose-petals.webp | 50 KB | Scene5 removed from HTML, asset unreferenced |
+| scene5/01-rose-blur-p.webp | 31 KB | Scene5 removed from HTML, asset unreferenced |
+| scene5/01-rose-blur.webp | 30 KB | Scene5 removed from HTML, asset unreferenced |
+
+**Active assets remaining:** 5.3 MB (WebP images + compressed MP3 + vendor JS)
+
+### Destination Wedding (template 12) — 2026-11-05
+
+**Moved to `public/unused/destination-wedding/`** (6.4 MB total, 5 files):
+
+| File | Size | Reason |
+|------|------|--------|
+| couple-2.jpg | 1.5 MB | Replaced by WebP conversion |
+| couple-3.jpg | 1.2 MB | Replaced by WebP conversion |
+| couple-4.jpg | 1.1 MB | Replaced by WebP conversion |
+| couple-1.jpg | 1.0 MB | Replaced by WebP conversion |
+| music-320kbps.mp3 | 1.6 MB | Original 320kbps audio before 128kbps compression |
+
+**Active assets remaining:** 7.6 MB (4 WebP images + compressed MP3 + React bundle)
+
+### Mangal (template 15) — 2026-11-05
+
+**Moved to `public/unused/mangal/`** (41 MB total, 22 files):
+
+| File | Size | Reason |
+|------|------|--------|
+| scene7/01-garden-pavilion-p.png | 2.7 MB | WebP version referenced, PNG unused |
+| scene7/02-couple-close.png | 2.7 MB | WebP version referenced, PNG unused |
+| scene6/02-ceremony-moment.png | 2.6 MB | WebP version referenced, PNG unused |
+| scene4/02-festive-moment.png | 2.5 MB | WebP version referenced, PNG unused |
+| scene1/02-her.png | 2.3 MB | WebP version referenced, PNG unused |
+| scene2/01-courtyard-p.png | 2.2 MB | WebP version referenced, PNG unused |
+| scene8/01-starlit-court-p.png | 2.2 MB | WebP version referenced, PNG unused |
+| scene3/01-diya-night-p.png | 2.2 MB | WebP version referenced, PNG unused |
+| gate/00-gate-p.png | 2.1 MB | WebP version referenced, PNG unused |
+| scene4/01-festive-court-p.png | 2.1 MB | WebP version referenced, PNG unused |
+| scene1/01-temple-dawn-p.png | 2.0 MB | WebP version referenced, PNG unused |
+| scene6/01-mandap-night-p.png | 2.0 MB | WebP version referenced, PNG unused |
+| golden-bokeh.png | 2.0 MB | WebP version referenced, PNG unused |
+| scene3/02-couple-seated.png | 2.0 MB | WebP version referenced, PNG unused |
+| scene8/02-couple-sit.png | 1.4 MB | WebP version referenced, PNG unused |
+| Made In Heaven-192kbps.mp3 | 1.5 MB | Original 192kbps audio before compression |
+| rangoli-motif.png | 1.3 MB | WebP version referenced, PNG unused |
+| scene1/03-him.png | 1.3 MB | WebP version referenced, PNG unused |
+| warm-lampglow.png | 1.2 MB | WebP version referenced, PNG unused |
+| om-motif.png | 918 KB | WebP version referenced, PNG unused |
+| footer-ornament.png | 776 KB | WebP version referenced, PNG unused |
+| diya-float.png | 692 KB | WebP version referenced, PNG unused |
+
+**Active assets remaining:** ~5.5 MB (29 WebP files + 1 MP3 + vendor JS/CSS)
+
+### Tajmahal (template 17) — 2026-11-05
+
+**Moved to `public/unused/tajmahal/`** (32 MB total, 14 files):
+
+| File | Size | Reason |
+|------|------|--------|
+| opening-with-audio.mp4 | 6.1 MB | Original video with silent AAC audio |
+| 7-with-audio.mp4 | 3.1 MB | Original video with silent AAC audio |
+| 6-1.png | 2.2 MB | Zero references anywhere |
+| 2.png | 2.1 MB | WebP version used in CSS, PNG unused |
+| 5.png | 2.1 MB | WebP version used in TSX, PNG unused |
+| 4.png | 2.0 MB | WebP version used in TSX, PNG unused |
+| 6.png | 2.1 MB | WebP version used in TSX, PNG unused |
+| 22.png | 2.0 MB | Zero references anywhere |
+| 33.png | 2.0 MB | Zero references anywhere |
+| 3.png | 1.9 MB | WebP version used in CSS, PNG unused |
+| 7.png | 1.8 MB | WebP version used in TSX, PNG unused |
+| celebration.png | 1.8 MB | Zero references anywhere |
+| celebration3.png | 1.7 MB | Zero references anywhere |
+| celebration2.png | 1.4 MB | Zero references anywhere |
+
+**Active assets remaining:** ~10.2 MB (8 WebP images + 2 MP4s + 1 MP3 + 1 JPG poster)

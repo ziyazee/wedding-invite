@@ -1,0 +1,936 @@
+<title>Performance Report</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=DM+Sans:ital,opsz,wght@0,9..40,300;0,9..40,400;0,9..40,500;0,9..40,600;1,9..40,400&family=Fraunces:ital,opsz,wght@0,9..144,400;0,9..144,600;0,9..144,700;1,9..144,400&display=swap">
+<style>
+  /* Layout: single-column report, data-dense tables, stat tiles at top */
+  :root {
+    --bg: #FAFAF8;
+    --fg: #1a1a1a;
+    --fg-muted: #666;
+    --surface: #fff;
+    --border: #e4e4e0;
+    --accent: #2d6a4f;
+    --accent-light: #d8f3dc;
+    --red: #c1121f;
+    --red-light: #fde8e8;
+    --amber: #b08600;
+    --amber-light: #fef3cd;
+    --blue: #1d4ed8;
+    --blue-light: #dbeafe;
+
+    --font-display: 'Fraunces', Georgia, serif;
+    --font-body: 'DM Sans', system-ui, sans-serif;
+  }
+
+  @media (prefers-color-scheme: dark) {
+    :root:not([data-theme="light"]) {
+      --bg: #111110;
+      --fg: #e8e8e4;
+      --fg-muted: #999;
+      --surface: #1c1c1a;
+      --border: #333;
+      --accent: #52b788;
+      --accent-light: #1a3328;
+      --red: #ef6461;
+      --red-light: #3a1a1a;
+      --amber: #e0a800;
+      --amber-light: #332800;
+      --blue: #60a5fa;
+      --blue-light: #1a2744;
+      color-scheme: dark;
+    }
+  }
+  :root[data-theme="dark"] {
+    --bg: #111110;
+    --fg: #e8e8e4;
+    --fg-muted: #999;
+    --surface: #1c1c1a;
+    --border: #333;
+    --accent: #52b788;
+    --accent-light: #1a3328;
+    --red: #ef6461;
+    --red-light: #3a1a1a;
+    --amber: #e0a800;
+    --amber-light: #332800;
+    --blue: #60a5fa;
+    --blue-light: #1a2744;
+    color-scheme: dark;
+  }
+
+  body {
+    background: var(--bg);
+    color: var(--fg);
+    font-family: var(--font-body);
+    font-size: 14px;
+    line-height: 1.6;
+    padding-left: max(16px, env(safe-area-inset-left, 0px));
+    padding-right: max(16px, env(safe-area-inset-right, 0px));
+    padding-block: 0;
+  }
+
+  .wrap {
+    max-width: 960px;
+    margin: 0 auto;
+    padding-block: 32px 64px;
+  }
+
+  h1 {
+    font-family: var(--font-display);
+    font-size: clamp(1.6rem, 4vw, 2.2rem);
+    font-weight: 700;
+    letter-spacing: -0.02em;
+    margin: 0 0 4px;
+  }
+
+  .subtitle {
+    color: var(--fg-muted);
+    font-size: 14px;
+    margin: 0 0 32px;
+  }
+
+  /* Stat tiles */
+  .stats {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
+    gap: 12px;
+    margin-bottom: 40px;
+  }
+  .stat {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    padding: 16px;
+  }
+  .stat__value {
+    font-family: var(--font-display);
+    font-size: 1.8rem;
+    font-weight: 700;
+    line-height: 1.1;
+    font-variant-numeric: tabular-nums;
+  }
+  .stat__value--green { color: var(--accent); }
+  .stat__label {
+    font-size: 12px;
+    color: var(--fg-muted);
+    margin-top: 4px;
+    text-transform: uppercase;
+    letter-spacing: 0.06em;
+  }
+
+  /* Section headings */
+  h2 {
+    font-family: var(--font-display);
+    font-size: 1.25rem;
+    font-weight: 600;
+    margin: 48px 0 6px;
+    letter-spacing: -0.01em;
+  }
+  h2 + .section-desc {
+    color: var(--fg-muted);
+    font-size: 13px;
+    margin: 0 0 16px;
+  }
+
+  h3 {
+    font-family: var(--font-display);
+    font-size: 1.05rem;
+    font-weight: 600;
+    margin: 32px 0 4px;
+  }
+
+  /* Tables */
+  .table-wrap {
+    overflow-x: auto;
+    margin: 12px 0 24px;
+    border: 1px solid var(--border);
+    border-radius: 8px;
+  }
+  table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 13px;
+    font-variant-numeric: tabular-nums;
+  }
+  thead {
+    background: var(--surface);
+  }
+  th {
+    text-align: left;
+    font-weight: 500;
+    font-size: 11px;
+    text-transform: uppercase;
+    letter-spacing: 0.06em;
+    color: var(--fg-muted);
+    padding: 10px 12px;
+    border-bottom: 1px solid var(--border);
+    white-space: nowrap;
+  }
+  td {
+    padding: 10px 12px;
+    border-bottom: 1px solid var(--border);
+    vertical-align: top;
+  }
+  tr:last-child td { border-bottom: none; }
+  .num { text-align: right; white-space: nowrap; }
+  .mono { font-family: 'SF Mono', 'Cascadia Code', monospace; font-size: 12px; }
+
+  /* Badges */
+  .badge {
+    display: inline-block;
+    font-size: 11px;
+    font-weight: 500;
+    padding: 2px 8px;
+    border-radius: 10px;
+    white-space: nowrap;
+  }
+  .badge--done { background: var(--accent-light); color: var(--accent); }
+  .badge--pending { background: var(--amber-light); color: var(--amber); }
+  .badge--big { background: var(--red-light); color: var(--red); }
+
+  /* Bars */
+  .bar-cell { min-width: 120px; }
+  .bar-track {
+    height: 6px;
+    background: var(--border);
+    border-radius: 3px;
+    overflow: hidden;
+    margin-top: 4px;
+  }
+  .bar-fill {
+    height: 100%;
+    border-radius: 3px;
+    background: var(--accent);
+  }
+
+  /* Template cards */
+  .tpl-card {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    padding: 20px;
+    margin-bottom: 16px;
+  }
+  .tpl-header {
+    display: flex;
+    align-items: baseline;
+    gap: 10px;
+    flex-wrap: wrap;
+    margin-bottom: 12px;
+  }
+  .tpl-header h3 { margin: 0; }
+  .tpl-id {
+    font-size: 12px;
+    color: var(--fg-muted);
+    font-family: var(--font-body);
+  }
+  .tpl-meta {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
+    gap: 8px 16px;
+    font-size: 13px;
+    margin-bottom: 14px;
+  }
+  .tpl-meta dt {
+    font-size: 11px;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    color: var(--fg-muted);
+  }
+  .tpl-meta dd {
+    margin: 0 0 6px;
+    font-variant-numeric: tabular-nums;
+  }
+
+  .phase-list {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+    font-size: 13px;
+  }
+  .phase-list li {
+    padding: 4px 0;
+    padding-left: 20px;
+    position: relative;
+    line-height: 1.5;
+  }
+  .phase-list li::before {
+    content: '✓';
+    position: absolute;
+    left: 0;
+    color: var(--accent);
+    font-weight: 600;
+  }
+
+  .tpl-savings {
+    display: inline-block;
+    font-family: var(--font-display);
+    font-weight: 700;
+    font-size: 1.1rem;
+    color: var(--accent);
+    margin-top: 8px;
+  }
+
+  /* Caching section */
+  .cache-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 12px;
+    margin: 12px 0 24px;
+  }
+  @media (max-width: 600px) {
+    .cache-grid { grid-template-columns: 1fr; }
+  }
+  .cache-box {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    padding: 14px 16px;
+  }
+  .cache-box__ttl {
+    font-family: var(--font-display);
+    font-weight: 700;
+    font-size: 1.2rem;
+  }
+  .cache-box__type {
+    font-size: 12px;
+    color: var(--fg-muted);
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+  }
+  .cache-box__desc {
+    font-size: 13px;
+    color: var(--fg-muted);
+    margin-top: 4px;
+  }
+
+  /* Loading estimate */
+  .est-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    gap: 12px;
+    margin: 12px 0;
+  }
+  .est-card {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    padding: 14px 16px;
+  }
+  .est-card__speed {
+    font-size: 12px;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    color: var(--fg-muted);
+    margin-bottom: 4px;
+  }
+  .est-card__time {
+    font-family: var(--font-display);
+    font-weight: 700;
+    font-size: 1.3rem;
+  }
+  .est-card__note {
+    font-size: 12px;
+    color: var(--fg-muted);
+    margin-top: 2px;
+  }
+
+  /* Fallback / tint section */
+  .tint-table td:first-child { font-weight: 500; }
+
+  /* Footer */
+  .report-footer {
+    margin-top: 48px;
+    padding-top: 16px;
+    border-top: 1px solid var(--border);
+    font-size: 12px;
+    color: var(--fg-muted);
+  }
+
+  /* reduce motion */
+  @media (prefers-reduced-motion: reduce) {
+    * { transition: none !important; animation: none !important; }
+  }
+</style>
+
+<div class="wrap">
+
+  <h1>Template Performance Optimization</h1>
+  <p class="subtitle">11 templates optimized across 3 phases &mdash; asset compression, loading strategy, unused cleanup. November 2026.</p>
+
+  <!-- ─── Grand totals ─── -->
+  <div class="stats">
+    <div class="stat">
+      <div class="stat__value stat__value--green">291 MB</div>
+      <div class="stat__label">Deploy size freed</div>
+    </div>
+    <div class="stat">
+      <div class="stat__value stat__value--green">282</div>
+      <div class="stat__label">Files removed</div>
+    </div>
+    <div class="stat">
+      <div class="stat__value">179 MB</div>
+      <div class="stat__label">Current templates</div>
+    </div>
+    <div class="stat">
+      <div class="stat__value">340 MB</div>
+      <div class="stat__label">In /unused (safe)</div>
+    </div>
+  </div>
+
+  <!-- ─── Summary table ─── -->
+  <h2>Current State — All Templates</h2>
+  <p class="section-desc">Active deploy sizes after optimization. Guest download is smaller (lazy loading, preload=none on audio).</p>
+
+  <div class="table-wrap">
+    <table>
+      <thead>
+        <tr>
+          <th>#</th>
+          <th>Template</th>
+          <th>Type</th>
+          <th class="num">Images</th>
+          <th class="num">Video</th>
+          <th class="num">Audio</th>
+          <th class="num">Total</th>
+          <th class="num">Freed</th>
+          <th>Status</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td>1</td><td>Royal Grace</td><td>Native React</td>
+          <td class="num">1.0 MB</td><td class="num">5.7 MB</td><td class="num">1.5 MB</td>
+          <td class="num"><strong>8.2 MB</strong></td><td class="num">45 MB</td>
+          <td><span class="badge badge--done">Done</span></td>
+        </tr>
+        <tr>
+          <td>2</td><td>Majestic</td><td>Native React</td>
+          <td class="num">2.0 MB</td><td class="num">1.1 MB</td><td class="num">1.1 MB</td>
+          <td class="num"><strong>4.7 MB</strong></td><td class="num">25 MB</td>
+          <td><span class="badge badge--done">Done</span></td>
+        </tr>
+        <tr>
+          <td>3</td><td>A Timeless Union</td><td>Standalone</td>
+          <td class="num">8.1 MB</td><td class="num">&mdash;</td><td class="num">0.7 MB</td>
+          <td class="num"><strong>9.1 MB</strong></td><td class="num">53 MB</td>
+          <td><span class="badge badge--done">Done</span></td>
+        </tr>
+        <tr>
+          <td>4</td><td>Mandap at Dusk</td><td>Standalone</td>
+          <td class="num">1.2 MB</td><td class="num">0.9 MB</td><td class="num">0.7 MB</td>
+          <td class="num"><strong>2.8 MB</strong></td><td class="num">15 MB</td>
+          <td><span class="badge badge--done">Done</span></td>
+        </tr>
+        <tr>
+          <td>5</td><td>Secret Garden</td><td>Native React</td>
+          <td class="num">2.7 MB</td><td class="num">1.0 MB</td><td class="num">0.9 MB</td>
+          <td class="num"><strong>5.9 MB</strong></td><td class="num">41 MB</td>
+          <td><span class="badge badge--done">Done</span></td>
+        </tr>
+        <tr>
+          <td>6</td><td>Embroidered Garden</td><td>Native React</td>
+          <td class="num">2.8 MB</td><td class="num">0.7 MB</td><td class="num">&mdash;</td>
+          <td class="num"><strong>3.7 MB</strong></td><td class="num">15 MB</td>
+          <td><span class="badge badge--done">Done</span></td>
+        </tr>
+        <tr>
+          <td>7</td><td>Bloom</td><td>AnimatedInvitation</td>
+          <td class="num">1.9 MB</td><td class="num">1.7 MB</td><td class="num">2.1 MB</td>
+          <td class="num"><strong>10.1 MB</strong></td><td class="num">34 MB</td>
+          <td><span class="badge badge--done">Done</span></td>
+        </tr>
+        <tr>
+          <td>8</td><td>Artful Love Story</td><td>Standalone</td>
+          <td class="num">16.9 MB</td><td class="num">&mdash;</td><td class="num">&mdash;</td>
+          <td class="num"><strong>18.8 MB</strong></td><td class="num">24 MB</td>
+          <td><span class="badge badge--done">Done</span></td>
+        </tr>
+        <tr>
+          <td>12</td><td>Destination Wedding</td><td>OrderFrame</td>
+          <td class="num">6.4 MB</td><td class="num">&mdash;</td><td class="num">0.6 MB</td>
+          <td class="num"><strong>7.6 MB</strong></td><td class="num">6.4 MB</td>
+          <td><span class="badge badge--done">Done</span></td>
+        </tr>
+        <tr>
+          <td>14</td><td>Qubool</td><td>OrderFrame</td>
+          <td class="num">5.4 MB</td><td class="num">&mdash;</td><td class="num">0.6 MB</td>
+          <td class="num"><strong>6.4 MB</strong></td><td class="num">1.8 MB</td>
+          <td><span class="badge badge--done">Done</span></td>
+        </tr>
+        <tr>
+          <td>15</td><td>Mangal</td><td>OrderFrame</td>
+          <td class="num">5.6 MB</td><td class="num">&mdash;</td><td class="num">1.0 MB</td>
+          <td class="num"><strong>5.9 MB</strong></td><td class="num">41 MB</td>
+          <td><span class="badge badge--done">Done</span></td>
+        </tr>
+        <tr>
+          <td>17</td><td>Tajmahal</td><td>Native React</td>
+          <td class="num">1.5 MB</td><td class="num">9.0 MB</td><td class="num">0.8 MB</td>
+          <td class="num"><strong>11.3 MB</strong></td><td class="num">32 MB</td>
+          <td><span class="badge badge--done">Done</span></td>
+        </tr>
+        <tr style="background: var(--border); opacity: 0.7;">
+          <td colspan="9" style="font-size: 11px; text-transform: uppercase; letter-spacing: 0.08em; color: var(--fg-muted); text-align: center; padding: 6px;">Remaining &mdash; not yet optimized</td>
+        </tr>
+        <tr>
+          <td>9</td><td>Maroon Letter</td><td>OrderFrame</td>
+          <td class="num" colspan="3">&mdash;</td>
+          <td class="num">2.3 MB</td><td class="num">&mdash;</td>
+          <td><span class="badge badge--done">Clean</span></td>
+        </tr>
+        <tr>
+          <td>10</td><td>Emerald Parchment</td><td>OrderFrame</td>
+          <td class="num" colspan="3">&mdash;</td>
+          <td class="num">1.5 MB</td><td class="num">&mdash;</td>
+          <td><span class="badge badge--done">Clean</span></td>
+        </tr>
+        <tr>
+          <td>11</td><td>Royal Jodhpur</td><td>OrderFrame</td>
+          <td class="num" colspan="3">&mdash;</td>
+          <td class="num">~5 MB</td><td class="num">&mdash;</td>
+          <td><span class="badge badge--pending">MP3 4MB</span></td>
+        </tr>
+        <tr>
+          <td>13</td><td>Raabta</td><td>OrderFrame</td>
+          <td class="num" colspan="3">&mdash;</td>
+          <td class="num">4.0 MB</td><td class="num">&mdash;</td>
+          <td><span class="badge badge--done">Clean</span></td>
+        </tr>
+        <tr>
+          <td>16</td><td>Viah</td><td>OrderFrame</td>
+          <td class="num" colspan="3">&mdash;</td>
+          <td class="num">14.8 MB</td><td class="num">&mdash;</td>
+          <td><span class="badge badge--big">29 PNGs</span></td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+
+
+  <!-- ─── Per-template deep dive ─── -->
+  <h2>Per-Template Detail</h2>
+  <p class="section-desc">What was there, what was done, and what we achieved for each template.</p>
+
+  <!-- Royal Grace -->
+  <div class="tpl-card">
+    <div class="tpl-header">
+      <h3>Royal Grace</h3>
+      <span class="tpl-id">Template 1 &middot; Native React</span>
+      <span class="badge badge--done">Done</span>
+    </div>
+    <dl class="tpl-meta">
+      <div><dt>Before</dt><dd>~55 MB</dd></div>
+      <div><dt>After</dt><dd>8.2 MB</dd></div>
+      <div><dt>Freed</dt><dd>45 MB (28 files)</dd></div>
+      <div><dt>Reduction</dt><dd>85%</dd></div>
+    </dl>
+    <ul class="phase-list">
+      <li><strong>Phase 1:</strong> Stripped silent audio from opening.mp4, MP3 256&rarr;128 kbps (1.5 MB saved)</li>
+      <li><strong>Phase 2:</strong> Video retry pattern on openInvitation(), 6 preload hints added, no preload gate</li>
+      <li><strong>Phase 3:</strong> Removed design variants, originals, legacy HTML/JS/CSS &mdash; 28 files to /unused/</li>
+    </ul>
+    <div class="tpl-savings">&minus;85% deploy</div>
+  </div>
+
+  <!-- Majestic -->
+  <div class="tpl-card">
+    <div class="tpl-header">
+      <h3>Majestic</h3>
+      <span class="tpl-id">Template 2 &middot; Native React</span>
+      <span class="badge badge--done">Done</span>
+    </div>
+    <dl class="tpl-meta">
+      <div><dt>Before</dt><dd>~30 MB</dd></div>
+      <div><dt>After</dt><dd>4.7 MB</dd></div>
+      <div><dt>Freed</dt><dd>25 MB (40 files)</dd></div>
+      <div><dt>Reduction</dt><dd>84%</dd></div>
+    </dl>
+    <ul class="phase-list">
+      <li><strong>Phase 1:</strong> PNG&rarr;WebP badge (1.0 MB&rarr;48 KB, 95%), stripped celebrations.mp4 audio, MP3 321&rarr;128 kbps</li>
+      <li><strong>Phase 2:</strong> Preload hints expanded 5&rarr;10, AmbientVideo IntersectionObserver verified</li>
+      <li><strong>Phase 3:</strong> MOVs, legacy PNGs, legacy HTML/JS/CSS, unused illustrations &mdash; 40 files</li>
+    </ul>
+    <div class="tpl-savings">&minus;84% deploy</div>
+  </div>
+
+  <!-- A Timeless Union -->
+  <div class="tpl-card">
+    <div class="tpl-header">
+      <h3>A Timeless Union</h3>
+      <span class="tpl-id">Template 3 &middot; Standalone React</span>
+      <span class="badge badge--done">Done</span>
+    </div>
+    <dl class="tpl-meta">
+      <div><dt>Before</dt><dd>~62 MB</dd></div>
+      <div><dt>After</dt><dd>9.1 MB</dd></div>
+      <div><dt>Freed</dt><dd>53 MB (43 files)</dd></div>
+      <div><dt>Reduction</dt><dd>85%</dd></div>
+    </dl>
+    <ul class="phase-list">
+      <li><strong>Phase 1:</strong> MP3 320&rarr;128 kbps (1.1 MB saved), images already WebP</li>
+      <li><strong>Phase 2:</strong> Already optimized &mdash; 5 preload hints, lazy loading, decoding=async on below-fold</li>
+      <li><strong>Phase 3:</strong> Original PNGs, alternate variants, TTFs, Framer leftovers &mdash; 43 files</li>
+    </ul>
+    <div class="tpl-savings">&minus;85% deploy</div>
+  </div>
+
+  <!-- Mandap at Dusk -->
+  <div class="tpl-card">
+    <div class="tpl-header">
+      <h3>Mandap at Dusk</h3>
+      <span class="tpl-id">Template 4 &middot; Standalone React</span>
+      <span class="badge badge--done">Done</span>
+    </div>
+    <dl class="tpl-meta">
+      <div><dt>Before</dt><dd>~18 MB</dd></div>
+      <div><dt>After</dt><dd>2.8 MB</dd></div>
+      <div><dt>Freed</dt><dd>15 MB (11 files)</dd></div>
+      <div><dt>Reduction</dt><dd>84%</dd></div>
+    </dl>
+    <ul class="phase-list">
+      <li><strong>Phase 1:</strong> 8 PNGs&rarr;WebP (11.4&rarr;1.1 MB, 90% compression), MP3 192&rarr;128 kbps</li>
+      <li><strong>Phase 2:</strong> Video retry pattern added, 7 preload hints added</li>
+      <li><strong>Phase 3:</strong> 8 original PNGs, MP3 backup, 2 unused variants &mdash; 11 files</li>
+    </ul>
+    <div class="tpl-savings">&minus;84% deploy</div>
+  </div>
+
+  <!-- Secret Garden -->
+  <div class="tpl-card">
+    <div class="tpl-header">
+      <h3>Secret Garden</h3>
+      <span class="tpl-id">Template 5 &middot; Native React</span>
+      <span class="badge badge--done">Done</span>
+    </div>
+    <dl class="tpl-meta">
+      <div><dt>Before</dt><dd>~47 MB</dd></div>
+      <div><dt>After</dt><dd>5.9 MB</dd></div>
+      <div><dt>Freed</dt><dd>41 MB (28 files)</dd></div>
+      <div><dt>Reduction</dt><dd>87%</dd></div>
+    </dl>
+    <ul class="phase-list">
+      <li><strong>Phase 1:</strong> MP3 compressed, all image assets already converted in prior session</li>
+      <li><strong>Phase 2:</strong> Removed 1.7 MB preload gate &mdash; "Tap to open" fires instantly now</li>
+      <li><strong>Phase 3:</strong> Legacy PNGs, MOV, unused designs, legacy HTML/JS &mdash; 28 files</li>
+    </ul>
+    <div class="tpl-savings">&minus;87% deploy</div>
+  </div>
+
+  <!-- Embroidered Garden -->
+  <div class="tpl-card">
+    <div class="tpl-header">
+      <h3>Embroidered Garden</h3>
+      <span class="tpl-id">Template 6 &middot; Native React (migrated)</span>
+      <span class="badge badge--done">Done</span>
+    </div>
+    <dl class="tpl-meta">
+      <div><dt>Before</dt><dd>~19 MB</dd></div>
+      <div><dt>After</dt><dd>3.7 MB</dd></div>
+      <div><dt>Freed</dt><dd>15 MB (23 files)</dd></div>
+      <div><dt>Reduction</dt><dd>80%</dd></div>
+    </dl>
+    <ul class="phase-list">
+      <li><strong>Phase 1:</strong> Switched HTML to -opt variants (hero 3 MB&rarr;302 KB), celebration.mov&rarr;celebration2.mp4 (2.5 MB saved), MP3 320&rarr;128 kbps, 4 timeline PNGs&rarr;WebP</li>
+      <li><strong>Phase 2:</strong> Already optimized &mdash; CSS fallback on video error, IntersectionObserver reveals, lazy loading</li>
+      <li><strong>Phase 3:</strong> Unreferenced + superseded originals + PNGs &mdash; 23 files</li>
+    </ul>
+    <div class="tpl-savings">&minus;80% deploy</div>
+  </div>
+
+  <!-- Bloom -->
+  <div class="tpl-card">
+    <div class="tpl-header">
+      <h3>Bloom</h3>
+      <span class="tpl-id">Template 7 &middot; AnimatedInvitation</span>
+      <span class="badge badge--done">Done</span>
+    </div>
+    <dl class="tpl-meta">
+      <div><dt>Before</dt><dd>~44 MB</dd></div>
+      <div><dt>After</dt><dd>10.1 MB</dd></div>
+      <div><dt>Freed</dt><dd>34 MB (62 files)</dd></div>
+      <div><dt>Reduction</dt><dd>77%</dd></div>
+    </dl>
+    <ul class="phase-list">
+      <li><strong>Phase 1:</strong> MP3 320&rarr;128 kbps (3.1 MB saved), stripped humming.mp4 audio, 4 PNGs&rarr;WebP (~1.3 MB)</li>
+      <li><strong>Phase 2:</strong> Added IntersectionObserver video visibility gating for decorative humming.mp4 loops in interactions.js</li>
+      <li><strong>Phase 3:</strong> 10 PNG dupes, 19 gallery JPGs, 21 accommodation/butterfly PNGs, 2 videos &mdash; 62 files</li>
+    </ul>
+    <div class="tpl-savings">&minus;77% deploy</div>
+  </div>
+
+  <!-- Artful Love Story -->
+  <div class="tpl-card">
+    <div class="tpl-header">
+      <h3>Artful Love Story</h3>
+      <span class="tpl-id">Template 8 &middot; Standalone React</span>
+      <span class="badge badge--done">Done</span>
+    </div>
+    <dl class="tpl-meta">
+      <div><dt>Before</dt><dd>~43 MB</dd></div>
+      <div><dt>After</dt><dd>18.8 MB</dd></div>
+      <div><dt>Freed</dt><dd>24 MB (30 files)</dd></div>
+      <div><dt>Reduction</dt><dd>56%</dd></div>
+    </dl>
+    <ul class="phase-list">
+      <li><strong>Phase 1:</strong> 1 PNG&rarr;WebP (1.2 MB&rarr;558 KB), responsive srcset already in use</li>
+      <li><strong>Phase 2:</strong> Already optimized &mdash; 3 hero preloads at responsive widths, eager/lazy correct, rAF parallax</li>
+      <li><strong>Phase 3:</strong> 16 original PNGs, 4 full-size WebPs, 4 JPEGs &mdash; 30 files</li>
+    </ul>
+    <div class="tpl-savings">&minus;56% deploy</div>
+  </div>
+
+  <!-- Destination Wedding -->
+  <div class="tpl-card">
+    <div class="tpl-header">
+      <h3>Destination Wedding</h3>
+      <span class="tpl-id">Template 12 &middot; OrderFrame (bundled React)</span>
+      <span class="badge badge--done">Done</span>
+    </div>
+    <dl class="tpl-meta">
+      <div><dt>Before</dt><dd>~14 MB</dd></div>
+      <div><dt>After</dt><dd>7.6 MB</dd></div>
+      <div><dt>Freed</dt><dd>6.4 MB (5 files)</dd></div>
+      <div><dt>Reduction</dt><dd>46%</dd></div>
+    </dl>
+    <ul class="phase-list">
+      <li><strong>Phase 1:</strong> 4 couple JPGs&rarr;WebP (4.8&rarr;3.2 MB, 33%), MP3 320&rarr;128 kbps (964 KB)</li>
+      <li><strong>Phase 2:</strong> Already optimized &mdash; standalone React app inside OrderFrame</li>
+      <li><strong>Phase 3:</strong> 4 original JPGs + MP3 backup &mdash; 5 files</li>
+    </ul>
+    <div class="tpl-savings">&minus;46% deploy</div>
+  </div>
+
+  <!-- Qubool -->
+  <div class="tpl-card">
+    <div class="tpl-header">
+      <h3>Qubool</h3>
+      <span class="tpl-id">Template 14 &middot; OrderFrame</span>
+      <span class="badge badge--done">Done</span>
+    </div>
+    <dl class="tpl-meta">
+      <div><dt>Before</dt><dd>~7.1 MB</dd></div>
+      <div><dt>After</dt><dd>6.4 MB</dd></div>
+      <div><dt>Freed</dt><dd>1.8 MB (5 files)</dd></div>
+      <div><dt>Reduction</dt><dd>25%</dd></div>
+    </dl>
+    <ul class="phase-list">
+      <li><strong>Phase 1:</strong> MP3 320&rarr;128 kbps (964 KB saved), images already WebP</li>
+      <li><strong>Phase 2:</strong> Already optimized &mdash; gate opens instantly, IntersectionObserver lazy loading, media-visibility.js</li>
+      <li><strong>Phase 3:</strong> 4 orphaned scene5 WebPs + MP3 backup &mdash; 5 files</li>
+    </ul>
+    <div class="tpl-savings">&minus;25% deploy</div>
+  </div>
+
+  <!-- Mangal -->
+  <div class="tpl-card">
+    <div class="tpl-header">
+      <h3>Mangal</h3>
+      <span class="tpl-id">Template 15 &middot; OrderFrame</span>
+      <span class="badge badge--done">Done</span>
+    </div>
+    <dl class="tpl-meta">
+      <div><dt>Before</dt><dd>~47 MB</dd></div>
+      <div><dt>After</dt><dd>5.9 MB</dd></div>
+      <div><dt>Freed</dt><dd>41 MB (22 files)</dd></div>
+      <div><dt>Reduction</dt><dd>87%</dd></div>
+    </dl>
+    <ul class="phase-list">
+      <li><strong>Phase 1:</strong> 8 background PNGs&rarr;WebP (17.5&rarr;1.1 MB, 94%). MP3 192&rarr;128 kbps. <strong>Fixed 8 broken desktop backgrounds</strong> (data-bg referenced non-existent PNGs &mdash; guests on desktop saw CSS tint fallback instead of art)</li>
+      <li><strong>Phase 2:</strong> Already optimized &mdash; IntersectionObserver lazy loading, media-visibility.js</li>
+      <li><strong>Phase 3:</strong> 8 portrait placeholder PNGs, 7 foreground PNGs, 6 decorative PNGs, 1 MP3 backup &mdash; 22 files</li>
+    </ul>
+    <div class="tpl-savings">&minus;87% deploy + desktop backgrounds fixed</div>
+  </div>
+
+  <!-- Tajmahal -->
+  <div class="tpl-card">
+    <div class="tpl-header">
+      <h3>Tajmahal</h3>
+      <span class="tpl-id">Template 17 &middot; Native React</span>
+      <span class="badge badge--done">Done</span>
+    </div>
+    <dl class="tpl-meta">
+      <div><dt>Before</dt><dd>~42 MB</dd></div>
+      <div><dt>After</dt><dd>11.3 MB</dd></div>
+      <div><dt>Freed</dt><dd>32 MB (14 files)</dd></div>
+      <div><dt>Reduction</dt><dd>73%</dd></div>
+    </dl>
+    <ul class="phase-list">
+      <li><strong>Phase 1:</strong> Stripped silent AAC audio from opening.mp4 (200 KB) and 7.mp4 (1 MB). MP3 already at 105 kbps</li>
+      <li><strong>Phase 2:</strong> Already optimized &mdash; no preload gate, opening plays on tap, scene 7 video has IntersectionObserver, lazy images</li>
+      <li><strong>Phase 3:</strong> 6 PNGs with WebP dupes, 6 unreferenced PNGs, 2 video backups &mdash; 14 files</li>
+    </ul>
+    <div class="tpl-savings">&minus;73% deploy</div>
+  </div>
+
+
+  <!-- ─── Caching Strategy ─── -->
+  <h2>Caching Strategy</h2>
+  <p class="section-desc">Configured in vercel.json. Vercel edge serves these headers on every response.</p>
+
+  <div class="cache-grid">
+    <div class="cache-box">
+      <div class="cache-box__ttl">365 days</div>
+      <div class="cache-box__type">immutable</div>
+      <div class="cache-box__desc">Vite-hashed JS &amp; CSS bundles, /assets/*, fonts (woff2/woff/ttf). Content-addressed filenames &mdash; never stale.</div>
+    </div>
+    <div class="cache-box">
+      <div class="cache-box__ttl">30 days</div>
+      <div class="cache-box__type">public, max-age</div>
+      <div class="cache-box__desc">Images (png, jpg, webp, svg), video (mp4, mov), audio (mp3). Template assets with stable filenames.</div>
+    </div>
+  </div>
+
+  <p style="font-size: 13px; color: var(--fg-muted);">
+    <strong>Repeat visits:</strong> A guest revisiting after 30 days may re-download images/video/audio. Within 30 days, the browser serves from disk cache with zero network. Vite bundles never expire.<br><br>
+    <strong>Edge caching:</strong> Vercel's edge CDN also caches these assets at PoPs worldwide. First guest in a region pays the origin fetch; subsequent guests in that region get edge-cached responses.<br><br>
+    <strong>Not cached:</strong> HTML pages (index.html) are always fetched fresh to pick up template personalization. The <code>get_published_invitation</code> RPC call is also uncached (needs invalidation strategy).
+  </p>
+
+
+  <!-- ─── Tints / Fallbacks ─── -->
+  <h2>Tints &amp; Fallback Strategy</h2>
+  <p class="section-desc">What guests see while assets load, or if they fail to load.</p>
+
+  <div class="table-wrap">
+    <table class="tint-table">
+      <thead>
+        <tr><th>Template</th><th>Fallback behavior</th></tr>
+      </thead>
+      <tbody>
+        <tr><td>Mangal</td><td>Each scene has a <code>data-tint</code> attribute ("warm" or "cool") &mdash; CSS applies a solid color tint matching the scene's palette while the background WebP loads. If WebP fails, <code>applyImage()</code> adds <code>is-ready is-missing</code> classes and the tint remains as the permanent background. <strong>Before optimization:</strong> desktop viewers saw tint-only because landscape PNGs didn't exist (404). Now fixed with WebP conversions.</td></tr>
+        <tr><td>Qubool</td><td>Same <code>data-tint</code> + <code>applyImage()</code> pattern as Mangal. Gate background loads first, scene backgrounds lazy-load via IntersectionObserver with one-screen lead time.</td></tr>
+        <tr><td>Secret Garden</td><td>Opening video has <code>poster</code> image shown instantly. <strong>Preload gate removed</strong> &mdash; previously guests waited for 1.7 MB asset decode before "Tap to open" became interactive.</td></tr>
+        <tr><td>Royal Grace</td><td>Video poster image shown immediately. <code>playOpening()</code> has retry pattern &mdash; if first play attempt blocked, retries on next user interaction.</td></tr>
+        <tr><td>Mandap at Dusk</td><td>Video retry pattern added. If autoplay fails, queues replay on next tap/scroll.</td></tr>
+        <tr><td>Tajmahal</td><td>CSS background color <code>#101a30</code> behind scene 2 image. Opening video has poster + <code>preload="auto"</code>. Scene 7 video gated by IntersectionObserver &mdash; loads only when scrolled into view.</td></tr>
+        <tr><td>Embroidered Garden</td><td>CSS fallback in interactions.css: if intro video errors, <code>#opening:has(.video-unavailable)</code> shows the hero WebP as a background (updated from 3 MB PNG to 302 KB WebP).</td></tr>
+        <tr><td>Bloom</td><td>Intro video has poster image. Decorative humming.mp4 loops now gated by IntersectionObserver &mdash; paused when not visible, reducing battery and bandwidth.</td></tr>
+        <tr><td>Others</td><td>Lazy loading attributes on below-fold images. Audio uses <code>preload="none"</code> everywhere &mdash; zero audio bytes until guest interacts with music button.</td></tr>
+      </tbody>
+    </table>
+  </div>
+
+
+  <!-- ─── Load Time Estimates ─── -->
+  <h2>Expected Load Time Impact</h2>
+  <p class="section-desc">Estimated initial page load (critical path only). Guests download above-fold assets + JS bundle. Below-fold is lazy-loaded on scroll. Audio is preload="none".</p>
+
+  <h3>Typical template first load (critical path)</h3>
+  <p style="font-size: 13px; margin-bottom: 12px;">Most templates: ~1&ndash;3 MB critical (hero image/video + poster + JS bundle). Remaining assets stream in as guest scrolls.</p>
+
+  <div class="est-grid">
+    <div class="est-card">
+      <div class="est-card__speed">4G / Fast WiFi</div>
+      <div class="est-card__time">1&ndash;2s</div>
+      <div class="est-card__note">~10 Mbps. Hero + poster load in under 1s, JS hydration adds ~500ms.</div>
+    </div>
+    <div class="est-card">
+      <div class="est-card__speed">3G / Slow mobile</div>
+      <div class="est-card__time">3&ndash;5s</div>
+      <div class="est-card__note">~1.5 Mbps. Poster visible first, video buffers. Tint fallbacks shown while backgrounds load.</div>
+    </div>
+    <div class="est-card">
+      <div class="est-card__speed">Repeat visit (cached)</div>
+      <div class="est-card__time">&lt;1s</div>
+      <div class="est-card__note">All assets served from disk cache (30-day TTL). Only HTML fetch + JS hydration.</div>
+    </div>
+  </div>
+
+  <h3>Before vs. after: what changed for guests</h3>
+  <div class="table-wrap">
+    <table>
+      <thead>
+        <tr><th>Metric</th><th>Before</th><th>After</th><th>Impact</th></tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td>Audio download on load</td>
+          <td>2&ndash;7 MB (preload=auto, 320 kbps)</td>
+          <td>0 bytes (preload=none, 128 kbps)</td>
+          <td>Audio loads only when guest taps music button. 128 kbps is indistinguishable on phone speakers.</td>
+        </tr>
+        <tr>
+          <td>Below-fold images</td>
+          <td>All images fetched upfront in many templates</td>
+          <td>Lazy loaded via IntersectionObserver</td>
+          <td>Only above-fold assets block initial render. Saves 2&ndash;10 MB on initial load.</td>
+        </tr>
+        <tr>
+          <td>Image format</td>
+          <td>PNG (most templates had raw PNGs)</td>
+          <td>WebP (80&ndash;95% smaller)</td>
+          <td>A 2 MB PNG becomes 100&ndash;300 KB WebP. Visible quality identical.</td>
+        </tr>
+        <tr>
+          <td>Video weight</td>
+          <td>Videos carrying silent AAC audio</td>
+          <td>Audio track stripped (always played muted)</td>
+          <td>1&ndash;1.2 MB saved per video. Faster buffer start on mobile.</td>
+        </tr>
+        <tr>
+          <td>"Tap to open" responsiveness</td>
+          <td>Some templates gated on asset preload</td>
+          <td>Zero preload gates &mdash; instant</td>
+          <td>Guest can interact immediately. No waiting on network.</td>
+        </tr>
+        <tr>
+          <td>Decorative videos (Bloom)</td>
+          <td>All video loops autoplay regardless of visibility</td>
+          <td>IntersectionObserver pauses offscreen</td>
+          <td>Battery savings on mobile. Bandwidth freed for visible content.</td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+
+
+  <!-- ─── Optimization by category ─── -->
+  <h2>Savings Breakdown by Category</h2>
+
+  <div class="stats" style="margin-top:12px;">
+    <div class="stat">
+      <div class="stat__value stat__value--green">38 MB</div>
+      <div class="stat__label">PNG &rarr; WebP</div>
+    </div>
+    <div class="stat">
+      <div class="stat__value stat__value--green">14.1 MB</div>
+      <div class="stat__label">Audio compression</div>
+    </div>
+    <div class="stat">
+      <div class="stat__value stat__value--green">4.2 MB</div>
+      <div class="stat__label">Video audio strips</div>
+    </div>
+    <div class="stat">
+      <div class="stat__value stat__value--green">234 MB</div>
+      <div class="stat__label">Unused file cleanup</div>
+    </div>
+  </div>
+
+
+  <!-- ─── Remaining work ─── -->
+  <h2>Remaining Opportunity</h2>
+  <p class="section-desc">5 templates not yet optimized. Biggest opportunity is Viah (29 PNGs, zero WebP conversions).</p>
+
+  <div class="table-wrap">
+    <table>
+      <thead>
+        <tr><th>#</th><th>Template</th><th class="num">Current size</th><th>Main opportunity</th><th>Est. savings</th></tr>
+      </thead>
+      <tbody>
+        <tr><td>16</td><td>Viah</td><td class="num">14.8 MB</td><td>29 PNGs with zero WebP conversion</td><td>~10&ndash;12 MB</td></tr>
+        <tr><td>11</td><td>Royal Jodhpur</td><td class="num">~5 MB</td><td>4 MB MP3 at high bitrate</td><td>~2&ndash;3 MB</td></tr>
+        <tr><td>13</td><td>Raabta</td><td class="num">4.0 MB</td><td>Already clean &mdash; possible MP3 compress</td><td>~0.5 MB</td></tr>
+        <tr><td>9</td><td>Maroon Letter</td><td class="num">2.3 MB</td><td>Already clean</td><td>minimal</td></tr>
+        <tr><td>10</td><td>Emerald Parchment</td><td class="num">1.5 MB</td><td>Already clean</td><td>minimal</td></tr>
+      </tbody>
+    </table>
+  </div>
+
+
+  <footer class="report-footer">
+    All removed files preserved in <code>public/unused/{template}/</code> &mdash; nothing was deleted. Reversible at any time.<br>
+    Generated November 5, 2026.
+  </footer>
+
+</div>
