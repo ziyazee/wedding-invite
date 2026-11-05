@@ -4,6 +4,7 @@ import { displayName } from './model'
 import type { RsvpTarget } from './rsvp'
 import { InvitationContext } from './context'
 import SiteFonts from '../SiteFonts'
+import InvitationLoading from './InvitationLoading'
 const PersonalMusic = lazy(() => import('./PersonalMusic'))
 const AnimatedInvitation = lazy(() => import('./AnimatedInvitation'))
 const NewDesign = lazy(() => import('../pages/NewDesign'))
@@ -46,7 +47,7 @@ const templateComponent: Record<number, React.LazyExoticComponent<React.Componen
   117: Design17,
 }
 
-const fallback = <div role="status" style={{ minHeight: '100svh', display: 'grid', placeItems: 'center', background: '#fffaf2', color: '#75664c', font: '14px Arial,sans-serif' }}>Opening your invitation…</div>
+const fallback = <InvitationLoading />
 
 export default function InvitationRenderer({ details: raw, rsvpTarget }: { details: InvitationData; rsvpTarget?: RsvpTarget }) {
   const details = useMemo<InvitationData>(() => ({ ...raw, groom: displayName(raw.groom), bride: displayName(raw.bride) }), [raw])

@@ -11,6 +11,7 @@ import { personalizeEG } from './personalizeEG'
 import { installOpeningNamesFit } from './installOpeningNamesFit'
 import { installRsvpForm } from './installRsvpForm'
 import { installFooterLogoFallback } from './components/footerLogoFallback'
+import InvitationLoading, { InvitationLoadingFrame } from './InvitationLoading'
 const templateFolder: Record<number, string> = { 6: 'embroidered-garden', 7: 'bloom' }
 const themes: Record<number,{names:string[];floral:string;frame:string;bg:string;ink:string}>={
  6:{names:['Camille','Antoine'],floral:'/templates/embroidered-garden/assets/embroidered-swans-hero-opt.webp',frame:'/templates/embroidered-garden/assets/ceremony-reception-bg-opt.webp',bg:'#F5F0E8',ink:'#536249'},
@@ -230,8 +231,8 @@ export default function AnimatedInvitation({details:d,rsvpTarget}:{details:Invit
   return()=>abort.abort()
  },[d,rsvpTarget?.orderId,rsvpTarget?.path,editorPreview])
  if(error)return <div className="studio-empty" role="alert">{error}<p><button onClick={()=>location.reload()}>Try again</button></p></div>
- if(!html)return <div className="studio-empty" role="status">Preparing your invitation…</div>
- return <iframe ref={frame} srcDoc={html} title={`${firstName} & ${secondName} wedding invitation`} allow="autoplay" style={{position:'fixed',inset:0,width:'100%',height:'100%',border:0}} onLoad={()=>{
+ if(!html)return <InvitationLoading />
+ return <InvitationLoadingFrame ref={frame} srcDoc={html} title={`${firstName} & ${secondName} wedding invitation`} allow="autoplay" style={{position:'fixed',inset:0,width:'100%',height:'100%',border:0}} onLoad={()=>{
   frame.current?.contentDocument?.addEventListener('click',event=>{
    const target=event.target as HTMLElement
    const latest=currentDetails.current
