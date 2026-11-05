@@ -28,3 +28,6 @@ dist-ssr
 
 # Personal invitation records saved by the local dashboard
 .invitation-data/
+
+# Unused template assets
+public/unused/
