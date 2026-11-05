@@ -19,24 +19,42 @@ export default defineConfig({
   },
   plugins: [
     {
-      name: 'tajmahal-initial-theme',
+      name: 'invitation-initial-tint',
       transformIndexHtml() {
-        const theme = INVITATION_VIEWPORT_THEMES[17]
+        const tintVariables = Object.entries(INVITATION_VIEWPORT_THEMES).map(([id, theme]) => {
+          const [red, green, blue] = [1, 3, 5].map(start => Number.parseInt(theme.backgroundColor.slice(start, start + 2), 16))
+          const ink = .2126 * red + .7152 * green + .0722 * blue < 128 ? '#f7efe3' : '#302a22'
+          return `html[data-invitation-tint="${id}"]:not([data-invitation-theme]), html[data-invitation-theme="${id}"] {
+            --invitation-tint-color: ${theme.backgroundColor};
+            --invitation-tint-ink: ${ink};
+            --invitation-tint-muted: ${ink}26;
+          }`
+        }).join('\n')
         // Safari can retain the initial page tint. This must be a synchronous
         // head script, before the cream fallback or deferred React code paints.
         return [
           {
             tag: 'script', injectTo: 'head',
-            children: `if (${JSON.stringify(theme.routes)}.includes(location.pathname.replace(/\\/+$/, ''))) {
-              document.documentElement.dataset.invitationTheme = '17';
-              document.documentElement.style.setProperty('--invitation-surround-color', ${JSON.stringify(theme.backgroundColor)});
+            children: `(() => {
+              const themes = ${JSON.stringify(INVITATION_VIEWPORT_THEMES)};
+              const path = location.pathname.replace(/\\/+$/, '');
+              const entry = Object.entries(themes).find(([, theme]) => theme.routes.includes(path));
+              if (!entry) return;
+              const [id, theme] = entry;
+              document.documentElement.dataset.invitationTint = id;
+              document.documentElement.style.setProperty('--invitation-surround-color', theme.backgroundColor);
               const themeColor = document.querySelector('meta[name="theme-color"]') || document.createElement('meta');
               themeColor.name = 'theme-color';
-              themeColor.content = ${JSON.stringify(theme.backgroundColor)};
+              themeColor.content = theme.backgroundColor;
               if (!themeColor.isConnected) document.head.append(themeColor);
-              const viewportFit = /CriOS\\//.test(navigator.userAgent) ? 'contain' : 'cover';
-              document.querySelector('meta[name="viewport"]').content += ', viewport-fit=' + viewportFit;
-            }`,
+              // Preserve Tajmahal's existing bootstrap behavior exactly.
+              // Tint rollout must not change viewport settings for other templates.
+              if (id === '17') {
+                document.documentElement.dataset.invitationTheme = '17';
+                const viewportFit = /CriOS\\//.test(navigator.userAgent) ? 'contain' : 'cover';
+                document.querySelector('meta[name="viewport"]').content += ', viewport-fit=' + viewportFit;
+              }
+            })();`,
           },
           {
             tag: 'style', injectTo: 'head',
@@ -44,6 +62,23 @@ export default defineConfig({
               html[data-invitation-theme="17"] #app-splash {
                 background: var(--invitation-surround-color) !important;
                 color: #f7efe3 !important;
+              }`,
+          },
+          {
+            tag: 'style', injectTo: 'head',
+            children: `${tintVariables}
+              html:is([data-invitation-tint], [data-invitation-theme]),
+              html:is([data-invitation-tint], [data-invitation-theme]) body {
+                background-color: var(--invitation-tint-color, var(--invitation-surround-color)) !important;
+              }
+              html:is([data-invitation-tint], [data-invitation-theme]) #app-splash,
+              html:is([data-invitation-tint], [data-invitation-theme]) .invitation-loading {
+                background: var(--invitation-tint-color, var(--invitation-surround-color)) !important;
+                color: var(--invitation-tint-ink, #635642) !important;
+              }
+              html:is([data-invitation-tint], [data-invitation-theme]) .invitation-loading-indicator {
+                border-color: var(--invitation-tint-muted, #63564226);
+                border-top-color: var(--invitation-tint-ink, #635642);
               }`,
           },
         ]
