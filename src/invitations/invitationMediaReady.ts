@@ -38,11 +38,21 @@ async function waitForImage(image: HTMLImageElement, signal: AbortSignal) {
 
 async function waitForFrame(frame: HTMLIFrameElement, signal: AbortSignal, depth: number) {
   try {
-    const doc = frame.contentDocument
-    const hasSource = !!(frame.srcdoc || frame.getAttribute('src'))
-    if (!doc || doc.readyState !== 'complete' || (hasSource && doc.URL === 'about:blank')) {
-      await waitForEvent(frame, 'load', signal)
-    }
+    await new Promise<void>(resolve => {
+      const finish = () => {
+        clearInterval(timer)
+        signal.removeEventListener('abort', finish)
+        resolve()
+      }
+      const check = () => {
+        const doc = frame.contentDocument
+        const hasSource = !!(frame.srcdoc || frame.getAttribute('src'))
+        if (signal.aborted || (doc?.body && doc.readyState !== 'loading' && !(hasSource && doc.URL === 'about:blank'))) finish()
+      }
+      const timer = setInterval(check, 50)
+      signal.addEventListener('abort', finish, { once: true })
+      check()
+    })
     if (!signal.aborted && frame.contentDocument?.body && depth < 3) {
       await collectMedia(frame.contentDocument.body, signal, depth + 1)
     }
@@ -56,6 +66,12 @@ async function collectMedia(root: HTMLElement, signal: AbortSignal, depth: numbe
   const doc = root.ownerDocument
   const win = doc.defaultView
   if (!win) return
+  const cover = root.querySelector<HTMLImageElement>('#opening > img')
+  const opening = cover?.parentElement
+  if (cover && opening && !opening.hidden && win.getComputedStyle(opening).display !== 'none' && win.getComputedStyle(cover).opacity !== '0') {
+    await Promise.all([waitForImage(cover, signal), doc.fonts.ready])
+    return
+  }
   const pending: Promise<unknown>[] = []
   const backgrounds = new Set<string>()
   for (const element of [root, ...Array.from(root.querySelectorAll<HTMLElement>('*'))]) {

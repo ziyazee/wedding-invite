@@ -232,7 +232,7 @@ export default function AnimatedInvitation({details:d,rsvpTarget}:{details:Invit
  },[d,rsvpTarget?.orderId,rsvpTarget?.path,editorPreview])
  if(error)return <div className="studio-empty" role="alert">{error}<p><button onClick={()=>location.reload()}>Try again</button></p></div>
  if(!html)return <InvitationLoading />
- return <InvitationLoadingFrame ref={frame} srcDoc={html} title={`${firstName} & ${secondName} wedding invitation`} allow="autoplay" style={{position:'fixed',inset:0,width:'100%',height:'100%',border:0}} onLoad={()=>{
+ return <InvitationLoadingFrame ref={frame} srcDoc={html} title={`${firstName} & ${secondName} wedding invitation`} allow="autoplay" style={{position:'fixed',inset:0,width:'100%',height:'100%',border:0}} onDocumentReady={()=>{
   frame.current?.contentDocument?.addEventListener('click',event=>{
    const target=event.target as HTMLElement
    const latest=currentDetails.current
