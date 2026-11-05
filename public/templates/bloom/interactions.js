@@ -23,6 +23,23 @@
     if (music.paused) music.play().catch(syncMusic);
     else music.pause();
   });
+  const src128 = music.src;
+  const src320 = '/unused/bloom/wedding-background-music-320kbps.mp3';
+  const qualityBtn = document.createElement('button');
+  qualityBtn.type = 'button';
+  qualityBtn.textContent = '128k';
+  qualityBtn.style.cssText = 'position:fixed;bottom:16px;left:16px;z-index:9999;padding:6px 12px;border:1px solid rgba(0,0,0,.2);border-radius:6px;background:#fff;font:12px/1 system-ui;cursor:pointer;opacity:.85';
+  document.body.append(qualityBtn);
+  let using320 = false;
+  qualityBtn.addEventListener('click', () => {
+    const time = music.currentTime;
+    const wasPlaying = !music.paused;
+    using320 = !using320;
+    music.src = using320 ? src320 : src128;
+    music.currentTime = time;
+    qualityBtn.textContent = using320 ? '320k' : '128k';
+    if (wasPlaying) music.play().catch(syncMusic);
+  });
   function finish() {
     if (finished) return;
     finished = true;
