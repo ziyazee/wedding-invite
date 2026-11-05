@@ -36,9 +36,12 @@
     const wasPlaying = !music.paused;
     using320 = !using320;
     music.src = using320 ? src320 : src128;
-    music.currentTime = time;
     qualityBtn.textContent = using320 ? '320k' : '128k';
-    if (wasPlaying) music.play().catch(syncMusic);
+    music.addEventListener('loadedmetadata', () => {
+      music.currentTime = time;
+      if (wasPlaying) music.play().catch(syncMusic);
+    }, { once: true });
+    music.load();
   });
   function finish() {
     if (finished) return;
