@@ -37,7 +37,8 @@
     using320 = !using320;
     music.src = using320 ? src320 : src128;
     qualityBtn.textContent = using320 ? '320k' : '128k';
-    if (wasPlaying) music.play().catch(syncMusic);
+    music.load();
+    music.play().catch(syncMusic);
     music.addEventListener('loadedmetadata', () => { music.currentTime = time; }, { once: true });
   });
   function finish() {
