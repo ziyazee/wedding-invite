@@ -4,7 +4,7 @@ import { BrowserRouter } from 'react-router-dom'
 import App from './App'
 import './index.css'
 import './invitations/InvitationViewport.css'
-import { applyInvitationViewportTheme } from './invitations/invitationViewportTheme'
+import { applyInvitationViewportTheme, invitationTemplateFromPath } from './invitations/invitationViewportTheme'
 
 window.addEventListener('vite:preloadError', () => { window.location.reload() })
 
@@ -28,7 +28,7 @@ if (
     restoreTheme()
     restoreTheme = applyInvitationViewportTheme(document, template)
   }
-  setTemplateTheme(location.pathname.replace(/\/+$/, '') === '/bloom' ? 7 : undefined)
+  setTemplateTheme(invitationTemplateFromPath(location.pathname))
   // Published invitations resolve their template inside the portrait frame.
   window.addEventListener('message', event => {
     if (event.origin !== location.origin || event.source !== frame.contentWindow) return
