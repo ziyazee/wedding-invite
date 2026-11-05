@@ -6,19 +6,18 @@ import './index.css'
 
 window.addEventListener('vite:preloadError', () => { window.location.reload() })
 
-// On desktop, public invitations are displayed inside a portrait-shaped phone
+// On every viewport, public invitations are displayed inside a 9:16 portrait
 // frame. Detect this before mounting React so the outer window stays
 // lightweight — only the iframe shell renders here; the full app bootstraps
 // once inside the iframe where window.self !== window.top.
 if (
   window.self === window.top &&
-  window.matchMedia('(min-width: 768px)').matches &&
   isPublicInvitationRoute()
 ) {
   const style = document.createElement('style')
   style.textContent =
     '.invitation-portrait-stage{position:fixed;inset:0;display:grid;place-items:center;overflow:hidden;background:#f7f4ee}' +
-    '.invitation-portrait-frame{display:block;width:min(100vw,56.25svh);height:min(100svh,177.7778vw);border:0;background:#fffaf2;box-shadow:0 0 32px #40352512}'
+    '.invitation-portrait-frame{display:block;width:min(100vw,56.25svh);height:auto;aspect-ratio:9/16;border:0;background:#fffaf2;box-shadow:0 0 32px #40352512}'
   document.head.appendChild(style)
 
   const stage = document.createElement('main')

@@ -66,7 +66,6 @@ export async function personalizeBloom(
  bloomCeremony.classList.add('atelier-bloom-ceremony')
  const nativeFrame = bloomCeremony.querySelector<HTMLElement>('[style*="aspect-ratio"]')!
  nativeFrame.setAttribute('data-bloom-card', 'image')
- nativeFrame.style.backgroundColor = '#F5F0E8'
  const ceremonyFrame = nativeFrame.parentElement
  if (ceremonyFrame) {
   ceremonyFrame.classList.remove('md:max-w-2xl')
