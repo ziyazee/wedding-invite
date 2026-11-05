@@ -3,6 +3,7 @@ import type { InvitationData } from './model'
 import type { RsvpTarget } from './rsvp'
 import { applyOrderFrame, installOrderFrameRsvp } from './orderFrameAdapter'
 import { destinationHTML } from './newOrderTemplates'
+import InvitationLoading from './InvitationLoading'
 
 const sources: Record<number, string> = { 9: '/templates/maroon-letter/index.html', 10: '/templates/emerald-parchment/index.html', 11: '/templates/shaadipath-t02/index.html', 12: '/templates/destination-wedding/index.html', 13: '/templates/raabta/index.html', 14: '/templates/qubool/index.html', 15: '/templates/mangal/index.html', 16: '/templates/viah/index.html' }
 
@@ -76,11 +77,8 @@ export default function OrderFrameInvitation({ details, rsvpTarget }: { details:
     if (ready && doc) return installOrderFrameRsvp(doc, details.template, orderId && path ? { orderId, path } : undefined)
   }, [ready, details.template, orderId, path, html])
   return <>
-    {openingCover && !ready && <div aria-hidden="true" style={{ position: 'fixed', inset: 0,
-      backgroundColor: '#180a0c', backgroundImage: `url("${openingCover}")`,
-      backgroundSize: details.template === 13 ? '100% 100%' : 'cover',
-      backgroundPosition: 'center 68%', backgroundRepeat: 'no-repeat' }} />}
-    {!ready && (!openingCover || error) && <p role="status" style={openingCover ? { position: 'relative', color: '#fffaf2' } : undefined}>{error || 'Opening your invitation…'}</p>}
+    {!ready && !error && <InvitationLoading />}
+    {error && <p role="alert">{error}</p>}
     {(details.template !== 12 || html) && <iframe ref={frame} data-order-template={details.template} src={details.template === 12 ? undefined : sources[details.template]} srcDoc={details.template === 12 ? html : undefined} onLoad={sync} title={`${details.groom} & ${details.bride} — Wedding invitation`} allow="autoplay" style={{ position: 'fixed', inset: 0, width: '100%', height: '100%', border: 0, visibility: ready ? 'visible' : 'hidden' }} />}
   </>
 }

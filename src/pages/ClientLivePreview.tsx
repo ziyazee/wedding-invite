@@ -1,6 +1,7 @@
 import { startTransition, useEffect, useLayoutEffect, useRef, useState } from 'react'
 import type { InvitationData } from '../invitations/model'
 import InvitationRenderer from '../invitations/InvitationRenderer'
+import InvitationLoading from '../invitations/InvitationLoading'
 import { invitationExample } from '../invitations/templateData'
 
 const previewKey = 'shaadi-client-live-preview'
@@ -56,6 +57,6 @@ export default function ClientLivePreview() {
     return () => { window.removeEventListener('storage', syncPreview); window.removeEventListener('message', syncMessage) }
   }, [])
 
-  if (!details) return <main style={{ minHeight: '100vh', display: 'grid', placeItems: 'center', color: '#69746d', font: '14px Arial, sans-serif' }}>Preparing live invitation…</main>
+  if (!details) return <InvitationLoading />
   return <InvitationRenderer details={details} />
 }

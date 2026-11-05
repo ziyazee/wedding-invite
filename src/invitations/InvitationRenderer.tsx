@@ -5,6 +5,7 @@ import type { RsvpTarget } from './rsvp'
 import { InvitationContext } from './context'
 import SiteFonts from '../SiteFonts'
 import InvitationLoading from './InvitationLoading'
+import InvitationLoadingBoundary from './InvitationLoadingBoundary'
 const PersonalMusic = lazy(() => import('./PersonalMusic'))
 const AnimatedInvitation = lazy(() => import('./AnimatedInvitation'))
 const NewDesign = lazy(() => import('../pages/NewDesign'))
@@ -54,8 +55,10 @@ export default function InvitationRenderer({ details: raw, rsvpTarget }: { detai
   const animatedDetails = useMemo(() => details, [details])
 
   return <InvitationContext.Provider value={details}><Suspense fallback={fallback}>
+    <InvitationLoadingBoundary key={details.template}>
     {renderTemplate(details, animatedDetails, rsvpTarget)}
     <DesignedByFooter />
+    </InvitationLoadingBoundary>
   </Suspense></InvitationContext.Provider>
 }
 

@@ -1,5 +1,6 @@
 import { useState } from 'react'
 import type { ComponentPropsWithRef } from 'react'
+import { waitForInvitationMedia } from './invitationMediaReady'
 import './InvitationLoading.css'
 
 export default function InvitationLoading({ visible = true }: { visible?: boolean }) {
@@ -11,7 +12,7 @@ export default function InvitationLoading({ visible = true }: { visible?: boolea
 
 export function InvitationLoadingFrame({ onLoad, className, style, ref, ...props }: ComponentPropsWithRef<'iframe'>) {
   const [readySource, setReadySource] = useState<string | null>(null)
-  const source = props.srcDoc || ''
+  const source = props.srcDoc ?? props.src ?? ''
   const ready = readySource === source
 
   return <>
@@ -23,17 +24,11 @@ export function InvitationLoadingFrame({ onLoad, className, style, ref, ...props
         onLoad?.(event)
         const frame = event.currentTarget
         const doc = frame.contentDocument
-        const cover = doc?.querySelector<HTMLImageElement>('#opening > img')
         const reveal = () => {
           if (frame.isConnected && frame.contentDocument === doc) setReadySource(source)
         }
-        if (!cover) { reveal(); return }
-        const decodeCover = () => { void cover.decode().catch(() => {}).then(reveal) }
-        if (cover.complete) decodeCover()
-        else {
-          cover.addEventListener('load', decodeCover, { once: true })
-          cover.addEventListener('error', reveal, { once: true })
-        }
+        if (!doc?.body) { reveal(); return }
+        void waitForInvitationMedia(doc.body).then(reveal)
       }} />
   </>
 }

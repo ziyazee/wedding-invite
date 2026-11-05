@@ -1,7 +1,7 @@
 .invitation-loading {
   position: fixed;
   inset: 0;
-  z-index: 1;
+  z-index: 2147483647;
   display: flex;
   flex-direction: column;
   align-items: center;
@@ -21,6 +21,10 @@
   opacity: 0;
   visibility: hidden;
   pointer-events: none;
+}
+
+.invitation-loading[data-visible="false"] .invitation-loading-indicator {
+  animation-play-state: paused;
 }
 
 .invitation-loading p {

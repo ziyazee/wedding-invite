@@ -2,6 +2,8 @@ import { Navigate, Route, Routes, useLocation, useParams } from 'react-router-do
 import { lazy, Suspense, useEffect, useState } from 'react'
 import { lazySitePage } from './SiteFonts'
 import InvitationViewport from './invitations/InvitationViewport'
+import InvitationLoading from './invitations/InvitationLoading'
+import InvitationLoadingBoundary from './invitations/InvitationLoadingBoundary'
 import { isSupabaseConfigured, supabase } from './lib/supabase'
 
 // Route boundaries keep dashboards, editor tools and unrelated designs out of
@@ -95,24 +97,30 @@ function SubdomainResolver({ slug }: { slug: string }) {
 
   if (pathname === '/preview') return <CompanyPreview slug={slug} />
   if (!target) return null
-  if (target === 'store') return <StoreLanding slug={slug} />
+  if (target === 'store') return <Suspense fallback={null}><StoreLanding slug={slug} /></Suspense>
   return <GeneratedInvitation overrideSlug={slug} />
 }
 
 export default function App() {
   const { pathname } = useLocation()
+  const invitationRoute = pathname === '/client/live-preview' || (
+    pathname !== '/' &&
+    !/^\/(?:client|admin|login|account|dashboard|create|newDesign|testing567|edits|privacy)(?:\/|$)/.test(pathname) &&
+    !/^\/\d+-[A-Za-z0-9_-]{16}\/?$/.test(pathname)
+  )
   // Store previews must reach the shared renderer on the same origin so they
   // can read the selected invitation from sessionStorage.
   const inviteSlug = pathname === '/client/live-preview' ? null : getInviteSlug()
   if (inviteSlug) {
     return (
-      <InvitationViewport><Suspense fallback={null}>
+      <InvitationViewport><Suspense fallback={<InvitationLoading />}>
         <SubdomainResolver slug={inviteSlug} />
       </Suspense></InvitationViewport>
     )
   }
   return (
-    <InvitationViewport><Suspense fallback={null}><Routes>
+    <InvitationViewport><Suspense fallback={invitationRoute ? <InvitationLoading /> : null}>
+    <InvitationLoadingBoundary key={pathname} enabled={invitationRoute && pathname !== '/client/live-preview'}><Routes>
       <Route path="/" element={<Landing />} />
       <Route path="/privacy" element={<Privacy />} />
       <Route path="/login" element={<Login />} />
@@ -164,7 +172,7 @@ export default function App() {
       <Route path="/royal-grace" element={<RoyalGrace />} />
       <Route path="/:orderNumber/:slug" element={<GeneratedInvitation />} />
       <Route path="/:slug" element={<SingleSegmentRoute />} />
-    </Routes></Suspense></InvitationViewport>
+    </Routes></InvitationLoadingBoundary></Suspense></InvitationViewport>
   )
 }
 

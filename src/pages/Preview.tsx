@@ -4,7 +4,7 @@ import { useInvitation } from '../hooks/useInvitation';
 import type { Invitation } from '../types';
 import TemplateRenderer from '../components/templates/TemplateRenderer';
 import Button from '../components/ui/Button';
-import LoadingSpinner from '../components/ui/LoadingSpinner';
+import InvitationLoading from '../invitations/InvitationLoading';
 
 export default function Preview() {
   const { id } = useParams<{ id: string }>();
@@ -21,7 +21,7 @@ export default function Preview() {
     });
   }, [id, fetchById]);
 
-  if (loading) return <LoadingSpinner className="min-h-screen" />;
+  if (loading) return <InvitationLoading />;
   if (!invitation) {
     return (
       <div className="min-h-screen flex items-center justify-center">

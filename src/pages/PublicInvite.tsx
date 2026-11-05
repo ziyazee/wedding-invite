@@ -3,7 +3,7 @@ import { useParams } from 'react-router-dom';
 import { useInvitation } from '../hooks/useInvitation';
 import type { Invitation } from '../types';
 import TemplateRenderer from '../components/templates/TemplateRenderer';
-import LoadingSpinner from '../components/ui/LoadingSpinner';
+import InvitationLoading from '../invitations/InvitationLoading';
 
 export default function PublicInvite() {
   const { slug } = useParams<{ slug: string }>();
@@ -35,7 +35,7 @@ export default function PublicInvite() {
     }
   }, [invitation]);
 
-  if (loading) return <LoadingSpinner className="min-h-screen" />;
+  if (loading) return <InvitationLoading />;
 
   if (notFound) {
     return (
