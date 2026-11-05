@@ -35,6 +35,7 @@
       if (window.scrollY < 1 && (document.activeElement === document.body || document.activeElement === document.querySelector('#open-invitation'))) {
         const heading = document.querySelector('h1'); heading.tabIndex = -1; heading.focus({ preventScroll: true });
       }
+      observeCardVideos();
     }, reduced ? 0 : 850);
   }
   opening.addEventListener('click', () => {
@@ -115,21 +116,23 @@
     track.addEventListener('pointercancel', () => drag=null);
   }
 
-  const cardVideos = document.querySelectorAll('[data-bloom-card="video"] video');
-  if (cardVideos.length && 'IntersectionObserver' in window) {
-    const videoObserver = new IntersectionObserver(entries => entries.forEach(entry => {
-      const v = entry.target;
-      if (entry.isIntersecting) {
-        v.play().catch(() => {
-          v.preload = 'auto';
-          v.addEventListener('canplay', () => v.play().catch(() => {}), { once: true });
-          v.load();
-        });
-      } else {
-        v.pause();
-      }
-    }), { threshold: 0 });
-    cardVideos.forEach(v => videoObserver.observe(v));
+  function observeCardVideos() {
+    const cardVideos = document.querySelectorAll('[data-bloom-card="video"] video');
+    if (cardVideos.length && 'IntersectionObserver' in window) {
+      const videoObserver = new IntersectionObserver(entries => entries.forEach(entry => {
+        const v = entry.target;
+        if (entry.isIntersecting) {
+          v.play().catch(() => {
+            v.preload = 'auto';
+            v.addEventListener('canplay', () => v.play().catch(() => {}), { once: true });
+            v.load();
+          });
+        } else {
+          v.pause();
+        }
+      }), { threshold: 0 });
+      cardVideos.forEach(v => videoObserver.observe(v));
+    }
   }
 
   const form=document.querySelector('#rsvp-form');
