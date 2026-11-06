@@ -35,16 +35,6 @@ export default function Tajmahal({ rsvpTarget }: { rsvpTarget?: RsvpTarget }) {
   const [rsvpMessage, setRsvpMessage] = useState("");
   const [rsvpStatus, setRsvpStatus] = useState("");
   const [rsvpBusy, setRsvpBusy] = useState(false);
-  const [wishName, setWishName] = useState("");
-  const [wishMsg, setWishMsg] = useState("");
-  const [wishStatus, setWishStatus] = useState("");
-  const [wishBusy, setWishBusy] = useState(false);
-  const [wishes, setWishes] = useState<{ name: string; message: string }[]>([
-    { name: "Fatima", message: "May Allah bless your union with endless love and happiness. Ameen!" },
-    { name: "Omar", message: "Wishing you both a lifetime of joy and barakah." },
-    { name: "Ayesha", message: "MashaAllah! May your marriage be filled with mercy and tranquility." },
-    { name: "Yusuf", message: "Congratulations! Duas for a beautiful journey together." },
-  ]);
 
   useEffect(() => {
     const timer = window.setInterval(() => setNow(Date.now()), 1000);
@@ -365,20 +355,6 @@ export default function Tajmahal({ rsvpTarget }: { rsvpTarget?: RsvpTarget }) {
     targets.forEach(t => observer.observe(t));
     return () => observer.disconnect();
   }, []);
-
-  function submitWish(e: React.FormEvent) {
-    e.preventDefault();
-    if (wishBusy || !wishName.trim() || !wishMsg.trim()) return;
-    setWishBusy(true);
-    setWishStatus("Sending…");
-    setTimeout(() => {
-      setWishes(prev => [{ name: wishName.trim(), message: wishMsg.trim() }, ...prev]);
-      setWishName("");
-      setWishMsg("");
-      setWishStatus("Thank you for your kind wishes!");
-      setWishBusy(false);
-    }, 600);
-  }
 
   const nikah = details.events.find(e => /nikah|nikkah|wedding/i.test(e.title)) ?? details.events[1];
 
