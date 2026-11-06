@@ -553,13 +553,14 @@ export default function Tajmahal({ rsvpTarget }: { rsvpTarget?: RsvpTarget }) {
         <div className="tajmahal-template__seventh-canvas">
           <video ref={seventhVideoRef} className="tajmahal-template__seventh-image" src="/templates/tajmahal/assets/7.mp4" poster="/templates/tajmahal/assets/7.webp" preload="metadata" loop muted playsInline controls={false} aria-hidden="true" />
           <div className="tajmahal-template__wishes-content">
-            <footer className="tajmahal-template__footer">
-              <p className="tajmahal-template__footer-names" data-invite-text="t17.footer.names" data-invite-label="Couple names">{edited("t17.footer.names", `${details.groom} & ${details.bride}`)}</p>
-              {details.date && <p className="tajmahal-template__footer-date" data-invite-text="t17.footer.date" data-invite-label="Wedding date">{edited("t17.footer.date", formatDate(details.date))}</p>}
-            </footer>
+            <p className="tajmahal-template__footer-names" data-invite-text="t17.footer.names" data-invite-label="Couple names">{edited("t17.footer.names", `${details.groom} & ${details.bride}`)}</p>
+            {details.date && <p className="tajmahal-template__footer-date" data-invite-text="t17.footer.date" data-invite-label="Wedding date">{edited("t17.footer.date", formatDate(details.date))}</p>}
           </div>
           <img ref={seventhCoupleRef} className="tajmahal-template__seventh-couple" src="/templates/tajmahal/assets/7-couple.webp" alt="" aria-hidden="true" draggable={false} />
         </div>
+        <button className="tajmahal-template__music tajmahal-template__music--last" type="button" aria-label={musicPlaying ? "Pause music" : "Play music"} onClick={toggleMusic}>
+          {musicPlaying ? "Ⅱ" : "♫"}
+        </button>
       </section>
     </main>
   );

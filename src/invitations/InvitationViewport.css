@@ -50,9 +50,10 @@
   background: var(--invitation-surround-color, #f7f4ee);
 }
 
-/* Qubool on phones must not narrow when browser controls reduce the height. */
+/* Phone browser controls must not shrink the invitation's width. Preserve
+   the 9:16 canvas and allow vertical scrolling when it exceeds the viewport. */
 @media (max-width: 767px) {
-  :root[data-invitation-theme="14"] .invitation-portrait-stage {
+  :root[data-invitation-theme] .invitation-portrait-stage {
     display: flex;
     flex-direction: column;
     align-items: center;
@@ -60,7 +61,7 @@
     overflow-y: auto;
   }
 
-  :root[data-invitation-theme="14"] .invitation-portrait-frame {
+  :root[data-invitation-theme] .invitation-portrait-frame {
     flex: none;
     min-width: 0;
     min-height: 0;

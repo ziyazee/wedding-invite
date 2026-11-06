@@ -100,6 +100,12 @@
   font: 20px Georgia, serif;
 }
 
+.tajmahal-template__music--last {
+  position: absolute;
+  right: calc(3% + 36px);
+  bottom: calc(7.2% - 5px);
+}
+
 .tajmahal-template__ending-copy {
   position: absolute;
   z-index: 3;
@@ -281,6 +287,7 @@
 .tajmahal-template__fifth-page,
 .tajmahal-template__sixth-page,
 .tajmahal-template__seventh-page {
+  position: relative;
   display: grid;
   min-height: 100vh;
   min-height: 100dvh;
@@ -352,7 +359,22 @@
 .tajmahal-template__nikah-details.is-visible > :nth-child(4) { transition-delay: 600ms; }
 .tajmahal-template__nikah-details.is-visible > :nth-child(5) { transition-delay: 800ms; }
 
-.tajmahal-template__rsvp-card.is-visible > :nth-child(1) { transition-delay: 0ms; }
+.tajmahal-template__rsvp-card.is-visible .tajmahal-template__rsvp-form > * {
+  opacity: 1;
+  translate: 0 0;
+}
+
+.tajmahal-template__rsvp-form > * {
+  opacity: 0;
+  translate: 0 22px;
+  transition: opacity 850ms ease, translate 850ms ease;
+}
+
+.tajmahal-template__rsvp-card.is-visible .tajmahal-template__rsvp-form > :nth-child(2) { transition-delay: 200ms; }
+.tajmahal-template__rsvp-card.is-visible .tajmahal-template__rsvp-form > :nth-child(3) { transition-delay: 400ms; }
+.tajmahal-template__rsvp-card.is-visible .tajmahal-template__rsvp-form > :nth-child(4) { transition-delay: 600ms; }
+.tajmahal-template__rsvp-card.is-visible .tajmahal-template__rsvp-form > :nth-child(5) { transition-delay: 800ms; }
+.tajmahal-template__rsvp-card.is-visible .tajmahal-template__rsvp-form > :nth-child(6) { transition-delay: 1000ms; }
 
 .tajmahal-template__wishes-content.is-visible > :nth-child(2) { transition-delay: 200ms; }
 .tajmahal-template__wishes-content.is-visible > :nth-child(3) { transition-delay: 400ms; }
@@ -360,7 +382,8 @@
 @media (prefers-reduced-motion: reduce) {
   .tajmahal-template__nikah-details > *,
   .tajmahal-template__rsvp-card > *,
-  .tajmahal-template__wishes-content > * {
+  .tajmahal-template__wishes-content > *,
+  .tajmahal-template__rsvp-form > * {
     opacity: 1;
     translate: none;
     transition: none;
