@@ -99,11 +99,20 @@ function toEmbedUrl(mapUrl: string): string | null {
 
 function MapEmbed({ event, details }: { event: Celebration; details: InvitationData }) {
   const embedUrl = toEmbedUrl(event.map)
+  const ref = useRef<HTMLDivElement>(null)
+  const [visible, setVisible] = useState(false)
+  useEffect(() => {
+    const el = ref.current
+    if (!el) return
+    const observer = new IntersectionObserver(([entry]) => { if (entry.isIntersecting) { setVisible(true); observer.disconnect() } }, { rootMargin: '200px' })
+    observer.observe(el)
+    return () => observer.disconnect()
+  }, [])
   if (!embedUrl) return null
-  return <div className="mj-map-section">
+  return <div ref={ref} className="mj-map-section">
     <div className="mj-map-frame">
       <img className="mj-map-border" src="/templates/majestic/assets/maps.webp" alt="" />
-      <div className="mj-map-clip"><iframe className="mj-map-iframe" src={embedUrl} loading="eager" referrerPolicy="no-referrer-when-downgrade" allowFullScreen title="Venue location" /></div>
+      <div className="mj-map-clip">{visible && <iframe className="mj-map-iframe" src={embedUrl} referrerPolicy="no-referrer-when-downgrade" allowFullScreen title="Venue location" />}</div>
     </div>
     <button type="button" className="mj-map-calendar" onClick={() => downloadCalendar(event, details.offset, coupleLabel(details))}>Add to calendar</button>
   </div>
