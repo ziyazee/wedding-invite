@@ -50,38 +50,81 @@ function AmbientVideo({ src, poster, className, paused: forcePaused = false }: {
     // immediately pausing it can interrupt playback during a cold load.
     let visible = false
     let disposed = false
+    let playPending = false
+    let retryCount = 0
+    let retryTimer: number | undefined
     const shouldPlay = () => !disposed && !forcePaused && visible && !motion.matches && !document.hidden
+    const clearRetry = () => { window.clearTimeout(retryTimer); retryTimer = undefined }
+    const retry = () => {
+      if (!shouldPlay() || element.error || retryTimer !== undefined || retryCount >= 3) return
+      retryTimer = window.setTimeout(() => {
+        retryTimer = undefined
+        retryCount += 1
+        sync()
+      }, 250 * 2 ** retryCount)
+    }
     const sync = () => {
-      if (!shouldPlay()) { element.pause(); return }
-      if (!element.paused || element.error) return
+      if (!shouldPlay()) { clearRetry(); element.pause(); return }
+      if (playPending || element.error || (!element.paused && element.readyState >= 3)) return
+      playPending = true
       void element.play().then(() => {
+        // An older effect's play promise must not pause a newer playback run.
+        if (disposed) return
         delete element.dataset.mjPlaybackError
         if (!shouldPlay()) element.pause()
       }).catch(error => {
         // Keep the rejection inspectable; readiness and gestures retry below.
         if (shouldPlay()) element.dataset.mjPlaybackError = error instanceof Error ? error.name : 'PlaybackError'
+      }).finally(() => {
+        playPending = false
+        if (shouldPlay() && element.paused) retry()
       })
     }
-    const observer = new IntersectionObserver(entries => { visible = entries[0].isIntersecting; sync() })
+    const wake = () => { retryCount = 0; sync() }
+    const playing = () => { retryCount = 0; clearRetry() }
+    const onMusicPlayback = (event: Event) => {
+      if (event.target instanceof HTMLAudioElement) wake()
+    }
+    const observer = new IntersectionObserver(entries => {
+      const nextVisible = entries[0].isIntersecting
+      if (nextVisible && !visible) retryCount = 0
+      visible = nextVisible
+      sync()
+    })
     observer.observe(element)
     // A rejected play attempt must not leave a visible card blank until reload.
     element.addEventListener('loadeddata', sync)
     element.addEventListener('canplay', sync)
-    document.addEventListener('click', sync)
-    document.addEventListener('touchend', sync, { passive: true })
-    document.addEventListener('visibilitychange', sync)
-    window.addEventListener('pageshow', sync)
-    motion.addEventListener('change', sync)
+    element.addEventListener('playing', playing)
+    element.addEventListener('pause', retry)
+    element.addEventListener('waiting', retry)
+    element.addEventListener('stalled', retry)
+    // Music events do not bubble. Capture them so a visible celebration can
+    // recover when audio starts or seeks without requiring a scroll or reload.
+    document.addEventListener('play', onMusicPlayback, true)
+    document.addEventListener('seeked', onMusicPlayback, true)
+    document.addEventListener('click', wake)
+    document.addEventListener('touchend', wake, { passive: true })
+    document.addEventListener('visibilitychange', wake)
+    window.addEventListener('pageshow', wake)
+    motion.addEventListener('change', wake)
     return () => {
       disposed = true
+      clearRetry()
       observer.disconnect()
       element.removeEventListener('loadeddata', sync)
       element.removeEventListener('canplay', sync)
-      document.removeEventListener('click', sync)
-      document.removeEventListener('touchend', sync)
-      document.removeEventListener('visibilitychange', sync)
-      window.removeEventListener('pageshow', sync)
-      motion.removeEventListener('change', sync)
+      element.removeEventListener('playing', playing)
+      element.removeEventListener('pause', retry)
+      element.removeEventListener('waiting', retry)
+      element.removeEventListener('stalled', retry)
+      document.removeEventListener('play', onMusicPlayback, true)
+      document.removeEventListener('seeked', onMusicPlayback, true)
+      document.removeEventListener('click', wake)
+      document.removeEventListener('touchend', wake)
+      document.removeEventListener('visibilitychange', wake)
+      window.removeEventListener('pageshow', wake)
+      motion.removeEventListener('change', wake)
       element.pause()
     }
   }, [forcePaused, src])

@@ -13,8 +13,13 @@ export function useInvitationMusicRange(start?: number, end?: number, template?:
         if (!Number.isFinite(audio.duration) || audio.duration <= 0) return
         const from = start !== undefined && start >= 0 && start < audio.duration ? start : 0
         const to = end !== undefined && end > from ? Math.min(end, audio.duration) : audio.duration
-        if (needsStart && !audio.paused) { needsStart = false; audio.currentTime = from }
-        else if (audio.currentTime < from) audio.currentTime = from
+        if (needsStart && !audio.paused) {
+          needsStart = false
+          // Do not interrupt a track already starting at the requested point.
+          // Tolerance also avoids repeated seeks with rounded media timestamps.
+          if (Math.abs(audio.currentTime - from) > .05) audio.currentTime = from
+        }
+        else if (audio.currentTime < from - .05) audio.currentTime = from
         else if (audio.currentTime >= to) {
           if (audio.loop) audio.currentTime = from
           else { audio.pause(); audio.currentTime = from }
