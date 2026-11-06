@@ -37,17 +37,51 @@ function AmbientVideo({ src, poster, className, paused: forcePaused = false }: {
   useEffect(() => {
     const element = video.current
     if (!element) return
+    element.defaultMuted = true
     element.muted = true
+    element.playsInline = true
+    element.setAttribute('muted', '')
+    element.setAttribute('playsinline', '')
     const motion = window.matchMedia('(prefers-reduced-motion: reduce)')
-    let visible = true
-    const sync = () => { if (!forcePaused && visible && !motion.matches && !document.hidden) void element.play().catch(() => {}); else element.pause() }
+    // Wait for visibility before playing: starting every off-screen card and
+    // immediately pausing it can interrupt playback during a cold load.
+    let visible = false
+    let disposed = false
+    const shouldPlay = () => !disposed && !forcePaused && visible && !motion.matches && !document.hidden
+    const sync = () => {
+      if (!shouldPlay()) { element.pause(); return }
+      if (!element.paused || element.error) return
+      void element.play().then(() => {
+        delete element.dataset.mjPlaybackError
+        if (!shouldPlay()) element.pause()
+      }).catch(error => {
+        // Keep the rejection inspectable; readiness and gestures retry below.
+        if (shouldPlay()) element.dataset.mjPlaybackError = error instanceof Error ? error.name : 'PlaybackError'
+      })
+    }
     const observer = new IntersectionObserver(entries => { visible = entries[0].isIntersecting; sync() })
     observer.observe(element)
+    // A rejected play attempt must not leave a visible card blank until reload.
+    element.addEventListener('loadeddata', sync)
+    element.addEventListener('canplay', sync)
+    document.addEventListener('click', sync)
+    document.addEventListener('touchend', sync, { passive: true })
     document.addEventListener('visibilitychange', sync)
+    window.addEventListener('pageshow', sync)
     motion.addEventListener('change', sync)
-    sync()
-    return () => { observer.disconnect(); document.removeEventListener('visibilitychange', sync); motion.removeEventListener('change', sync); element.pause() }
-  }, [forcePaused])
+    return () => {
+      disposed = true
+      observer.disconnect()
+      element.removeEventListener('loadeddata', sync)
+      element.removeEventListener('canplay', sync)
+      document.removeEventListener('click', sync)
+      document.removeEventListener('touchend', sync)
+      document.removeEventListener('visibilitychange', sync)
+      window.removeEventListener('pageshow', sync)
+      motion.removeEventListener('change', sync)
+      element.pause()
+    }
+  }, [forcePaused, src])
   return failed && poster ? <InvitationMedia className={className} src={poster} priority alt="" /> : <InvitationMedia kind="video" className={className} ref={video} src={src} poster={poster} preload="auto" muted loop playsInline onError={() => setFailed(true)} aria-hidden="true" />
 }
 
