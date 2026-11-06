@@ -1,5 +1,5 @@
 import { Fragment, useEffect, useRef, useState } from 'react'
-import type { ComponentProps, CSSProperties } from 'react'
+import type { ComponentProps, CSSProperties, RefObject } from 'react'
 import type { Celebration, InvitationData } from '../../invitations/model'
 import { formatDate, formatTime, weddingISO } from '../../invitations/model'
 import { downloadCalendar } from '../../invitations/calendar'
@@ -97,19 +97,56 @@ function toEmbedUrl(mapUrl: string): string | null {
   return null
 }
 
-function usePageLoaded() {
-  const [loaded, setLoaded] = useState(document.readyState === 'complete')
-  useEffect(() => { if (loaded) return; const done = () => setLoaded(true); window.addEventListener('load', done); return () => window.removeEventListener('load', done) }, [loaded])
-  return loaded
+function useMapsReady(root: RefObject<HTMLElement | null>, videoKey: string) {
+  const [readyFor, setReadyFor] = useState<string | null>(null)
+  useEffect(() => {
+    if (!root.current) return
+    const videos = [...root.current.querySelectorAll<HTMLVideoElement>('video.mj-hero-video, video.mj-event-video')]
+    const pending = new Set(videos)
+    const update = () => {
+      // Page load alone does not mean video frames are ready to play.
+      pending.forEach(video => {
+        if (video.readyState >= HTMLMediaElement.HAVE_FUTURE_DATA || video.error) pending.delete(video)
+      })
+      if (document.readyState === 'complete' && pending.size === 0) setReadyFor(videoKey)
+    }
+    videos.forEach(video => {
+      video.addEventListener('canplay', update)
+      video.addEventListener('error', update)
+    })
+    window.addEventListener('load', update)
+    update()
+    return () => {
+      videos.forEach(video => {
+        video.removeEventListener('canplay', update)
+        video.removeEventListener('error', update)
+      })
+      window.removeEventListener('load', update)
+    }
+  }, [root, videoKey])
+  return readyFor === videoKey
 }
 
 function MapEmbed({ event, details, ready }: { event: Celebration; details: InvitationData; ready: boolean }) {
   const embedUrl = toEmbedUrl(event.map)
+  const frame = useRef<HTMLDivElement>(null)
+  const [nearby, setNearby] = useState(false)
+  useEffect(() => {
+    if (!ready || !embedUrl || !frame.current) return
+    const observer = new IntersectionObserver(entries => {
+      if (entries.some(entry => entry.isIntersecting)) {
+        setNearby(true)
+        observer.disconnect()
+      }
+    }, { rootMargin: '200px 0px' })
+    observer.observe(frame.current)
+    return () => observer.disconnect()
+  }, [ready, embedUrl])
   if (!embedUrl) return null
   return <div className="mj-map-section">
-    <div className="mj-map-frame">
-      <img className="mj-map-border" src="/templates/majestic/assets/maps.webp" alt="" />
-      <div className="mj-map-clip">{ready && <iframe className="mj-map-iframe" src={embedUrl} referrerPolicy="no-referrer-when-downgrade" allowFullScreen title="Venue location" />}</div>
+    <div ref={frame} className="mj-map-frame">
+      <img className="mj-map-border" src="/templates/majestic/assets/maps.webp" loading="lazy" decoding="async" alt="" />
+      <div className="mj-map-clip">{ready && nearby && <iframe className="mj-map-iframe" src={embedUrl} loading="lazy" referrerPolicy="no-referrer-when-downgrade" allowFullScreen title="Venue location" />}</div>
     </div>
     <button type="button" className="mj-map-calendar" onClick={() => downloadCalendar(event, details.offset, coupleLabel(details))}>Add to calendar</button>
   </div>
@@ -140,7 +177,7 @@ export default function Majestic({ details: d, rsvpTarget }: { details: Invitati
   const wedding = { title: 'Wedding', date: d.date, time: d.time, venue: d.venue, address: d.address, map: d.map }
   // Capture original indexes before sorting so legacy orders retain stable IDs.
   const events = d.events.map((event, index) => ({ event, key: event.id || `legacy-${index}` })).sort((a, b) => `${a.event.date}T${a.event.time}`.localeCompare(`${b.event.date}T${b.event.time}`))
-  const mapsReady = usePageLoaded()
+  const mapsReady = useMapsReady(root, JSON.stringify(events.map(event => event.key)))
   const structure = JSON.stringify([events.map(event => event.key), !!d.dressCode.trim(), !!d.giftNote.trim(), !!d.gallery.trim()])
   useEffect(() => { const previous = document.title; document.title = `${couple} — Majestic`; return () => { document.title = previous } }, [couple])
   useEffect(() => {
