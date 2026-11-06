@@ -22,6 +22,7 @@ Architecture documentation lives in `project-context/`:
 | `ROUTING.md` | All routes, guards, subdomain handling |
 | `DESIGN_SYSTEM.md` | Colors, typography, spacing, animation |
 | `TEMPLATE_ARCHITECTURE.md` | Template types, registration, text overrides, migration |
+| `STORE_LANDING.md` | Store landing page layout, mobile tabs, WhatsApp flow, preview |
 | `PERFORMANCE_GUIDELINES.md` | Code splitting, caching, known bottlenecks |
 | `DEPLOYMENT.md` | Vercel, Supabase, DNS, environment variables |
 | `KNOWN_ISSUES.md` | Technical debt, legacy code, risky areas |

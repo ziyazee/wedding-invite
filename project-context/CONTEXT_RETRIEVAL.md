@@ -126,6 +126,15 @@ Use this guide to determine which documentation to consult based on the task at 
 
 ---
 
+### Store Landing Page Change
+**Read:**
+1. `STORE_LANDING.md` → full page layout, behaviors, design tokens, breakpoints
+2. `DESIGN_SYSTEM.md` → if changing colors/typography
+
+**Inspect source:** `src/pages/StoreLanding.tsx`, `src/pages/StoreLanding.css`, `src/invitations/InvitationPreviewFrame.tsx`
+
+---
+
 ### Deployment / DNS / Domain Issue
 **Read:**
 1. `DEPLOYMENT.md` → full deployment setup

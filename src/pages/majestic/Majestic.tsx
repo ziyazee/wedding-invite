@@ -1,4 +1,4 @@
-import { useEffect, useRef, useState } from 'react'
+import { Fragment, useEffect, useRef, useState } from 'react'
 import type { ComponentProps, CSSProperties } from 'react'
 import type { Celebration, InvitationData } from '../../invitations/model'
 import { formatDate, formatTime, weddingISO } from '../../invitations/model'
@@ -81,6 +81,34 @@ function Countdown({ details }: { details: InvitationData }) {
   </Section>
 }
 
+function toEmbedUrl(mapUrl: string): string | null {
+  const trimmed = mapUrl.trim()
+  if (!trimmed) return null
+  try {
+    const url = new URL(trimmed)
+    if (url.pathname.startsWith('/maps/embed') || url.searchParams.get('output') === 'embed') return trimmed
+    const q = url.searchParams.get('destination') || url.searchParams.get('q') || url.searchParams.get('query')
+    if (q) return `https://www.google.com/maps?q=${encodeURIComponent(q)}&output=embed`
+    const placeMatch = url.pathname.match(/\/maps\/place\/([^/@]+)/)
+    if (placeMatch) return `https://www.google.com/maps?q=${encodeURIComponent(decodeURIComponent(placeMatch[1]))}&output=embed`
+    const atMatch = url.pathname.match(/@([-\d.]+),([-\d.]+)/)
+    if (atMatch) return `https://www.google.com/maps?q=${atMatch[1]},${atMatch[2]}&output=embed`
+  } catch { /* invalid URL */ }
+  return null
+}
+
+function MapEmbed({ event, details }: { event: Celebration; details: InvitationData }) {
+  const embedUrl = toEmbedUrl(event.map)
+  if (!embedUrl) return null
+  return <div className="mj-map-section">
+    <div className="mj-map-frame">
+      <img className="mj-map-border" src="/templates/majestic/assets/maps.webp" alt="" />
+      <div className="mj-map-clip"><iframe className="mj-map-iframe" src={embedUrl} loading="eager" referrerPolicy="no-referrer-when-downgrade" allowFullScreen title="Venue location" /></div>
+    </div>
+    <button type="button" className="mj-map-calendar" onClick={() => downloadCalendar(event, details.offset, coupleLabel(details))}>Add to calendar</button>
+  </div>
+}
+
 function EventCard({ event, eventKey, details: d }: { event: Celebration; eventKey: string; details: InvitationData }) {
   const root = useRef<HTMLDivElement>(null)
   const prefix = `event-${eventKey}`
@@ -94,7 +122,7 @@ function EventCard({ event, eventKey, details: d }: { event: Celebration; eventK
       <Copy as="p" field={`${prefix}.time`}>{formatTime(event.time ?? '')}</Copy>
       <Copy as="h3" field={`${prefix}.venue`}>{wrapCardText(event.venue, 24)}</Copy>
       <Copy as="p" field={`${prefix}.address`}>{wrapCardText(event.address, 32)}</Copy>
-      <div className="mj-links">{event.map.trim() && <Copy as="a" field={`${prefix}.directions`} href={event.map} target="_blank" rel="noreferrer">Directions ↗</Copy>}<Copy as="button" type="button" field={`${prefix}.calendar`} onClick={() => downloadCalendar(event, d.offset, coupleLabel(d))}>Add to calendar</Copy></div>
+      <div className="mj-links"><Copy as="button" type="button" field={`${prefix}.calendar`} onClick={() => downloadCalendar(event, d.offset, coupleLabel(d))}>Add to calendar</Copy>{event.map.trim() && <Copy as="a" field={`${prefix}.directions`} href={event.map} target="_blank" rel="noreferrer">Open in Maps</Copy>}</div>
     </div>
   </Section>
 }
@@ -166,7 +194,7 @@ export default function Majestic({ details: d, rsvpTarget }: { details: Invitati
       <div className="mj-actions">{d.map.trim() && <Copy as="a" field="venue.directions" href={d.map} target="_blank" rel="noreferrer">Google Maps</Copy>}<Copy as="button" type="button" field="venue.calendar" onClick={() => downloadCalendar(wedding, d.offset, couple)}>Add to calendar</Copy></div>
     </Section>
     <Section data-invite-section="programme" className="mj-programme"><InvitationMedia src="/templates/majestic/assets/food.webp" alt="" /><Copy as="h2" field="programme.heading">The programme</Copy></Section>
-    <div className="mj-events">{events.map(({ event, key }) => <EventCard key={key} event={event} eventKey={key} details={d} />)}</div>
+    <div className="mj-events">{events.map(({ event, key }) => <Fragment key={key}><EventCard event={event} eventKey={key} details={d} />{event.map.trim() && <MapEmbed event={event} details={d} />}</Fragment>)}</div>
     {d.dressCode.trim() && <Section data-invite-section="dress" className="mj-dress"><Copy as="h2" field="dress.heading">Dress Code</Copy><Copy as="p" field="dress.caption" className="mj-eyebrow">A few gentle reminders</Copy>{d.showCoupleIllustrations !== false && <InvitationMedia src="/templates/majestic/assets/dress-code-new.webp" alt="Wedding attire illustration" />}<div className="mj-dress-card"><Copy as="h3" field="dress.text">{d.dressCode}</Copy></div></Section>}
     {(d.giftNote.trim() || d.gallery.trim()) && <Section data-invite-section="notes" className="mj-notes">{d.giftNote.trim() && <><Copy as="h2" field="notes.heading">A little note</Copy><Copy as="p" field="notes.gift">{d.giftNote}</Copy></>}{d.gallery.trim() && <Copy as="a" field="notes.gallery" href={d.gallery} target="_blank" rel="noreferrer">Our photo gallery ↗</Copy>}</Section>}
     <InvitationRsvp template={2} couple={couple} target={rsvpTarget} envelopeClosed="/templates/majestic/assets/envelope-closed-new.webp" envelopeOpen="/templates/majestic/assets/envelope-open-new.webp" />

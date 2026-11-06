@@ -74,9 +74,14 @@
 .majestic-native .mj-event p{font-size:calc(13px + 5px * var(--mj-fit));line-height:1.3}
 .majestic-native .mj-event .mj-eyebrow{font-size:calc(10px + 2px * var(--mj-fit));letter-spacing:.18em}
 .majestic-native .mj-event-date{display:flex;flex-direction:column;align-items:center;gap:.12em;color:#7c9658;font-size:calc(11px + 3px * var(--mj-fit));font-weight:700;letter-spacing:.42em;line-height:1.15;padding-left:.42em}
-.majestic-native .mj-links{display:flex;flex-wrap:wrap;justify-content:center;gap:4px 12px}
+.majestic-native .mj-links{display:flex;flex-direction:column;align-items:center;gap:4px}
 .majestic-native .mj-links a,.majestic-native .mj-links button{font-size:calc(13px + 3px * var(--mj-fit));line-height:1.2;min-height:32px;padding:6px 0;border-bottom:1px solid currentColor;background:none;max-width:100%;white-space:normal}
-.majestic-native .mj-dress{max-width:624px;margin:auto;padding:48px 24px 64px}
+.majestic-native .mj-map-section{display:flex;flex-direction:column;align-items:center;margin:16px auto 30px}
+.majestic-native .mj-map-calendar{margin-top:14px;padding:14px 32px;border-radius:10px;background:#716149;color:#fffdf6;font-family:'Cormorant Garamond',Georgia,serif;font-weight:400;font-size:clamp(16px,4.5vw,22px);letter-spacing:.08em;border:none;cursor:pointer}
+.majestic-native .mj-map-frame{position:relative;width:86%;max-width:530px;aspect-ratio:2/1;overflow:hidden;background:#EAE5D4}
+.majestic-native .mj-map-border{position:absolute;inset:0;z-index:2;width:100%;height:100%;object-fit:fill;pointer-events:none}
+.majestic-native .mj-map-clip{position:absolute;top:9%;bottom:8%;left:3%;right:3%;z-index:0;overflow:hidden;border-radius:14px}
+.majestic-native .mj-map-iframe{position:absolute;inset:-20%;width:140%;height:140%;border:0;filter:sepia(.4) saturate(.5) brightness(.9) contrast(.95)}.majestic-native .mj-dress{max-width:624px;margin:auto;padding:48px 24px 64px}
 .majestic-native .mj-dress img{display:block;width:100%;height:auto}
 .majestic-native .mj-dress-card{background:#f7f2e8;border:1px solid #61533f26;border-radius:32px;padding:32px;margin-top:24px}
 .majestic-native .mj-dress-card h3{font:500 20px/1.5 'Cormorant Garamond',Georgia,serif;letter-spacing:.12em;white-space:pre-line}

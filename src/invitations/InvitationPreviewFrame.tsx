@@ -8,7 +8,7 @@ const HEIGHT = WIDTH * 16 / 9
 // Reserved chrome keeps the full invitation visible below the Dynamic Island.
 const TOP_CLEARANCE = 62
 const SAFARI_PANEL_HEIGHT = 74
-type Props = IframeHTMLAttributes<HTMLIFrameElement> & { templateId?: number }
+type Props = IframeHTMLAttributes<HTMLIFrameElement> & { templateId?: number; addressText?: string }
 
 function SafariIcon({ name }: { name: 'back' | 'more' | 'reload' | 'menu' }) {
   const paths = {
@@ -21,7 +21,7 @@ function SafariIcon({ name }: { name: 'back' | 'more' | 'reload' | 'menu' }) {
 }
 
 const InvitationPreviewFrame = forwardRef<HTMLIFrameElement, Props>(function InvitationPreviewFrame(
-  { templateId, style, ...props }, ref,
+  { templateId, addressText, style, ...props }, ref,
 ) {
   const stage = useRef<HTMLDivElement>(null)
   const [scale, setScale] = useState(1)
@@ -55,7 +55,7 @@ const InvitationPreviewFrame = forwardRef<HTMLIFrameElement, Props>(function Inv
     <div className="invitation-safari-panel" aria-hidden="true" style={{ width: WIDTH, height: SAFARI_PANEL_HEIGHT, backgroundColor: tint, color: darkTint ? '#f5f5f7' : '#242426', transform: `translateX(-50%) scale(${scale})` }}>
       <div className="invitation-safari-compact">
         <span className="invitation-safari-circle"><SafariIcon name="back" /></span>
-        <div className="invitation-safari-address"><SafariIcon name="menu" /><span>shaadiinvites.in</span><SafariIcon name="reload" /></div>
+        <div className="invitation-safari-address"><SafariIcon name="menu" /><span>{addressText || 'shaadiinvites.in'}</span><SafariIcon name="reload" /></div>
         <span className="invitation-safari-circle invitation-safari-more"><SafariIcon name="more" /></span>
       </div>
       <div className="invitation-safari-home" />
