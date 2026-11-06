@@ -1,4 +1,4 @@
-import { Fragment, useEffect, useRef, useState } from 'react'
+import { Fragment, useEffect, useLayoutEffect, useRef, useState } from 'react'
 import type { ComponentProps, CSSProperties, RefObject } from 'react'
 import type { Celebration, InvitationData } from '../../invitations/model'
 import { formatDate, formatTime, weddingISO } from '../../invitations/model'
@@ -243,8 +243,10 @@ export default function Majestic({ details: d, rsvpTarget }: { details: Invitati
     })
     return () => { links.forEach(link => link.remove()) }
   }, [])
-  useEffect(() => {
+  useLayoutEffect(() => {
     if (!root.current || !opened || window.matchMedia('(prefers-reduced-motion: reduce)').matches) return
+    // Prepare reveal styles before paint so opening never paints an unanimated
+    // frame and then hides it again when the observer is attached.
     root.current.classList.add('invite-motion-ready')
     const elements = [...root.current.querySelectorAll<HTMLElement>('[data-invite-animation]')]
     const observer = new IntersectionObserver(entries => {
@@ -272,7 +274,7 @@ export default function Majestic({ details: d, rsvpTarget }: { details: Invitati
     <Section data-invite-section="welcome" className="mj-welcome"><Copy as="p" field="welcome.caption" className="mj-eyebrow">Together with our families</Copy><Names details={d} section="welcome" family /><Copy as="p" field="welcome.message">{d.message}</Copy></Section>
     <Section data-invite-section="venue" className="mj-details">
       <Copy as="h2" field="venue.heading">Details</Copy><Copy as="p" field="venue.caption" className="mj-eyebrow">When &amp; where</Copy>
-      <div className="mj-venue-card"><InvitationMedia className="mj-venue-frame" src="/templates/majestic/assets/ornate-badge-2PyCLI0e.webp" alt="" width={1080} height={1080} /><div className="mj-venue-copy"><Copy as="h3" field="venue.location">Location</Copy><Copy as="p" field="venue.name" className="mj-venue-name">{d.venue}</Copy><Copy as="p" field="venue.address">{d.address}</Copy><Copy as="p" field="venue.time">{formatTime(d.time)}</Copy></div></div>
+      <div className="mj-venue-card"><InvitationMedia className="mj-venue-frame" src="/templates/majestic/assets/ornate-badge-2PyCLI0e.webp" alt="" width={1080} height={1080} /><div className="mj-venue-copy"><Copy as="h3" field="venue.location">{d.events[0]?.title || 'Wedding'}</Copy><Copy as="p" field="venue.name" className="mj-venue-name">{d.venue}</Copy><Copy as="p" field="venue.address">{d.address}</Copy><Copy as="p" field="venue.time">{formatTime(d.time)}</Copy></div></div>
       <div className="mj-actions">{d.map.trim() && <Copy as="a" field="venue.directions" href={d.map} target="_blank" rel="noreferrer">Google Maps</Copy>}<Copy as="button" type="button" field="venue.calendar" onClick={() => downloadCalendar(wedding, d.offset, couple)}>Add to calendar</Copy></div>
     </Section>
     <Section data-invite-section="programme" className="mj-programme"><InvitationMedia src="/templates/majestic/assets/food.webp" alt="" /><Copy as="h2" field="programme.heading">The programme</Copy></Section>
