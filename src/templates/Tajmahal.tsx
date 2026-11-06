@@ -24,6 +24,7 @@ export default function Tajmahal({ rsvpTarget }: { rsvpTarget?: RsvpTarget }) {
   const seventhCoupleRef = useRef<HTMLImageElement>(null);
   const seventhVideoRef = useRef<HTMLVideoElement>(null);
   const hasStarted = useRef(false);
+  const videoFinished = useRef(false);
   const [musicPlaying, setMusicPlaying] = useState(false);
   const [posterVisible, setPosterVisible] = useState(true);
   const [promptVisible, setPromptVisible] = useState(true);
@@ -286,6 +287,7 @@ export default function Tajmahal({ rsvpTarget }: { rsvpTarget?: RsvpTarget }) {
     const onWheel = (e: WheelEvent) => {
       e.preventDefault();
       if (animating) return;
+      if (!videoFinished.current && scroller.scrollTop < 10) return;
       accDelta += e.deltaY;
       window.clearTimeout(resetTimer);
       resetTimer = window.setTimeout(() => { accDelta = 0; }, 200);
@@ -303,8 +305,13 @@ export default function Tajmahal({ rsvpTarget }: { rsvpTarget?: RsvpTarget }) {
       if (target !== null) animateTo(target);
     };
 
+    const onTouchMove = (e: TouchEvent) => {
+      if (!videoFinished.current && scroller.scrollTop < 10) e.preventDefault();
+    };
+
     scroller.addEventListener("wheel", onWheel, { passive: false });
-    return () => { scroller.removeEventListener("wheel", onWheel); window.clearTimeout(resetTimer); };
+    scroller.addEventListener("touchmove", onTouchMove, { passive: false });
+    return () => { scroller.removeEventListener("wheel", onWheel); scroller.removeEventListener("touchmove", onTouchMove); window.clearTimeout(resetTimer); };
   }, []);
 
   function playOpening(event: MouseEvent<HTMLButtonElement>) {
@@ -412,9 +419,9 @@ export default function Tajmahal({ rsvpTarget }: { rsvpTarget?: RsvpTarget }) {
             onPlaying={() => setPosterVisible(false)}
             onTimeUpdate={() => {
               const video = videoRef.current;
-              if (video && video.duration > 0 && video.duration - video.currentTime <= 3) setShowEnding(true);
+              if (video && video.duration > 0 && video.duration - video.currentTime <= 3) { setShowEnding(true); videoFinished.current = true; }
             }}
-            onEnded={() => setShowEnding(true)}
+            onEnded={() => { setShowEnding(true); videoFinished.current = true; }}
             aria-label="Opening video"
           />
           {posterVisible && <img className="tajmahal-template__entry-poster" src="/templates/tajmahal/assets/opening-poster.jpg" alt="" />}
