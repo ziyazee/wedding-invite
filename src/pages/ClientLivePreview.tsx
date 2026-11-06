@@ -1,8 +1,10 @@
 import { startTransition, useEffect, useLayoutEffect, useRef, useState } from 'react'
+import { flushSync } from 'react-dom'
 import type { InvitationData } from '../invitations/model'
 import InvitationRenderer from '../invitations/InvitationRenderer'
 import InvitationLoading from '../invitations/InvitationLoading'
 import { invitationExample } from '../invitations/templateData'
+import { createPreviewSongPlayback } from '../invitations/previewSongPlayback'
 
 const previewKey = 'shaadi-client-live-preview'
 const previewQuery = new URLSearchParams(window.location.search)
@@ -22,12 +24,33 @@ function readPreview(): InvitationData | null {
 
 export default function ClientLivePreview() {
   const [details, setDetails] = useState<InvitationData | null>(readPreview)
+  const [songReplay, setSongReplay] = useState(0)
   const renderedTemplate = useRef(details?.template)
 
-  useLayoutEffect(() => {
-    if (isBrowsePreview || renderedTemplate.current !== details?.template) window.scrollTo({ top: 0, left: 0, behavior: 'instant' })
-    renderedTemplate.current = details?.template
+  useEffect(() => {
+    if (previewQuery.get('editor') !== '1') return
+    const playback = createPreviewSongPlayback(document)
+    const selectSong = (event: Event) => {
+      const selection = (event as CustomEvent<{ music: string; musicStart?: number; musicEnd?: number }>).detail
+      if (!selection || typeof selection.music !== 'string') return
+      const { music, musicStart, musicEnd } = selection
+      // Reset the design as well as the song, including repeated song taps.
+      // Keep this synchronous so native players retain the click gesture.
+      playback.dispose()
+      flushSync(() => {
+        setDetails(previous => previous ? { ...previous, music, musicStart, musicEnd } : previous)
+        setSongReplay(previous => previous + 1)
+      })
+      playback.play(music, musicStart)
+    }
+    document.addEventListener('shaadi-preview-song', selectSong)
+    return () => { document.removeEventListener('shaadi-preview-song', selectSong); playback.dispose() }
   }, [details?.template])
+
+  useLayoutEffect(() => {
+    if (isBrowsePreview || songReplay > 0 || renderedTemplate.current !== details?.template) window.scrollTo({ top: 0, left: 0, behavior: 'instant' })
+    renderedTemplate.current = details?.template
+  }, [details?.template, songReplay])
 
   useEffect(() => {
     if (new URLSearchParams(window.location.search).get('editor') !== '1') return
@@ -58,5 +81,5 @@ export default function ClientLivePreview() {
   }, [])
 
   if (!details) return <InvitationLoading />
-  return <InvitationRenderer details={details} />
+  return <InvitationRenderer key={songReplay} details={details} />
 }

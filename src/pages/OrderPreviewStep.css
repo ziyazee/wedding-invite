@@ -1,0 +1,7 @@
+/* Extra page inside the existing order form; no dashboard or phone layout overrides. */
+.client-workspace .order-personal-step { grid-column: 1 / -1; min-width: 0; }
+.client-workspace .order-personal-step h2 { scroll-margin-top: 150px; }
+.client-workspace .order-personal-step .order-personal-event-map { display: grid; gap: 4px; }
+.client-workspace .order-personal-step .order-personal-event-map small { color: var(--client-muted); font-weight: 400; line-height: 1.5; }
+.client-workspace .order-personal-step .order-personal-event-map + .order-personal-event-map { margin-top: 16px; }
+.client-workspace .order-personal-step .form-submit-row { display: grid; }

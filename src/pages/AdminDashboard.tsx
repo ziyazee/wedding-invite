@@ -8,6 +8,9 @@ import { DashboardAccess, signOutToLogin } from './DashboardAccess'
 import './Workspaces.css'
 import './AdminDashboard.css'
 import AdminCompaniesPanel from './AdminCompaniesPanel'
+import AdminMusicPanel from './AdminMusicPanel'
+
+type AdminTab = 'Overview' | 'Orders' | 'Companies' | 'Music'
 
 type Order = { id: number; company_id: number; template_code: string; created_by: string; groom_name: string; bride_name: string; phone_number: string; form_data: InvitationData; status: string; published_path: string | null; published_url: string | null; published_at: string | null; expires_at: string | null; rejection_reason: string | null; admin_notes: string | null; created_at: string; companies?: { company_name: string } }
 const states = ['CREATED','IN_PROGRESS','READY','REJECTED']
@@ -24,7 +27,7 @@ function AdminWorkspace() {
   const [dateFrom,setDateFrom] = useState('')
   const [dateTo,setDateTo] = useState('')
   const [query,setQuery] = useState('')
-  const [tab,setTab] = useState<'Overview'|'Orders'|'Companies'>('Overview')
+  const [tab,setTab] = useState<AdminTab>('Overview')
   const [loading,setLoading] = useState(true)
   const [busy,setBusy] = useState(false)
   const [error,setError] = useState('')
@@ -50,11 +53,11 @@ function AdminWorkspace() {
     if(result.error)setError(result.error.message)
     else {
       const rows=((result.data||[]) as Order[]).map(withCurrentInviteUrl)
-      setOrders(rows);if(selected){const current=rows.find(item=>item.id===selected.id);if(current)setSelected(current)}
+      setOrders(rows);setSelected(current=>current?rows.find(item=>item.id===current.id)||null:null)
     }
     setStats({total:result.count||0,created:createdCount.count||0,progress:progressCount.count||0,ready:readyCount.count||0,rejected:rejectedCount.count||0})
     setLoading(false)
-  },[page,selected])
+  },[page])
   useEffect(()=>{void refresh()},[refresh])
   useEffect(()=>{
     if(!supabase)return
@@ -66,6 +69,28 @@ function AdminWorkspace() {
   const counts=stats
 
   function openOrder(order:Order){setSelected(order);setNotes(order.admin_notes||'');setExpiresOn(order.expires_at?order.expires_at.slice(0,10):'');setEditingPublished(false);setDraft(null);setNotice('')}
+
+  async function deleteOrder() {
+    if(!supabase||!selected||busy)return
+    const order=selected
+    if(!window.confirm(`Delete order #${order.id} for ${order.groom_name} & ${order.bride_name}?\n\nThis permanently deletes the order and all its RSVP replies. Its invitation and management links will stop working. This cannot be undone.`))return
+    setBusy(true);setError('');setNotice('')
+    let deleted=false
+    try {
+      const {data,error:deleteError}=await supabase.from('orders').delete().eq('id',order.id).select('id').single()
+      if(deleteError)throw deleteError
+      if(data?.id!==order.id)throw new Error('The order could not be deleted. Refresh and try again.')
+      deleted=true
+      setSelected(null);setPreview(false);setEditingPublished(false);setDraft(null)
+      setOrders(current=>current.filter(item=>item.id!==order.id))
+      setNotice(`Order #${order.id} and its RSVP replies were deleted.`)
+      if(orders.length===1&&page>0)setPage(page-1)
+      else await refresh()
+    } catch(cause) {
+      const message=cause&&typeof cause==='object'&&'message' in cause&&typeof cause.message==='string'?cause.message:'Unable to delete this order. Please try again.'
+      setError(deleted?'The order was deleted, but the dashboard could not refresh. Please reload the page.':message)
+    } finally { setBusy(false) }
+  }
 
   async function changeOrder(patch:Partial<Order>, success:string, silent=false) {
     if(!supabase||!selected)return false
@@ -92,16 +117,13 @@ function AdminWorkspace() {
     const publishedAt=new Date().toISOString()
     const expiresAt=expiresOn?new Date(`${expiresOn}T23:59:59`).toISOString():null
     if(expiresAt&&new Date(expiresAt)<=new Date(publishedAt)){setError('Choose an expiry date after the publication date.');return}
-    const variants=slugVariants(selected.groom_name,selected.bride_name)
-    const tryPublish=async(slug:string)=>changeOrder({status:'READY',published_path:slug,published_url:inviteUrl(slug),published_at:publishedAt,expires_at:expiresAt,admin_notes:notes},'Invitation published. The public URL is ready to share.',true)
-    const ok=await tryPublish(variants[0])
-    if(ok)return
-    // Unique constraint hit — find first available variant
-    const {data:taken}=await supabase.from('orders').select('published_path').in('published_path',variants)
-    const takenSet=new Set((taken||[]).map((r:{published_path:string|null})=>r.published_path))
-    const available=variants.find(v=>!takenSet.has(v))
-    if(!available){setError('All slug variants for this couple name are taken.');return}
-    void tryPublish(available)
+    const variants=slugVariants(selected.groom_name,selected.bride_name,selected.form_data.brideFirst)
+    const tryPublish=async(slug:string,silent=true)=>changeOrder({status:'READY',published_path:slug,published_url:inviteUrl(slug),published_at:publishedAt,expires_at:expiresAt,admin_notes:notes},'Invitation published. The public URL is ready to share.',silent)
+    // Let the database arbitrate each candidate, including concurrent claims.
+    for(const slug of variants){
+      if(await tryPublish(slug))return
+    }
+    await tryPublish(`${variants[0]}/${selected.id}`,false)
   }
   function saveNotes(){void changeOrder({admin_notes:notes},'Internal notes saved.')}
   function saveExpiry(){if(!selected)return;const expiresAt=expiresOn?new Date(`${expiresOn}T23:59:59`).toISOString():null;if(expiresAt&&selected.published_at&&new Date(expiresAt)<=new Date(selected.published_at)){setError('Choose an expiry date after the publication date.');return}void changeOrder({expires_at:expiresAt},expiresAt?'Invitation expiry date saved.':'Invitation expiry removed.')}
@@ -109,20 +131,21 @@ function AdminWorkspace() {
 
   if(loading)return <main className="dash-loading">Opening the order desk…</main>
   if(preview&&selected)return <main className="admin-preview"><header><button className="back-action" onClick={()=>setPreview(false)}>← Back to order #{selected.id}</button><span>UNPUBLISHED PREVIEW · ORDER #{selected.id}</span></header><InvitationRenderer details={selected.form_data}/></main>
-  if(tab==='Companies')return <AdminCompaniesWorkspace onNavigate={next=>{setTab(next);setSelected(null)}}/>
-  return <main className="workspace admin-workspace"><aside className="workspace-sidebar"><a href="/" className="workspace-logo"><img src="/logo.png" alt="Shaadi Invites"/></a><p className="workspace-label">STUDIO ADMIN</p><nav>{(['Overview','Orders','Companies'] as const).map(item=><button key={item} className={tab===item?'active':''} onClick={()=>{setTab(item);setSelected(null)}}><span>{item==='Overview'?'⌂':item==='Orders'?'▤':'♧'}</span>{item}</button>)}</nav><button className="workspace-logout" onClick={()=>void signOutToLogin()}>↗ <span>Log out</span></button></aside>
+  if(tab==='Companies'||tab==='Music')return <AdminSettingsWorkspace tab={tab} onNavigate={next=>{setTab(next);setSelected(null)}}/>
+  return <main className="workspace admin-workspace"><aside className="workspace-sidebar"><a href="/" className="workspace-logo"><img src="/logo.png" alt="Shaadi Invites"/></a><p className="workspace-label">STUDIO ADMIN</p><nav>{(['Overview','Orders','Companies','Music'] as const).map(item=><button key={item} className={tab===item?'active':''} onClick={()=>{setTab(item);setSelected(null)}}><span>{item==='Overview'?'⌂':item==='Orders'?'▤':item==='Companies'?'♧':'♫'}</span>{item}</button>)}</nav><button className="workspace-logout" onClick={()=>void signOutToLogin()}>↗ <span>Log out</span></button></aside>
     <section className="workspace-main"><header className="workspace-top"><div><span className="workspace-kicker">SHAADI INVITES · ADMIN</span><h1>{selected?`Order #${selected.id}`:tab==='Overview'?'Order desk':'All orders'}</h1></div><div className="workspace-account"><span className="account-avatar">S</span><span>Shaadi Invites<small>Administrator</small></span></div></header>
       {error&&<p className="workspace-alert" role="alert">{error}</p>}{notice&&<p className="workspace-success" role="status">{notice}</p>}
       {selected ? <section className="order-detail"><div className="detail-head"><div><span className={`status-pill status-${selected.status.toLowerCase()}`}>{labels[selected.status]}</span><h2>{selected.groom_name} <em>&</em> {selected.bride_name}</h2><p>Submitted {new Date(selected.created_at).toLocaleString()} · {designs.find(d=>d.id===selected.form_data.template)?.name}</p></div><button className="back-action" onClick={()=>{setSelected(null);setPreview(false)}}>← Order list</button></div><div className="detail-grid"><article className="detail-card"><span className="workspace-kicker">CLIENT & SUBMISSION</span><dl><dt>Company</dt><dd>{selected.companies?.company_name||'Company'}</dd><dt>Submitted by</dt><dd>{selected.created_by}</dd><dt>Order reference</dt><dd>#{selected.id}</dd><dt>Status</dt><dd>{labels[selected.status]}</dd><dt>Template</dt><dd>{designs.find(d=>d.id===selected.form_data.template)?.name||'—'}</dd><dt>Phone number</dt><dd>{selected.phone_number}</dd></dl></article><article className="detail-card"><span className="workspace-kicker">WEDDING DETAILS</span><dl><dt>Date and time</dt><dd>{selected.form_data.date}{selected.form_data.time ? ` · ${selected.form_data.time}` : ''} {selected.form_data.offset}</dd><dt>Venue</dt><dd>{selected.form_data.venue}</dd><dt>Address</dt><dd>{selected.form_data.address}</dd><dt>Groom's family</dt><dd>{selected.form_data.groomFamily||'—'}</dd><dt>Bride's family</dt><dd>{selected.form_data.brideFamily||'—'}</dd><dt>Message</dt><dd>{selected.form_data.message||'—'}</dd>{selected.form_data.events?.map((event,index)=><ReactFragment key={`${event.title}-${index}`}><dt>Celebration · {event.title}</dt><dd>{event.date}{event.time ? ` · ${event.time}` : ''} · {event.venue}{event.address?`, ${event.address}`:''}</dd></ReactFragment>)}</dl></article></div>{selected.status==='READY'&&<div className="correction-bar"><span>Invitation correction</span>{!editingPublished?<button className="secondary-action" onClick={()=>{setDraft(selected.form_data);setEditingPublished(true)}}>Edit published invitation</button>:<button className="back-action" onClick={()=>{setEditingPublished(false);setDraft(null)}}>Cancel edit</button>}</div>}{editingPublished&&draft&&<form className="correction-form" onSubmit={savePublishedCorrection}><span className="workspace-kicker">UPDATE PUBLISHED DETAILS</span><p>Save corrections and the existing URL will remain in place.</p><div className="form-grid"><Field label="Groom's name" value={draft.groom} onChange={v=>setDraft(d=>d?{...d,groom:v}:d)}/><Field label="Bride's name" value={draft.bride} onChange={v=>setDraft(d=>d?{...d,bride:v}:d)}/><Field label="Wedding date" type="date" value={draft.date} onChange={v=>setDraft(d=>d?{...d,date:v}:d)}/><Field label="Ceremony time" type="time" value={draft.time} onChange={v=>setDraft(d=>d?{...d,time:v}:d)}/><Field label="Venue" value={draft.venue} onChange={v=>setDraft(d=>d?{...d,venue:v}:d)}/><Field label="Address" value={draft.address} onChange={v=>setDraft(d=>d?{...d,address:v}:d)}/></div><label>Welcome message<textarea rows={3} value={draft.message} onChange={e=>setDraft(d=>d?{...d,message:e.target.value}:d)}/></label><button className="primary-action" disabled={busy}>Save invitation correction →</button></form>}{selected.rejection_reason&&<p className="workspace-alert"><strong>Reason sent to the client:</strong> {selected.rejection_reason}</p>}
         {selected.status==='READY'&&selected.published_url&&<div className="published-link"><span>PUBLIC INVITATION</span><a href={selected.published_url} target="_blank" rel="noreferrer">{selected.published_url} ↗</a><button onClick={()=>void navigator.clipboard.writeText(selected.published_url!)}>Copy link</button></div>}
         <div className="detail-actions"><div><span className="workspace-kicker">PROCESSING</span><h3>Review, preview, then publish.</h3><p>Previewing keeps the invitation private. Publishing makes the name link public.</p></div><div className="action-row">{selected.status!=='READY'&&<label>Link expiry date<input type="date" value={expiresOn} onChange={event=>setExpiresOn(event.target.value)}/></label>}{selected.status==='CREATED'&&<button className="primary-action" disabled={busy} onClick={startProcessing}>Start processing →</button>}{selected.status==='IN_PROGRESS'&&<><button className="secondary-action" disabled={busy} onClick={()=>setPreview(true)}>Preview invitation</button><button className="primary-action" disabled={busy} onClick={publish}>Publish invitation →</button></>}{selected.status==='REJECTED'&&<button className="primary-action" disabled={busy} onClick={startProcessing}>Reopen for processing</button>}{selected.status!=='READY'&&<button className="danger-action" disabled={busy} onClick={rejectOrder}>Reject with reason</button>}{selected.status==='READY'&&<><label>Link expiry date<input type="date" value={expiresOn} onChange={event=>setExpiresOn(event.target.value)}/></label><button className="secondary-action" disabled={busy} onClick={saveExpiry}>Save expiry</button></>}</div></div>
         <div className="notes-box"><label>Internal processing notes<textarea rows={3} value={notes} onChange={e=>setNotes(e.target.value)} placeholder="Visible to the studio admin team only"/></label><button className="secondary-action" disabled={busy} onClick={saveNotes}>Save notes</button></div>
+        <div className="detail-actions"><div><h3>Delete order</h3><p>Permanently remove this order and its RSVP replies.</p></div><button type="button" className="danger-action" disabled={busy} onClick={()=>void deleteOrder()}>Delete order</button></div>
       </section> : tab==='Overview'?<><p className="workspace-lede">A clear view of every client order and publication.</p><div className="metric-grid admin-metrics">{[['Total orders',counts.total],['New submissions',counts.created],['In progress',counts.progress],['Published',counts.ready],['Rejected',counts.rejected]].map(([label,value])=><article className="metric-card" key={label}><span>{label}</span><strong>{value}</strong><i>✧</i></article>)}</div><div className="section-heading"><div><span className="workspace-kicker">LATEST SUBMISSIONS</span><h2>Recent orders</h2></div><button className="text-action" onClick={()=>setTab('Orders')}>View all →</button></div><AdminOrderTable orders={orders.slice(0,8)} onSelect={openOrder}/></>:<><p className="workspace-lede">Review submitted details and move each invitation through publication.</p><div className="filters"><input value={query} onChange={e=>setQuery(e.target.value)} placeholder="Search couple, company or order" aria-label="Search orders"/><select value={status} onChange={e=>setStatus(e.target.value)}><option value="ALL">All statuses</option>{states.map(s=><option key={s}>{s}</option>)}</select><select value={companyFilter} onChange={e=>setCompanyFilter(e.target.value)}><option value="ALL">All companies</option>{companyNames.map(name=><option key={name}>{name}</option>)}</select><input type="date" value={dateFrom} onChange={e=>setDateFrom(e.target.value)} aria-label="Created from date"/><input type="date" value={dateTo} onChange={e=>setDateTo(e.target.value)} aria-label="Created to date"/></div><AdminOrderTable orders={visible} onSelect={openOrder}/><div className="pagination"><button disabled={page===0} onClick={()=>{setLoading(true);setPage(v=>v-1)}}>← Previous</button><span>Page {page+1}</span><button disabled={orders.length<pageSize} onClick={()=>{setLoading(true);setPage(v=>v+1)}}>Next →</button></div></>}
     </section></main>
 }
 
-function AdminCompaniesWorkspace({onNavigate}:{onNavigate:(tab:'Overview'|'Orders')=>void}) {
-  return <main className="workspace admin-workspace"><aside className="workspace-sidebar"><a href="/" className="workspace-logo"><img src="/logo.png" alt="Shaadi Invites"/></a><p className="workspace-label">STUDIO ADMIN</p><nav>{(['Overview','Orders','Companies'] as const).map(item=><button type="button" key={item} className={item==='Companies'?'active':''} onClick={()=>{if(item!=='Companies')onNavigate(item)}}><span>{item==='Overview'?'⌂':item==='Orders'?'▤':'♧'}</span>{item}</button>)}</nav><button className="workspace-logout" onClick={()=>void signOutToLogin()}>↗ <span>Log out</span></button></aside><section className="workspace-main"><header className="workspace-top"><div><span className="workspace-kicker">SHAADI INVITES · ADMIN</span><h1>Companies</h1></div><div className="workspace-account"><span className="account-avatar">S</span><span>Shaadi Invites<small>Administrator</small></span></div></header><AdminCompaniesPanel/></section></main>
+function AdminSettingsWorkspace({tab,onNavigate}:{tab:'Companies'|'Music';onNavigate:(tab:AdminTab)=>void}) {
+  return <main className="workspace admin-workspace"><aside className="workspace-sidebar"><a href="/" className="workspace-logo"><img src="/logo.png" alt="Shaadi Invites"/></a><p className="workspace-label">STUDIO ADMIN</p><nav>{(['Overview','Orders','Companies','Music'] as const).map(item=><button type="button" key={item} className={item===tab?'active':''} onClick={()=>{if(item!==tab)onNavigate(item)}}><span>{item==='Overview'?'⌂':item==='Orders'?'▤':item==='Companies'?'♧':'♫'}</span>{item}</button>)}</nav><button className="workspace-logout" onClick={()=>void signOutToLogin()}>↗ <span>Log out</span></button></aside><section className="workspace-main"><header className="workspace-top"><div><span className="workspace-kicker">SHAADI INVITES · ADMIN</span><h1>{tab}</h1></div><div className="workspace-account"><span className="account-avatar">S</span><span>Shaadi Invites<small>Administrator</small></span></div></header>{tab==='Companies'?<AdminCompaniesPanel/>:<AdminMusicPanel/>}</section></main>
 }
 
 function ReactFragment({children}:{children:ReactNode;key?:string}) { return <>{children}</> }

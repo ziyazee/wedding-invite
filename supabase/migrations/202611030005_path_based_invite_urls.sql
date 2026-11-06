@@ -2,6 +2,8 @@
 -- to path-based format (www.shaadiinvites.in/slug).
 -- Company subdomains (store landings + preview) are unchanged.
 
+begin;
+
 -- 1. Update the publish RPC to generate path-based URLs.
 create or replace function public.publish_company_order_with_candidates(
   p_order_id bigint,
@@ -19,7 +21,7 @@ begin
     raise exception 'Sign in to publish this invitation.';
   end if;
 
-  if p_candidate_paths is null or cardinality(p_candidate_paths) = 0 or cardinality(p_candidate_paths) > 8 then
+  if p_candidate_paths is null or cardinality(p_candidate_paths) = 0 or cardinality(p_candidate_paths) > 7 then
     raise exception 'The invitation URL options are invalid.';
   end if;
 
@@ -70,7 +72,7 @@ begin
     end;
   end loop;
 
-  raise exception 'All eight invitation URL options for these names are taken.';
+  raise exception 'All seven invitation URL options for these names are taken.';
 end;
 $$;
 
@@ -82,3 +84,5 @@ update public.orders
 set published_url = 'https://www.shaadiinvites.in/' || published_path
 where published_path is not null
   and published_url like 'https://%.shaadiinvites.in';
+
+commit;

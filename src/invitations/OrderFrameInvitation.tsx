@@ -28,8 +28,8 @@ export default function OrderFrameInvitation({ details, rsvpTarget }: { details:
   currentDetails.current = details
   const openingCover = isBrowsePreview ? openingCovers[details.template] : undefined
   // This prebuilt React export reads its configuration only on mount. Reload
-  // for content changes; layout-only edits keep the same document and scroll.
-  const contentKey = details.template === 12 ? JSON.stringify({ ...details, textOverrides: undefined }) : ''
+  // for content changes; layout and music edits update the mounted document.
+  const contentKey = details.template === 12 ? JSON.stringify({ ...details, textOverrides: undefined, music: undefined, musicStart: undefined, musicEnd: undefined }) : ''
   useEffect(() => {
     if (!contentKey) return
     const abort = new AbortController()

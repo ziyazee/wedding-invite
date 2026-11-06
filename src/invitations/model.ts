@@ -1,5 +1,6 @@
 import { readTextLayout } from './textLayout.ts'
 import type { TextLayout } from './textLayout.ts'
+import { catalogMusicPath, isCatalogMusic } from './musicCatalog'
 
 export const TEMPLATE_DISPLAY_ORDER: Record<number, number> = { 2:1, 6:2, 13:3, 14:4, 7:5, 5:6, 1:7, 3:8, 15:9, 4:10, 16:11, 17:12, 18:13 }
 export const designs = [
@@ -38,6 +39,7 @@ export interface InvitationData {
   template: number; groom: string; bride: string; date: string; time: string; offset: string;
   venue: string; address: string; map: string; message: string; groomFamily: string; brideFamily: string;
   dressCode: string; giftNote: string; music: string; gallery: string; events: Celebration[];
+  musicStart?: number; musicEnd?: number;
   companyLogo?: string; companyName?: string; companyPhone?: string;
 }
 export const COMPANY_WHATSAPP_MESSAGE = 'Hi, I need a wedding invitation like this. Could you share the details and pricing?'
@@ -63,17 +65,17 @@ export function displayName(s: string) {
 function normName(s: string) {
   return s.normalize('NFKD').replace(/[\u0300-\u036f]/g, '').toLowerCase().replace(/[^a-z0-9]/g, '').slice(0, 35)
 }
-export function slugVariants(groom: string, bride: string): string[] {
-  const g = normName(groom)
-  const b = normName(bride)
-  const base = g && b ? `${g}${b}` : g || b || 'wedding'
+export function slugVariants(groom: string, bride: string, brideFirst = false): string[] {
+  const first = normName(brideFirst ? bride : groom)
+  const second = normName(brideFirst ? groom : bride)
+  const base = first && second ? `${first}${second}` : first || second || 'wedding'
   return [
     base,
-    `${g}weds${b}`,
-    `${g}and${b}`,
-    `${g}-${b}`,
-    `${g}marries${b}`,
-    `${g}with${b}`,
+    `${first}weds${second}`,
+    `${first}and${second}`,
+    `${first}-${second}`,
+    `${first}marries${second}`,
+    `${first}with${second}`,
     `${base}wedding`,
   ]
 }
@@ -104,6 +106,10 @@ export const reservedSlugs = new Set(['assets','images','fonts','dashboard','cli
 export function validateDetails(value: unknown, allowRetired = false): InvitationData {
   if (!value || typeof value !== 'object') throw new Error('Invitation details are required.')
   const d = value as InvitationData
+  for (const point of [d.musicStart, d.musicEnd]) {
+    if (point !== undefined && (typeof point !== 'number' || !Number.isFinite(point) || point < 0)) throw new Error('Choose a valid music playback range.')
+  }
+  if (d.musicEnd !== undefined && d.musicEnd <= (d.musicStart ?? 0)) throw new Error('Music must end after its start time.')
   if(d.showCoupleIllustrations!==undefined&&typeof d.showCoupleIllustrations!=='boolean')throw new Error('Choose a valid illustration setting.')
   if(d.brideFirst!==undefined&&typeof d.brideFirst!=='boolean')throw new Error('Choose a valid couple name order.')
   if (!designs.some(t => t.id === d.template) && !(allowRetired && [101, 104, 108, 109, 110, 111, 112, 115, 116, 117].includes(d.template))) throw new Error('Choose an available invitation template.')
@@ -147,7 +153,9 @@ export function validateDetails(value: unknown, allowRetired = false): Invitatio
     template:d.template, groom:displayName(text(d.groom,'groom name',nameTextLimit(d.template,'groom') ?? 80,true)), bride:displayName(text(d.bride,'bride name',nameTextLimit(d.template,'bride') ?? 80,true)), date:date(d.date), time:time(d.time), offset:d.offset,
     venue:text(d.venue,'venue',cardTextLimit(d.template,'venue') ?? 160,true),address:text(d.address,'address',cardTextLimit(d.template,'address') ?? 300,true),map:url(d.map,'map link'),
     message:text(d.message,'welcome message',2000),groomFamily:text(d.groomFamily,'groom family',200),brideFamily:text(d.brideFamily,'bride family',200),
-    dressCode:text(d.dressCode,'dress code',600),giftNote:text(d.giftNote,'gift note',600),music:url(d.music,'music link'),gallery:url(d.gallery,'gallery link'),
+    dressCode:text(d.dressCode,'dress code',600),giftNote:text(d.giftNote,'gift note',600),music:isCatalogMusic(d.music) ? catalogMusicPath(d.music) : url(d.music,'music link'),gallery:url(d.gallery,'gallery link'),
+    ...(d.musicStart !== undefined ? { musicStart: d.musicStart } : {}),
+    ...(d.musicEnd !== undefined ? { musicEnd: d.musicEnd } : {}),
     events:d.events.map(e=>({...(typeof e.id==='string'&&/^[a-zA-Z0-9_-]{1,80}$/.test(e.id)?{id:e.id}:{}),...(e.schedule !== undefined ? { schedule: schedule(e.schedule) } : {}),title:text(e.title,'celebration name',cardTextLimit(d.template,'title') ?? 100,true),date:date(e.date),time:time(e.time),venue:text(e.venue,'celebration venue',cardTextLimit(d.template,'venue') ?? 160,true),address:text(e.address,'celebration address',cardTextLimit(d.template,'address') ?? 300,true),map:url(e.map,'map link')})),
     ...(typeof d.companyLogo === 'string' && d.companyLogo ? { companyLogo: d.companyLogo } : {}),
     ...(typeof d.companyName === 'string' && d.companyName ? { companyName: d.companyName } : {}),

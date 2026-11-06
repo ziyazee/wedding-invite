@@ -94,7 +94,7 @@ export default function Kerala() {
   return (
     <main className="kerala-template">
       <section className="kerala-template__entry" data-invite-section="t18.entry" aria-label="Kerala wedding invitation opening video">
-        <audio ref={audioRef} src="/templates/kerala/assets/music.mp3" loop preload="none" onPlay={() => setMusicPlaying(true)} onPause={() => setMusicPlaying(false)} />
+        <audio ref={audioRef} src={details.music || '/templates/kerala/assets/music.mp3'} loop preload="none" onPlay={() => setMusicPlaying(true)} onPause={() => setMusicPlaying(false)} />
         <button className="kerala-template__entry-trigger" type="button" onClick={playOpening} aria-label="Tap here to begin the celebration">
           <video
             ref={videoRef}

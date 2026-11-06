@@ -71,7 +71,7 @@ const OrderManagement = lazySitePage(() => import('./pages/OrderManagement'))
 
 function SingleSegmentRoute() {
   const { slug = '' } = useParams()
-  if (/^\d+-[A-Za-z0-9_-]{16}$/.test(slug)) return <OrderManagement />
+  if (/^(?:test-)?\d+-[A-Za-z0-9_-]{16}$/.test(slug)) return <OrderManagement />
   return <GeneratedInvitation />
 }
 
@@ -107,7 +107,7 @@ export default function App() {
   const invitationRoute = pathname === '/client/live-preview' || (
     pathname !== '/' &&
     !/^\/(?:client|admin|login|account|dashboard|create|newDesign|testing567|edits|privacy)(?:\/|$)/.test(pathname) &&
-    !/^\/\d+-[A-Za-z0-9_-]{16}\/?$/.test(pathname)
+    !/^\/(?:test-)?\d+-[A-Za-z0-9_-]{16}\/?$/.test(pathname)
   )
   // Store previews must reach the shared renderer on the same origin so they
   // can read the selected invitation from sessionStorage.
@@ -172,6 +172,7 @@ export default function App() {
       <Route path="/mangal" element={<Design16 />} />
       <Route path="/gulabi-mandap" element={<Design17 />} />
       <Route path="/royal-grace" element={<RoyalGrace />} />
+      {/* Resolves both legacy orderId/names and fallback names/orderId by the full path. */}
       <Route path="/:orderNumber/:slug" element={<GeneratedInvitation />} />
       <Route path="/:slug" element={<SingleSegmentRoute />} />
     </Routes></InvitationLoadingBoundary></Suspense></InvitationViewport>

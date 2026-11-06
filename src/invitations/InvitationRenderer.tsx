@@ -7,6 +7,7 @@ import SiteFonts from '../SiteFonts'
 import InvitationLoading from './InvitationLoading'
 import InvitationLoadingBoundary from './InvitationLoadingBoundary'
 import { applyInvitationViewportTheme } from './invitationViewportTheme'
+import { useInvitationMusicRange } from './useInvitationMusicRange'
 const PersonalMusic = lazy(() => import('./PersonalMusic'))
 const AnimatedInvitation = lazy(() => import('./AnimatedInvitation'))
 const NewDesign = lazy(() => import('../pages/NewDesign'))
@@ -63,6 +64,7 @@ const mandapDefaultElements = {
 export default function InvitationRenderer({ details: raw, rsvpTarget }: { details: InvitationData; rsvpTarget?: RsvpTarget }) {
   const details = useMemo<InvitationData>(() => ({ ...raw, groom: displayName(raw.groom), bride: displayName(raw.bride) }), [raw])
   const animatedDetails = useMemo(() => details, [details])
+  useInvitationMusicRange(details.musicStart, details.musicEnd, details.template)
 
   useEffect(() => {
     const restoreTheme = applyInvitationViewportTheme(document, details.template)

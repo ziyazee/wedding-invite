@@ -144,7 +144,7 @@ export default function OrderManagement() {
 
   const load = useCallback(async () => {
     if (!supabase || !isSupabaseConfigured) { setError('Order management is unavailable right now.'); setLoading(false); return }
-    const { data: result, error: loadError } = await supabase.rpc('get_order_management', { p_management_id: managementId })
+    const { data: result, error: loadError } = await supabase.rpc(managementId.startsWith('test-') ? 'get_test_order_management' : 'get_order_management', { p_management_id: managementId })
     if (loadError || !result) setError('This management link is invalid or unavailable.')
     else {
       const parsed = result as ManagementData
@@ -220,7 +220,7 @@ export default function OrderManagement() {
     const limit=nameTextLimit(details?.template ?? 0,key) ?? cardTextLimit(details?.template ?? 0,key)
     if(limit!==undefined)value=value.slice(0,limit)
     queuePreviewScroll(`detail.${key}`, value, String(details?.[key] || ''))
-    setDetails(current => current ? { ...current, [key]: value } : current)
+    setDetails(current => current ? { ...current, [key]: value, ...(key === 'music' && value !== current.music ? { musicStart: 0, musicEnd: undefined } : {}) } : current)
   }
   function setEvent(index: number, key: 'title' | 'date' | 'time' | 'venue' | 'address' | 'map', value: string) {
     const limit=cardTextLimit(details?.template ?? 0,key)
@@ -240,7 +240,7 @@ export default function OrderManagement() {
     setBusy(true); setError(''); setNotice('')
     try {
       const valid = validateDetails(details, true)
-      const { data: saved, error: saveError } = await supabase.rpc('update_order_management', { p_management_id: managementId, p_form_data: valid })
+      const { data: saved, error: saveError } = await supabase.rpc(managementId.startsWith('test-') ? 'update_test_order_management' : 'update_order_management', { p_management_id: managementId, p_form_data: valid })
       if (saveError || saved?.saved !== true) throw saveError || new Error('Could not save invitation details.')
       setDetails(valid); setData(current => current ? { ...current, details: valid } : current)
       setNotice('')

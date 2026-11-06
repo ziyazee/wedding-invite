@@ -382,7 +382,7 @@ export default function Tajmahal({ rsvpTarget }: { rsvpTarget?: RsvpTarget }) {
   return (
     <main className="tajmahal-template">
       <section className="tajmahal-template__entry" data-invite-section="t17.entry" aria-label="Tajmahal wedding invitation opening video">
-        <audio ref={audioRef} src="/templates/tajmahal/assets/music.mp3" loop preload="none" onPlay={() => setMusicPlaying(true)} onPause={() => setMusicPlaying(false)} />
+        <audio ref={audioRef} src={details.music || '/templates/tajmahal/assets/music.mp3'} loop preload="none" onPlay={() => setMusicPlaying(true)} onPause={() => setMusicPlaying(false)} />
         <button className="tajmahal-template__entry-trigger" type="button" onClick={playOpening} aria-label="Tap here to begin the celebration">
           <video
             ref={videoRef}

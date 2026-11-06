@@ -32,8 +32,9 @@ function submissionToken(orderId: string) {
 
 export async function saveOrderRsvp(target: RsvpTarget, response: RsvpResponse) {
   if (!supabase) throw new Error('RSVP is temporarily unavailable. Please try again later.')
-  const { data, error } = await supabase.rpc('submit_order_rsvp', {
-    p_order_id: target.orderId,
+  const testing = target.orderId.startsWith('test-')
+  const { data, error } = await supabase.rpc(testing ? 'submit_test_order_rsvp' : 'submit_order_rsvp', {
+    p_order_id: testing ? target.orderId.slice(5) : target.orderId,
     p_published_path: target.path,
     p_submission_token: submissionToken(target.orderId),
     p_full_name: response.name,

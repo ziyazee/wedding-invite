@@ -60,7 +60,7 @@ function isPublicInvitationRoute(): boolean {
   const path = location.pathname.replace(/\/+$/, '') || '/'
   if (path === '/') return false
   if (/^\/(?:client|admin|login|account|dashboard|create|newDesign|testing567|edits|privacy)(?:\/|$)/.test(path)) return false
-  if (/^\/\d+-[A-Za-z0-9_-]{16}$/.test(path)) return false
+  if (/^\/(?:test-)?\d+-[A-Za-z0-9_-]{16}$/.test(path)) return false
   if (path === '/templates/a-timeless-union/celebrations') return false
   return true
 }
