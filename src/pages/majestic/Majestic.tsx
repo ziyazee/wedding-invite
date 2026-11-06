@@ -49,12 +49,36 @@ function AmbientVideo({ src, poster, className, paused: forcePaused = false }: {
     // Wait for visibility before playing: starting every off-screen card and
     // immediately pausing it can interrupt playback during a cold load.
     let visible = false
+    let nearby = false
     let disposed = false
     let playPending = false
+    let playbackRun = 0
+    let resumeTime = 0
     let retryCount = 0
     let retryTimer: number | undefined
     const shouldPlay = () => !disposed && !forcePaused && visible && !motion.matches && !document.hidden
     const clearRetry = () => { window.clearTimeout(retryTimer); retryTimer = undefined }
+    const loadSource = () => {
+      if (element.hasAttribute('src')) return
+      element.src = src
+      element.load()
+    }
+    const releaseSource = () => {
+      if (!element.hasAttribute('src')) return
+      resumeTime = element.currentTime
+      playbackRun += 1
+      playPending = false
+      element.pause()
+      // Paused videos still hold decoder resources on iPhone. Release those
+      // resources when the card is distant, including the opening background.
+      element.removeAttribute('src')
+      element.load()
+    }
+    const restorePosition = () => {
+      if (resumeTime > 0 && Number.isFinite(element.duration)) {
+        element.currentTime = Math.min(resumeTime, Math.max(0, element.duration - .05))
+      }
+    }
     const retry = () => {
       if (!shouldPlay() || element.error || retryTimer !== undefined || retryCount >= 3) return
       retryTimer = window.setTimeout(() => {
@@ -64,18 +88,26 @@ function AmbientVideo({ src, poster, className, paused: forcePaused = false }: {
       }, 250 * 2 ** retryCount)
     }
     const sync = () => {
-      if (!shouldPlay()) { clearRetry(); element.pause(); return }
+      if (!shouldPlay()) {
+        clearRetry()
+        element.pause()
+        if (!nearby && !visible) releaseSource()
+        return
+      }
+      loadSource()
       if (playPending || element.error || (!element.paused && element.readyState >= 3)) return
       playPending = true
+      const run = ++playbackRun
       void element.play().then(() => {
         // An older effect's play promise must not pause a newer playback run.
-        if (disposed) return
+        if (disposed || run !== playbackRun) return
         delete element.dataset.mjPlaybackError
         if (!shouldPlay()) element.pause()
       }).catch(error => {
         // Keep the rejection inspectable; readiness and gestures retry below.
-        if (shouldPlay()) element.dataset.mjPlaybackError = error instanceof Error ? error.name : 'PlaybackError'
+        if (run === playbackRun && shouldPlay()) element.dataset.mjPlaybackError = error instanceof Error ? error.name : 'PlaybackError'
       }).finally(() => {
+        if (disposed || run !== playbackRun) return
         playPending = false
         if (shouldPlay() && element.paused) retry()
       })
@@ -92,7 +124,14 @@ function AmbientVideo({ src, poster, className, paused: forcePaused = false }: {
       sync()
     })
     observer.observe(element)
+    const preloadObserver = new IntersectionObserver(entries => {
+      nearby = entries[0].isIntersecting
+      if (nearby) loadSource()
+      sync()
+    }, { rootMargin: '150px 0px' })
+    preloadObserver.observe(element)
     // A rejected play attempt must not leave a visible card blank until reload.
+    element.addEventListener('loadedmetadata', restorePosition)
     element.addEventListener('loadeddata', sync)
     element.addEventListener('canplay', sync)
     element.addEventListener('playing', playing)
@@ -112,6 +151,8 @@ function AmbientVideo({ src, poster, className, paused: forcePaused = false }: {
       disposed = true
       clearRetry()
       observer.disconnect()
+      preloadObserver.disconnect()
+      element.removeEventListener('loadedmetadata', restorePosition)
       element.removeEventListener('loadeddata', sync)
       element.removeEventListener('canplay', sync)
       element.removeEventListener('playing', playing)
@@ -125,10 +166,10 @@ function AmbientVideo({ src, poster, className, paused: forcePaused = false }: {
       document.removeEventListener('visibilitychange', wake)
       window.removeEventListener('pageshow', wake)
       motion.removeEventListener('change', wake)
-      element.pause()
+      releaseSource()
     }
   }, [forcePaused, src])
-  return failed && poster ? <InvitationMedia className={className} src={poster} priority alt="" /> : <InvitationMedia kind="video" className={className} ref={video} src={src} poster={poster} preload="auto" muted loop playsInline onError={() => setFailed(true)} aria-hidden="true" />
+  return failed && poster ? <InvitationMedia className={className} src={poster} priority alt="" /> : <InvitationMedia kind="video" className={className} ref={video} poster={poster} preload="auto" muted loop playsInline onError={() => setFailed(true)} aria-hidden="true" />
 }
 
 function coupleLabel(details: InvitationData) {
@@ -264,8 +305,6 @@ export default function Majestic({ details: d, rsvpTarget }: { details: Invitati
   useEffect(() => {
     const preloads = [
       { href: '/templates/majestic/assets/hero-poster-DkA1j00-.jpg', as: 'image' },
-      { href: '/templates/majestic/assets/hero-bg-l-slFnvE.mp4', as: 'video' },
-      { href: '/templates/majestic/assets/celebrations.mp4', as: 'video' },
       { href: '/templates/majestic/assets/lights.webp', as: 'image' },
       { href: '/templates/majestic/assets/ornate-badge-2PyCLI0e.webp', as: 'image' },
       { href: '/templates/majestic/assets/food.webp', as: 'image' },
