@@ -73,8 +73,14 @@ Or to edit a JSON file directly:
 - "In `public/edits/4.json`, change the title fontSize to 32"
 - "In `public/edits/7.json`, set the venue color to #d4a574"
 
+### Cleanup after applying edits
+
+After applying all overrides from a JSON file to the template's built-in defaults, **delete that JSON file**. These files hold pending edits; do not leave an applied file behind. Preserve any existing template properties that the file does not override.
+
+Only delete files whose edits have been fully applied. Future saves from `/edits` can recreate the matching file with new pending edits.
+
 ## Removing a text override
 
 To undo an override for a specific element, delete its key from the JSON file. For example, removing `"title"` from the `elements` object means the title reverts to the template's built-in layout.
 
-To remove all overrides for a template, delete its JSON file from this folder.
+To remove all pending overrides for a template, delete its JSON file from this folder. Deleting a file does not undo edits already applied to the template's built-in defaults; those must be changed in the template source.

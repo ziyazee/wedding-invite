@@ -6,6 +6,7 @@ import type { Celebration, InvitationData } from '../invitations/model'
 import type { TextLayout } from '../invitations/textLayout'
 import { readTextLayout } from '../invitations/textLayout'
 import { invitationExample } from '../invitations/templateData'
+import InvitationPreviewFrame from '../invitations/InvitationPreviewFrame'
 import { loadTemplateCatalog } from '../invitations/templateCatalog'
 import type { InvitationTemplate } from '../invitations/templateCatalog'
 import { TEMPLATE_INTRO_VIDEOS, TEMPLATE_INTRO_IMAGES, TEMPLATE_THUMBNAIL_OVERRIDES } from '../lib/templateCardData'
@@ -49,9 +50,7 @@ function ClientWorkspace({ showHiddenTemplates = false }: { showHiddenTemplates?
   const draftRestored = useRef(false)
   const [draftKey, setDraftKey] = useState<string | null>(null)
   const [draftStatus, setDraftStatus] = useState('Preparing draft…')
-  const previewScreen = useRef<HTMLDivElement>(null)
   const previewFrame = useRef<HTMLIFrameElement>(null)
-  const [previewScale, setPreviewScale] = useState(0.75)
   const [tab, setTab] = useState<'Overview' | 'Templates' | 'Orders' | 'Settings'>('Overview')
   const [orders, setOrders] = useState<Order[]>([])
   const [viewOrder, setViewOrder] = useState<Order | null>(null)
@@ -261,16 +260,6 @@ function ClientWorkspace({ showHiddenTemplates = false }: { showHiddenTemplates?
   const templates = allTemplates.filter(template => (categoryFilter === 'ALL' || template.category === categoryFilter) && `${template.name} ${template.category}`.toLowerCase().includes(templateSearch.trim().toLowerCase())).sort((a,b)=>templateSort==='NAME'?a.name.localeCompare(b.name):(TEMPLATE_DISPLAY_ORDER[a.id]??999)-(TEMPLATE_DISPLAY_ORDER[b.id]??999))
   const chosen = allTemplates.find(template => template.id === selected)
   const previewTemplate = allTemplates.find(template => template.id === previewId) || chosen || allTemplates[0]
-  useLayoutEffect(() => {
-    if (tab !== 'Templates') return
-    const screen = previewScreen.current
-    if (!screen) return
-    const resize = () => setPreviewScale(Math.min(screen.clientWidth / 402, screen.clientHeight / 874))
-    resize()
-    const observer = new ResizeObserver(resize)
-    observer.observe(screen)
-    return () => observer.disconnect()
-  }, [tab, previewTemplate?.id, loading])
   const companyBranding = useMemo(() => ({
     companyLogo: companyAssetURL(company, 'logo'),
     ...(company?.company_name ? { companyName: company.company_name } : {}),
@@ -350,7 +339,10 @@ function ClientWorkspace({ showHiddenTemplates = false }: { showHiddenTemplates?
       const resp = await fetch(`/edits/${id}.json`)
       if (resp.ok) textOverrides = readTextLayout(await resp.json())
     } catch { /* no defaults for this template */ }
-    if (example) {
+    if (pdfPrefilled) {
+      // Keep extracted copy, user corrections, and celebrations when changing designs.
+      setDetails(previous => ({ ...previous, template: id, textOverrides }))
+    } else if (example) {
       const demoEvents = (demo?.events as { title: string; date: string; time: string; venue: string; address: string }[] | undefined) || []
       const baseEvents = example.events || []
       const allEvents = demoEvents.length ? demoEvents.map(ev => ({ ...ev, map: '' })) : baseEvents
@@ -492,13 +484,24 @@ Do NOT include "groom side", "bride side", or similar qualifiers in event titles
 STEP 5 — Preserve the couple's displayed order:
 Set "brideFirst" to true only when the bride's name appears before the groom's name in the couple display (for example, "Bride weds Groom"). Otherwise set it to false. This controls the review field order; it does not change who is the bride or groom. Use the visual reading order of the names on the invitation.
 
+STEP 6 — Curate a welcome message, not a text fragment:
+A wedding welcome message warmly invites guests to share the couple's joy and explains why their presence, love, or blessings matter. Read the invitation as a whole before composing this message: decorative line breaks, host names, couple names, and ceremony details may split one invitation sentence across the page.
+Use the invitation's actual welcome, invitation, or blessing text as the source of meaning. Reconstruct its intent into polished, natural, standalone sentences suitable for a wedding invitation. Preserve its level of formality, cultural or religious tone, and supported sentiments. Do not simply copy a disconnected line or truncate the source to meet a character limit.
+Preservation takes priority over brevity in BOTH "message" and "messageFull": retain every informative detail contained in the welcome text, including meals, timing or sequence, attendance instructions, and other arrangements. For example, "Lunch will follow the ceremony" must remain in both versions; do not discard it or create a separate celebration for it. Keep religious invocations, references to God, prayers, blessings, and their meaning explicit. Do not replace them with a generic secular invitation. Preserve sacred quotations and religious opening formulas as written, fixing only obvious transcription or spacing errors.
+For "message", make the surrounding invitation wording concise. For "messageFull", allow fuller phrasing supported by the source. Both must contain the same religious meaning and practical information; they may be identical when further shortening would lose meaning. There is no word or sentence limit that justifies dropping information. Optimize only repetition, grammar, flow, and non-informative embellishment.
+Use the COUPLE'S first-person plural voice inviting the guests ("we", "our", "you"), not the parents' voice: convert "our son's wedding", "our daughter's wedding", or "the wedding of our children" into "our wedding". Preserve the religious opening and informative details while making this change. Do not start with "And", "With", "Together with", or a dangling clause unless it forms a complete sentence with a clear subject and invitation. Never leave an opening conjunction, unfinished phrase, or a reference that depends on nearby names to make sense.
+For example, a source split as "request the pleasure of your presence / at the wedding / [couple names] / and bless the couple" can become "We warmly invite you to celebrate our wedding with us. Your presence and blessings would make this occasion even more special."
+For example, "In the name of Allah, the Most Gracious and the Most Merciful, we cordially invite you and your family to join us on the auspicious occasion of our son's wedding ceremony. Your presence and blessings would make this joyous occasion even more special. Lunch will follow the ceremony." should become "In the name of Allah, the Most Gracious and the Most Merciful, we cordially invite you and your family to celebrate our wedding. Your presence and blessings would make this joyous occasion even more special. Lunch will follow the ceremony." This version may be used for both fields.
+Do not invent engagement stories, gratitude for past support, family relationships, religious beliefs, quotations, or promises absent from the source. Do not pull unrelated names or logistical blocks elsewhere on the design into welcome copy; extract those into their appropriate fields. However, retain informative details already part of the welcome message even when they also belong in a structured field. Do not fabricate or rewrite a sacred quotation as if it were an exact quote. If no welcome, invitation, or blessing sentiment is present, return empty strings for both message fields.
+Before returning JSON, compare BOTH messages against the source: verify that every religious opening or meaning and every informative detail in the welcome text survives in each version, then correct fragments, awkward joins, repetition, grammar, and punctuation.
+
 Now return ONLY valid JSON (no markdown, no explanation) in this shape:
-{"brideFirst":false,"groom":"calling name","groomFullName":"full name as written","bride":"calling name","brideFullName":"full name as written","groomFamily":"condensed: relation labels + names only","groomFamilyFull":"full family text exactly as written on the invitation","brideFamily":"condensed: relation labels + names only","brideFamilyFull":"full family text exactly as written on the invitation","date":"YYYY-MM-DD","time":"HH:MM (24h)","venue":"venue name","address":"full address","message":"short blessing (max 3 lines / ~150 chars)","messageFull":"full blessing/religious text as written on the invitation","dressCode":"if mentioned","events":[{"title":"event name","date":"YYYY-MM-DD","time":"HH:MM","venue":"venue","address":"address"}]}
+{"brideFirst":false,"groom":"calling name","groomFullName":"full name as written","bride":"calling name","brideFullName":"full name as written","groomFamily":"condensed: relation labels + names only","groomFamilyFull":"full family text exactly as written on the invitation","brideFamily":"condensed: relation labels + names only","brideFamilyFull":"full family text exactly as written on the invitation","date":"YYYY-MM-DD","time":"HH:MM (24h)","venue":"venue name","address":"full address","message":"concise curated welcome message in complete sentences","messageFull":"fuller curated welcome message preserving the source meaning","dressCode":"if mentioned","events":[{"title":"event name","date":"YYYY-MM-DD","time":"HH:MM","venue":"venue","address":"address"}]}
 
 Additional rules:
 - Family fields: "groomFamily"/"brideFamily" are CONDENSED — relation labels (S/o, D/o, Grand D/o, etc.) and names only, no addresses, house names, or location details. "groomFamilyFull"/"brideFamilyFull" are the FULL original text as it appears on the invitation, preserving all details.
 - events: additional ceremonies beyond the main wedding (reception, mehendi, sangeet). Empty array if only one event. Never duplicate the wedding here.
-- message: "message" is a condensed, elegant version — maximum 3 lines (~150 characters). "messageFull" is the complete blessing or religious text as written, preserving the full paragraph.
+- message and messageFull: follow STEP 6. Curate both versions for meaning and readability; neither is a verbatim transcription. Prefer a complete sentence over an arbitrary character or line limit.
 - Empty string for any field not found.`
 
   async function callExtract(base64: string, filename: string, mimeType: string): Promise<PdfExtracted> {
@@ -662,7 +665,7 @@ Additional rules:
       {tab === 'Orders' && <><p className="workspace-lede orders-description">View and manage all invitation orders submitted by your customers.</p><div className="orders-summary"><span className="orders-summary-item"><span className="orders-summary-label">Total</span><span className="orders-summary-value">{orders.length}</span></span><span className="orders-summary-divider"/><span className="orders-summary-item"><span className="orders-summary-label">Published</span><span className="orders-summary-value">{orders.filter(o=>o.status==='READY').length}</span></span><span className="orders-summary-divider"/><span className="orders-summary-item"><span className="orders-summary-label">Pending</span><span className="orders-summary-value">{orders.filter(o=>o.status==='CREATED'||o.status==='IN_PROGRESS').length}</span></span></div><div className="orders-filters"><label className="orders-search"><span aria-hidden="true"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.3-4.3"/></svg></span><input value={orderSearch} onChange={e => {setOrderSearch(e.target.value);setOrdersPage(0)}} placeholder="Search by order ID, couple name, or phone…" aria-label="Search orders"/></label><div className="orders-date-filter"><span aria-hidden="true"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><rect x="3" y="4" width="18" height="18" rx="2"/><path d="M16 2v4M8 2v4M3 10h18"/></svg></span><input type="date" value={orderDateFrom} onChange={e=>{setOrderDateFrom(e.target.value);setOrdersPage(0)}} aria-label="Submitted from"/><span className="orders-date-separator">to</span><input type="date" value={orderDateTo} onChange={e=>{setOrderDateTo(e.target.value);setOrdersPage(0)}} aria-label="Submitted to"/></div></div><OrderTable orders={filtered.slice(ordersPage*20,ordersPage*20+20)} onSelect={setViewOrder} onEdit={startEditOrder} onCreate={orders.length===0?()=>{setTab('Templates');setSelected(chosen?.id||allTemplates[0]?.id||null)}:undefined}/>{filtered.length>20&&<div className="pagination"><button disabled={ordersPage===0} onClick={()=>setOrdersPage(p=>p-1)}>← Previous</button><span>Page {ordersPage+1} of {Math.max(1,Math.ceil(filtered.length/20))}</span><button disabled={(ordersPage+1)*20>=filtered.length} onClick={()=>setOrdersPage(p=>p+1)}>Next →</button></div>}</>}
       {tab === 'Settings' && <TemplateSettingsPanel companyName={company?.company_name || 'your company'} templates={allTemplates} settings={templateSettings} defaults={templateDefaults} error={error} canSave={Boolean(company)} onChange={editTemplateSetting} onSaveAll={saveAllTemplateSettings} onCustomizeDemo={setEditingDemo}/>}
     </section>
-    {tab === 'Templates' && <aside className="client-preview-panel"><div className="client-preview-heading"><div><span className="workspace-kicker">LIVE PREVIEW</span><h2>{previewTemplate?.name || 'Invitation preview'}</h2></div><span className="preview-live-dot" aria-label="Live preview"/></div>{previewTemplate ? <><div className="client-device-frame"><div className="client-device-screen" ref={previewScreen}><iframe ref={previewFrame} title={`${previewTemplate.name} mobile invitation preview`} src={previewSrc} allow="autoplay; fullscreen" allowFullScreen style={{ transform: `scale(${previewScale})` }} onLoad={() => { const screen = previewScreen.current; if (screen) setPreviewScale(Math.min(screen.clientWidth / 402, screen.clientHeight / 874)) }}/></div></div><div className="client-preview-thumbs" aria-label="Choose a design to preview">{templates.map(template=><button type="button" key={template.id} className={previewTemplate.id === template.id ? 'active' : ''} onClick={()=>setPreviewId(template.id)} aria-label={`Preview ${template.name}`}><img src={template.thumbnail_url} alt=""/></button>)}</div><a className="client-preview-open" href={previewTemplate.preview_url} target="_blank" rel="noreferrer">Preview Full Invitation <span>↗</span></a><button type="button" className="client-preview-choose" onClick={()=>chooseTemplate(previewTemplate.id)}>Get this design <span>→</span></button></> : <p className="form-note">Your invitation previews will appear here.</p>}</aside>}
+    {tab === 'Templates' && <aside className="client-preview-panel"><div className="client-preview-heading"><div><span className="workspace-kicker">LIVE PREVIEW</span><h2>{previewTemplate?.name || 'Invitation preview'}</h2></div><span className="preview-live-dot" aria-label="Live preview"/></div>{previewTemplate ? <><div className="client-device-frame"><div className="client-device-screen"><InvitationPreviewFrame templateId={previewTemplate.id} ref={previewFrame} title={`${previewTemplate.name} mobile invitation preview`} src={previewSrc} allow="autoplay; fullscreen" allowFullScreen /></div></div><div className="client-preview-thumbs" aria-label="Choose a design to preview">{templates.map(template=><button type="button" key={template.id} className={previewTemplate.id === template.id ? 'active' : ''} onClick={()=>setPreviewId(template.id)} aria-label={`Preview ${template.name}`}><img src={template.thumbnail_url} alt=""/></button>)}</div><a className="client-preview-open" href={previewTemplate.preview_url} target="_blank" rel="noreferrer">Preview Full Invitation <span>↗</span></a><button type="button" className="client-preview-choose" onClick={()=>chooseTemplate(previewTemplate.id)}>Get this design <span>→</span></button></> : <p className="form-note">Your invitation previews will appear here.</p>}</aside>}
     {tab === 'Templates' && showDetails && chosen && !loading && <Suspense fallback={null}><OrderTextEditor key={chosen.id} template={chosen.id} value={details.textOverrides} onChange={textOverrides => setDetails(previous => ({ ...previous, textOverrides }))} draftStatus={draftStatus}/></Suspense>}
     {editingDemo !== null && company && <TemplateDemoEditor
       templateId={editingDemo}

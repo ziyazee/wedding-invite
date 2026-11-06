@@ -1,4 +1,5 @@
-import { useEffect, useLayoutEffect, useRef, useState } from 'react'
+import { useEffect, useLayoutEffect, useState } from 'react'
+import InvitationPreviewFrame from '../invitations/InvitationPreviewFrame'
 import { invitationExample } from '../invitations/templateData'
 import { loadTemplateCatalog } from '../invitations/templateCatalog'
 import type { InvitationTemplate } from '../invitations/templateCatalog'
@@ -73,8 +74,6 @@ export default function Landing() {
   const [sort, setSort] = useState('featured')
   const [favorites, setFavorites] = useState<(number | string)[]>([])
   const [info, setInfo] = useState<string | null>(null)
-  const phoneScreen = useRef<HTMLDivElement>(null)
-  const [screenScale, setScreenScale] = useState(0.42)
   const [previewLoaded, setPreviewLoaded] = useState(false)
   const categories = ['All Templates', ...new Set(templates.map(template => template.category).filter(Boolean))]
   const currentTemplate = templates.find(template => template.id === selected) ?? templates[0]
@@ -92,15 +91,6 @@ export default function Landing() {
       if (!cancelled) setCatalogError(error instanceof Error ? error.message : 'Could not load templates.')
     }).finally(() => { if (!cancelled) setCatalogLoading(false) })
     return () => { cancelled = true }
-  }, [])
-  useLayoutEffect(() => {
-    const screen = phoneScreen.current
-    if (!screen) return
-    const resize = () => setScreenScale(Math.min(screen.clientWidth / 402, screen.clientHeight / 874))
-    resize()
-    const observer = new ResizeObserver(resize)
-    observer.observe(screen)
-    return () => observer.disconnect()
   }, [])
   useLayoutEffect(() => {
     if (!previewData) return
@@ -139,9 +129,9 @@ export default function Landing() {
         </section>
       </div>
       <aside id="live-preview" className="showcase-preview" aria-label="Live invitation preview">
-        <div className="phone-stage"><div className="iphone-frame"><div className="iphone-screen" ref={phoneScreen}>
-          {!previewLoaded && currentTemplate && <img className="phone-placeholder" src={currentTemplate.thumbnail_url} alt="Loading invitation preview"/>}
-          {currentTemplate && <iframe key={selected} src={path} title={`${currentTemplate.name}: interactive wedding invitation`} allow="autoplay; fullscreen" style={{ transform: `scale(${screenScale})`, opacity: previewLoaded ? 1 : 0 }} onLoad={() => setPreviewLoaded(true)} allowFullScreen/>}
+        <div className="phone-stage"><div className="iphone-frame"><div className="iphone-screen">
+          {!previewLoaded && currentTemplate && <img className="phone-placeholder" style={{ zIndex: 2, pointerEvents: 'none' }} src={currentTemplate.thumbnail_url} alt="Loading invitation preview"/>}
+          {currentTemplate && <InvitationPreviewFrame templateId={currentTemplate.id} key={selected} src={path} title={`${currentTemplate.name}: interactive wedding invitation`} allow="autoplay; fullscreen" style={{ opacity: previewLoaded ? 1 : 0 }} onLoad={() => setPreviewLoaded(true)} allowFullScreen/>}
           <div className="dynamic-island" aria-hidden="true"><span/></div>
         </div></div></div>
       </aside>

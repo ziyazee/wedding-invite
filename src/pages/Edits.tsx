@@ -1,4 +1,5 @@
-import { lazy, Suspense, useCallback, useEffect, useLayoutEffect, useRef, useState } from 'react'
+import { lazy, Suspense, useCallback, useEffect, useRef, useState } from 'react'
+import InvitationPreviewFrame from '../invitations/InvitationPreviewFrame'
 import type { TextLayout } from '../invitations/textLayout'
 import { readTextLayout } from '../invitations/textLayout'
 import { invitationExample } from '../invitations/templateData'
@@ -104,9 +105,7 @@ function EditsWorkspace() {
   const [error, setError] = useState('')
   const [editMode, setEditMode] = useState<'text' | 'images'>('text')
   const [imageCacheKey, setImageCacheKey] = useState(0)
-  const previewScreen = useRef<HTMLDivElement>(null)
   const previewIframe = useRef<HTMLIFrameElement>(null)
-  const [previewScale, setPreviewScale] = useState(0.75)
 
   useEffect(() => {
     let cancelled = false
@@ -158,15 +157,6 @@ function EditsWorkspace() {
     return () => window.removeEventListener('message', handleReady)
   }, [selected, textLayout])
 
-  useLayoutEffect(() => {
-    const screen = previewScreen.current
-    if (!screen) return
-    const resize = () => setPreviewScale(Math.min(screen.clientWidth / 402, screen.clientHeight / 874))
-    resize()
-    const observer = new ResizeObserver(resize)
-    observer.observe(screen)
-    return () => observer.disconnect()
-  }, [selected, loading])
 
   async function uploadImage(file: File, slot: ImageSlot) {
     if (!selected) return
@@ -252,8 +242,8 @@ function EditsWorkspace() {
         <span className="preview-live-dot" aria-label="Live preview"/>
       </div>
       <div className="client-device-frame">
-        <div className="client-device-screen" ref={previewScreen}>
-          <iframe ref={previewIframe} key={selected} title={`${chosenTemplate.name} preview`} src={previewSrc} allow="autoplay; fullscreen" allowFullScreen style={{ transform: `scale(${previewScale})` }} onLoad={() => { const screen = previewScreen.current; if (screen) setPreviewScale(Math.min(screen.clientWidth / 402, screen.clientHeight / 874)); const example = selected ? invitationExample(selected) : undefined; if (example) previewIframe.current?.contentWindow?.postMessage({ type: 'shaadi-preview-update', data: { ...example, textOverrides: textLayout } }, window.location.origin) }}/>
+        <div className="client-device-screen">
+          <InvitationPreviewFrame templateId={chosenTemplate.id} ref={previewIframe} key={selected} title={`${chosenTemplate.name} preview`} src={previewSrc} allow="autoplay; fullscreen" allowFullScreen onLoad={() => { const example = selected ? invitationExample(selected) : undefined; if (example) previewIframe.current?.contentWindow?.postMessage({ type: 'shaadi-preview-update', data: { ...example, textOverrides: textLayout } }, window.location.origin) }}/>
         </div>
       </div>
     </aside>}

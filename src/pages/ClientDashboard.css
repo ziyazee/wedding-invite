@@ -353,7 +353,7 @@
   .client-workspace .client-selected-gallery, .client-workspace .order-form { grid-column: 1; }
   .client-workspace .order-form { max-height: none; }
   .client-workspace .client-preview-panel { position: static; grid-column: 2; grid-row: 3; height: auto; min-height: 0; overflow: visible; border-top: 1px solid #e4e7e9; border-left: 0; }
-  .client-workspace .client-device-frame { width: 290px; height: auto; aspect-ratio: 71.9 / 150; }
+  .client-workspace .client-device-frame { width: 290px; height: auto; aspect-ratio: 71.5 / 146.5; }
   .client-workspace .template-grid { grid-template-columns: repeat(3,minmax(0,1fr)); }
 }
 @media (max-width: 1024px) {
@@ -390,7 +390,7 @@
   .client-workspace .order-form { grid-column: 1; max-height: none; margin-top: 14px; }
   .client-workspace .client-selected-gallery { grid-column: 1; }
   .client-workspace .client-preview-panel { position: static; order: 2; height: auto; min-height: 0; overflow: visible; padding: 17px 14px 24px; border-top: 1px solid #e4e7e9; border-left: 0; }
-  .client-workspace .client-device-frame { width: min(100%,280px); height: auto; aspect-ratio: 71.9 / 150; }
+  .client-workspace .client-device-frame { width: min(100%,280px); height: auto; aspect-ratio: 71.5 / 146.5; }
   .client-workspace:not(.has-client-preview) .workspace-main { display: block; }
 }
 
@@ -503,6 +503,11 @@
 .ai-extract-dialog > header h2 { font-size: 17px; font-weight: 600; color: #1f2937; margin: 0; }
 .ai-extract-dialog > header .dialog-close { margin-left: auto; width: 32px; height: 32px; border: 0; border-radius: 8px; background: #F8F6F1; color: #354C43; font-size: 18px; cursor: pointer; display: flex; align-items: center; justify-content: center; }
 .ai-extract-dialog > header .dialog-close:hover { background: #e8e4dc; }
+.ai-extract-dialog > header .dialog-close {
+  position: static;
+  inset: auto;
+  flex-shrink: 0;
+}
 .ai-extract-badge {
   font-size: 10px; font-weight: 800; letter-spacing: .08em; padding: 3px 8px; border-radius: 6px;
   background: #D5BD91; color: #354C43;
@@ -773,8 +778,8 @@
 .client-workspace.has-client-preview .client-selected-card-order:hover { border-color: #849c8b; background: linear-gradient(180deg,#526c5d 0%,#3b5146 100%); color: #fff; box-shadow: 0 3px 9px #263b302a, inset 0 1px #ffffff32; }
 .client-workspace.has-client-preview .client-selected-card-order:focus-visible { outline: 2px solid #526c5d; outline-offset: 2px; }
 
-/* Render invitations at the same 402 × 874 mobile viewport as the landing preview. */
-.client-workspace .client-device-frame { width: min(100%,344px); height: auto; aspect-ratio: 71.9 / 150; flex: 0 0 auto; }
+/* Phone shell; InvitationPreviewFrame owns the inner 9:16 geometry and tint. */
+.client-workspace .client-device-frame { width: min(100%,344px); height: auto; aspect-ratio: 71.5 / 146.5; flex: 0 0 auto; }
 .client-device-screen { position: absolute; inset: 9px; overflow: hidden; border: 1px solid #080808; border-radius: 39px; background: #fff; box-shadow: inset 0 0 0 2px #080807; }
 .client-device-screen iframe { position: absolute; top: 0; left: 0; width: 402px; height: 874px; border: 0; transform-origin: top left; background: #fff; }
 @media (max-width: 1250px) and (min-width: 761px) { .client-workspace .client-device-frame { width: min(100%,290px); } }
@@ -800,7 +805,7 @@
     height: auto;
     flex: 0 0 auto;
     margin: 0 auto;
-    aspect-ratio: 71.9 / 150;
+    aspect-ratio: 71.5 / 146.5;
   }
 }
 

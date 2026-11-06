@@ -1,4 +1,5 @@
 import { isSupabaseConfigured, supabase } from '../lib/supabase'
+import { TEMPLATE_THUMBNAIL_OVERRIDES } from '../lib/templateCardData'
 
 export type InvitationTemplate = {
   id: number
@@ -19,6 +20,9 @@ export async function loadTemplateCatalog(activeOnly = true): Promise<Invitation
     .select('id,template_code,name,category,thumbnail_url,preview_url,is_active')
     .order('id')
   if (error) throw error
-  const templates = (data || []) as InvitationTemplate[]
+  const templates = ((data || []) as InvitationTemplate[]).map(template => ({
+    ...template,
+    thumbnail_url: TEMPLATE_THUMBNAIL_OVERRIDES[template.id] ?? template.thumbnail_url,
+  }))
   return activeOnly ? templates.filter(template => template.is_active) : templates
 }

@@ -53,6 +53,13 @@ const templateComponent: Record<number, React.LazyExoticComponent<React.Componen
 
 const fallback = <InvitationLoading />
 
+// Saved defaults from public/edits/4.json; order-specific edits take precedence.
+const mandapDefaultElements = {
+  't4.opening.groom': { x: 0.05466229642801617, y: -0.0879607364128652 },
+  't4.opening.bride': { x: 0.04600555268093128, y: -0.08938579412504373 },
+  't4.opening.separator': { x: 0.030771170089493937, y: -0.08405437963337561 },
+}
+
 export default function InvitationRenderer({ details: raw, rsvpTarget }: { details: InvitationData; rsvpTarget?: RsvpTarget }) {
   const details = useMemo<InvitationData>(() => ({ ...raw, groom: displayName(raw.groom), bride: displayName(raw.bride) }), [raw])
   const animatedDetails = useMemo(() => details, [details])
@@ -99,6 +106,13 @@ function renderTemplate(details: InvitationData, animatedDetails: InvitationData
   return <>
     {(template === 101 || template === 108) && details.music && <PersonalMusic src={details.music} />}
     <SiteFonts />
-    <TextLayoutLayer details={details} layout={details.textOverrides}>{content}</TextLayoutLayer>
+    <TextLayoutLayer details={details} layout={template === 4 ? {
+      version: 1,
+      elements: {
+        ...mandapDefaultElements,
+        ...details.textOverrides?.elements,
+        ...Object.fromEntries(Object.entries(mandapDefaultElements).map(([id, defaults]) => [id, { ...defaults, ...details.textOverrides?.elements[id] }])),
+      },
+    } : details.textOverrides}>{content}</TextLayoutLayer>
   </>
 }

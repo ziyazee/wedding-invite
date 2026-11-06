@@ -250,13 +250,11 @@
   }
 }
 
-/* Desktop sizing budget:
-   60px header + 34px drop + 20px bottom clearance + 32px panel padding
-   + 20px phone bezel. The remaining height belongs to the 402:874 screen.
-   Add 20px bezel and 45px panel padding/border back to get the column width. */
+/* Desktop sizing budget: 60px header + 34px drop + 50px bottom clearance
+   + 32px panel padding. Size the compact 71.5:146.5 phone shell, including bezel. */
 @media(min-width:1101px) {
   .showcase-content {
-    --preview-column: min(34vw, calc((100svh - 166px) * 402 / 874 + 65px));
+    --preview-column: min(34vw, calc((100svh - 176px) * 71.5 / 146.5 + 45px));
   }
   .showcase-page .showcase-preview {
     margin-top: 34px;
@@ -277,7 +275,7 @@
 /* Align the preview's actual bottom edge with the viewport, including width caps. */
 @media(min-width:1101px) {
   .showcase-content {
-    --preview-height: calc((var(--preview-column) - 65px) * 874 / 402 + 52px);
+    --preview-height: calc((var(--preview-column) - 45px) * 146.5 / 71.5 + 32px);
   }
   .showcase-page .showcase-preview {
     margin-top: max(0px, calc(100svh - 60px - var(--preview-height)));

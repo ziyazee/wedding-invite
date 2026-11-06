@@ -2,8 +2,9 @@ import { useEffect, useLayoutEffect, useMemo, useRef, useState } from 'react'
 import { isSupabaseConfigured, supabase } from '../lib/supabase'
 import { companyAssetURL } from '../lib/companyAssets'
 import { storeInvitationExample } from '../invitations/templateData'
+import InvitationPreviewFrame from '../invitations/InvitationPreviewFrame'
 import { TEMPLATE_DISPLAY_ORDER } from '../invitations/model'
-import { TEMPLATE_INTRO_VIDEOS, TEMPLATE_INTRO_IMAGES } from '../lib/templateCardData'
+import { TEMPLATE_INTRO_VIDEOS, TEMPLATE_INTRO_IMAGES, TEMPLATE_THUMBNAIL_OVERRIDES } from '../lib/templateCardData'
 import './StoreLanding.css'
 import SiteFonts from '../SiteFonts'
 
@@ -115,9 +116,7 @@ export default function StoreLanding({ slug }: { slug: string }) {
   const categoryTransition = useRef(false)
   const [categoryHighlight, setCategoryHighlight] = useState<{ left: number; width: number } | null>(null)
   const [previewLoaded, setPreviewLoaded] = useState(false)
-  const phoneScreen = useRef<HTMLDivElement>(null)
   const previewFrame = useRef<HTMLIFrameElement>(null)
-  const [screenScale, setScreenScale] = useState(0.42)
 
   useEffect(() => {
     if (!supabase || !isSupabaseConfigured) { setError('Store not configured.'); setLoading(false); return }
@@ -125,22 +124,17 @@ export default function StoreLanding({ slug }: { slug: string }) {
     supabase.rpc('get_store_landing', { p_slug: slug }).then(({ data: result, error: rpcError }) => {
       if (cancelled) return
       if (rpcError || !result?.company) { setError('Store not found.'); setLoading(false); return }
-      setData(result as StoreData)
+      const store = result as StoreData
+      setData({ ...store, templates: (store.templates ?? []).map(template => ({
+        ...template,
+        thumbnail_url: TEMPLATE_THUMBNAIL_OVERRIDES[template.id] ?? template.thumbnail_url,
+      })) })
       setSelected(result.templates?.[0]?.id ?? null)
       setLoading(false)
     })
     return () => { cancelled = true }
   }, [slug])
 
-  useLayoutEffect(() => {
-    const screen = phoneScreen.current
-    if (!screen) return
-    const resize = () => setScreenScale(screen.getBoundingClientRect().width / 402)
-    resize()
-    const observer = new ResizeObserver(resize)
-    observer.observe(screen)
-    return () => observer.disconnect()
-  }, [loading, error])
 
   useLayoutEffect(() => {
     const bar = categoryBar.current
@@ -268,9 +262,9 @@ export default function StoreLanding({ slug }: { slug: string }) {
       </div>
 
       <aside id="store-preview" className="store-preview" aria-label="Live invitation preview">
-        <div className="phone-stage"><div className="iphone-frame"><div className="iphone-screen" ref={phoneScreen}>
-          {!previewLoaded && currentTemplate && <img className="phone-placeholder" src={currentTemplate.thumbnail_url} alt="Loading preview"/>}
-          {currentTemplate && <iframe ref={previewFrame} src="/client/live-preview?store=1" title={`${currentTemplate.name}: preview`} allow="autoplay; fullscreen" style={{ transform: `scale(${screenScale})`, opacity: previewLoaded ? 1 : 0 }} onLoad={() => {
+        <div className="phone-stage"><div className="iphone-frame"><div className="iphone-screen">
+          {!previewLoaded && currentTemplate && <img className="phone-placeholder" style={{ zIndex: 2, pointerEvents: 'none' }} src={currentTemplate.thumbnail_url} alt="Loading preview"/>}
+          {currentTemplate && <InvitationPreviewFrame templateId={currentTemplate.id} ref={previewFrame} src="/client/live-preview?store=1" title={`${currentTemplate.name}: preview`} allow="autoplay; fullscreen" style={{ opacity: previewLoaded ? 1 : 0 }} onLoad={() => {
             if (previewData) previewFrame.current?.contentWindow?.postMessage({ type: 'shaadi-preview-update', data: previewData }, window.location.origin)
             setPreviewLoaded(true)
           }} allowFullScreen/>}
