@@ -1,6 +1,6 @@
 import { readTextLayout } from './textLayout.ts'
 import type { TextLayout } from './textLayout.ts'
-import { catalogMusicPath, isCatalogMusic } from './musicCatalog'
+import { catalogMusicPath, isCatalogMusic } from './musicCatalog.ts'
 
 export const TEMPLATE_DISPLAY_ORDER: Record<number, number> = { 2:1, 6:2, 13:3, 14:4, 7:5, 5:6, 1:7, 3:8, 15:9, 4:10, 16:11, 17:12, 18:13 }
 export const designs = [
