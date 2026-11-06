@@ -74,8 +74,8 @@
 .majestic-native .mj-event p{font-size:calc(13px + 5px * var(--mj-fit));line-height:1.3}
 .majestic-native .mj-event .mj-eyebrow{font-size:calc(10px + 2px * var(--mj-fit));letter-spacing:.18em}
 .majestic-native .mj-event-date{display:flex;flex-direction:column;align-items:center;gap:.12em;color:#7c9658;font-size:calc(11px + 3px * var(--mj-fit));font-weight:700;letter-spacing:.42em;line-height:1.15;padding-left:.42em}
-.majestic-native .mj-links{display:flex;flex-direction:column;align-items:center;gap:4px}
-.majestic-native .mj-links a,.majestic-native .mj-links button{font-size:calc(13px + 3px * var(--mj-fit));line-height:1.2;min-height:32px;padding:6px 0;border-bottom:1px solid currentColor;background:none;max-width:100%;white-space:normal}
+.majestic-native .mj-links{display:flex;align-items:stretch;justify-content:center;gap:8px;width:86%;max-width:530px;margin:0 auto 30px}
+.majestic-native .mj-links a,.majestic-native .mj-links button{display:flex;flex:1 1 0;align-items:center;justify-content:center;min-width:0;font-size:calc(13px + 3px * var(--mj-fit,1));line-height:1.2;min-height:44px;padding:8px 6px;border:0;border-radius:8px;background:#716149;color:#fffdf6;max-width:100%;white-space:normal;text-align:center}
 .majestic-native .mj-map-section{display:flex;flex-direction:column;align-items:center;margin:16px auto 30px}
 .majestic-native .mj-map-calendar{margin-top:14px;padding:14px 32px;border-radius:10px;background:#716149;color:#fffdf6;font-family:'Cormorant Garamond',Georgia,serif;font-weight:400;font-size:clamp(16px,4.5vw,22px);letter-spacing:.08em;border:none;cursor:pointer}
 .majestic-native .mj-map-frame{position:relative;width:86%;max-width:530px;aspect-ratio:2/1;overflow:hidden;background:#EAE5D4}

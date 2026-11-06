@@ -15,6 +15,9 @@ import { useMajesticCard, useMajesticNames } from './useMajesticFit'
 import defaultLayout from './defaultLayout'
 import './Majestic.css'
 
+// Keep the embedded-map implementation available without mounting or loading it.
+const MAP_EMBEDS_ENABLED = false
+
 function mergeLayouts(base: TextLayout, overrides?: TextLayout): TextLayout {
   if (!overrides) return base
   return { version: 1, elements: { ...base.elements, ...overrides.elements } }
@@ -134,7 +137,7 @@ function toEmbedUrl(mapUrl: string): string | null {
 function useMapsReady(root: RefObject<HTMLElement | null>, videoKey: string) {
   const [readyFor, setReadyFor] = useState<string | null>(null)
   useEffect(() => {
-    if (!root.current) return
+    if (!MAP_EMBEDS_ENABLED || !root.current) return
     const videos = [...root.current.querySelectorAll<HTMLVideoElement>('video.mj-hero-video, video.mj-event-video')]
     const pending = new Set(videos)
     const update = () => {
@@ -190,7 +193,7 @@ function EventCard({ event, eventKey, details: d }: { event: Celebration; eventK
   const root = useRef<HTMLDivElement>(null)
   const prefix = `event-${eventKey}`
   useMajesticCard(root, JSON.stringify([event, d.textOverrides]))
-  return <Section as="article" data-invite-section={prefix} className="mj-event">
+  return <><Section as="article" data-invite-section={prefix} className="mj-event">
     <AmbientVideo className="mj-event-video" src="/templates/majestic/assets/celebrations.mp4" />
     <div ref={root} className="mj-event-copy">
       <Copy as="p" field={`${prefix}.weekday`} className="mj-eyebrow">{formatDate(event.date, { weekday: 'long' })}</Copy>
@@ -199,9 +202,10 @@ function EventCard({ event, eventKey, details: d }: { event: Celebration; eventK
       <Copy as="p" field={`${prefix}.time`}>{formatTime(event.time ?? '')}</Copy>
       <Copy as="h3" field={`${prefix}.venue`}>{wrapCardText(event.venue, 24)}</Copy>
       <Copy as="p" field={`${prefix}.address`}>{wrapCardText(event.address, 32)}</Copy>
-      <div className="mj-links"><Copy as="button" type="button" field={`${prefix}.calendar`} onClick={() => downloadCalendar(event, d.offset, coupleLabel(d))}>Add to calendar</Copy>{event.map.trim() && <Copy as="a" field={`${prefix}.directions`} href={event.map} target="_blank" rel="noreferrer">Open in Maps</Copy>}</div>
     </div>
   </Section>
+    <Section as="div" data-invite-section={`${prefix}-actions`} className="mj-links"><Copy as="button" type="button" field={`${prefix}.calendar`} onClick={() => downloadCalendar(event, d.offset, coupleLabel(d))}>Add to calendar</Copy>{event.map.trim() && <Copy as="a" field={`${prefix}.directions`} href={event.map} target="_blank" rel="noreferrer">Open in Maps</Copy>}</Section>
+  </>
 }
 
 export default function Majestic({ details: d, rsvpTarget }: { details: InvitationData; rsvpTarget?: RsvpTarget }) {
@@ -272,7 +276,7 @@ export default function Majestic({ details: d, rsvpTarget }: { details: Invitati
       <div className="mj-actions">{d.map.trim() && <Copy as="a" field="venue.directions" href={d.map} target="_blank" rel="noreferrer">Google Maps</Copy>}<Copy as="button" type="button" field="venue.calendar" onClick={() => downloadCalendar(wedding, d.offset, couple)}>Add to calendar</Copy></div>
     </Section>
     <Section data-invite-section="programme" className="mj-programme"><InvitationMedia src="/templates/majestic/assets/food.webp" alt="" /><Copy as="h2" field="programme.heading">The programme</Copy></Section>
-    <div className="mj-events">{events.map(({ event, key }) => <Fragment key={key}><EventCard event={event} eventKey={key} details={d} />{event.map.trim() && <MapEmbed event={event} details={d} ready={mapsReady} />}</Fragment>)}</div>
+    <div className="mj-events">{events.map(({ event, key }) => <Fragment key={key}><EventCard event={event} eventKey={key} details={d} />{MAP_EMBEDS_ENABLED && event.map.trim() && <MapEmbed event={event} details={d} ready={mapsReady} />}</Fragment>)}</div>
     {d.dressCode.trim() && <Section data-invite-section="dress" className="mj-dress"><Copy as="h2" field="dress.heading">Dress Code</Copy><Copy as="p" field="dress.caption" className="mj-eyebrow">A few gentle reminders</Copy>{d.showCoupleIllustrations !== false && <InvitationMedia src="/templates/majestic/assets/dress-code-new.webp" alt="Wedding attire illustration" />}<div className="mj-dress-card"><Copy as="h3" field="dress.text">{d.dressCode}</Copy></div></Section>}
     {(d.giftNote.trim() || d.gallery.trim()) && <Section data-invite-section="notes" className="mj-notes">{d.giftNote.trim() && <><Copy as="h2" field="notes.heading">A little note</Copy><Copy as="p" field="notes.gift">{d.giftNote}</Copy></>}{d.gallery.trim() && <Copy as="a" field="notes.gallery" href={d.gallery} target="_blank" rel="noreferrer">Our photo gallery ↗</Copy>}</Section>}
     <InvitationRsvp template={2} couple={couple} target={rsvpTarget} envelopeClosed="/templates/majestic/assets/envelope-closed-new.webp" envelopeOpen="/templates/majestic/assets/envelope-open-new.webp" />
