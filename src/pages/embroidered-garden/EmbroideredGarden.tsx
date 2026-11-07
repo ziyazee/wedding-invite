@@ -235,7 +235,7 @@ export default function EmbroideredGarden({ details: d, rsvpTarget }: { details:
     </Section>}
 
     {/* RSVP */}
-    <InvitationRsvp template={6} couple={couple} target={rsvpTarget} formOnly />
+    <InvitationRsvp template={6} couple={couple} target={rsvpTarget} formOnly countOnly />
 
     {/* Personal closing note */}
     <Section data-invite-section="closing-native" className="eg-closing-note">

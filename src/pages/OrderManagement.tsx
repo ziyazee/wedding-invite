@@ -133,13 +133,12 @@ export default function OrderManagement() {
   const managementId = params.managementId || params.slug || ''
   const [data, setData] = useState<ManagementData | null>(null)
   const [details, setDetails] = useState<InvitationData | null>(null)
-  const [section, setSection] = useState<'home' | 'edit' | 'responses'>('home')
+  const [section, setSection] = useState<'home' | 'edit' | 'music' | 'responses'>('home')
   const [loading, setLoading] = useState(true)
   const [busy, setBusy] = useState(false)
   const [error, setError] = useState('')
   const [notice, setNotice] = useState('')
-  const [focusMusic, setFocusMusic] = useState(false)
-  const musicSection = useRef<HTMLElement>(null)
+  const [musicDraft, setMusicDraft] = useState('')
   const previewFrame = useRef<HTMLIFrameElement>(null)
   const pendingPreviewText = useRef<{ text: string; location: PreviewLocation | null } | null>(null)
   const activeField = useRef<ActiveField | null>(null)
@@ -158,13 +157,6 @@ export default function OrderManagement() {
   }, [managementId])
 
   useEffect(() => { void load() }, [load])
-
-  useEffect(() => {
-    if (section !== 'edit' || !focusMusic) return
-    musicSection.current?.scrollIntoView({ block: 'start' })
-    musicSection.current?.focus({ preventScroll: true })
-    setFocusMusic(false)
-  }, [section, focusMusic])
 
   useEffect(() => {
     if (!details) return
@@ -229,7 +221,7 @@ export default function OrderManagement() {
     const limit=nameTextLimit(details?.template ?? 0,key) ?? cardTextLimit(details?.template ?? 0,key)
     if(limit!==undefined)value=value.slice(0,limit)
     queuePreviewScroll(`detail.${key}`, value, String(details?.[key] || ''))
-    setDetails(current => current ? { ...current, [key]: value, ...(key === 'music' && value !== current.music ? { musicStart: 0, musicEnd: undefined } : {}) } : current)
+    setDetails(current => current ? { ...current, [key]: value } : current)
   }
   function setEvent(index: number, key: 'title' | 'date' | 'time' | 'venue' | 'address' | 'map', value: string) {
     const limit=cardTextLimit(details?.template ?? 0,key)
@@ -258,6 +250,25 @@ export default function OrderManagement() {
     } finally { setBusy(false) }
   }
 
+  async function saveMusic() {
+    if (!supabase || !data || busy) return
+    setBusy(true); setError(''); setNotice('')
+    try {
+      // Use saved details, not unsaved edits from the separate details form.
+      const valid = validateDetails({ ...data.details, music: musicDraft,
+        ...(musicDraft !== data.details.music ? { musicStart: 0, musicEnd: undefined } : {}),
+      }, true)
+      const { data: saved, error: saveError } = await supabase.rpc(managementId.startsWith('test-') ? 'update_test_order_management' : 'update_order_management', { p_management_id: managementId, p_form_data: valid })
+      if (saveError || saved?.saved !== true) throw saveError || new Error('Could not save your music.')
+      setData(current => current ? { ...current, details: valid } : current)
+      // Preserve any in-progress text edits while keeping their music current.
+      setDetails(current => current ? { ...current, music: valid.music, musicStart: valid.musicStart, musicEnd: valid.musicEnd } : valid)
+      setNotice('Your invitation music has been saved.')
+    } catch (cause) {
+      setError(cause instanceof Error ? cause.message : 'Could not save your music.')
+    } finally { setBusy(false) }
+  }
+
   if (loading) return <main className="order-manage-page"><div className="om-card om-loading">Loading your wedding details…</div></main>
   if (error && !data) return <main className="order-manage-page"><div className="om-card om-error"><span>SHAADI INVITES</span><h1>Link unavailable</h1><p>{error}</p></div></main>
   if (!data || !details) return null
@@ -267,23 +278,26 @@ export default function OrderManagement() {
     {error && <p className="om-alert" role="alert">{error}</p>}{notice && section !== 'edit' && <p className="om-success" role="status">{notice}</p>}
     {section === 'home' && <section className="om-options" aria-label="Manage your invitation">
       <button className="om-option" onClick={() => { setSection('edit'); setError(''); setNotice('') }}><span className="om-option-icon">✎</span><span><strong>Update invitation details</strong><small>Edit names, wedding information and celebrations</small></span><b>→</b></button>
-      <button className="om-option" onClick={() => { setFocusMusic(true); setSection('edit'); setError(''); setNotice('') }}><span className="om-option-icon" aria-hidden="true">♫</span><span><strong>Update music</strong><small>Choose and preview a song for your invitation</small></span><b>→</b></button>
+      <button className="om-option" onClick={() => { setMusicDraft(data.details.music); setSection('music'); setError(''); setNotice('') }}><span className="om-option-icon" aria-hidden="true">♫</span><span><strong>Update music</strong><small>Choose and preview a song for your invitation</small></span><b>→</b></button>
       <button className="om-option" onClick={() => { setSection('responses'); setError(''); setNotice('') }}><span className="om-option-icon">♡</span><span><strong>Read RSVP responses</strong><small>{data.responses.length} {data.responses.length === 1 ? 'response' : 'responses'} received</small></span><b>→</b></button>
     </section>}
     {section === 'edit' && <div className="om-edit-layout">{SPLIT_PREVIEW_ENABLED && <section className="om-preview-panel" aria-label="Live invitation preview"><iframe ref={previewFrame} src="/client/live-preview?editor=1" title="Live wedding invitation preview" /><button className="om-save-top" type="submit" form="order-details-form" disabled={busy}>{busy ? 'Saving…' : 'Save'}</button></section>}<section className="om-card om-edit-card"><div className="om-edit-toolbar"><button className="om-back" onClick={() => setSection('home')}>← Back</button>{!SPLIT_PREVIEW_ENABLED && <button className="om-form-save" type="submit" form="order-details-form" disabled={busy}>{busy ? 'Saving…' : 'Save'}</button>}</div><h2>Invitation details</h2><p className="om-description">{SPLIT_PREVIEW_ENABLED ? 'Your preview updates as you edit.' : 'Edit your invitation details, then tap Save.'}</p><form id="order-details-form" onKeyDown={event => { if (event.key === 'Enter' && event.target instanceof HTMLInputElement) event.preventDefault() }} onSubmit={event => void saveDetails(event)}>
       <div className="om-fields">{fields.map(field => <label key={field.key}>{field.label}{field.multiline ? <textarea value={String(details[field.key] || '')} onFocus={() => focusField(`detail.${field.key}`, String(details[field.key] || ''))} onChange={event => setDetail(field.key, event.target.value)} rows={3} maxLength={nameTextLimit(details.template,field.key) ?? cardTextLimit(details.template,field.key) ?? 600} required={['groom','bride','venue','address'].includes(field.key)}/> : <input type={field.type || 'text'} value={String(details[field.key] || '')} onFocus={() => focusField(`detail.${field.key}`, String(details[field.key] || ''))} onChange={event => setDetail(field.key, event.target.value)} required={['groom','bride','date','time','offset','venue','address'].includes(field.key)}/>}</label>)}</div>
       {[2,3,5,6,7].includes(details.template)&&<label style={{display:'flex',alignItems:'center',gap:12,margin:'24px 0'}}><input type="checkbox" checked={details.showCoupleIllustrations!==false} onChange={event=>{const show=event.target.checked;setDetails(current=>current?{...current,showCoupleIllustrations:show}:current)}} style={{width:20,height:20,minHeight:0,margin:0,padding:0}}/>Show Bride &amp; Groom Illustrations</label>}
-      <section ref={musicSection} className="om-music-section" tabIndex={-1} aria-labelledby="om-music-title">
-        <h3 id="om-music-title">Invitation music</h3>
-        <p className="om-description">Choose a song, use the player to preview it, then tap Save. Changing songs uses the full track.</p>
-        <MusicPicker value={details.music} onChange={value => { setNotice(''); setDetail('music', value) }}/>
-        {notice && <p className="om-success" role="status">{notice}</p>}
-        <button className="om-save" type="submit" disabled={busy}>{busy ? 'Saving…' : 'Save changes'}</button>
-      </section>
       <div className="om-events-title"><h3>Celebrations</h3><button type="button" onClick={addEvent} disabled={details.events.length >= 10}>＋ Add celebration</button></div>
       {details.events.map((item, index) => <fieldset className="om-event" key={index}><legend>Celebration {index + 1}</legend><button className="om-remove" type="button" onClick={() => removeEvent(index)} disabled={details.events.length <= 1}>Remove</button><div className="om-fields">{(['title','date','time','venue','address','map'] as const).map(key => <label key={key}>{({title:'Name',date:'Date',time:'Time',venue:'Venue',address:'Address',map:'Map link'})[key]}{['title','venue','address'].includes(key) ? <textarea rows={2} value={item[key] ?? ''} maxLength={cardTextLimit(details.template,key) ?? 600} onFocus={() => focusField(`event.${index}.${key}`, item[key] ?? '')} onChange={event => setEvent(index,key,event.target.value)} required/> : <input type={key === 'date' || key === 'time' ? key : key === 'map' ? 'url' : 'text'} value={item[key] ?? ''} onFocus={() => focusField(`event.${index}.${key}`, item[key] ?? '')} onChange={event => setEvent(index,key,event.target.value)} required={key !== 'map' && key !== 'time'}/>}</label>)}</div></fieldset>)}
+      {notice && <p className="om-success" role="status">{notice}</p>}
       <button className="om-save" type="submit" disabled={busy}>{busy ? 'Saving…' : 'Save changes'}</button>
     </form></section></div>}
+    {section === 'music' && <section className="om-card om-music-card" aria-labelledby="om-music-title">
+      <button className="om-back" disabled={busy} onClick={() => { setSection('home'); setError(''); setNotice('') }}>← Back</button>
+      <h2 id="om-music-title">Invitation music</h2>
+      <p className="om-description">Tap a song to listen, then save your choice. Changing songs uses the full track.</p>
+      <fieldset className="om-music-picker" disabled={busy} aria-label="Choose invitation music">
+        <MusicPicker value={musicDraft} autoPreview onChange={value => { setMusicDraft(value); setNotice(''); setError('') }}/>
+      </fieldset>
+      <button className="om-save" type="button" disabled={busy || musicDraft === data.details.music} onClick={() => void saveMusic()}>{busy ? 'Saving…' : 'Save music'}</button>
+    </section>}
     {section === 'responses' && <section className="om-card"><button className="om-back" onClick={() => setSection('home')}>← Back</button><h2>RSVP responses</h2><p className="om-description">Guest replies and messages for your invitation.</p>{data.responses.length ? <div className="om-response-list">{data.responses.map(reply => <article className="om-response" key={reply.id}><div className="om-response-head"><strong>{reply.name}</strong><span className={reply.attendance === 'yes' ? 'om-attending' : 'om-declined'}>{reply.attendance === 'yes' ? 'Attending' : 'Unable to attend'}</span></div><p>{reply.attendance === 'yes' ? `${reply.guestCount} guest${reply.guestCount === 1 ? '' : 's'}${reply.additionalGuests.length ? ` · ${reply.additionalGuests.join(', ')}` : ''}` : '0 guests'}</p>{reply.message && <blockquote>{reply.message}</blockquote>}<time>{new Date(reply.updatedAt || reply.createdAt).toLocaleString()}</time></article>)}</div> : <div className="om-empty"><span>♡</span><strong>No responses yet</strong><p>Guest replies will appear here.</p></div>}</section>}
     <footer className="om-footer">Keep this link private. Anyone with it can manage this invitation.</footer>
   </div></main>
