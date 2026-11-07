@@ -1,4 +1,5 @@
 import { previewScale } from './textEditorGeometry'
+import { renderedTextLines } from './renderedTextLines'
 
 // A native textarea overlays the selected text without handing React-owned
 // children to contenteditable. It also works over legacy SVG text and iframes.
@@ -10,7 +11,8 @@ export function openInlineTextEditor(element: HTMLElement, value: string, onSave
   const scale = previewScale(win)
   const editor = doc.createElement('textarea')
   editor.dataset.inviteInlineEditor = ''
-  editor.value = value
+  const initialValue = renderedTextLines(element, value)
+  editor.value = initialValue
   editor.rows = 1
   editor.wrap = 'off'
   editor.maxLength = 500
@@ -33,7 +35,7 @@ export function openInlineTextEditor(element: HTMLElement, value: string, onSave
   // Inline names can inherit the much larger line box of their parent even
   // after their font is resized. Do not turn that leading into a blank row.
   const lineHeight = parseFloat(computed.lineHeight) * textScale
-  editor.style.lineHeight = `${Number.isFinite(lineHeight) ? Math.min(lineHeight, fontSize * 1.2) : fontSize * 1.2}px`
+  editor.style.lineHeight = `${Number.isFinite(lineHeight) ? (initialValue.includes('\n') ? lineHeight : Math.min(lineHeight, fontSize * 1.2)) : fontSize * 1.2}px`
   const measure = doc.createElement('span')
   measure.setAttribute('aria-hidden', 'true')
   measure.style.cssText = editor.style.cssText
@@ -101,7 +103,8 @@ export function openInlineTextEditor(element: HTMLElement, value: string, onSave
     element.removeAttribute('data-invite-editing')
     const content = editor.value.replace(/\r\n?/g, '\n')
     editor.remove(); done.remove(); measure.remove()
-    if (save && content !== value.replace(/\r\n?/g, '\n')) onSave(content.slice(0, 500))
+    // Merely opening/closing Edit must not persist generated line breaks.
+    if (save && content !== initialValue.replace(/\r\n?/g, '\n')) onSave(content.slice(0, 500))
   }
   function outside(event: PointerEvent) {
     if (event.target !== editor && event.target !== done) finish()
