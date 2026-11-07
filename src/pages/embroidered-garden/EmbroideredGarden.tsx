@@ -189,9 +189,9 @@ export default function EmbroideredGarden({ details: d, rsvpTarget }: { details:
           <Copy field="opening.year">{part('year')}</Copy>
         </div>
       </div>
-      <div className={`eg-cover${coverHidden ? ' eg-cover-hidden' : ''}`} role="button" tabIndex={0} onClick={() => setOpened(true)} onKeyDown={e => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); setOpened(true) } }} aria-hidden={coverHidden}>
+      <div className={`eg-cover${coverHidden ? ' eg-cover-hidden' : ''}`} onClick={() => setOpened(true)} aria-hidden={coverHidden}>
         <img src={`${ASSETS}intro-curtains-opt.webp`} alt="" />
-        <span className="eg-cover-text">Tap to open</span>
+        <button className="eg-open-btn" type="button" tabIndex={coverHidden ? -1 : 0}>Open Invitation</button>
       </div>
     </Section>
 
