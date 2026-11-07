@@ -281,6 +281,7 @@ Standalone iframe designs commonly use `index.html`, `interactions.js`, `interac
 - A Timeless Union shows a floating Pause music / Resume music control after opening. It operates the existing `d14-background-music` audio element, preserves playback position, and follows play/pause events including background visibility changes. Implementation: `ATimelessUnion.tsx` and `a-timeless-union/Design14.css`; browser verification pending.
 
 - `public/media-visibility.js` pauses playing audio/unmuted media when the browser/app goes into the background and resumes previously playing media when visible, subject to browser autoplay rules.
+- It also pauses synchronously on whole-page focus loss to cover the interval before mobile visibility notifications. The top document's focus distinguishes leaving the browser from moving between dashboard controls and preview frames; same-origin frames receive the focus state synchronously. Returning restores only previously playing media at its current position. Physical-phone timing remains browser-dependent and unverified; no tests or deployment performed for this change.
 - It is included in app HTML entries and standalone public design pages. Preserve user-muted/paused state.
 - Contact number: +91 7975948093. Visible contact links should show the WhatsApp icon, not the number.
 - Prefilled message: `Hey I need an invitation!`

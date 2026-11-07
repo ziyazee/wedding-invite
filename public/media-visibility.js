@@ -8,7 +8,8 @@
   const resumeWhenVisible = new Map();
   let pageAway = false;
   let frozen = false;
-  const suspended = () => document.hidden || pageAway || frozen;
+  let pageBlurred = false;
+  const suspended = () => document.hidden || pageAway || frozen || pageBlurred;
   const source = media => media.currentSrc || media.src;
   // Muted decorative videos may continue; only media capable of playing sound is paused.
   const hasSound = media => media instanceof HTMLAudioElement || !media.muted;
@@ -55,6 +56,31 @@
     else resume();
   }
 
+  function setPageFocus(blurred) {
+    pageBlurred = blurred;
+    sync();
+    // The public invitation and dashboard previews live in nested frames.
+    // Deliver the pause synchronously, without a timer or postMessage delay.
+    document.querySelectorAll('iframe').forEach(frame => {
+      try {
+        const child = frame.contentWindow;
+        if (child) child.dispatchEvent(new child.CustomEvent('invitation-page-focus', { detail: blurred }));
+      } catch { /* External embeds manage their own playback. */ }
+    });
+  }
+  function syncPageFocus() {
+    let root = window;
+    try { if (window.top.document) root = window.top; } catch { /* Cross-origin host. */ }
+    // Focusing an input or moving into a preview iframe keeps the top document
+    // focused. Only losing focus outside the whole page should suspend music.
+    root.dispatchEvent(new root.CustomEvent('invitation-page-focus', { detail: !root.document.hasFocus() }));
+  }
+  window.addEventListener('invitation-page-focus', event => {
+    if (typeof event.detail === 'boolean') setPageFocus(event.detail);
+  });
+  window.addEventListener('blur', syncPageFocus);
+  window.addEventListener('focus', syncPageFocus);
+
   // Capture catches non-bubbling events from all current and future media elements.
   document.addEventListener('play', event => {
     const media = event.target;
@@ -67,9 +93,13 @@
     const media = event.target;
     if (media instanceof HTMLMediaElement && suspended() && hasSound(media)) media.pause();
   }, true);
-  document.addEventListener('visibilitychange', sync);
+  document.addEventListener('visibilitychange', () => {
+    // Some mobile browsers restore visibility without sending a focus event.
+    if (!document.hidden) pageBlurred = false;
+    sync();
+  });
   window.addEventListener('pagehide', () => { pageAway = true; suspend(); });
-  window.addEventListener('pageshow', () => { pageAway = false; sync(); });
+  window.addEventListener('pageshow', () => { pageAway = false; pageBlurred = false; sync(); });
   document.addEventListener('freeze', () => { frozen = true; suspend(); });
   document.addEventListener('resume', () => { frozen = false; sync(); });
 
