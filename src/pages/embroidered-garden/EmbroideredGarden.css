@@ -20,7 +20,7 @@
 .eg-native.eg-opened .eg-hero-video{opacity:1}
 .eg-native .eg-hero-copy{position:absolute;inset:0;z-index:1;display:flex;flex-direction:column;align-items:center;text-align:center;padding:26vh 2rem 0;mix-blend-mode:multiply}
 .eg-native:not(.eg-opened) .eg-hero-copy{opacity:0}
-.eg-native .eg-hero-copy [data-eg-opening-name]{opacity:0;transform:translateY(24px);transition:opacity .7s,transform .7s}
+.eg-native .eg-hero-copy [data-eg-opening-name]{opacity:0;transform:translateY(24px);transition:opacity 1.6s ease-in-out,transform 1.6s ease-in-out}
 .eg-native .eg-opening-names [data-eg-opening-name]:nth-child(2){transition-delay:.15s}
 .eg-native .eg-hero-copy [data-eg-opening-name].eg-name-visible{opacity:1;transform:none}
 .eg-native .eg-opening-names{display:flex;flex-direction:column;align-items:center;gap:6px;font-family:"adobe-caslon-pro",Georgia,serif;font-size:var(--eg-name-size,2rem);line-height:1.08;color:rgba(75,88,82,.85);white-space:pre-line}
