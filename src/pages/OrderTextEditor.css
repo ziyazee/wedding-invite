@@ -32,7 +32,10 @@
 .ote-selection strong { font-size: 12px; font-weight: 500; overflow-wrap: anywhere; }
 .ote-controls { display: grid; grid-template-columns: 1fr 1fr; gap: 12px 10px; padding: 0 16px 16px; }
 .ote-controls label { display: grid; gap: 5px; min-width: 0; color: #7b705f; font-size: 11px; }
-.ote-controls input, .ote-controls select { width: 100%; min-width: 0; height: 38px; padding: 7px 9px; border: 1px solid #e6dfd3; border-radius: 8px; background: #fffefa; color: #4c4234; font: 12px Inter, Arial, sans-serif; }
+.ote-controls .ote-font-control { grid-column: 1 / -1; }
+.ote-controls input, .ote-controls select, .ote-controls textarea { width: 100%; min-width: 0; height: 38px; padding: 7px 9px; border: 1px solid #e6dfd3; border-radius: 8px; background: #fffefa; color: #4c4234; font: 12px Inter, Arial, sans-serif; }
+.ote-controls .ote-family-text { grid-column: 1 / -1; }
+.ote-controls .ote-family-text textarea { height: auto; min-height: 82px; line-height: 1.5; resize: vertical; }
 .ote-controls input[type=color] { padding: 5px; cursor: pointer; }
 .ote-controls input[type=color]::-webkit-color-swatch-wrapper { padding: 0; }
 .ote-controls input[type=color]::-webkit-color-swatch { border: 0; border-radius: 4px; }

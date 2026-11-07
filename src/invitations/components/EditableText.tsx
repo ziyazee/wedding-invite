@@ -7,9 +7,11 @@ import { useSectionGeometry } from './InvitationSection'
 import './EditableText.css'
 
 const LayoutContext = createContext<TextLayout>(emptyTextLayout())
-export function InvitationLayoutProvider({ layout, children }: { layout?: TextLayout; children: ReactNode }) {
+const ManualLayoutContext = createContext<TextLayout>(emptyTextLayout())
+export function InvitationLayoutProvider({ layout, manualLayout, children }: { layout?: TextLayout; manualLayout?: TextLayout | null; children: ReactNode }) {
   const value = useMemo(() => readTextLayout(layout), [layout])
-  return <LayoutContext.Provider value={value}>{children}</LayoutContext.Provider>
+  const manual = useMemo(() => readTextLayout(manualLayout === undefined ? layout : manualLayout), [layout, manualLayout])
+  return <LayoutContext.Provider value={value}><ManualLayoutContext.Provider value={manual}>{children}</ManualLayoutContext.Provider></LayoutContext.Provider>
 }
 
 export type BaseTextTransform = { x: number; y: number; scale: number }
@@ -43,20 +45,25 @@ function extractText(node: ReactNode): string {
 
 export function EditableText({ as = 'span', textId, label, baseTransform, style, children, animation, animationDuration, animationDelay, animationDistance, animationStagger, animationReplay, ...props }: TextProps) {
   const layout = useContext(LayoutContext)
+  const manual = useContext(ManualLayoutContext)
   const id = textId || props['data-invite-text']
   const override = id ? layout.elements[id] : undefined
-  if (override?.hidden) return null
   const positioned = !!override && (override.x !== undefined || override.y !== undefined)
   const section = useSectionGeometry(positioned || !!baseTransform)
+  if (override?.hidden) return null
   const rule = id ? getRuleForElement(id) : undefined
-  const ruleStyle = rule ? applyTextRule(extractText(children), rule) : undefined
+  const ruleStyle = rule && !(id && manual.elements[id]?.fontSize !== undefined) ? applyTextRule(override?.content ?? extractText(children), rule) : undefined
   return createElement(as, {
     ...props,
     'data-invite-text': id,
     'data-invite-label': label || props['data-invite-label'],
+    'data-invite-layout-x': override?.x ?? 0,
+    'data-invite-layout-y': override?.y ?? 0,
     'data-invite-custom-size': override?.fontSize !== undefined ? '' : undefined,
+    'data-invite-manual-size': id && manual.elements[id]?.fontSize !== undefined ? '' : undefined,
     'data-invite-custom-font': override?.fontFamily ? '' : undefined,
     'data-invite-custom-color': override?.color ? '' : undefined,
+    'data-invite-custom-content': override?.content !== undefined ? '' : undefined,
     'data-invite-animation': animation,
     'data-invite-animation-replay': animationReplay ? '' : undefined,
     style: {

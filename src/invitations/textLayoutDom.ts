@@ -1,5 +1,6 @@
 import { readTextLayout, textFonts } from './textLayout'
 import type { TextLayout } from './textLayout'
+import { textContentOverrides } from './textContentOverrides'
 
 export const textSelector = '[data-invite-text]'
 export function textSection(element: Element): HTMLElement | null {
@@ -74,6 +75,7 @@ export function applyTextLayout(root: HTMLElement, getLayout: () => TextLayout) 
   doc.head.append(style)
   const sections = new Set<Element>()
   const positioned = new Set<HTMLElement>()
+  const text = textContentOverrides(root)
   let stopped = false
   let queued = false
   function apply() {
@@ -86,9 +88,11 @@ export function applyTextLayout(root: HTMLElement, getLayout: () => TextLayout) 
     root.querySelectorAll<HTMLElement>(textSelector).forEach(element => {
       const id = element.dataset.inviteText!
       const value = layout.elements[id]
+      text.apply(element, value?.content)
       if (!value) return
       const section = textSection(element)
       const declarations: string[] = []
+      if (value.content !== undefined) declarations.push('white-space:pre!important', 'overflow-wrap:normal!important', 'word-break:normal!important')
       if (value.fontSize !== undefined) declarations.push(`font-size:${value.fontSize}px!important`)
       if (value.fontFamily) declarations.push(`font-family:${textFonts[value.fontFamily]}!important`)
       if (value.color) {
@@ -107,6 +111,7 @@ export function applyTextLayout(root: HTMLElement, getLayout: () => TextLayout) 
       rules.push(`[data-invite-text="${id}"]:not(#invite-override-specificity){${declarations.join(';')}}`)
     })
     const css = rules.join('\n')
+    text.prune()
     if (style.textContent !== css) style.textContent = css
     positioned.forEach(element => { if (!nextPositioned.has(element)) { element.style.removeProperty('--invite-translation'); positioned.delete(element) } })
     nextPositioned.forEach(element => positioned.add(element))
@@ -119,5 +124,5 @@ export function applyTextLayout(root: HTMLElement, getLayout: () => TextLayout) 
   observer.observe(root, { childList: true, subtree: true, attributes: true, attributeFilter: ['data-invite-text', 'data-invite-section'] })
   doc.addEventListener('invitation-layout-change', schedule)
   apply()
-  return () => { stopped = true; resize.disconnect(); observer.disconnect(); style.remove(); positioned.forEach(element => element.style.removeProperty('--invite-translation')); doc.removeEventListener('invitation-layout-change', schedule) }
+  return () => { stopped = true; resize.disconnect(); observer.disconnect(); text.dispose(); style.remove(); positioned.forEach(element => element.style.removeProperty('--invite-translation')); doc.removeEventListener('invitation-layout-change', schedule) }
 }

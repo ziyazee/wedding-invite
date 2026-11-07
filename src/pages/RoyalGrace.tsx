@@ -11,7 +11,7 @@ import FlowerTrail from './FlowerTrail'
 import { useInvitationDetails } from '../invitations/context'
 import { formatDate, formatTime, mapURL, weddingISO } from '../invitations/model'
 import { downloadCalendar } from '../invitations/calendar'
-import { editableText } from '../invitations/textLayout'
+import { editableText, mergeTextLayouts } from '../invitations/textLayout'
 import { EditableText, InvitationLayoutProvider } from '../invitations/components/EditableText'
 import { InvitationSection } from '../invitations/components/InvitationSection'
 import { InvitationMedia } from '../invitations/components/InvitationMedia'
@@ -203,11 +203,8 @@ export default function RoyalGrace() {
     return () => { observer.disconnect(); targets.forEach(t => t.classList.remove('invite-motion-visible')); el.classList.remove('invite-motion-ready') }
   }, [opened])
 
-  const mergedLayout = {
-    version: 1 as const,
-    elements: { ...defaultTextLayout.elements, ...details?.textOverrides?.elements },
-  }
-  return <InvitationLayoutProvider layout={mergedLayout}><main ref={root} className="royal-grace">
+  const mergedLayout = mergeTextLayouts(defaultTextLayout, details?.textOverrides)
+  return <InvitationLayoutProvider layout={mergedLayout} manualLayout={details?.textOverrides ?? null}><main ref={root} className="royal-grace">
     <FlowerTrail />
     <PersonalMusic src={details?.music || "/bisara.mp3"} />
     <InvitationSection data-invite-section="opening" className={`rg-hero ${namesVisible ? 'rg-is-open' : ''}`} style={!namesVisible ? { backgroundImage: `url('${ASSETS}opening-poster.webp')` } : undefined} aria-label="Wedding invitation">

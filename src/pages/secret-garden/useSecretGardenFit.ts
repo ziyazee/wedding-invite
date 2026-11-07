@@ -27,7 +27,11 @@ export function useSecretGardenNames(root: RefObject<HTMLDivElement | null>, key
       }
       if (names.some(name => name.scrollWidth > name.clientWidth + 1)) element.style.setProperty('--sg-name-wrap', 'anywhere')
     }
-    const observer = new ResizeObserver(fit)
+    let width = -1
+    const observer = new ResizeObserver(entries => {
+      const next = entries[0]?.contentRect.width
+      if (next !== undefined && next !== width) { width = next; fit() }
+    })
     observer.observe(element)
     document.fonts.addEventListener('loadingdone', fit)
     void document.fonts.ready.then(fit)

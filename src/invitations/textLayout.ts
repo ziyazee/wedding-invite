@@ -19,6 +19,24 @@ export type TextLayout = { version: 1; elements: Record<string, TextOverride> }
 export const emptyTextLayout = (): TextLayout => ({ version: 1, elements: {} })
 export const textIdPattern = /^[a-zA-Z0-9][a-zA-Z0-9_.:-]{0,159}$/
 
+// A position-only edit must not discard that element's default size or font.
+export function mergeTextLayouts(base: TextLayout, overrides?: TextLayout): TextLayout {
+  const elements = { ...base.elements }
+  for (const [id, override] of Object.entries(overrides?.elements || {})) {
+    elements[id] = { ...elements[id], ...override }
+  }
+  return { version: 1, elements }
+}
+
+// Moving text and editing another section do not change this section's fit.
+export function textSizingKey(layout: TextLayout | undefined, prefix: string): string {
+  return JSON.stringify(Object.entries(layout?.elements || {})
+    .filter(([id]) => id.startsWith(prefix))
+    .map(([id, { fontSize, fontFamily, content, hidden }]) => [id, fontSize, fontFamily, content, hidden])
+    .filter(([, ...values]) => values.some(value => value !== undefined))
+    .sort(([a], [b]) => String(a).localeCompare(String(b))))
+}
+
 export function readTextLayout(value: unknown): TextLayout {
   const result = emptyTextLayout()
   if (!value || typeof value !== 'object') return result

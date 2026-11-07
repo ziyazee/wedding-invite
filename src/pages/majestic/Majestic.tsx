@@ -10,18 +10,13 @@ import { InvitationMedia } from '../../invitations/components/InvitationMedia'
 import { InvitationRsvp } from '../../invitations/components/InvitationRsvp'
 import PersonalMusic from '../../invitations/PersonalMusic'
 import { wrapCardText } from '../../invitations/cardContentFit'
-import type { TextLayout } from '../../invitations/textLayout'
+import { mergeTextLayouts, textSizingKey } from '../../invitations/textLayout'
 import { useMajesticCard, useMajesticNames } from './useMajesticFit'
 import defaultLayout from './defaultLayout'
 import './Majestic.css'
 
 // Keep the embedded-map implementation available without mounting or loading it.
 const MAP_EMBEDS_ENABLED = false
-
-function mergeLayouts(base: TextLayout, overrides?: TextLayout): TextLayout {
-  if (!overrides) return base
-  return { version: 1, elements: { ...base.elements, ...overrides.elements } }
-}
 
 type CopyProps = Omit<ComponentProps<typeof EditableText>, 'textId'> & { field: string }
 function Copy({ field, label, children, animation = 'fade-up', animationStagger = 40, animationDelay = 0, ...props }: CopyProps) {
@@ -138,11 +133,11 @@ function coupleLabel(details: InvitationData) {
 function Names({ details: d, section, family = false }: { details: InvitationData; section: string; family?: boolean }) {
   const root = useRef<HTMLDivElement>(null)
   const stacked = family && !!(d.groomFamily.trim() || d.brideFamily.trim())
-  const separatorLayout = d.textOverrides?.elements[`t2.${section}.separator`] ?? defaultLayout.elements[`t2.${section}.separator`]
+  const separatorLayout = { ...defaultLayout.elements[`t2.${section}.separator`], ...d.textOverrides?.elements[`t2.${section}.separator`] }
   const people = d.brideFirst
     ? [{ key: 'bride', name: d.bride, family: d.brideFamily, label: 'Bride' }, { key: 'groom', name: d.groom, family: d.groomFamily, label: 'Groom' }]
     : [{ key: 'groom', name: d.groom, family: d.groomFamily, label: 'Groom' }, { key: 'bride', name: d.bride, family: d.brideFamily, label: 'Bride' }]
-  useMajesticNames(root, JSON.stringify([d.groom, d.bride, d.brideFirst, d.textOverrides]), stacked, section === 'closing' ? 4 : 8, section === 'closing' ? .04 : .01, section === 'closing' || section === 'opening')
+  useMajesticNames(root, JSON.stringify([d.groom, d.bride, d.brideFirst, textSizingKey(d.textOverrides, `t2.${section}.`)]), stacked, section === 'closing' ? 4 : 8, section === 'closing' ? .04 : .01, section === 'closing' || section === 'opening')
   return <div ref={root} role={section === 'opening' ? 'heading' : undefined} aria-level={section === 'opening' ? 1 : undefined} className={`mj-names ${stacked ? 'mj-stacked' : ''}`}>
     {people[0] && <div><Copy as="span" field={`${section}.${people[0].key}`} label={`${people[0].label} · ${section}`} data-mj-name="" animationReplay={section === 'opening'}>{people[0].name}</Copy>{family && people[0].family.trim() && <Copy as="p" field={`${section}.${people[0].key}Family`} className="mj-family">{people[0].family}</Copy>}</div>}
     <Copy field={`${section}.separator`} className="mj-ampersand" style={separatorLayout?.y !== undefined ? { top: 0 } : undefined}>&amp;</Copy>
@@ -235,7 +230,7 @@ function MapEmbed({ event, details, ready }: { event: Celebration; details: Invi
 function EventCard({ event, eventKey, details: d }: { event: Celebration; eventKey: string; details: InvitationData }) {
   const root = useRef<HTMLDivElement>(null)
   const prefix = `event-${eventKey}`
-  useMajesticCard(root, JSON.stringify([event, d.textOverrides]))
+  useMajesticCard(root, JSON.stringify([event, textSizingKey(d.textOverrides, `t2.event-${eventKey}.`)]))
   return <><Section as="article" data-invite-section={prefix} className="mj-event">
     <AmbientVideo className="mj-event-video" src="/templates/majestic/assets/celebrations.mp4" />
     <div ref={root} className="mj-event-copy">
@@ -304,8 +299,8 @@ export default function Majestic({ details: d, rsvpTarget }: { details: Invitati
     elements.forEach(element => observer.observe(element))
     return () => { observer.disconnect(); elements.forEach(element => element.classList.remove('invite-motion-visible')); root.current?.classList.remove('invite-motion-ready') }
   }, [structure, opened])
-  const layout = mergeLayouts(defaultLayout, d.textOverrides)
-  return <InvitationLayoutProvider layout={layout}><main ref={root} className={`majestic-native${opened ? ' mj-opened' : ''}`} style={opened ? undefined : { overflow: 'hidden', height: '100svh' }}>
+  const layout = mergeTextLayouts(defaultLayout, d.textOverrides)
+  return <InvitationLayoutProvider layout={layout} manualLayout={d.textOverrides ?? null}><main ref={root} className={`majestic-native${opened ? ' mj-opened' : ''}`} style={opened ? undefined : { overflow: 'hidden', height: '100svh' }}>
     <PersonalMusic src={d.music || '/templates/majestic/assets/intro-music-CzqJOUtA.mp3'} />
     <Section data-invite-section="opening" className="mj-hero">
       <AmbientVideo src="/templates/majestic/assets/hero-bg-l-slFnvE.mp4" poster="/templates/majestic/assets/hero-poster-DkA1j00-.jpg" className="mj-hero-video" paused={!opened} />

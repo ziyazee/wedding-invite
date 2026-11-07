@@ -12,6 +12,7 @@ import PersonalMusic from '../../invitations/PersonalMusic'
 import { wrapCardText } from '../../invitations/cardContentFit'
 import { PearlClock } from './PearlClock'
 import { useSecretGardenCard, useSecretGardenNames } from './useSecretGardenFit'
+import { textSizingKey } from '../../invitations/textLayout'
 import './SecretGarden.css'
 
 type CopyProps = Omit<ComponentProps<typeof EditableText>, 'textId'> & { field: string }
@@ -45,7 +46,7 @@ function Names({ details: d, section, family = false }: { details: InvitationDat
   const people = d.brideFirst
     ? [{ name: d.bride, familyText: d.brideFamily, person: 'bride' }, { name: d.groom, familyText: d.groomFamily, person: 'groom' }]
     : [{ name: d.groom, familyText: d.groomFamily, person: 'groom' }, { name: d.bride, familyText: d.brideFamily, person: 'bride' }]
-  useSecretGardenNames(root, JSON.stringify([d.groom, d.bride, d.brideFirst, d.textOverrides]), stacked)
+  useSecretGardenNames(root, JSON.stringify([d.groom, d.bride, d.brideFirst, textSizingKey(d.textOverrides, `t5.${section}.`)]), stacked)
   return <div ref={root} role={section === 'opening' ? 'heading' : undefined} aria-level={section === 'opening' ? 1 : undefined} className={`sg-names ${stacked ? 'sg-stacked' : ''}`}>
     <div><Copy as="span" field={`${section}.${people[0].person}`} label={`${people[0].person === 'groom' ? 'Groom' : 'Bride'} · ${section}`} data-sg-name="">{people[0].name}</Copy>{family && people[0].familyText.trim() && <Copy as="p" field={`${section}.${people[0].person}Family`} className="sg-family">{people[0].familyText}</Copy>}</div>
     <Copy field={`${section}.separator`} className="sg-ampersand">&amp;</Copy>
@@ -56,7 +57,7 @@ function Names({ details: d, section, family = false }: { details: InvitationDat
 function EventCard({ event, eventKey, details: d }: { event: Celebration; eventKey: string; details: InvitationData }) {
   const root = useRef<HTMLDivElement>(null)
   const prefix = `event-${eventKey}`
-  useSecretGardenCard(root, JSON.stringify([event, d.textOverrides]))
+  useSecretGardenCard(root, JSON.stringify([event, textSizingKey(d.textOverrides, `t5.event-${eventKey}.`)]))
   return <Section as="article" data-invite-section={prefix} className="sg-event">
     <AmbientVideo className="sg-event-video" src="/templates/secret-garden/assets/celebrations.mp4" />
     <div ref={root} className="sg-event-copy">

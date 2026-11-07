@@ -1,5 +1,7 @@
 /* Explicit client styling wins over template defaults, including legacy
    !important rules. The editor's temporary inline !important styles still win. */
 [data-invite-text][data-invite-custom-size]{font-size:var(--invite-font-size)!important}
+[data-invite-text][data-invite-manual-size]:not(#invite-custom-size-priority){font-size:var(--invite-font-size)!important}
 [data-invite-text][data-invite-custom-font]{font-family:var(--invite-font-family)!important}
 [data-invite-text][data-invite-custom-color]{color:var(--invite-color)!important;-webkit-text-fill-color:var(--invite-color)!important}
+[data-invite-text][data-invite-custom-content]:not(#invite-custom-content-priority){white-space:pre!important;overflow-wrap:normal!important;word-break:normal!important}

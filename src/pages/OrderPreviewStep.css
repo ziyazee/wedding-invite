@@ -1,7 +1,45 @@
 /* Extra page inside the existing order form; no dashboard or phone layout overrides. */
 .client-workspace .order-personal-step { grid-column: 1 / -1; min-width: 0; }
 .client-workspace .order-personal-step h2 { scroll-margin-top: 150px; }
-.client-workspace .order-personal-step .order-personal-event-map { display: grid; gap: 4px; }
-.client-workspace .order-personal-step .order-personal-event-map small { color: var(--client-muted); font-weight: 400; line-height: 1.5; }
+.client-workspace .order-personal-step .event-locations-intro { margin-bottom: 24px; }
+.client-workspace .order-personal-step .event-locations-intro + .order-personal-event-map { margin-top: 24px; }
+.client-workspace .event-locations-section { container: event-locations / inline-size; min-width: 0; }
+.client-workspace .order-personal-step .order-personal-event-map { display: grid; grid-template-columns: minmax(0, 1fr); gap: 24px; align-items: stretch; padding-bottom: 24px; border-bottom: 1px solid #ded8ca; }
+.client-workspace .event-location-fields { display: grid; gap: 14px; min-width: 0; }
+.client-workspace .event-location-preview { display: flex; align-items: center; justify-content: center; min-width: 0; }
+.client-workspace .event-location-heading { display: grid; gap: 6px; }
+.client-workspace .event-location-heading > strong { font-size: 17px; line-height: 1.4; }
+.client-workspace .event-location-link { display: grid; gap: 8px; width: 100%; max-width: 360px; }
+.client-workspace.show-client-details .order-personal-step .event-location-fields label { margin: 0; font-size: 13px; line-height: 1.5; }
+.client-workspace.show-client-details .order-personal-step .event-location-fields input { width: 100%; min-width: 0; height: 44px; margin-top: 0; font-size: 14px; }
+.client-workspace .event-location-map-placeholder { display: grid; place-items: center; min-height: 160px; padding: 16px; border: 1px solid #ded8ca; border-radius: 10px; background: #f5eee3; color: #5e5e5e; text-align: center; font-size: 13px; }
+.client-workspace .order-personal-step .order-personal-event-map small { color: var(--client-muted); font-size: 14px; font-weight: 400; line-height: 1.6; }
 .client-workspace .order-personal-step .order-personal-event-map + .order-personal-event-map { margin-top: 16px; }
+.client-workspace .order-personal-step .order-personal-event-map:last-child { border-bottom: 0; padding-bottom: 0; }
 .client-workspace .order-personal-step .form-submit-row { display: grid; }
+.client-workspace .event-location-search { position: relative; display: grid; gap: 8px; width: 100%; max-width: 360px; }
+.client-workspace .event-location-results { position: absolute; top: 100%; left: 0; right: 0; z-index: 5; overflow: hidden; background: #fff; border: 1px solid #d5bd91; border-radius: 8px; box-shadow: 0 8px 24px #354c4320; }
+.client-workspace .event-location-results ul { list-style: none; margin: 0; padding: 4px; max-height: 240px; overflow-y: auto; }
+.client-workspace .event-location-results li { display: grid; gap: 3px; padding: 10px 12px; border-radius: 4px; cursor: pointer; color: #354c43; line-height: 1.4; overflow-wrap: anywhere; }
+.client-workspace .event-location-results li[aria-selected="true"] { background: #f5eee3; }
+.client-workspace .event-location-results li span { color: #5e5e5e; font-size: 12px; }
+.client-workspace .event-location-attribution { padding: 8px 12px; border-top: 1px solid #eee; font: normal 400 12px/1.5 Arial, sans-serif; color: #5e5e5e; letter-spacing: normal; white-space: nowrap; text-align: right; }
+.client-workspace .event-location-status { margin: 0; }
+.client-workspace .event-location-status:empty { display: none; }
+.client-workspace .event-location-map { width: 100%; max-width: 300px; margin-top: 0; overflow: hidden; border: 1px solid #ded8ca; border-radius: 10px; background: #fff; }
+.client-workspace .event-location-map-image { display: flex; align-items: center; justify-content: center; background: #f5eee3; color: #354c43; text-decoration: none; }
+.client-workspace .event-location-map-image img { display: block; width: 100%; height: auto; object-fit: contain; }
+.client-workspace .event-location-map-image > span { padding: 20px; text-align: center; font-size: 13px; }
+.client-workspace .event-location-map-footer { display: flex; align-items: center; justify-content: space-between; gap: 12px; padding: 8px 10px; }
+.client-workspace .event-location-map-footer .event-location-attribution { padding: 0; border: 0; }
+.client-workspace .event-location-map-footer a, .client-workspace .event-location-map-fallback a { color: #354c43; font-size: 13px; }
+.client-workspace .event-location-map > button { margin: 0 12px 12px; }
+.client-workspace .event-location-map-fallback { padding: 12px; border: 1px solid #ded8ca; border-radius: 8px; }
+@container event-locations (min-width: 640px) {
+  .client-workspace .order-personal-step .order-personal-event-map { grid-template-columns: minmax(0, 360px) minmax(0, 1fr); }
+  .client-workspace .event-location-preview { contain: size; min-height: 0; }
+  .client-workspace .event-location-map-placeholder, .client-workspace .event-location-map-fallback { height: 100%; overflow: auto; }
+}
+@media (max-width: 640px) {
+  .client-workspace.show-client-details .order-personal-step .event-location-fields input { font-size: 16px; }
+}

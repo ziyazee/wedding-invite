@@ -10,17 +10,12 @@ import { InvitationMedia } from '../../invitations/components/InvitationMedia'
 import { InvitationRsvp } from '../../invitations/components/InvitationRsvp'
 import PersonalMusic from '../../invitations/PersonalMusic'
 import { wrapCardText } from '../../invitations/cardContentFit'
-import type { TextLayout } from '../../invitations/textLayout'
+import { mergeTextLayouts, textSizingKey } from '../../invitations/textLayout'
 import { useEmbroideredGardenNames, useEmbroideredGardenCard, useIntroFit } from './useEmbroideredGardenFit'
 import defaultLayout from './defaultLayout'
 import './EmbroideredGarden.css'
 
 const ASSETS = '/templates/embroidered-garden/assets/'
-
-function mergeLayouts(base: TextLayout, overrides?: TextLayout): TextLayout {
-  if (!overrides) return base
-  return { version: 1, elements: { ...base.elements, ...overrides.elements } }
-}
 
 type CopyProps = Omit<ComponentProps<typeof EditableText>, 'textId'> & { field: string }
 function Copy({ field, label, children, animation = 'fade-up', ...props }: CopyProps) {
@@ -53,7 +48,7 @@ function Names({ details: d, section, family = false }: { details: InvitationDat
   const people = d.brideFirst
     ? [{ name: d.bride, familyText: d.brideFamily, person: 'bride' }, { name: d.groom, familyText: d.groomFamily, person: 'groom' }]
     : [{ name: d.groom, familyText: d.groomFamily, person: 'groom' }, { name: d.bride, familyText: d.brideFamily, person: 'bride' }]
-  useEmbroideredGardenNames(root, JSON.stringify([d.groom, d.bride, d.brideFirst, d.textOverrides]), stacked)
+  useEmbroideredGardenNames(root, JSON.stringify([d.groom, d.bride, d.brideFirst, textSizingKey(d.textOverrides, `t6.${section}.`)]), stacked)
   return <div ref={root} className={`eg-names ${stacked ? 'eg-stacked' : ''}`}>
     <div><Copy as="span" field={`${section}.${people[0].person}`} label={`${people[0].person === 'groom' ? 'Groom' : 'Bride'} · ${section}`} data-eg-name="">{people[0].name}</Copy>{family && people[0].familyText.trim() && <Copy as="p" field={`${section}.${people[0].person}Family`} className="eg-family">{people[0].familyText}</Copy>}</div>
     <Copy field={`${section}.separator`} className="eg-ampersand">&amp;</Copy>
@@ -89,7 +84,7 @@ function Countdown({ details }: { details: InvitationData }) {
 function EventCard({ event, eventKey, details: d, first }: { event: Celebration; eventKey: string; details: InvitationData; first: boolean }) {
   const root = useRef<HTMLDivElement>(null)
   const prefix = `event-${eventKey}`
-  useEmbroideredGardenCard(root, JSON.stringify([event, d.textOverrides]))
+  useEmbroideredGardenCard(root, JSON.stringify([event, textSizingKey(d.textOverrides, `t6.${prefix}.`)]))
   const dateParts = new Intl.DateTimeFormat('en-GB', { day: '2-digit', month: 'short', year: 'numeric', timeZone: 'UTC' }).formatToParts(new Date(`${event.date}T12:00:00Z`))
   const part = (type: Intl.DateTimeFormatPartTypes) => dateParts.find(item => item.type === type)?.value || ''
   return <Section as="article" data-invite-section={prefix} className={`eg-event ${first ? 'eg-event-first' : 'eg-event-secondary'}`} style={first ? { backgroundImage: `url('${ASSETS}ceremony-reception-bg-opt.webp')` } : undefined}>
@@ -115,10 +110,12 @@ export default function EmbroideredGarden({ details: d, rsvpTarget }: { details:
   const [coverHidden, setCoverHidden] = useState(false)
   const [namesVisible, setNamesVisible] = useState(false)
   const couple = d.brideFirst ? `${d.bride} & ${d.groom}` : `${d.groom} & ${d.bride}`
-  const events = d.events.map((event, index) => ({ event, key: event.id || `legacy-${index}` }))
+  const keyedEvents = d.events.map((event, index) => ({ event, key: event.id || `legacy-${index}` }))
+  // Keep the main event first and preserve each card's editing identity when sorting.
+  const events = [...keyedEvents.slice(0, 1), ...keyedEvents.slice(1).sort((a, b) => a.event.date.localeCompare(b.event.date))]
   const structure = JSON.stringify([events.map(e => e.key), !!d.dressCode.trim(), !!d.giftNote.trim(), !!d.gallery.trim()])
 
-  useIntroFit(introRef, JSON.stringify([d.textOverrides]))
+  useIntroFit(introRef, textSizingKey(d.textOverrides, 't6.welcome-intro.'))
 
   useEffect(() => { const previous = document.title; document.title = `${couple} — Embroidered Garden`; return () => { document.title = previous } }, [couple])
 
@@ -170,8 +167,8 @@ export default function EmbroideredGarden({ details: d, rsvpTarget }: { details:
   const dateParts = new Intl.DateTimeFormat('en-GB', { day: '2-digit', month: 'short', year: 'numeric', timeZone: 'UTC' }).formatToParts(new Date(`${d.date}T12:00:00Z`))
   const part = (type: Intl.DateTimeFormatPartTypes) => dateParts.find(item => item.type === type)?.value || ''
 
-  const layout = mergeLayouts(defaultLayout, d.textOverrides)
-  return <InvitationLayoutProvider layout={layout}><main ref={root} className={`eg-native${opened ? ' eg-opened' : ''}`} style={opened ? undefined : { overflow: 'hidden', height: '100svh' }}>
+  const layout = mergeTextLayouts(defaultLayout, d.textOverrides)
+  return <InvitationLayoutProvider layout={layout} manualLayout={d.textOverrides ?? null}><main ref={root} className={`eg-native${opened ? ' eg-opened' : ''}`} style={opened ? undefined : { overflow: 'hidden', height: '100svh' }}>
     <PersonalMusic src={d.music || '/audios/general/autumn-wind-opt.mp3'} />
 
     {/* Opening */}

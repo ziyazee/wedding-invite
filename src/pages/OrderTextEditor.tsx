@@ -1,14 +1,17 @@
 import { useEffect, useRef, useState } from 'react'
 import { createPortal } from 'react-dom'
-import { emptyTextLayout, readTextLayout } from '../invitations/textLayout'
+import { emptyTextLayout, readTextLayout, textFonts } from '../invitations/textLayout'
 import type { TextLayout, TextOverride } from '../invitations/textLayout'
 import { textSection, textSelector, textTranslation, watchTextDocuments } from '../invitations/textLayoutDom'
 import './OrderTextEditor.css'
 import { attachTextResizeHandle } from './textResizeHandle'
+import { captureTextSizes, textPosition, withTextSizes } from './textEditorGeometry'
+import { openInlineTextEditor } from './inlineTextEditor'
 
 type Selection = { id: string; element: HTMLElement; label: string; size: number; color: string }
 type Props = { template: number; value?: TextLayout; onChange: (value: TextLayout) => void; draftStatus: string }
 const bounded = (value: number) => Math.max(-1, Math.min(1, value))
+const fontLabels: Record<keyof typeof textFonts, string> = { serif: 'Georgia', sans: 'Arial', classic: 'Times New Roman', mono: 'Courier New' }
 
 function EditorIcon({ name }: { name: 'text' | 'eye' | 'pointer' | 'undo' | 'redo' | 'reset' }) {
   return <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.6" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
@@ -41,6 +44,20 @@ export default function OrderTextEditor({ template, value, onChange, draftStatus
   }
   const save = useRef(commit)
   save.current = commit
+  const inline = useRef<ReturnType<typeof openInlineTextEditor> | null>(null)
+  const editText = useRef<(element: HTMLElement) => void>(() => {})
+  editText.current = element => {
+    inline.current?.finish()
+    const id = element.dataset.inviteText
+    if (!id || !element.isConnected) return
+    const sizes = captureTextSizes(element)
+    const content = current.current.elements[id]?.content ?? element.textContent ?? ''
+    inline.current = openInlineTextEditor(element, content, text => {
+      const layout = withTextSizes(current.current, sizes)
+      save.current({ version: 1, elements: { ...layout.elements, [id]: { ...layout.elements[id], content: text } } })
+    })
+  }
+  useEffect(() => () => { inline.current?.finish(false); inline.current = null }, [template, preview])
 
   useEffect(() => {
     selection?.element.setAttribute('data-invite-selected', '')
@@ -49,10 +66,12 @@ export default function OrderTextEditor({ template, value, onChange, draftStatus
 
   useEffect(() => {
     if (!selection || preview) return
+    let sizes: Record<string, number> = {}
     return attachTextResizeHandle(selection.element, fontSize => {
-      if (selection.element.dataset.inviteText !== selection.id) return
-      save.current({ version: 1, elements: { ...current.current.elements, [selection.id]: { ...current.current.elements[selection.id], fontSize } } })
-    })
+      if (!selection.element.isConnected || selection.element.dataset.inviteText !== selection.id) return
+      const layout = withTextSizes(current.current, sizes)
+      save.current({ version: 1, elements: { ...layout.elements, [selection.id]: { ...layout.elements[selection.id], fontSize } } })
+    }, () => { sizes = captureTextSizes(selection.element) }, () => editText.current(selection.element))
   }, [selection, preview])
 
   useEffect(() => {
@@ -76,13 +95,13 @@ export default function OrderTextEditor({ template, value, onChange, draftStatus
       guide.dataset.inviteGuide = ''
       guide.hidden = true
       doc.body.append(guide)
-      let drag: { element: HTMLElement; section: HTMLElement; id: string; pointer: number; x: number; y: number; width: number; height: number; start: TextOverride; next: TextOverride; original: string; priority: string; moved: boolean } | null = null
+      let drag: { element: HTMLElement; section: HTMLElement; id: string; pointer: number; x: number; y: number; width: number; height: number; start: TextOverride; next: TextOverride; original: string; priority: string; transition: string; transitionPriority: string; moved: boolean } | null = null
       let raf = 0
       const restore = () => {
         const ended = drag
         drag = null
         if (!ended) return
-        ended.element.style.removeProperty('transition')
+        ended.element.style.setProperty('transition', ended.transition, ended.transitionPriority)
         ended.element.style.setProperty('translate', ended.original, ended.priority)
         try { ended.element.releasePointerCapture(ended.pointer) } catch { /* Pointer already released. */ }
       }
@@ -112,7 +131,7 @@ export default function OrderTextEditor({ template, value, onChange, draftStatus
       const down = (event: PointerEvent) => {
         if (!event.isPrimary || event.button !== 0) return
         const target = event.target as Element
-        if (target.nodeType === 1 && target.closest('[data-invite-text-resize]')) return
+        if (target.nodeType === 1 && target.closest('[data-invite-text-resize],[data-invite-text-edit],[data-invite-inline-editor]')) return
         const element = target.nodeType === 1 ? target.closest<HTMLElement>(textSelector) : null
         root.querySelectorAll('[data-invite-selected]').forEach(node => node.removeAttribute('data-invite-selected'))
         if (!element || !root.contains(element)) { setSelection(null); hideGuide(); return }
@@ -127,8 +146,8 @@ export default function OrderTextEditor({ template, value, onChange, draftStatus
         const color = rgb && rgb.length >= 3 ? '#' + rgb.slice(0, 3).map(n => Number(n).toString(16).padStart(2, '0')).join('') : '#333333'
         const id = element.dataset.inviteText!
         setSelection({ id, element, label: element.dataset.inviteLabel || 'Text', size: Math.round(parseFloat(computed.fontSize)), color })
-        const start = { ...current.current.elements[id] }
-        drag = { element, section, id, pointer: event.pointerId, x: event.clientX, y: event.clientY, width: bounds.width, height: bounds.height, start, next: start, original: element.style.getPropertyValue('translate'), priority: element.style.getPropertyPriority('translate'), moved: false }
+        const start = { ...current.current.elements[id], ...textPosition(element, current.current.elements[id]) }
+        drag = { element, section, id, pointer: event.pointerId, x: event.clientX, y: event.clientY, width: bounds.width, height: bounds.height, start, next: start, original: element.style.getPropertyValue('translate'), priority: element.style.getPropertyPriority('translate'), transition: element.style.getPropertyValue('transition'), transitionPriority: element.style.getPropertyPriority('transition'), moved: false }
         element.setPointerCapture(event.pointerId)
         showGuide(element, section)
       }
@@ -148,7 +167,7 @@ export default function OrderTextEditor({ template, value, onChange, draftStatus
         if (raf) { win.cancelAnimationFrame(raf); raf = 0 }
         if (event.type === 'pointerup' && ended.moved) draw()
         restore(); drag = null
-        if (event.type === 'pointerup' && ended.moved) save.current({ version: 1, elements: { ...current.current.elements, [ended.id]: ended.next } })
+        if (event.type === 'pointerup' && ended.moved && ended.element.isConnected) save.current({ version: 1, elements: { ...current.current.elements, [ended.id]: { ...current.current.elements[ended.id], x: ended.next.x, y: ended.next.y } } })
         hideGuide()
       }
       const click = (event: MouseEvent) => {
@@ -180,15 +199,17 @@ export default function OrderTextEditor({ template, value, onChange, draftStatus
 
   function update(patch: Partial<TextOverride>) {
     if (!selection?.element.isConnected || selection.element.dataset.inviteText !== selection.id) { setSelection(null); return }
-    const next = { ...current.current.elements[selection.id], ...patch }
-    commit({ version: 1, elements: { ...current.current.elements, [selection.id]: next } })
+    const changesSize = 'content' in patch || 'fontFamily' in patch || 'fontSize' in patch
+    const layout = changesSize ? withTextSizes(current.current, captureTextSizes(selection.element)) : current.current
+    const next = { ...layout.elements[selection.id], ...patch }
+    commit({ version: 1, elements: { ...layout.elements, [selection.id]: next } })
   }
   function center() {
     if (!selection?.element.isConnected) return
     const section = textSection(selection.element)
     if (!section) return
     const box = selection.element.getBoundingClientRect(), bounds = section.getBoundingClientRect()
-    if (bounds.width) update({ x: bounded((current.current.elements[selection.id]?.x || 0) + (bounds.left + bounds.width / 2 - box.left - box.width / 2) / bounds.width) })
+    if (bounds.width) update({ x: bounded(textPosition(selection.element, current.current.elements[selection.id]).x + (bounds.left + bounds.width / 2 - box.left - box.width / 2) / bounds.width) })
   }
   function undo(redo = false) {
     const source = redo ? history.future : history.past
@@ -199,16 +220,22 @@ export default function OrderTextEditor({ template, value, onChange, draftStatus
   }
   if (!host) return null
   const entry = selection ? current.current.elements[selection.id] || {} : {}
+  const position = selection ? textPosition(selection.element, entry) : { x: 0, y: 0 }
   const supported = (template >= 1 && template <= 14) || template === 17
   return createPortal(<section className="order-text-editor" aria-label="Text layout editor">
     <div className="ote-heading"><span className="ote-brand-icon"><EditorIcon name="text"/></span><div className="ote-title"><span>MAKE IT YOURS</span><strong>{preview ? 'Invitation preview' : 'Text studio'}</strong></div><button className="ote-preview" type="button" aria-label={preview ? 'Back to editing' : 'Preview invitation'} onClick={() => { setPreview(!preview); setSelection(null); setNearCenter(false) }}><EditorIcon name={preview ? 'text' : 'eye'}/>{preview ? 'Edit' : 'Preview'}</button></div>
     {!preview && <>
-      {selection ? <div className="ote-selection"><span className="ote-selection-dot"/><span><small>SELECTED TEXT</small><strong>{selection.label}</strong></span></div> : <div className="ote-empty"><span className="ote-pointer"><EditorIcon name="pointer"/></span><strong>{supported ? 'Make every detail yours' : 'Text editing is coming'}</strong><p>{supported ? 'Tap text to style it or drag it into place. Scroll using the space around text.' : 'Editing will be available here once this design is connected.'}</p>{supported && <div className="ote-capabilities"><span>Size</span><span>Position</span></div>}</div>}
+      {selection ? <div className="ote-selection"><span className="ote-selection-dot"/><span><small>SELECTED TEXT</small><strong>{selection.label}</strong></span></div> : <div className="ote-empty"><span className="ote-pointer"><EditorIcon name="pointer"/></span><strong>{supported ? 'Make every detail yours' : 'Text editing is coming'}</strong><p>{supported ? 'Tap text to select it. Drag to move, use the corner handle to resize, or tap Edit to type. Scroll using the space around text.' : 'Editing will be available here once this design is connected.'}</p>{supported && <div className="ote-capabilities"><span>Font</span><span>Size</span><span>Position</span></div>}</div>}
       {selection && <div className="ote-controls">
-        <label>Text<input type="text" maxLength={500} value={entry.content ?? selection.element.textContent ?? ''} onChange={e => update({ content: e.target.value })} placeholder="Edit text content"/></label>
+        <label className="ote-font-control">Font<select value={entry.fontFamily ?? ''} style={{ fontFamily: entry.fontFamily ? textFonts[entry.fontFamily] : undefined }} onChange={event => {
+          const font = event.target.value
+          if (font && !Object.hasOwn(textFonts, font)) return
+          update({ fontFamily: (font || undefined) as TextOverride['fontFamily'] })
+        }}><option value="">Template default</option>{(Object.keys(textFonts) as (keyof typeof textFonts)[]).map(font => <option key={font} value={font} style={{ fontFamily: textFonts[font] }}>{fontLabels[font]}</option>)}</select></label>
+        <button type="button" onClick={() => editText.current(selection.element)}>Edit text in phone</button>
         <label>Size (px)<input type="number" min="8" max="160" step="1" value={entry.fontSize ?? selection.size} onChange={e => { const n = Number(e.target.value); if (e.target.value && n >= 8 && n <= 160) update({ fontSize: n }) }}/></label>
-        <label>Horizontal (%)<input type="number" min="-100" max="100" step="0.5" value={Number(((entry.x || 0) * 100).toFixed(2))} onChange={e => { if (e.target.value) update({ x: bounded(Number(e.target.value) / 100) }) }}/></label>
-        <label>Vertical (%)<input type="number" min="-100" max="100" step="0.5" value={Number(((entry.y || 0) * 100).toFixed(2))} onChange={e => { if (e.target.value) update({ y: bounded(Number(e.target.value) / 100) }) }}/></label>
+        <label>Horizontal (%)<input type="number" min="-100" max="100" step="0.5" value={Number((position.x * 100).toFixed(2))} onChange={e => { if (e.target.value) update({ x: bounded(Number(e.target.value) / 100) }) }}/></label>
+        <label>Vertical (%)<input type="number" min="-100" max="100" step="0.5" value={Number((position.y * 100).toFixed(2))} onChange={e => { if (e.target.value) update({ y: bounded(Number(e.target.value) / 100) }) }}/></label>
         <button type="button" onClick={center}>{nearCenter ? 'Align to center' : 'Center horizontally'}</button>
         <button type="button" onClick={() => { const elements = { ...current.current.elements }; delete elements[selection.id]; commit({ version: 1, elements }); setSelection(null) }}>Reset text</button>
         <button type="button" className="ote-hide-btn" onClick={() => { commit({ version: 1, elements: { ...current.current.elements, [selection.id]: { ...current.current.elements[selection.id], hidden: true } } }); setSelection(null) }}>Hide</button>
