@@ -2,7 +2,7 @@
   "$schema": "https://openapi.vercel.sh/vercel.json",
   "proxy": {
     "entrypoint": "proxy.ts",
-    "matcher": ["/", "/:slug", "/:slug/:orderId", "/invite/:path*"]
+    "matcher": ["/", "/invite/:path*"]
   },
   "headers": [
     {

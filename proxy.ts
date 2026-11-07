@@ -1,33 +1,27 @@
-import { next } from '@vercel/edge'
-import { reservedSlugs } from './src/invitations/model.ts'
-import type { InvitationData } from './src/invitations/model.ts'
-import { invitationSharePreview } from './src/invitations/sharePreview.ts'
-
-type PublishedInvitation = { slug?: string; details?: Partial<InvitationData> }
-
-function validInvitationPath(path: string): string | null {
-  const normalized = path.replace(/^\/+|\/+$/g, '')
-  if (/^test-invite\/[a-z][a-z0-9.-]{0,119}$/.test(normalized)) return normalized
-  if (!/^[a-z][a-z0-9.-]{0,79}(?:\/[1-9]\d{0,19})?$/.test(normalized)) return null
-  const first = normalized.split('/')[0]
-  if (reservedSlugs.has(first) || ['account', 'edits', 'testing', 'manage', 'test-manage', 'test-invite', 'templates'].includes(first)) return null
-  return normalized
+type InvitationDetails = {
+  template?: number
+  groom?: string
+  bride?: string
+  date?: string
+  venue?: string
 }
+
+type PublishedInvitation = { details?: InvitationDetails }
 
 function invitationPath(requestUrl: URL): string | null {
   const host = requestUrl.hostname.toLowerCase()
   const suffix = '.shaadiinvites.in'
   if (host.endsWith(suffix) && host !== `www${suffix}`) {
-    return requestUrl.pathname === '/' ? validInvitationPath(host.slice(0, -suffix.length)) : null
+    return requestUrl.pathname === '/' ? host.slice(0, -suffix.length) : null
   }
 
   const querySlug = requestUrl.searchParams.get('invite')
-  if (querySlug) return validInvitationPath(querySlug)
+  if (querySlug) return querySlug
 
   if (requestUrl.pathname.startsWith('/invite/')) {
-    return validInvitationPath(requestUrl.pathname.slice('/invite/'.length))
+    return requestUrl.pathname.slice('/invite/'.length)
   }
-  return validInvitationPath(requestUrl.pathname)
+  return null
 }
 
 function escapeHtml(value: string): string {
@@ -40,20 +34,27 @@ function escapeHtml(value: string): string {
   })[character]!)
 }
 
-export default async function proxy(request: Request): Promise<Response> {
-  if (request.method !== 'GET' && request.method !== 'HEAD') return next()
+function formattedDate(value?: string): string {
+  if (!value || !/^\d{4}-\d{2}-\d{2}$/.test(value)) return ''
+  const date = new Date(`${value}T12:00:00Z`)
+  if (Number.isNaN(date.getTime())) return ''
+  return new Intl.DateTimeFormat('en-IN', {
+    day: 'numeric', month: 'long', year: 'numeric', timeZone: 'UTC',
+  }).format(date)
+}
+
+export default async function proxy(request: Request): Promise<Response | undefined> {
   const userAgent = request.headers.get('user-agent') || ''
-  if (!/WhatsApp|facebookexternalhit|Facebot|Twitterbot|LinkedInBot|TelegramBot|Slackbot|Discordbot/i.test(userAgent)) return next()
+  if (!/WhatsApp|facebookexternalhit|Facebot/i.test(userAgent)) return undefined
 
   const url = new URL(request.url)
   const path = invitationPath(url)
   const supabaseUrl = process.env.VITE_SUPABASE_URL
   const anonKey = process.env.VITE_SUPABASE_ANON_KEY
-  if (!path || !supabaseUrl || !anonKey) return next()
+  if (!path || !supabaseUrl || !anonKey) return undefined
 
   try {
-    const rpc = path.startsWith('test-invite/') ? 'get_test_published_invitation' : 'get_published_invitation'
-    const lookup = await fetch(`${supabaseUrl.replace(/\/$/, '')}/rest/v1/rpc/${rpc}`, {
+    const lookup = await fetch(`${supabaseUrl.replace(/\/$/, '')}/rest/v1/rpc/get_published_invitation`, {
       method: 'POST',
       headers: {
         apikey: anonKey,
@@ -61,19 +62,25 @@ export default async function proxy(request: Request): Promise<Response> {
         'Content-Type': 'application/json',
       },
       body: JSON.stringify({ p_path: path }),
-      signal: AbortSignal.timeout(4000),
     })
-    if (!lookup.ok) return next()
+    if (!lookup.ok) return undefined
 
     const published = await lookup.json() as PublishedInvitation | null
     const details = published?.details
-    if (!details || typeof details !== 'object' || typeof details.template !== 'number') return next()
+    if (!details || details.template !== 4) return undefined
 
-    const preview = invitationSharePreview(details)
-    const { title, description, imageAlt } = preview
-    const origin = url.hostname === 'shaadiinvites.in' || url.hostname.endsWith('.shaadiinvites.in') ? 'https://www.shaadiinvites.in' : url.origin
-    const image = new URL(preview.image, origin).href
-    const canonical = new URL(`/${validInvitationPath(published?.slug || '') || path}`, origin).href
+    const groom = details.groom?.trim() || 'Your names'
+    const bride = details.bride?.trim()
+    const couple = bride ? `${groom} & ${bride}` : groom
+    const date = formattedDate(details.date)
+    const venue = details.venue?.trim()
+    const description = [
+      `Join ${couple} for their wedding${date ? ` on ${date}` : ''}${venue ? ` at ${venue}` : ''}.`,
+      'View their Mandap at Dusk invitation.',
+    ].join(' ')
+    const image = new URL('/templates/mandap-at-dusk/preview.jpg', url.origin).href
+    const title = `${couple} | Wedding Invitation`
+    const canonical = url.href
 
     return new Response(`<!doctype html>
 <html lang="en">
@@ -89,22 +96,21 @@ export default async function proxy(request: Request): Promise<Response> {
     <meta property="og:description" content="${escapeHtml(description)}">
     <meta property="og:url" content="${escapeHtml(canonical)}">
     <meta property="og:image" content="${escapeHtml(image)}">
-    <meta property="og:image:alt" content="${escapeHtml(imageAlt)}">
+    <meta property="og:image:alt" content="Mandap at Dusk wedding invitation for ${escapeHtml(couple)}">
     <meta name="twitter:card" content="summary_large_image">
     <meta name="twitter:title" content="${escapeHtml(title)}">
     <meta name="twitter:description" content="${escapeHtml(description)}">
     <meta name="twitter:image" content="${escapeHtml(image)}">
-    <meta name="twitter:image:alt" content="${escapeHtml(imageAlt)}">
   </head>
   <body><p>${escapeHtml(description)}</p><a href="${escapeHtml(canonical)}">Open the invitation</a></body>
 </html>`, {
       headers: {
-        'Cache-Control': 'private, no-store',
+        'Cache-Control': 'public, max-age=300, s-maxage=300',
         'Content-Type': 'text/html; charset=utf-8',
         'Vary': 'User-Agent',
       },
     })
   } catch {
-    return next()
+    return undefined
   }
 }

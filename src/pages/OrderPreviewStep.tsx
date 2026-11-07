@@ -3,10 +3,9 @@ import type { InvitationData } from '../invitations/model'
 import MusicPicker from './MusicPicker'
 import MusicPlaybackControls from './MusicPlaybackControls'
 import EventLocationPicker from './EventLocationPicker'
-import OrderSharePreview from './OrderSharePreview'
 import './OrderPreviewStep.css'
 
-type PersonalField = 'dressCode' | 'message' | 'giftNote' | 'map' | 'music' | 'musicStart' | 'musicEnd' | 'shareTitle' | 'shareDescription'
+type PersonalField = 'dressCode' | 'message' | 'giftNote' | 'map' | 'music' | 'musicStart' | 'musicEnd'
 type Props = {
   details: InvitationData
   previewFrame: RefObject<HTMLIFrameElement | null>
@@ -51,7 +50,6 @@ export default function OrderPreviewStep({ details, previewFrame, designCategory
       <label>Welcome message<textarea rows={4} value={details.message} maxLength={2000} onChange={event => onChange('message', event.target.value)}/></label>
       <label>Short note<textarea rows={2} value={details.giftNote} maxLength={600} onChange={event => onChange('giftNote', event.target.value)}/></label>
     </fieldset>
-    <OrderSharePreview details={details} disabled={busy} onChange={onChange} />
     <div className="form-submit-row">
       <button type="button" className="back-action" disabled={busy || pendingLocations > 0} onClick={onBack}>← Back to review</button>
       <button type="submit" className="primary-action" disabled={busy || pendingLocations > 0}>{busy ? (editing ? 'Updating…' : 'Creating…') : pendingLocations > 0 ? 'Adding location…' : (editing ? 'Update invitation →' : 'Create invitation →')}</button>
