@@ -40,6 +40,7 @@ export interface InvitationData {
   venue: string; address: string; map: string; message: string; groomFamily: string; brideFamily: string;
   dressCode: string; giftNote: string; music: string; gallery: string; events: Celebration[];
   musicStart?: number; musicEnd?: number;
+  shareTitle?: string; shareDescription?: string;
   companyLogo?: string; companyName?: string; companyPhone?: string;
 }
 export const COMPANY_WHATSAPP_MESSAGE = 'Hi,\nI am looking for digital wedding invitation'
@@ -156,6 +157,8 @@ export function validateDetails(value: unknown, allowRetired = false): Invitatio
     dressCode:text(d.dressCode,'dress code',600),giftNote:text(d.giftNote,'gift note',600),music:isCatalogMusic(d.music) ? catalogMusicPath(d.music) : url(d.music,'music link'),gallery:url(d.gallery,'gallery link'),
     ...(d.musicStart !== undefined ? { musicStart: d.musicStart } : {}),
     ...(d.musicEnd !== undefined ? { musicEnd: d.musicEnd } : {}),
+    ...(d.shareTitle !== undefined ? { shareTitle: text(d.shareTitle, 'link preview title', 140) } : {}),
+    ...(d.shareDescription !== undefined ? { shareDescription: text(d.shareDescription, 'link preview description', 300) } : {}),
     events:d.events.map(e=>({...(typeof e.id==='string'&&/^[a-zA-Z0-9_-]{1,80}$/.test(e.id)?{id:e.id}:{}),...(e.schedule !== undefined ? { schedule: schedule(e.schedule) } : {}),title:text(e.title,'celebration name',cardTextLimit(d.template,'title') ?? 100,true),date:date(e.date),time:time(e.time),venue:text(e.venue,'celebration venue',cardTextLimit(d.template,'venue') ?? 160,true),address:text(e.address,'celebration address',cardTextLimit(d.template,'address') ?? 300,true),map:url(e.map,'map link')})),
     ...(typeof d.companyLogo === 'string' && d.companyLogo ? { companyLogo: d.companyLogo } : {}),
     ...(typeof d.companyName === 'string' && d.companyName ? { companyName: d.companyName } : {}),
