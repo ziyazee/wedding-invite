@@ -68,8 +68,9 @@ function Countdown({ details }: { details: InvitationData }) {
   const days = Math.floor(remaining / 86400); remaining %= 86400
   const hours = Math.floor(remaining / 3600); remaining %= 3600
   const minutes = Math.floor(remaining / 60)
-  const values = [days, hours, minutes]
-  const labels = ['Days', 'Hours', 'Minutes']
+  const seconds = remaining % 60
+  const values = [days, hours, minutes, seconds]
+  const labels = ['Days', 'Hours', 'Minutes', 'Seconds']
   return <Section data-invite-section="countdown" className="eg-countdown">
     <InvitationMedia className="eg-countdown-bg" src={`${ASSETS}countdown-embroidery-frame-opt.webp`} alt="" />
     <div className="eg-countdown-content">

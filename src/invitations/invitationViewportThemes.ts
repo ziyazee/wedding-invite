@@ -12,7 +12,7 @@ export const INVITATION_VIEWPORT_THEMES: Readonly<Record<number, InvitationViewp
   3: { backgroundColor: '#F8F2E9', routes: ['/a-timeless-union', '/arjunbhavana'] },
   4: { backgroundColor: '#D19B72', routes: ['/mandap-at-dusk'] },
   5: { backgroundColor: '#EFE8DA', routes: ['/secret-garden'] },
-  6: { backgroundColor: '#F5F0E8', routes: ['/embroidered-garden'] },
+  6: { backgroundColor: '#F5EEE3', routes: ['/embroidered-garden'] },
   7: {
     backgroundColor: '#F8F1E8', routes: ['/bloom'],
     artwork: { src: '/templates/bloom/assets/intro-video-2-poster.jpg', opacity: .1 },
