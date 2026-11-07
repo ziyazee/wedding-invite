@@ -1,3 +1,4 @@
+import { next } from '@vercel/edge'
 import { reservedSlugs } from './src/invitations/model.ts'
 import type { InvitationData } from './src/invitations/model.ts'
 import { invitationSharePreview } from './src/invitations/sharePreview.ts'
@@ -39,16 +40,16 @@ function escapeHtml(value: string): string {
   })[character]!)
 }
 
-export default async function proxy(request: Request): Promise<Response | undefined> {
-  if (request.method !== 'GET' && request.method !== 'HEAD') return undefined
+export default async function proxy(request: Request): Promise<Response> {
+  if (request.method !== 'GET' && request.method !== 'HEAD') return next()
   const userAgent = request.headers.get('user-agent') || ''
-  if (!/WhatsApp|facebookexternalhit|Facebot|Twitterbot|LinkedInBot|TelegramBot|Slackbot|Discordbot/i.test(userAgent)) return undefined
+  if (!/WhatsApp|facebookexternalhit|Facebot|Twitterbot|LinkedInBot|TelegramBot|Slackbot|Discordbot/i.test(userAgent)) return next()
 
   const url = new URL(request.url)
   const path = invitationPath(url)
   const supabaseUrl = process.env.VITE_SUPABASE_URL
   const anonKey = process.env.VITE_SUPABASE_ANON_KEY
-  if (!path || !supabaseUrl || !anonKey) return undefined
+  if (!path || !supabaseUrl || !anonKey) return next()
 
   try {
     const rpc = path.startsWith('test-invite/') ? 'get_test_published_invitation' : 'get_published_invitation'
@@ -62,11 +63,11 @@ export default async function proxy(request: Request): Promise<Response | undefi
       body: JSON.stringify({ p_path: path }),
       signal: AbortSignal.timeout(4000),
     })
-    if (!lookup.ok) return undefined
+    if (!lookup.ok) return next()
 
     const published = await lookup.json() as PublishedInvitation | null
     const details = published?.details
-    if (!details || typeof details !== 'object' || typeof details.template !== 'number') return undefined
+    if (!details || typeof details !== 'object' || typeof details.template !== 'number') return next()
 
     const preview = invitationSharePreview(details)
     const { title, description, imageAlt } = preview
@@ -104,6 +105,6 @@ export default async function proxy(request: Request): Promise<Response | undefi
       },
     })
   } catch {
-    return undefined
+    return next()
   }
 }
