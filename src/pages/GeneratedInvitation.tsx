@@ -15,5 +15,11 @@ export default function GeneratedInvitation({overrideSlug}:{overrideSlug?:string
  if(error)return <main className="studio studio-empty"><h1>Invitation unavailable</h1><p role="alert">{error}</p><Link to="/dashboard">Back to the dashboard</Link></main>
  if(!record)return <InvitationLoading />
  const publishedOrderId=record.orderId||(orderNumber&&/^\d+$/.test(orderNumber)&&record.slug===`${orderNumber}/${slug||''}`?orderNumber:undefined)
- return <InvitationRenderer details={record.details} rsvpTarget={publishedOrderId?{orderId:publishedOrderId,path:record.slug}:undefined}/>
+ // Read-only comparisons on test invitations isolate the music regression on
+ // the affected device. Normal invitations and saved order data are unchanged.
+ const musicCheck=record.slug.startsWith('test-invite/')?new URLSearchParams(window.location.search).get('music-check'):null
+ const details=musicCheck==='original'||musicCheck==='selected'
+  ? {...record.details,music:musicCheck==='original'?'':record.details.music,musicStart:undefined,musicEnd:undefined}
+  : record.details
+ return <InvitationRenderer details={details} rsvpTarget={publishedOrderId?{orderId:publishedOrderId,path:record.slug}:undefined}/>
 }
