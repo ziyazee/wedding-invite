@@ -1,3 +1,4 @@
+// Sharing middleware is disconnected while the deployment failure is investigated.
 import { next } from '@vercel/edge'
 import { reservedSlugs } from './src/invitations/model.ts'
 import type { InvitationData } from './src/invitations/model.ts'

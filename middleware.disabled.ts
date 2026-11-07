@@ -1,3 +1,4 @@
+// Legacy sharing middleware is preserved but must not be auto-discovered by Vercel.
 import { next } from '@vercel/edge'
 
 // Social media crawlers that need server-rendered OG tags.

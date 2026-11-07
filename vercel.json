@@ -1,9 +1,5 @@
 {
   "$schema": "https://openapi.vercel.sh/vercel.json",
-  "proxy": {
-    "entrypoint": "proxy.ts",
-    "matcher": ["/", "/:slug", "/:slug/:orderId", "/invite/:path*"]
-  },
   "headers": [
     {
       "source": "/assets/(.*)",
@@ -37,6 +33,46 @@
     }
   ],
   "rewrites": [
+    {
+      "source": "/api/:path*",
+      "destination": "/api/:path*"
+    },
+    {
+      "source": "/",
+      "has": [
+        { "type": "query", "key": "invite", "value": "(?<invitePath>[a-z][a-z0-9./-]{0,139})" },
+        { "type": "header", "key": "user-agent", "value": ".*(?:[Ww]hats[Aa]pp|[Ff]acebookexternalhit|[Ff]acebot|[Tt]witterbot|[Ll]inked[Ii]n[Bb]ot|[Tt]elegram[Bb]ot|[Ss]lackbot|[Dd]iscordbot).*" }
+      ],
+      "destination": "/api/share?path=:invitePath"
+    },
+    {
+      "source": "/",
+      "has": [
+        { "type": "host", "value": "(?<inviteHost>(?!www\\.)[a-z][a-z0-9.-]{0,79})\\.shaadiinvites\\.in" },
+        { "type": "header", "key": "user-agent", "value": ".*(?:[Ww]hats[Aa]pp|[Ff]acebookexternalhit|[Ff]acebot|[Tt]witterbot|[Ll]inked[Ii]n[Bb]ot|[Tt]elegram[Bb]ot|[Ss]lackbot|[Dd]iscordbot).*" }
+      ],
+      "destination": "/api/share?path=:inviteHost&legacyHost=1"
+    },
+    {
+      "source": "/invite/:path*",
+      "has": [{ "type": "header", "key": "user-agent", "value": ".*(?:[Ww]hats[Aa]pp|[Ff]acebookexternalhit|[Ff]acebot|[Tt]witterbot|[Ll]inked[Ii]n[Bb]ot|[Tt]elegram[Bb]ot|[Ss]lackbot|[Dd]iscordbot).*" }],
+      "destination": "/api/share?path=:path*"
+    },
+    {
+      "source": "/test-invite/:slug",
+      "has": [{ "type": "header", "key": "user-agent", "value": ".*(?:[Ww]hats[Aa]pp|[Ff]acebookexternalhit|[Ff]acebot|[Tt]witterbot|[Ll]inked[Ii]n[Bb]ot|[Tt]elegram[Bb]ot|[Ss]lackbot|[Dd]iscordbot).*" }],
+      "destination": "/api/share?path=test-invite/:slug"
+    },
+    {
+      "source": "/:slug((?!(?:assets|images|fonts|dashboard|client|admin|login|create|preview|invite|newdesign|royal-grace|api|arjunmeera|rohankavya|aarongrace|danielsarah|vikramananya|nikhiladiti|embroidered-garden|secret-garden|majestic|bloom|the-artful-love-story|arjunbhavana|a-timeless-union|mandap-at-dusk|maroon-letter|emerald-parchment|royal-jodhpur|destination-wedding|raabta|qubool|blossom-and-oud|noor|sunehri|yasmin|maitri|kiran|ivory-arch|mangal|gulabi-mandap|viah|tajmahal|kerala|birthday|housewarming|account|edits|testing|manage|test-manage|test-invite|templates|mahal)(?:/|$))[a-z][a-z0-9.-]{0,79})/:orderId(\\d+)",
+      "has": [{ "type": "header", "key": "user-agent", "value": ".*(?:[Ww]hats[Aa]pp|[Ff]acebookexternalhit|[Ff]acebot|[Tt]witterbot|[Ll]inked[Ii]n[Bb]ot|[Tt]elegram[Bb]ot|[Ss]lackbot|[Dd]iscordbot).*" }],
+      "destination": "/api/share?path=:slug/:orderId"
+    },
+    {
+      "source": "/:slug((?!(?:assets|images|fonts|dashboard|client|admin|login|create|preview|invite|newdesign|royal-grace|api|arjunmeera|rohankavya|aarongrace|danielsarah|vikramananya|nikhiladiti|embroidered-garden|secret-garden|majestic|bloom|the-artful-love-story|arjunbhavana|a-timeless-union|mandap-at-dusk|maroon-letter|emerald-parchment|royal-jodhpur|destination-wedding|raabta|qubool|blossom-and-oud|noor|sunehri|yasmin|maitri|kiran|ivory-arch|mangal|gulabi-mandap|viah|tajmahal|kerala|birthday|housewarming|account|edits|testing|manage|test-manage|test-invite|templates|mahal|favicon\\.ico|robots\\.txt|sitemap\\.xml|index\\.html|arjunbhavana\\.html|majestic\\.html)(?:/|$))[a-z][a-z0-9.-]{0,79})",
+      "has": [{ "type": "header", "key": "user-agent", "value": ".*(?:[Ww]hats[Aa]pp|[Ff]acebookexternalhit|[Ff]acebot|[Tt]witterbot|[Ll]inked[Ii]n[Bb]ot|[Tt]elegram[Bb]ot|[Ss]lackbot|[Dd]iscordbot).*" }],
+      "destination": "/api/share?path=:slug"
+    },
     {
       "source": "/arjunbhavana",
       "destination": "/arjunbhavana.html"
