@@ -42,7 +42,7 @@ export interface InvitationData {
   musicStart?: number; musicEnd?: number;
   companyLogo?: string; companyName?: string; companyPhone?: string;
 }
-export const COMPANY_WHATSAPP_MESSAGE = 'Hi, I need a wedding invitation like this. Could you share the details and pricing?'
+export const COMPANY_WHATSAPP_MESSAGE = 'Hi,\nI am looking for digital wedding invitation'
 export function companyWhatsAppURL(phone?: string): string | undefined {
   const digits = phone?.replace(/\D/g, '') || ''
   const number = digits.length === 10 ? `91${digits}` : digits.length >= 11 && digits.length <= 15 ? digits : ''

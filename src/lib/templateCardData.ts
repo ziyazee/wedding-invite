@@ -22,6 +22,8 @@ export const TEMPLATE_INTRO_IMAGES: Record<number, string> = {
 export const TEMPLATE_THUMBNAIL_OVERRIDES: Record<number, string> = {
   1: '/templates/royal-grace/opening-poster.webp',
   4: '/templates/mandap-at-dusk/preview.jpg',
+  6: '/templates/embroidered-garden/assets/intro-curtains-opt.webp',
+  7: '/templates/bloom/assets/intro-video-2-poster.jpg',
   15: '/templates/mangal/assets/gate/00-gate-p.webp',
   17: '/templates/tajmahal/assets/opening-poster.jpg',
 }
