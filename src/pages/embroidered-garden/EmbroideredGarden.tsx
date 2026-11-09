@@ -273,7 +273,7 @@ export default function EmbroideredGarden({ details: d, rsvpTarget }: { details:
       <div className="eg-footer-inner">
         <p className="eg-footer-date">{formatDate(d.date)}</p>
       </div>
-      <InvitationMedia className="eg-footer-chateau" src={`${ASSETS}footer-chateau-opt.webp`} alt="Chateau illustration" />
+      <InvitationMedia className="eg-footer-chateau" src={d.footerIllustration || `${ASSETS}footer-chateau-opt.webp`} alt="Footer illustration" />
     </footer>
   </main></InvitationLayoutProvider>
 }

@@ -41,6 +41,7 @@ export interface InvitationData {
   dressCode: string; giftNote: string; music: string; gallery: string; events: Celebration[];
   musicStart?: number; musicEnd?: number;
   companyLogo?: string; companyName?: string; companyPhone?: string;
+  footerIllustration?: string;
 }
 export const COMPANY_WHATSAPP_MESSAGE = 'Hi,\nI am looking for digital wedding invitation'
 export function companyWhatsAppURL(phone?: string): string | undefined {
@@ -112,6 +113,7 @@ export function validateDetails(value: unknown, allowRetired = false): Invitatio
   if (d.musicEnd !== undefined && d.musicEnd <= (d.musicStart ?? 0)) throw new Error('Music must end after its start time.')
   if(d.showCoupleIllustrations!==undefined&&typeof d.showCoupleIllustrations!=='boolean')throw new Error('Choose a valid illustration setting.')
   if(d.brideFirst!==undefined&&typeof d.brideFirst!=='boolean')throw new Error('Choose a valid couple name order.')
+  if(d.footerIllustration!==undefined&&typeof d.footerIllustration!=='string')throw new Error('Choose a valid footer illustration.')
   if (!designs.some(t => t.id === d.template) && !(allowRetired && [101, 104, 108, 109, 110, 111, 112, 115, 116, 117].includes(d.template))) throw new Error('Choose an available invitation template.')
   const text = (v: unknown, label: string, max: number, required = false) => {
     if (typeof v !== 'string' || v.length > max || (required && !v.trim())) throw new Error(`Please enter a valid ${label}.`)
@@ -160,5 +162,6 @@ export function validateDetails(value: unknown, allowRetired = false): Invitatio
     ...(typeof d.companyLogo === 'string' && d.companyLogo ? { companyLogo: d.companyLogo } : {}),
     ...(typeof d.companyName === 'string' && d.companyName ? { companyName: d.companyName } : {}),
     ...(typeof d.companyPhone === 'string' && d.companyPhone ? { companyPhone: d.companyPhone } : {}),
+    ...(typeof d.footerIllustration === 'string' && d.footerIllustration ? { footerIllustration: d.footerIllustration } : {}),
   }
 }

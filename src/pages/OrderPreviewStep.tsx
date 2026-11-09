@@ -13,13 +13,17 @@ type Props = {
   busy: boolean
   editing: boolean
   draftStatus: string
+  templateId: number
   onChange: (field: PersonalField, value: string | number | undefined) => void
+  onFooterIllustrationChange: (value: string) => void
   onEventMapChange: (index: number, value: string) => void
   onBack: () => void
 }
 
+const AUDITORIUM_OPTIONS = ['/auditoriams/indiana.webp', '/auditoriams/milagrees.webp', '/auditoriams/tmai-pai.webp']
+
 // This is the extra form page; the dashboard shell and phone stay mounted.
-export default function OrderPreviewStep({ details, previewFrame, designCategory, busy, editing, draftStatus, onChange, onEventMapChange, onBack }: Props) {
+export default function OrderPreviewStep({ details, previewFrame, designCategory, busy, editing, draftStatus, templateId, onChange, onFooterIllustrationChange, onEventMapChange, onBack }: Props) {
   const heading = useRef<HTMLHeadingElement>(null)
   const [pendingLocations, setPendingLocations] = useState(0)
   const locationPendingChanged = useCallback((pending: boolean) => setPendingLocations(count => count + (pending ? 1 : -1)), [])
@@ -50,6 +54,14 @@ export default function OrderPreviewStep({ details, previewFrame, designCategory
       <label>Welcome message<textarea rows={4} value={details.message} maxLength={2000} onChange={event => onChange('message', event.target.value)}/></label>
       <label>Short note<textarea rows={2} value={details.giftNote} maxLength={600} onChange={event => onChange('giftNote', event.target.value)}/></label>
     </fieldset>
+    {templateId === 6 && <fieldset disabled={busy}>
+      <legend>Footer illustration</legend>
+      <p className="form-note">Choose the illustration shown at the bottom of the invitation.</p>
+      <div className="footer-illustration-picker">
+        <button type="button" className={`footer-illustration-option${!details.footerIllustration ? ' selected' : ''}`} onClick={() => onFooterIllustrationChange('')}><img src="/templates/embroidered-garden/assets/footer-chateau-opt.webp" alt="Default"/><span>Default</span></button>
+        {AUDITORIUM_OPTIONS.map(src => { const name = src.split('/').pop()!.replace(/\.[^.]+$/, '').replace(/[-_]/g, ' '); return <button type="button" key={src} className={`footer-illustration-option${details.footerIllustration === src ? ' selected' : ''}`} onClick={() => onFooterIllustrationChange(src)}><img src={src} alt={name}/><span>{name}</span></button> })}
+      </div>
+    </fieldset>}
     <div className="form-submit-row">
       <button type="button" className="back-action" disabled={busy || pendingLocations > 0} onClick={onBack}>← Back to review</button>
       <button type="submit" className="primary-action" disabled={busy || pendingLocations > 0}>{busy ? (editing ? 'Updating…' : 'Creating…') : pendingLocations > 0 ? 'Adding location…' : (editing ? 'Update invitation →' : 'Create invitation →')}</button>

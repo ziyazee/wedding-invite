@@ -2313,6 +2313,43 @@
   background: var(--client-selected);
 }
 
+/* Footer illustration picker */
+.footer-illustration-picker {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(140px, 1fr));
+  gap: 12px;
+  margin-top: 8px;
+}
+.footer-illustration-option {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 8px;
+  padding: 8px;
+  border: 2px solid var(--client-line);
+  border-radius: 8px;
+  background: #fff;
+  cursor: pointer;
+  transition: border-color .15s;
+}
+.footer-illustration-option img {
+  width: 100%;
+  height: 80px;
+  object-fit: contain;
+  border-radius: 4px;
+}
+.footer-illustration-option span {
+  font: 500 12px/1.2 'Inter', Arial, sans-serif;
+  color: var(--client-ink);
+}
+.footer-illustration-option.selected {
+  border-color: var(--client-green);
+  background: var(--client-selected);
+}
+.footer-illustration-option:hover:not(.selected) {
+  border-color: var(--client-muted);
+}
+
 /* Submit / primary action */
 .client-workspace.show-client-details .order-form > .primary-action {
   min-height: 44px;
