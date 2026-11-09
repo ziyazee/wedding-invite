@@ -4,6 +4,7 @@ type InvitationDetails = {
   bride?: string
   date?: string
   venue?: string
+  message?: string
 }
 
 type PublishedInvitation = { details?: InvitationDetails }
@@ -21,6 +22,13 @@ function invitationPath(requestUrl: URL): string | null {
   if (requestUrl.pathname.startsWith('/invite/')) {
     return requestUrl.pathname.slice('/invite/'.length)
   }
+
+  // Published order URLs use either /orderId/randomSlug or a single
+  // path segment such as /orderId-randomCode. Ignore asset and app routes.
+  const path = requestUrl.pathname.replace(/^\/+|\/+$/g, '')
+  if (!path || /\.(?:html?|js|css|json|xml|txt|png|jpe?g|webp|avif|svg|gif|mp4|mov|webm|mp3|woff2?|ttf|otf)$/i.test(path)) return null
+  if (/^(?:client|admin|login|account|dashboard|create|newDesign|testing567|edits|privacy|api|assets|templates|images)(?:\/|$)/i.test(path)) return null
+  if (/^\d+\/[A-Za-z0-9_-]+$/.test(path) || /^[A-Za-z0-9_-]{16,}$/.test(path)) return path
   return null
 }
 
@@ -67,19 +75,17 @@ export default async function proxy(request: Request): Promise<Response | undefi
 
     const published = await lookup.json() as PublishedInvitation | null
     const details = published?.details
-    if (!details || details.template !== 4) return undefined
+    if (!details) return undefined
 
     const groom = details.groom?.trim() || 'Your names'
     const bride = details.bride?.trim()
     const couple = bride ? `${groom} & ${bride}` : groom
     const date = formattedDate(details.date)
     const venue = details.venue?.trim()
-    const description = [
-      `Join ${couple} for their wedding${date ? ` on ${date}` : ''}${venue ? ` at ${venue}` : ''}.`,
-      'View their Mandap at Dusk invitation.',
-    ].join(' ')
-    const image = new URL('/templates/mandap-at-dusk/preview.jpg', url.origin).href
-    const title = `${couple} | Wedding Invitation`
+    const invitationMessage = details.message?.trim()
+    const description = invitationMessage || `Join ${couple} for their wedding${date ? ` on ${date}` : ''}${venue ? ` at ${venue}` : ''}.`
+    const image = new URL(`/api/og?slug=${encodeURIComponent(path)}`, url.origin).href
+    const title = `${couple} are getting married!`
     const canonical = url.href
 
     return new Response(`<!doctype html>
