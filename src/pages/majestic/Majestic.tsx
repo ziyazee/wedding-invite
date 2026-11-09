@@ -1,5 +1,5 @@
 import { Fragment, useEffect, useLayoutEffect, useRef, useState } from 'react'
-import type { ComponentProps, CSSProperties, RefObject } from 'react'
+import type { ComponentProps, CSSProperties } from 'react'
 import type { Celebration, InvitationData } from '../../invitations/model'
 import { formatDate, formatTime, weddingISO } from '../../invitations/model'
 import { downloadCalendar } from '../../invitations/calendar'
@@ -16,7 +16,7 @@ import defaultLayout from './defaultLayout'
 import './Majestic.css'
 
 // Keep the embedded-map implementation available without mounting or loading it.
-const MAP_EMBEDS_ENABLED = false
+// const MAP_EMBEDS_ENABLED = false
 
 type CopyProps = Omit<ComponentProps<typeof EditableText>, 'textId'> & { field: string }
 function Copy({ field, label, children, animation = 'fade-up', animationStagger = 40, animationDelay = 0, ...props }: CopyProps) {
@@ -156,77 +156,78 @@ function Countdown({ details }: { details: InvitationData }) {
   </Section>
 }
 
-function toEmbedUrl(mapUrl: string): string | null {
-  const trimmed = mapUrl.trim()
-  if (!trimmed) return null
-  try {
-    const url = new URL(trimmed)
-    if (url.pathname.startsWith('/maps/embed') || url.searchParams.get('output') === 'embed') return trimmed
-    const q = url.searchParams.get('destination') || url.searchParams.get('q') || url.searchParams.get('query')
-    if (q) return `https://www.google.com/maps?q=${encodeURIComponent(q)}&output=embed`
-    const placeMatch = url.pathname.match(/\/maps\/place\/([^/@]+)/)
-    if (placeMatch) return `https://www.google.com/maps?q=${encodeURIComponent(decodeURIComponent(placeMatch[1]))}&output=embed`
-    const atMatch = url.pathname.match(/@([-\d.]+),([-\d.]+)/)
-    if (atMatch) return `https://www.google.com/maps?q=${atMatch[1]},${atMatch[2]}&output=embed`
-  } catch { /* invalid URL */ }
-  return null
-}
+/* --- Temporarily disabled: maps/details removed from render ---
 
-/* --- Temporarily disabled: maps/calendar removed from render ---
-function useMapsReady(root: RefObject<HTMLElement | null>, videoKey: string) {
-  const [readyFor, setReadyFor] = useState<string | null>(null)
-  useEffect(() => {
-    if (!MAP_EMBEDS_ENABLED || !root.current) return
-    const videos = [...root.current.querySelectorAll<HTMLVideoElement>('video.mj-hero-video, video.mj-event-video')]
-    const pending = new Set(videos)
-    const update = () => {
-      pending.forEach(video => {
-        if (video.readyState >= HTMLMediaElement.HAVE_FUTURE_DATA || video.error) pending.delete(video)
-      })
-      if (document.readyState === 'complete' && pending.size === 0) setReadyFor(videoKey)
-    }
-    videos.forEach(video => {
-      video.addEventListener('canplay', update)
-      video.addEventListener('error', update)
-    })
-    window.addEventListener('load', update)
-    update()
-    return () => {
-      videos.forEach(video => {
-        video.removeEventListener('canplay', update)
-        video.removeEventListener('error', update)
-      })
-      window.removeEventListener('load', update)
-    }
-  }, [root, videoKey])
-  return readyFor === videoKey
-}
-
-function MapEmbed({ event, details, ready }: { event: Celebration; details: InvitationData; ready: boolean }) {
-  const embedUrl = toEmbedUrl(event.map)
-  const frame = useRef<HTMLDivElement>(null)
-  const [nearby, setNearby] = useState(false)
-  useEffect(() => {
-    if (!ready || !embedUrl || !frame.current) return
-    const observer = new IntersectionObserver(entries => {
-      if (entries.some(entry => entry.isIntersecting)) {
-        setNearby(true)
-        observer.disconnect()
-      }
-    }, { rootMargin: '200px 0px' })
-    observer.observe(frame.current)
-    return () => observer.disconnect()
-  }, [ready, embedUrl])
-  if (!embedUrl) return null
-  return <div className="mj-map-section">
-    <div ref={frame} className="mj-map-frame">
-      <img className="mj-map-border" src="/templates/majestic/assets/maps.webp" loading="lazy" decoding="async" alt="" />
-      <div className="mj-map-clip">{ready && nearby && <iframe className="mj-map-iframe" src={embedUrl} loading="lazy" referrerPolicy="no-referrer-when-downgrade" allowFullScreen title="Venue location" />}</div>
-    </div>
-    <button type="button" className="mj-map-calendar" onClick={() => downloadCalendar(event, details.offset, coupleLabel(details))}>Add to calendar</button>
-  </div>
-}
---- */
+// eslint-disable-next-line
+// function toEmbedUrl(mapUrl: string): string | null {
+//   const trimmed = mapUrl.trim()
+//   if (!trimmed) return null
+//   try {
+//     const url = new URL(trimmed)
+//     if (url.pathname.startsWith('/maps/embed') || url.searchParams.get('output') === 'embed') return trimmed
+//     const q = url.searchParams.get('destination') || url.searchParams.get('q') || url.searchParams.get('query')
+//     if (q) return `https://www.google.com/maps?q=${encodeURIComponent(q)}&output=embed`
+//     const placeMatch = url.pathname.match(/\/maps\/place\/([^/@]+)/)
+//     if (placeMatch) return `https://www.google.com/maps?q=${encodeURIComponent(decodeURIComponent(placeMatch[1]))}&output=embed`
+//     const atMatch = url.pathname.match(/@([-\d.]+),([-\d.]+)/)
+//     if (atMatch) return `https://www.google.com/maps?q=${atMatch[1]},${atMatch[2]}&output=embed`
+//   } catch {}
+//   return null
+// }
+// function useMapsReady(root: RefObject<HTMLElement | null>, videoKey: string) {
+//   const [readyFor, setReadyFor] = useState<string | null>(null)
+//   useEffect(() => {
+//     if (!MAP_EMBEDS_ENABLED || !root.current) return
+//     const videos = [...root.current.querySelectorAll<HTMLVideoElement>('video.mj-hero-video, video.mj-event-video')]
+//     const pending = new Set(videos)
+//     const update = () => {
+//       pending.forEach(video => {
+//         if (video.readyState >= HTMLMediaElement.HAVE_FUTURE_DATA || video.error) pending.delete(video)
+//       })
+//       if (document.readyState === 'complete' && pending.size === 0) setReadyFor(videoKey)
+//     }
+//     videos.forEach(video => {
+//       video.addEventListener('canplay', update)
+//       video.addEventListener('error', update)
+//     })
+//     window.addEventListener('load', update)
+//     update()
+//     return () => {
+//       videos.forEach(video => {
+//         video.removeEventListener('canplay', update)
+//         video.removeEventListener('error', update)
+//       })
+//       window.removeEventListener('load', update)
+//     }
+//   }, [root, videoKey])
+//   return readyFor === videoKey
+// }
+//
+// function MapEmbed({ event, details, ready }: { event: Celebration; details: InvitationData; ready: boolean }) {
+//   const embedUrl = toEmbedUrl(event.map)
+//   const frame = useRef<HTMLDivElement>(null)
+//   const [nearby, setNearby] = useState(false)
+//   useEffect(() => {
+//     if (!ready || !embedUrl || !frame.current) return
+//     const observer = new IntersectionObserver(entries => {
+//       if (entries.some(entry => entry.isIntersecting)) {
+//         setNearby(true)
+//         observer.disconnect()
+//       }
+//     }, { rootMargin: '200px 0px' })
+//     observer.observe(frame.current)
+//     return () => observer.disconnect()
+//   }, [ready, embedUrl])
+//   if (!embedUrl) return null
+//   return <div className="mj-map-section">
+//     <div ref={frame} className="mj-map-frame">
+//       <img className="mj-map-border" src="/templates/majestic/assets/maps.webp" loading="lazy" decoding="async" alt="" />
+//       <div className="mj-map-clip">{ready && nearby && <iframe className="mj-map-iframe" src={embedUrl} loading="lazy" referrerPolicy="no-referrer-when-downgrade" allowFullScreen title="Venue location" />}</div>
+//     </div>
+//     <button type="button" className="mj-map-calendar" onClick={() => downloadCalendar(event, details.offset, coupleLabel(details))}>Add to calendar</button>
+//   </div>
+// }
+// --- end disabled maps/details --- */
 
 function EventCard({ event, eventKey, details: d }: { event: Celebration; eventKey: string; details: InvitationData }) {
   const root = useRef<HTMLDivElement>(null)
