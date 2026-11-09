@@ -54,7 +54,7 @@
       "destination": "/majestic.html"
     },
     {
-      "source": "/(.*)",
+      "source": "/((?!api(?:/|$)).*)",
       "destination": "/index.html"
     }
   ],

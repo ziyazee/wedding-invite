@@ -1,7 +1,5 @@
-// @ts-ignore – @vercel/og ships its own JSX runtime
+import React from 'react'
 import { ImageResponse } from '@vercel/og'
-
-export const config = { runtime: 'edge' }
 
 interface Theme {
   background: string
@@ -19,7 +17,7 @@ const THEMES: Record<number, Theme> = {
     nameColor: '#2d2416',
     accentColor: '#8b9274',
     labelColor: '#9a8c74',
-    bgImage: '/images/royal-grace/opening-poster.jpg',
+    bgImage: '/templates/royal-grace/opening-poster.webp',
   },
   2: {
     // Majestic — deep champagne
@@ -27,7 +25,7 @@ const THEMES: Record<number, Theme> = {
     nameColor: '#f2e8d4',
     accentColor: '#d4a843',
     labelColor: '#c0a060',
-    bgImage: '/design6/assets/hero-poster-DkA1j00-.jpg',
+    bgImage: '/templates/majestic/assets/hero-poster-DkA1j00-.jpg',
   },
   3: {
     // A Timeless Union — deep navy
@@ -43,7 +41,7 @@ const THEMES: Record<number, Theme> = {
     nameColor: '#f0d8b0',
     accentColor: '#e8985a',
     labelColor: '#c87840',
-    bgImage: '/design18/preview.jpg',
+    bgImage: '/templates/mandap-at-dusk/preview.jpg',
   },
   5: {
     // Secret Garden — deep sage
@@ -51,7 +49,7 @@ const THEMES: Record<number, Theme> = {
     nameColor: '#f0ece0',
     accentColor: '#c8b87a',
     labelColor: '#a09860',
-    bgImage: '/design5/assets/opened.jpg',
+    bgImage: '/templates/secret-garden/assets/opened.jpg',
   },
 }
 
@@ -108,23 +106,23 @@ export default async function handler(req: Request) {
   }
 
   const theme = THEMES[templateId] ?? FALLBACK_THEME
-  const base = 'https://shaadiinvites.in'
-
-  // Load Playfair Display for the names. Fall back to system serif if it fails.
-  const fontData = await fetch(`${base}/design14/assets/playfair-display-latin.woff2`)
-    .then(r => (r.ok ? r.arrayBuffer() : null))
-    .catch(() => null)
+  const base = new URL(req.url).origin
 
   // Fetch the template background image. Wrapped so a missing asset won't break the response.
   let bgDataUrl: string | null = null
   if (theme.bgImage) {
     try {
-      const imgRes = await fetch(`${base}${theme.bgImage}`)
-      if (imgRes.ok) {
+      const imgRes = await fetch(`${base}${theme.bgImage}`, { signal: AbortSignal.timeout(3000) })
+      const mime = imgRes.headers.get('content-type')?.split(';')[0].trim() ?? ''
+      // A missing asset can return the SPA HTML with status 200. Never pass
+      // that HTML (or a firewall challenge) to the image renderer.
+      if (imgRes.ok && /^image\/(?:png|jpeg|webp)$/.test(mime)) {
         const bytes = new Uint8Array(await imgRes.arrayBuffer())
-        const b64 = btoa(String.fromCharCode(...bytes))
-        const mime = theme.bgImage.endsWith('.jpg') ? 'image/jpeg' : 'image/png'
-        bgDataUrl = `data:${mime};base64,${b64}`
+        let binary = ''
+        for (let offset = 0; offset < bytes.length; offset += 8192) {
+          binary += String.fromCharCode(...bytes.subarray(offset, offset + 8192))
+        }
+        bgDataUrl = `data:${mime};base64,${btoa(binary)}`
       }
     } catch {
       // Continue without bg image.
@@ -139,14 +137,19 @@ export default async function handler(req: Request) {
         height: '630px',
         position: 'relative',
         overflow: 'hidden',
-        fontFamily: fontData ? 'Playfair Display' : 'serif',
+        // Use the renderer's bundled font so a blocked font request cannot
+        // break the preview. Satori does not support the old WOFF2 asset.
+        fontFamily: 'sans-serif',
       }}
     >
       {/* Gradient background */}
       <div
         style={{
           position: 'absolute',
-          inset: '0',
+          top: 0,
+          left: 0,
+          width: '100%',
+          height: '100%',
           background: theme.background,
           display: 'flex',
         }}
@@ -158,7 +161,8 @@ export default async function handler(req: Request) {
           src={bgDataUrl}
           style={{
             position: 'absolute',
-            inset: '0',
+            top: 0,
+            left: 0,
             width: '100%',
             height: '100%',
             objectFit: 'cover',
@@ -171,7 +175,10 @@ export default async function handler(req: Request) {
       <div
         style={{
           position: 'absolute',
-          inset: '0',
+          top: 0,
+          left: 0,
+          width: '100%',
+          height: '100%',
           display: 'flex',
           flexDirection: 'column',
           alignItems: 'center',
@@ -270,18 +277,6 @@ export default async function handler(req: Request) {
   return new ImageResponse(el, {
     width: 1200,
     height: 630,
-    ...(fontData
-      ? {
-          fonts: [
-            {
-              name: 'Playfair Display',
-              data: fontData,
-              weight: 700 as const,
-              style: 'normal' as const,
-            },
-          ],
-        }
-      : {}),
     headers: {
       'Cache-Control': 'public, max-age=3600, s-maxage=86400, stale-while-revalidate=3600',
     },
