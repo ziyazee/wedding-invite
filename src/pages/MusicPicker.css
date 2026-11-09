@@ -2,6 +2,8 @@
 .music-picker .music-picker-tags { display: flex; flex-wrap: wrap; gap: 8px; margin: 12px 0 16px; }
 .music-picker .music-picker-tags button { padding: 8px 16px; border: 1px solid #dce2da; border-radius: 999px; background: #fff; color: #526457; font: 500 12px/1.3 Inter, Arial, sans-serif; cursor: pointer; }
 .music-picker .music-picker-tags button[aria-pressed="true"] { border-color: #354c43; background: #354c43; color: #fff; }
+.music-picker .music-picker-tags button.music-picker-add-tag { border-style: dashed; border-color: #9cab9d; background: transparent; color: #354c43; }
+.music-picker .music-picker-tags button.music-picker-add-tag:hover { background: #f0f4ec; }
 .music-picker .music-picker-tags button:hover:not(:disabled):not([aria-pressed="true"]) { background: #f0f4ec; }
 .music-picker .music-picker-tags button:focus-visible { outline: 2px solid #6d8a76; outline-offset: 3px; }
 .music-picker .music-picker-tags button:disabled { opacity: .55; cursor: default; }
@@ -15,3 +17,21 @@ div.music-picker .music-picker-choices > label.music-picker-choice:hover:not(.is
 .music-picker .music-picker-choices .music-picker-choice input[type="radio"] { position: absolute; width: 1px; height: 1px; min-height: 0; margin: 0; padding: 0; border: 0; overflow: hidden; clip-path: inset(50%); white-space: nowrap; }
 .music-picker .music-picker-choice span { min-width: 0; overflow-wrap: anywhere; }
 .music-picker .music-picker-empty { flex-basis: 100%; margin: 0; padding: 12px; color: #778176; font: 400 12px/1.6 Inter, Arial, sans-serif; }
+.music-picker .music-store-upload-trigger { min-height: 40px; margin-top: 16px; padding: 0 15px; border: 1px solid #354c43; border-radius: 7px; background: #354c43; color: #fff; font: 500 12px/1.3 Inter, Arial, sans-serif; cursor: pointer; }
+.music-picker .music-store-upload-trigger:hover { background: #294238; }
+.music-picker .music-store-upload-trigger:focus-visible { outline: 2px solid #6d8a76; outline-offset: 3px; }
+.music-picker .music-store-upload-message { margin: 10px 0 0; color: #526457; font: 400 12px/1.5 Inter, Arial, sans-serif; }
+.music-store-modal-backdrop { position: fixed; inset: 0; z-index: 10000; display: grid; place-items: center; padding: 20px; background: #17221dcc; }
+.music-store-modal { position: relative; display: grid; gap: 16px; box-sizing: border-box; width: min(100%, 440px); margin: 0; padding: 26px; border: 1px solid #e3e7df; border-radius: 14px; background: #fff; box-shadow: 0 20px 70px #0004; }
+.music-store-modal h3 { margin: 0; padding-right: 32px; color: #354c43; font: 600 20px/1.3 Inter, Arial, sans-serif; }
+.music-store-modal > p { margin: -8px 0 0; color: #778176; font: 400 13px/1.5 Inter, Arial, sans-serif; }
+.music-picker .music-store-modal label { display: grid; gap: 7px; margin: 0; color: #526457; font: 500 12px/1.4 Inter, Arial, sans-serif; }
+.music-picker .music-store-modal input, .music-picker .music-store-modal select { box-sizing: border-box; width: 100%; min-width: 0; min-height: 42px; margin: 0; padding: 10px 12px; border: 1px solid #dce2da; border-radius: 7px; background: #fff; color: #354c43; font: 400 14px/1.4 Inter, Arial, sans-serif; }
+.music-picker .music-store-modal input[type="file"] { padding: 9px; font-size: 13px; }
+.music-store-modal-close { position: absolute; top: 12px; right: 12px; display: grid; place-items: center; width: 34px; height: 34px; border: 0; border-radius: 50%; background: transparent; color: #526457; font: 400 26px/1 Arial, sans-serif; cursor: pointer; }
+.music-store-modal-close:hover { background: #f2f4f0; }
+.music-store-modal-actions { display: flex; justify-content: flex-end; gap: 10px; margin-top: 4px; }
+.music-store-modal-actions button { min-height: 40px; padding: 0 15px; border: 1px solid #dce2da; border-radius: 7px; background: #fff; color: #526457; font: 500 12px/1.3 Inter, Arial, sans-serif; cursor: pointer; }
+.music-store-modal-actions button:last-child { border-color: #354c43; background: #354c43; color: #fff; }
+.music-store-modal-actions button:disabled { opacity: .55; cursor: default; }
+.music-store-modal-actions button:focus-visible, .music-store-modal-close:focus-visible { outline: 2px solid #6d8a76; outline-offset: 3px; }

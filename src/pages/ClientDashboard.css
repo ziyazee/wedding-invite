@@ -571,7 +571,7 @@
 .client-workspace.show-client-details .client-workflow-next[hidden] { display: none !important; }
 .client-workspace.show-client-details.last-form-step:not(.reviewing-client-order) .order-form > .primary-action { display: none !important; }
 .client-workspace.show-client-details.last-form-step:not(.reviewing-client-order) .client-workflow-next { font-size: 0 !important; }
-.client-workspace.show-client-details.last-form-step:not(.reviewing-client-order) .client-workflow-next::after { content: 'Review invitation →'; font-size: 11px; }
+.client-workspace.show-client-details.last-form-step:not(.reviewing-client-order) .client-workflow-next::after { content: 'Continue →'; font-size: 11px; }
 .client-workspace.show-client-details.reviewing-client-order .order-form { grid-template-columns: minmax(0,1fr) 160px !important; }
 .client-workspace.show-client-details.reviewing-client-order .order-form > .primary-action { grid-column: 1 !important; width: 100% !important; }
 .client-workspace.show-client-details.reviewing-client-order .order-form > .client-workflow-controls { grid-column: 2 !important; align-self: stretch; margin: 2px 0 !important; }
@@ -590,6 +590,7 @@
 .client-workspace.has-client-preview.show-client-details .client-workflow-controls .client-workflow-next { border-color: #3c5148; background: #3c5148; color: #fff; }
 .client-workspace.has-client-preview.show-client-details .client-workflow-controls button[hidden] { display: none; }
 .client-workspace.has-client-preview.show-client-details:not(.reviewing-client-order):not(.editing-order) .order-form .form-submit-row { display: none; }
+.client-workspace.has-client-preview.show-client-details:not(.reviewing-client-order):not(.editing-order) .order-form .order-personal-step .form-submit-row { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); }
 .client-workspace.has-client-preview.show-client-details.reviewing-client-order .order-form .form-submit-row,
 .client-workspace.has-client-preview.show-client-details.editing-order .order-form .form-submit-row { display: grid; grid-column: 1 / -1; grid-template-columns: minmax(0, 1fr); }
 .client-workspace.has-client-preview.show-client-details.reviewing-client-order .order-form .form-submit-row { grid-template-columns: repeat(2, minmax(0, 1fr)); }
@@ -598,8 +599,6 @@
 .client-workspace.has-client-preview.show-client-details .workspace-main { padding-bottom: 34px; }
 .client-workspace.has-client-preview.show-client-details .client-workflow-controls { position: static; z-index: auto; grid-column: 1 / -1; display: flex; align-items: center; justify-content: center; width: 100%; margin: 18px 0 0; padding: 0; border: 0; border-radius: 0; background: transparent; box-shadow: none; backdrop-filter: none; }
 .client-workspace.has-client-preview.show-client-details .client-workflow-progress { display: block; }
-.client-workspace.has-client-preview.show-client-details .client-order-progress { grid-column: 1 / -1; width: 100%; height: 5px; overflow: hidden; margin: 0 0 16px; border-radius: 999px; background: #e9eeeb; }
-.client-workspace.has-client-preview.show-client-details .client-order-progress span { display: block; height: 100%; border-radius: inherit; background: linear-gradient(90deg, #3c5148, #829b8a); transition: width .35s ease; }
 .client-workspace.has-client-preview.show-client-details .order-form fieldset:nth-of-type(3) > .secondary-action ~ .form-grid > label:not(:first-child) { display: none; }
 .client-workspace .order-form fieldset:nth-of-type(3) > .form-grid:last-of-type > label:nth-child(2) { display: none !important; }
 .client-workspace.has-client-preview.show-client-details .client-workflow-back,
@@ -1948,7 +1947,7 @@
   border-radius: 12px;
   background: var(--client-paper);
   box-shadow: 0 1px 4px #0000000a;
-  gap: 0;
+  gap: 0 !important;
   max-height: none;
   overflow-y: visible;
 }
@@ -1994,7 +1993,7 @@
   justify-content: space-between;
   gap: 16px;
   padding: 0 0 14px;
-  margin-bottom: 4px;
+  margin-bottom: 0;
   border-bottom: 1px solid var(--client-line);
 }
 .client-workspace.show-client-details .form-heading-phone {
@@ -2241,49 +2240,82 @@
 /* Celebration editor cards */
 .client-workspace.show-client-details .order-form .celebration-editor {
   margin: 10px 0;
-  padding: 16px;
-  border: 1px solid var(--client-line);
+  border: 1px solid var(--cel-border, var(--client-line));
   border-radius: 10px;
   background: var(--client-paper);
+  overflow: hidden;
 }
 .client-workspace.show-client-details .celebration-header {
   display: flex;
   align-items: center;
-  gap: 10px;
-  margin: 0 0 14px;
+  gap: 8px;
+  padding: 10px 14px;
+  background: var(--cel-border, #e0e0e0);
+  border-bottom: 1px solid var(--cel-border, var(--client-line));
 }
-.client-workspace.show-client-details .celebration-number {
+.client-workspace.show-client-details .celebration-icon {
   flex: none;
   display: inline-flex;
   align-items: center;
   justify-content: center;
   width: 26px;
   height: 26px;
-  border-radius: 50%;
-  background: var(--client-selected);
-  color: var(--client-green);
+  border-radius: 6px;
+  background: color-mix(in srgb, var(--cel-bg, #eee) 60%, white);
+  color: var(--cel-icon, var(--client-green));
+  border: 1px solid var(--cel-border, var(--client-line));
+}
+.client-workspace.show-client-details .celebration-number {
+  flex: none;
   font: 600 10px/1 'Inter', Arial, sans-serif;
+  color: var(--cel-icon, var(--client-green));
+  letter-spacing: .04em;
 }
 .client-workspace.show-client-details .celebration-title {
   flex: 1;
   margin: 0;
-  font: 500 13px/1.2 'Inter', Arial, sans-serif;
+  font: 500 12px/1.2 'Inter', Arial, sans-serif;
   color: var(--client-ink);
 }
 .client-workspace.show-client-details .celebration-remove {
   flex: none;
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
   padding: 4px 8px;
-  border: none;
-  border-radius: 4px;
+  border: 1px solid #e8c5c0;
+  border-radius: 5px;
   background: none;
-  color: var(--client-muted);
-  font: 400 11px/1 'Inter', Arial, sans-serif;
+  color: #b05a52;
+  font: 400 10px/1 'Inter', Arial, sans-serif;
   cursor: pointer;
-  transition: color .15s, background .15s;
+  transition: color .15s, background .15s, border-color .15s;
 }
 .client-workspace.show-client-details .celebration-remove:hover {
   color: #c74c45;
   background: #fdf0ee;
+  border-color: #d4897f;
+}
+.client-workspace.show-client-details .order-form .celebration-editor .form-grid {
+  padding: 14px;
+}
+.client-workspace.show-client-details .celebration-grid {
+  grid-template-columns: 2fr 1fr 1fr;
+}
+.client-workspace.show-client-details .celebration-grid > label:first-child textarea {
+  resize: none !important;
+  height: 40px !important;
+  min-height: 0 !important;
+  max-height: 40px !important;
+  overflow: hidden;
+  padding-top: 10px;
+  padding-bottom: 10px;
+}
+.client-workspace.show-client-details .celebration-grid > label:nth-child(4) {
+  grid-column: 1 / 2;
+}
+.client-workspace.show-client-details .celebration-grid > label:nth-child(5) {
+  grid-column: 2 / -1;
 }
 
 /* Add celebration button */
@@ -2623,15 +2655,21 @@
   50% { opacity: .5; }
 }
 
-/* Client workspace theme overrides */
-.client-workspace .workspace-top .client-upload-pdf-ai,
-.client-workspace .workspace-top .client-upload-pdf-ai:hover {
-  background: #fff;
-  border-color: #E7E2D9;
-  color: var(--client-ink);
-  box-shadow: 0 1px 4px #0000000a;
+/* Client workspace theme overrides — two-column header layout */
+.client-workspace.show-client-details .workspace-top {
+  display: flex; align-items: flex-start; justify-content: space-between; gap: 20px;
 }
-.client-workspace .workspace-top .client-upload-pdf-ai:hover {
+.client-workspace.show-client-details .workspace-top > div:first-child {
+  display: flex; flex-direction: column; align-items: flex-start;
+}
+.client-workspace.show-client-details .workspace-top > div:first-child .client-form-back {
+  margin-bottom: 12px;
+}
+.client-workspace.show-client-details .workspace-top .client-upload-pdf-ai,
+.client-workspace.show-client-details .workspace-top .client-upload-pdf-ai:hover {
+  position: static; transform: none; flex: none;
+}
+.client-workspace.show-client-details .workspace-top .client-upload-pdf-ai:hover {
   border-color: #c9b484;
   box-shadow: 0 3px 12px #0000000f;
 }
@@ -2662,4 +2700,80 @@
 @media (max-width: 430px) {
   .client-upload-pdf-ai .ai-label small { display: none; }
   .client-upload-pdf-ai .ai-upload-btn { display: none; }
+}
+.client-workspace.show-client-details .celebration-editor .celebration-grid {
+  width: 100%;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+}
+
+.client-workspace.show-client-details .celebration-editor .celebration-grid > * {
+  grid-column: auto !important;
+}
+
+.client-workspace.show-client-details .celebration-editor .celebration-grid > :nth-child(1),
+.client-workspace.show-client-details .celebration-editor .celebration-grid > :nth-child(n + 4),
+.client-workspace.show-client-details .wedding-details-grid > :nth-child(1),
+.client-workspace.show-client-details .wedding-details-grid > :nth-child(n + 4) {
+  grid-column: 1 / -1 !important;
+}
+
+.client-workspace.show-client-details .celebration-card-body,
+.client-workspace.show-client-details .wedding-details-layout {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  align-items: start;
+  gap: 24px;
+}
+
+.client-workspace.show-client-details .celebration-location {
+  display: flex;
+  flex-direction: column;
+  align-self: stretch;
+  min-width: 0;
+}
+
+.client-workspace.show-client-details .celebration-location .order-personal-event-map {
+  display: flex;
+  flex-direction: column;
+  flex: 1;
+  min-width: 0;
+}
+
+.client-workspace.show-client-details .celebration-location .event-location-map-footer {
+  display: none;
+}
+
+.client-workspace.show-client-details .celebration-location .event-location-map {
+  width: 100%;
+  max-width: 360px;
+}
+
+.client-workspace.show-client-details .celebration-location .event-location-preview {
+  display: flex;
+  flex: 1;
+  align-items: center;
+  justify-content: center;
+  margin-top: 16px;
+}
+
+.client-workspace.show-client-details .celebration-editor .celebration-location {
+  padding: 14px;
+}
+
+.client-workspace.show-client-details .order-form .celebration-location .form-grid {
+  grid-template-columns: minmax(0, 1fr);
+  padding: 0;
+  min-width: 0;
+}
+
+@media (max-width: 720px) {
+  .client-workspace.show-client-details .celebration-card-body,
+  .client-workspace.show-client-details .wedding-details-layout {
+    grid-template-columns: minmax(0, 1fr);
+  }
+
+  .client-workspace.show-client-details .celebration-editor .celebration-grid {
+    width: 100%;
+  }
+
 }

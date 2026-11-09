@@ -2,7 +2,7 @@ import { useCallback, useEffect, useState } from 'react'
 import { musicCatalog } from './musicCatalog'
 import { loadMusicLibrary, musicLibraryUpdated, type MusicTrack } from './musicLibrary'
 
-export function useMusicLibrary() {
+export function useMusicLibrary(companyId?: number, includeAll = false) {
   const [tracks, setTracks] = useState<readonly MusicTrack[]>(musicCatalog)
   const [loading, setLoading] = useState(true)
   const [available, setAvailable] = useState(false)
@@ -12,7 +12,7 @@ export function useMusicLibrary() {
   useEffect(() => {
     let cancelled = false
     setLoading(true)
-    void loadMusicLibrary().then(items => {
+    void loadMusicLibrary(companyId, includeAll).then(items => {
       if (cancelled) return
       setTracks(items); setAvailable(true); setError('')
     }).catch(cause => {
@@ -21,7 +21,7 @@ export function useMusicLibrary() {
       setError(cause && typeof cause.message === 'string' ? cause.message : 'Unable to load the music library.')
     }).finally(() => { if (!cancelled) setLoading(false) })
     return () => { cancelled = true }
-  }, [revision])
+  }, [revision, companyId, includeAll])
   useEffect(() => {
     window.addEventListener('focus', refresh)
     window.addEventListener(musicLibraryUpdated, refresh)

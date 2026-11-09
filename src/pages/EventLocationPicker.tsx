@@ -150,13 +150,9 @@ export default function EventLocationPicker({ title, venue, address, value, disa
   }
 
   return <div className="order-personal-event-map">
-    <div className="event-location-fields">
-    <div className="event-location-heading">
-    <strong>{title}</strong>
-    <small>{[venue, address].filter(Boolean).join(', ')}</small>
-    </div>
+    <div className="form-grid event-location-fields">
     <div className="event-location-search">
-      <label htmlFor={`${id}-search`}>Search Google Maps</label>
+      <label htmlFor={`${id}-search`}>Search Google Maps
       <input id={`${id}-search`} type="text" role="combobox" autoComplete="off" maxLength={200}
         value={query} disabled={disabled} placeholder={venue ? `Search for ${venue}` : 'Search venue or address, including city'}
         aria-label={`Search Google Maps for ${title}`} aria-autocomplete="list" aria-expanded={open && suggestions.length > 0}
@@ -177,6 +173,7 @@ export default function EventLocationPicker({ title, venue, address, value, disa
             if (open && active >= 0 && suggestions[active]) void select(suggestions[active])
           }
         }}/>
+      </label>
       {open && suggestions.length > 0 && <div className="event-location-results">
         <ul id={`${id}-results`} role="listbox" aria-label={`Locations for ${title}`}>
           {suggestions.map((place, index) => <li key={place.placeId} id={`${id}-option-${index}`} role="option" aria-selected={index === active}
@@ -189,9 +186,10 @@ export default function EventLocationPicker({ title, venue, address, value, disa
     </div>
     <p id={`${id}-status`} className="form-note event-location-status" role="status">{loading ? 'Searching…' : message}</p>
     <div className="event-location-link">
-    <label htmlFor={`${id}-map`}>Google Maps link</label>
+    <label htmlFor={`${id}-map`}>Google Maps link
     <input id={`${id}-map`} type="url" inputMode="url" value={value} maxLength={2000} disabled={disabled}
       placeholder="Or paste https://maps.app.goo.gl/…" aria-label={`Google Maps link for ${title}`} onChange={event => editMap(event.target.value)}/>
+    </label>
     </div>
     </div>
     <div className="event-location-preview">

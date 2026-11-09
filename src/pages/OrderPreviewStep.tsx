@@ -139,7 +139,7 @@ export default function OrderPreviewStep({ details, previewFrame, designCategory
   return <div className="order-personal-step">
     <fieldset disabled={busy}>
       <legend>Music</legend>
-      <MusicPicker value={details.music} designCategory={designCategory} previewInPhone onChange={value => onChange('music', value)}/>
+      <MusicPicker value={details.music} designCategory={designCategory} companyId={companyId} previewInPhone onChange={value => onChange('music', value)}/>
       <MusicPlaybackControls value={details.music} start={details.musicStart} end={details.musicEnd} previewFrame={previewFrame} onRangeChange={(start, end) => { onChange('musicStart', start); onChange('musicEnd', end) }} onPlay={() => onChange('music', details.music)}/>
     </fieldset>
     <fieldset disabled={busy}>

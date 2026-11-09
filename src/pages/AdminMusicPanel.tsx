@@ -16,7 +16,7 @@ function readPending(): PendingUpload | null {
 }
 
 export default function AdminMusicPanel() {
-  const { tracks, loading, available, error: libraryError, refresh } = useMusicLibrary()
+  const { tracks, loading, available, error: libraryError, refresh } = useMusicLibrary(undefined, true)
   const [pending, setPending] = useState<PendingUpload | null>(readPending)
   const [name, setName] = useState(pending?.name || '')
   const [category, setCategory] = useState<MusicCategory>(pending?.category || 'Classic')
