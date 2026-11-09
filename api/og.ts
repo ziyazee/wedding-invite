@@ -1,20 +1,23 @@
 import type { IncomingMessage, ServerResponse } from 'node:http'
 import React from 'react'
+import sharp from 'sharp'
 import { ImageResponse } from '@vercel/og'
 import { readFile } from 'node:fs/promises'
 import { join } from 'node:path'
 
 // Bundle the artwork and fonts to avoid HTTP requests through bot protection.
 async function previewAssets() {
-  const [background, regular, italic] = await Promise.all([
-    readFile(join(process.cwd(), 'public/og-background.png')),
+  const [background, regular, italic, dateFont] = await Promise.all([
+    readFile(join(process.cwd(), 'public/og-background-optimized.jpg')),
     readFile(join(process.cwd(), 'public/templates/secret-garden/assets/cormorant-garamond-latin-400-normal-B7YtguxJ.woff')),
     readFile(join(process.cwd(), 'public/templates/secret-garden/assets/cormorant-garamond-latin-300-italic-DRnsRYID.woff')),
+    readFile(join(process.cwd(), 'node_modules/@vercel/og/dist/noto-sans-v27-latin-regular.ttf')),
   ])
   return {
-    background: `data:image/png;base64,${background.toString('base64')}`,
+    background: `data:image/jpeg;base64,${background.toString('base64')}`,
     regular: Uint8Array.from(regular).buffer,
     italic: Uint8Array.from(italic).buffer,
+    dateFont: Uint8Array.from(dateFont).buffer,
   }
 }
 
@@ -67,7 +70,7 @@ async function renderPreview(req: Request) {
   const firstName = brideFirst ? bride : groom
   const secondName = brideFirst ? groom : bride
   // Both names shrink together when needed to fit the left panel.
-  const nameSize = Math.max(24, Math.min(116, 760 / Math.max(firstName.length, secondName.length)))
+  const nameSize = Math.max(28, Math.min(124, 1150 / Math.max(firstName.length, secondName.length)))
   const nameStyle: React.CSSProperties = {
     display: 'flex', justifyContent: 'center', width: '100%',
     fontSize: nameSize, fontWeight: 400, lineHeight: 1.05,
@@ -85,31 +88,32 @@ async function renderPreview(req: Request) {
       position: 'absolute', top: 0, left: 0, objectFit: 'cover',
     } }),
     el('div', { style: {
-      position: 'absolute', top: 56, left: 44, width: 554,
-      display: 'flex', justifyContent: 'center', fontSize: 23, letterSpacing: '7px',
+      position: 'absolute', top: 40, left: 60, width: 780,
+      display: 'flex', justifyContent: 'center', fontSize: 30, letterSpacing: '7px',
     } }, 'THE WEDDING OF'),
     el('div', { style: {
-      position: 'absolute', top: 104, left: 44, width: 554, height: 118,
+      position: 'absolute', top: 92, left: 60, width: 780, height: 146,
       display: 'flex', alignItems: 'center', justifyContent: 'center',
     } }, el('span', { style: nameStyle }, firstName)),
     el('div', { style: {
-      position: 'absolute', top: 224, left: 44, width: 554, height: 58,
+      position: 'absolute', top: 240, left: 60, width: 780, height: 70,
       display: 'flex', alignItems: 'center', justifyContent: 'center',
-      fontSize: 58, fontStyle: 'italic', fontWeight: 300,
+      fontSize: 70, fontStyle: 'italic', fontWeight: 300,
     } }, 'weds'),
     el('div', { style: {
-      position: 'absolute', top: 290, left: 44, width: 554, height: 118,
+      position: 'absolute', top: 310, left: 60, width: 780, height: 146,
       display: 'flex', alignItems: 'center', justifyContent: 'center',
     } }, el('span', { style: nameStyle }, secondName)),
     weddingDate ? el('div', { style: {
-      position: 'absolute', top: 428, left: 44, width: 554,
-      display: 'flex', justifyContent: 'center', fontSize: 30, letterSpacing: '4px',
+      position: 'absolute', top: 466, left: 60, width: 780,
+      display: 'flex', justifyContent: 'center', fontFamily: 'Preview Date',
+      fontSize: 40, fontWeight: 400, letterSpacing: '2px',
     } }, weddingDate) : null,
     companyName ? el('div', { style: {
-      position: 'absolute', top: 477, left: 58, width: 526,
+      position: 'absolute', top: 540, left: 74, width: 752,
       display: 'flex', justifyContent: 'center', textAlign: 'center',
-      fontSize: companyName.length > 35 ? 20 : 24,
-      fontStyle: 'italic', fontWeight: 300, letterSpacing: '2px', wordBreak: 'break-word',
+      fontSize: companyName.length > 35 ? 34 : 44,
+      fontStyle: 'italic', fontWeight: 300, lineHeight: 1.15, letterSpacing: '1px', wordBreak: 'break-word',
     } }, `Invitation by ${companyName}`) : null,
   )
 
@@ -121,6 +125,7 @@ async function renderPreview(req: Request) {
       fonts: [
         { name: 'Invitation Serif', data: assets.regular, weight: 400, style: 'normal' },
         { name: 'Invitation Serif', data: assets.italic, weight: 300, style: 'italic' },
+        { name: 'Preview Date', data: assets.dateFont, weight: 400, style: 'normal' },
       ],
       headers: {
         'Cache-Control': 'public, max-age=3600, s-maxage=86400, stale-while-revalidate=3600',
@@ -138,9 +143,12 @@ export default async function og(request: IncomingMessage, response: ServerRespo
   }
   const url = new URL(request.url || '/api/og', `https://${request.headers.host || 'www.shaadiinvites.in'}`)
   const image = await renderPreview(new Request(url))
-  const bytes = Buffer.from(await image.arrayBuffer())
+  const bytes = await sharp(Buffer.from(await image.arrayBuffer()))
+    .jpeg({ quality: 85, mozjpeg: true, chromaSubsampling: '4:4:4' })
+    .toBuffer()
   response.statusCode = image.status
   image.headers.forEach((value, name) => response.setHeader(name, value))
+  response.setHeader('Content-Type', 'image/jpeg')
   response.setHeader('Content-Length', bytes.byteLength)
   response.end(request.method === 'HEAD' ? undefined : bytes)
 }

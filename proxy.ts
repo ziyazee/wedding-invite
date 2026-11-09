@@ -91,7 +91,7 @@ export default async function proxy(request: Request): Promise<Response | undefi
     const venue = details.venue?.trim()
     const invitationMessage = details.message?.trim()
     const description = invitationMessage || `Join ${couple} for their wedding${date ? ` on ${date}` : ''}${venue ? ` at ${venue}` : ''}.`
-  const image = new URL(`/api/og?slug=${encodeURIComponent(path)}&v=7`, url.origin).href
+  const image = new URL(`/api/og?slug=${encodeURIComponent(path)}&v=12`, url.origin).href
     const title = `${couple} are getting married!`
     const canonical = url.href
 
@@ -109,7 +109,7 @@ export default async function proxy(request: Request): Promise<Response | undefi
     <meta property="og:description" content="${escapeHtml(description)}">
     <meta property="og:url" content="${escapeHtml(canonical)}">
     <meta property="og:image" content="${escapeHtml(image)}">
-    <meta property="og:image:type" content="image/png">
+    <meta property="og:image:type" content="image/jpeg">
     <meta property="og:image:width" content="1200">
     <meta property="og:image:height" content="630">
     <meta property="og:image:alt" content="Wedding invitation for ${escapeHtml(couple)}">
