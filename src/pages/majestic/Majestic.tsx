@@ -172,6 +172,7 @@ function toEmbedUrl(mapUrl: string): string | null {
   return null
 }
 
+/* --- Temporarily disabled: maps/calendar removed from render ---
 function useMapsReady(root: RefObject<HTMLElement | null>, videoKey: string) {
   const [readyFor, setReadyFor] = useState<string | null>(null)
   useEffect(() => {
@@ -179,7 +180,6 @@ function useMapsReady(root: RefObject<HTMLElement | null>, videoKey: string) {
     const videos = [...root.current.querySelectorAll<HTMLVideoElement>('video.mj-hero-video, video.mj-event-video')]
     const pending = new Set(videos)
     const update = () => {
-      // Page load alone does not mean video frames are ready to play.
       pending.forEach(video => {
         if (video.readyState >= HTMLMediaElement.HAVE_FUTURE_DATA || video.error) pending.delete(video)
       })
@@ -226,6 +226,7 @@ function MapEmbed({ event, details, ready }: { event: Celebration; details: Invi
     <button type="button" className="mj-map-calendar" onClick={() => downloadCalendar(event, details.offset, coupleLabel(details))}>Add to calendar</button>
   </div>
 }
+--- */
 
 function EventCard({ event, eventKey, details: d }: { event: Celebration; eventKey: string; details: InvitationData }) {
   const root = useRef<HTMLDivElement>(null)
@@ -250,10 +251,8 @@ export default function Majestic({ details: d, rsvpTarget }: { details: Invitati
   const root = useRef<HTMLElement>(null)
   const [opened, setOpened] = useState(false)
   const couple = coupleLabel(d)
-  const wedding = { title: 'Wedding', date: d.date, time: d.time, venue: d.venue, address: d.address, map: d.map }
   // Capture original indexes before sorting so legacy orders retain stable IDs.
   const events = d.events.map((event, index) => ({ event, key: event.id || `legacy-${index}` })).sort((a, b) => `${a.event.date}T${a.event.time}`.localeCompare(`${b.event.date}T${b.event.time}`))
-  const mapsReady = useMapsReady(root, JSON.stringify(events.map(event => event.key)))
   const structure = JSON.stringify([events.map(event => event.key), !!d.dressCode.trim(), !!d.giftNote.trim(), !!d.gallery.trim()])
   useEffect(() => { const previous = document.title; document.title = `${couple} — Majestic`; return () => { document.title = previous } }, [couple])
   useEffect(() => {
