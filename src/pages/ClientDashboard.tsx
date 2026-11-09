@@ -152,7 +152,7 @@ function ClientWorkspace({ showHiddenTemplates = false }: { showHiddenTemplates?
           if(validSelection){
             setSelected(draft.selected)
             setShowDetails(draft.showDetails===true)
-            setReview(draft.review===true||draft.showOrderPreview===true)
+            setReview(draft.review===true&&draft.showOrderPreview!==true)
             setShowOrderPreview(draft.showOrderPreview===true)
             if(Number.isInteger(draft.formStep)&&draft.formStep>=0)setFormStep(draft.formStep)
           }
@@ -628,7 +628,7 @@ Additional rules:
     }
     if (!event.currentTarget.reportValidity()) return
     if (!showOrderPreview) {
-      setError(''); setShowOrderPreview(true); return
+      setError(''); setReview(false); setShowOrderPreview(true); return
     }
     setBusy(true); setNotice(''); setError('')
     try {
@@ -895,7 +895,7 @@ function Field({ label, value, onChange, type = 'text', required = false }: { la
   const {template,showCoupleIllustrations,pdfBrideFirst,onIllustrationsChange} = useContext(CardTemplateContext)
   const field = ({ "Groom's name":'groom', "Bride's name":'bride', 'Wedding celebration name': 'title', 'Event name': 'title', Venue: 'venue', Address: 'address' } as Record<string, string>)[label]
   const maxLength = nameTextLimit(template,field) ?? cardTextLimit(template, field) ?? (type === 'url' ? 2000 : 600)
-  const multiline = Boolean(field && !['groom', 'bride'].includes(field)) || ["Groom's family", "Bride's family", 'Dress code', 'Gift note', 'Notes'].includes(label)
+  const multiline = Boolean(field && field !== 'title' && !['groom', 'bride'].includes(field)) || ["Groom's family", "Bride's family", 'Dress code', 'Gift note', 'Notes'].includes(label)
   const coupleFieldOrder: Record<string, number> = pdfBrideFirst ? {"Bride's name":1,"Groom's name":2,"Bride's family":3,"Groom's family":4} : {}
   return <><label style={coupleFieldOrder[label] ? {order:coupleFieldOrder[label]} : undefined}>{label}{required && <i> *</i>}{multiline && type==='text' ? <textarea rows={2} value={value} onChange={event => onChange(event.target.value)} maxLength={maxLength} required={required} style={{resize:'vertical'}}/> : <input type={type} value={value} onChange={event => onChange(event.target.value)} maxLength={maxLength} required={required}/>}</label>{[2,3,5,6,7].includes(template)&&label==="Bride's family"&&<label style={{display:'flex',alignItems:'center',gap:12,gridColumn:'1 / -1',order:-1}}><input type="checkbox" checked={showCoupleIllustrations} onChange={event=>onIllustrationsChange(event.target.checked)} style={{width:20,height:20,minHeight:0,margin:0,padding:0}}/>Show Bride &amp; Groom Illustrations</label>}</>
 }
