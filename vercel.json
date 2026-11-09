@@ -1,5 +1,10 @@
 {
   "$schema": "https://openapi.vercel.sh/vercel.json",
+  "functions": {
+    "api/og.ts": {
+      "includeFiles": "public/{og-background.png,templates/secret-garden/assets/cormorant-garamond-latin-400-normal-B7YtguxJ.woff,templates/secret-garden/assets/cormorant-garamond-latin-300-italic-DRnsRYID.woff}"
+    }
+  },
   "proxy": {
     "entrypoint": "proxy.ts",
     "matcher": ["/", "/:path*"]

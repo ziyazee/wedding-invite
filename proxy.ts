@@ -2,9 +2,11 @@ type InvitationDetails = {
   template?: number
   groom?: string
   bride?: string
+  brideFirst?: boolean
   date?: string
   venue?: string
   message?: string
+  companyName?: string
 }
 
 type PublishedInvitation = { details?: InvitationDetails }
@@ -84,12 +86,12 @@ export default async function proxy(request: Request): Promise<Response | undefi
 
     const groom = details.groom?.trim() || 'Your names'
     const bride = details.bride?.trim()
-    const couple = bride ? `${groom} & ${bride}` : groom
+    const couple = bride ? (details.brideFirst === true ? `${bride} & ${groom}` : `${groom} & ${bride}`) : groom
     const date = formattedDate(details.date)
     const venue = details.venue?.trim()
     const invitationMessage = details.message?.trim()
     const description = invitationMessage || `Join ${couple} for their wedding${date ? ` on ${date}` : ''}${venue ? ` at ${venue}` : ''}.`
-    const image = new URL(`/api/og?slug=${encodeURIComponent(path)}&v=2`, url.origin).href
+  const image = new URL(`/api/og?slug=${encodeURIComponent(path)}&v=6`, url.origin).href
     const title = `${couple} are getting married!`
     const canonical = url.href
 
@@ -102,7 +104,7 @@ export default async function proxy(request: Request): Promise<Response | undefi
     <meta name="description" content="${escapeHtml(description)}">
     <link rel="canonical" href="${escapeHtml(canonical)}">
     <meta property="og:type" content="website">
-    <meta property="og:site_name" content="Shaadi Invites">
+    <meta property="og:site_name" content="${escapeHtml(details.companyName?.trim() || 'Shaadi Invites')}">
     <meta property="og:title" content="${escapeHtml(title)}">
     <meta property="og:description" content="${escapeHtml(description)}">
     <meta property="og:url" content="${escapeHtml(canonical)}">
