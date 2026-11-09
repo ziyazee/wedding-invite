@@ -32,6 +32,7 @@ async function renderPreview(req: Request) {
   let brideFirst = false
   let companyName = ''
   let weddingDate = ''
+  let celebrationNames: string[] = []
 
   if (slug && supabaseUrl && supabaseKey) {
     try {
@@ -52,6 +53,15 @@ async function renderPreview(req: Request) {
         if (typeof det.bride === 'string' && det.bride.trim()) bride = det.bride.trim()
         brideFirst = det.brideFirst === true
         companyName = typeof det.companyName === 'string' ? det.companyName.trim() : ''
+        const celebrationEvents = Array.isArray(det.events)
+          ? det.events.filter((event: { title?: unknown }) => typeof event?.title === 'string' && event.title.trim())
+          : []
+        celebrationEvents.sort((a: { title?: string; date?: string; time?: string }, b: { title?: string; date?: string; time?: string }) => {
+          const dateOrder = (a.date || '9999-12-31').localeCompare(b.date || '9999-12-31')
+          const timeOrder = (a.time || '23:59').localeCompare(b.time || '23:59')
+          return dateOrder || timeOrder || (a.title || '').localeCompare(b.title || '', 'en', { sensitivity: 'base' })
+        })
+        celebrationNames = celebrationEvents.map((event: { title: string }) => event.title.trim())
         if (det.date) {
           const date = new Date(`${det.date}T12:00:00Z`)
           if (!Number.isNaN(date.getTime())) {
@@ -69,6 +79,7 @@ async function renderPreview(req: Request) {
   const assets = await previewAssets()
   const firstName = brideFirst ? bride : groom
   const secondName = brideFirst ? groom : bride
+  const celebrationText = celebrationNames.join(' · ')
   // Both names shrink together when needed to fit the left panel.
   const nameSize = Math.max(28, Math.min(124, 1150 / Math.max(firstName.length, secondName.length)))
   const nameStyle: React.CSSProperties = {
@@ -88,31 +99,33 @@ async function renderPreview(req: Request) {
       position: 'absolute', top: 0, left: 0, objectFit: 'cover',
     } }),
     el('div', { style: {
-      position: 'absolute', top: 40, left: 60, width: 780,
-      display: 'flex', justifyContent: 'center', fontSize: 30, letterSpacing: '7px',
-    } }, 'THE WEDDING OF'),
-    el('div', { style: {
-      position: 'absolute', top: 92, left: 60, width: 780, height: 146,
+      position: 'absolute', top: 38, left: 60, width: 780, height: 126,
       display: 'flex', alignItems: 'center', justifyContent: 'center',
     } }, el('span', { style: nameStyle }, firstName)),
     el('div', { style: {
-      position: 'absolute', top: 240, left: 60, width: 780, height: 70,
+      position: 'absolute', top: 158, left: 60, width: 780, height: 58,
       display: 'flex', alignItems: 'center', justifyContent: 'center',
-      fontSize: 70, fontStyle: 'italic', fontWeight: 300,
+      fontSize: 60, fontStyle: 'italic', fontWeight: 300,
     } }, 'weds'),
     el('div', { style: {
-      position: 'absolute', top: 310, left: 60, width: 780, height: 146,
+      position: 'absolute', top: 215, left: 60, width: 780, height: 126,
       display: 'flex', alignItems: 'center', justifyContent: 'center',
     } }, el('span', { style: nameStyle }, secondName)),
     weddingDate ? el('div', { style: {
-      position: 'absolute', top: 466, left: 60, width: 780,
+      position: 'absolute', top: 362, left: 60, width: 780,
       display: 'flex', justifyContent: 'center', fontFamily: 'Preview Date',
-      fontSize: 40, fontWeight: 400, letterSpacing: '2px',
+      fontSize: 38, fontWeight: 400, letterSpacing: '2px',
     } }, weddingDate) : null,
+    celebrationText ? el('div', { style: {
+      position: 'absolute', top: 408, left: 60, width: 780, height: 130,
+      display: 'flex', alignItems: 'center', justifyContent: 'center',
+      textAlign: 'center', fontSize: celebrationText.length > 110 ? 24 : celebrationText.length > 65 ? 30 : 36,
+      lineHeight: 1.2, wordBreak: 'break-word', letterSpacing: '.3px',
+    } }, celebrationText) : null,
     companyName ? el('div', { style: {
-      position: 'absolute', top: 540, left: 74, width: 752,
+      position: 'absolute', top: celebrationText ? 565 : 500, left: 74, width: 752,
       display: 'flex', justifyContent: 'center', textAlign: 'center',
-      fontSize: companyName.length > 35 ? 34 : 44,
+      fontSize: companyName.length > 35 ? 20 : 24,
       fontStyle: 'italic', fontWeight: 300, lineHeight: 1.15, letterSpacing: '1px', wordBreak: 'break-word',
     } }, `Invitation by ${companyName}`) : null,
   )
