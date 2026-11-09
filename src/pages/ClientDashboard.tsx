@@ -905,18 +905,18 @@ function TemplateSettingsPanel({companyName,templates,settings,defaults:_default
 }
 function OrderTable({ orders, onSelect, onEdit, onCopy, onCreate, variant = 'orders' }: { orders: Order[]; onSelect?: (order:Order)=>void; onEdit?: (order:Order)=>void; onCopy?: (order:Order)=>void; onCreate?:()=>void; variant?: 'orders'|'overview' }) {
   return <div className={`table-wrap ${orders.length===0?'orders-empty-table':''}`}>
-    <table className="orders-table"><thead><tr><th>Order</th><th>Couple</th><th>Template</th><th>Contact</th><th>Status</th><th>Price</th>{variant==='overview'?<><th>Date</th><th>Actions</th></>:<><th>Details</th><th>Create copy</th><th>Edit</th><th>Link</th></>}</tr></thead>
+    <table className="orders-table"><thead><tr>{variant!=='overview'&&<th>Create copy</th>}<th>Order</th><th>Couple</th><th>Template</th><th>Contact</th><th>Status</th><th>Price</th>{variant==='overview'?<><th>Date</th><th>Actions</th></>:<><th>Details</th><th>Edit</th><th>Link</th></>}</tr></thead>
       <tbody>{orders.map(order => {
         const expired=Boolean(order.expires_at&&new Date(order.expires_at)<=new Date())
         const active=Boolean(order.published_url&&!expired)
         return <tr key={order.id}>
+          {variant!=='overview'&&<td>{onCopy&&<button type="button" className="order-action-secondary" onClick={()=>onCopy(order)} aria-label={`Create copy of order #${order.id}`}>Create copy</button>}</td>}
           <td>#{variant==='overview'?`ORD-${String(order.id).padStart(4,'0')}`:order.id}</td>
           <td>{order.groom_name} & {order.bride_name}</td>
           <td>{designs.find(d => d.id === order.form_data.template)?.name || 'Invitation design'}</td>
           <td>{order.phone_number?.replace(/^\+91\s*/, '+91 ')||'—'}</td>
           <td><span className={`status-pill status-${order.status.toLowerCase()}`}>{variant==='overview'?({CREATED:'Pending',IN_PROGRESS:'In Progress',READY:'Completed',REJECTED:'Needs changes'}[order.status]||order.status):(statusTitle[order.status] || order.status)}</span>{order.rejection_reason && <small className="rejection-note">{order.rejection_reason}</small>}</td>
           <td>{typeof order.price==='number'?new Intl.NumberFormat('en-IN',{style:'currency',currency:'INR',maximumFractionDigits:0}).format(order.price):'—'}</td>{variant!=='overview'&&<td>{onSelect&&<button className="order-action-secondary" onClick={()=>onSelect(order)}>Details</button>}</td>}
-          {variant!=='overview'&&<td>{onCopy&&<button type="button" className="order-action-secondary" onClick={()=>onCopy(order)} aria-label={`Create copy of order #${order.id}`}>Create copy</button>}</td>}
           {variant!=='overview'&&<td>{onEdit&&<button className="order-action-secondary" onClick={()=>onEdit(order)}><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M17 3a2.85 2.85 0 0 1 4 4L7.5 20.5 2 22l1.5-5.5Z"/></svg>Edit</button>}</td>}
           {variant==='overview'&&<td>{new Date(order.created_at).toLocaleDateString('en-IN',{day:'2-digit',month:'short',year:'numeric'})}</td>}
           <td className="order-actions">{variant==='overview'?<>{active?<a className="overview-view-link" href={order.published_url!} target="_blank" rel="noreferrer">↗ View</a>:onSelect&&<button className="overview-view-link" onClick={()=>onSelect(order)}>▷ Preview</button>}{active&&<button className="overview-more-action" aria-label="Copy invitation link" onClick={()=>void navigator.clipboard.writeText(order.published_url!)}>⋮</button>}</>:<>{active&&<a className="order-action-primary" href={order.published_url!} target="_blank" rel="noreferrer"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"/><polyline points="15 3 21 3 21 9"/><line x1="10" y1="14" x2="21" y2="3"/></svg>Open</a>}{!active&&!expired&&<span className="quiet">Not published</span>}{!active&&expired&&<span className="quiet">Expired</span>}</>}</td>
