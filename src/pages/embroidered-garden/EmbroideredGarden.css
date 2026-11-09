@@ -75,8 +75,9 @@
 .eg-native .eg-event{position:relative;isolation:isolate;max-width:620px;margin:8px auto;display:grid;place-items:center}
 .eg-native .eg-event:first-child{margin-top:8px}
 .eg-native .eg-event-first{aspect-ratio:1072/1920;background-size:100% 100%;background-repeat:no-repeat;background-position:center;position:relative;overflow:visible;margin-bottom:clamp(170px,30vw,280px)}
-.eg-native .eg-event-secondary{position:relative;overflow:hidden;aspect-ratio:720/978;padding:0}
+.eg-native .eg-event-secondary{position:relative;overflow:hidden;aspect-ratio:1030/1527;padding:0}
 .eg-native .eg-event-video{position:absolute;inset:0;z-index:0;width:100%;height:100%;object-fit:cover;pointer-events:none}
+.eg-native .eg-event-poster{position:absolute;inset:0;z-index:0;width:100%;height:100%;object-fit:contain;pointer-events:none}
 .eg-native .eg-event-copy{--eg-fit:1;position:absolute;z-index:1;display:flex;flex-direction:column;gap:calc(4px + 6px * var(--eg-fit));overflow-wrap:anywhere;text-wrap:balance}
 .eg-native .eg-event-first .eg-event-copy{top:26%;bottom:14%;left:22%;width:56%;padding:0}
 .eg-native .eg-event-secondary .eg-event-copy{top:28%;bottom:22%;left:22%;width:56%;padding:0}
@@ -97,6 +98,11 @@
 .eg-native .eg-garland{display:block;width:100%;height:auto;transform-origin:center top;animation:garland-sway 7s ease-in-out infinite}
 @keyframes garland-sway{0%,100%{transform:rotate(0)}33%{transform:rotate(.8deg)}66%{transform:rotate(-.8deg)}}
 @media(min-width:768px){.eg-native .eg-garland-wrap{width:100%}}
+
+/* Story frame card (pre-wedding celebrations) */
+.eg-native .eg-event-story{position:relative;aspect-ratio:9/16;overflow:hidden;display:flex;align-items:center;justify-content:center;padding:0}
+.eg-native .eg-event-story .eg-story-frame{position:absolute;inset:0;width:100%;height:100%;object-fit:contain;z-index:0;pointer-events:none}
+.eg-native .eg-event-story .eg-story-copy{position:relative;z-index:1;top:auto;bottom:auto;left:auto;width:58%;display:flex;flex-direction:column;align-items:center;text-align:center;gap:calc(4px + 6px * var(--eg-fit));padding:15% 0 8%}
 
 /* Notes (dress code, gift, gallery) */
 .eg-native .eg-note{max-width:680px;margin:auto;padding:55px 30px}

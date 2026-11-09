@@ -81,6 +81,26 @@ function Countdown({ details }: { details: InvitationData }) {
   </Section>
 }
 
+function StoryCard({ event, eventKey, details: d }: { event: Celebration; eventKey: string; details: InvitationData }) {
+  const root = useRef<HTMLDivElement>(null)
+  const prefix = `event-${eventKey}`
+  useEmbroideredGardenCard(root, JSON.stringify([event, textSizingKey(d.textOverrides, `t6.${prefix}.`)]))
+  const dateParts = new Intl.DateTimeFormat('en-GB', { day: '2-digit', month: 'short', year: 'numeric', timeZone: 'UTC' }).formatToParts(new Date(`${event.date}T12:00:00Z`))
+  const part = (type: Intl.DateTimeFormatPartTypes) => dateParts.find(item => item.type === type)?.value || ''
+  return <Section as="article" data-invite-section={prefix} className="eg-event eg-event-story">
+    <InvitationMedia className="eg-story-frame" src="/templates/embroidered-garden/assets/story-frame.png" alt="" />
+    <div ref={root} className="eg-event-copy eg-story-copy">
+      <Copy as="p" field={`${prefix}.weekday`} className="eg-eyebrow">{formatDate(event.date, { weekday: 'long' })}</Copy>
+      <Copy as="h2" field={`${prefix}.title`}>{wrapCardText(event.title, 18)}</Copy>
+      <div className="eg-event-date" aria-label={formatDate(event.date)}><Copy field={`${prefix}.day`}>{part('day')}</Copy><Copy field={`${prefix}.month`}>{part('month').toUpperCase()}</Copy><Copy field={`${prefix}.year`}>{part('year')}</Copy></div>
+      <Copy as="p" field={`${prefix}.time`}>{formatTime(event.time ?? '')}</Copy>
+      <Copy as="h3" field={`${prefix}.venue`}>{wrapCardText(event.venue, 24)}</Copy>
+      <Copy as="p" field={`${prefix}.address`}>{wrapCardText(event.address, 32)}</Copy>
+      <div className="eg-links">{event.map.trim() && <Copy as="a" field={`${prefix}.directions`} href={mapURL(event.venue, event.address, event.map)} target="_blank" rel="noreferrer">Directions →</Copy>}<Copy as="button" type="button" field={`${prefix}.calendar`} onClick={() => downloadCalendar(event, d.offset, d.brideFirst ? `${d.bride} & ${d.groom}` : `${d.groom} & ${d.bride}`)}>Add to calendar</Copy></div>
+    </div>
+  </Section>
+}
+
 function EventCard({ event, eventKey, details: d, first }: { event: Celebration; eventKey: string; details: InvitationData; first: boolean }) {
   const root = useRef<HTMLDivElement>(null)
   const prefix = `event-${eventKey}`
@@ -88,7 +108,7 @@ function EventCard({ event, eventKey, details: d, first }: { event: Celebration;
   const dateParts = new Intl.DateTimeFormat('en-GB', { day: '2-digit', month: 'short', year: 'numeric', timeZone: 'UTC' }).formatToParts(new Date(`${event.date}T12:00:00Z`))
   const part = (type: Intl.DateTimeFormatPartTypes) => dateParts.find(item => item.type === type)?.value || ''
   return <Section as="article" data-invite-section={prefix} className={`eg-event ${first ? 'eg-event-first' : 'eg-event-secondary'}`} style={first ? { backgroundImage: `url('${ASSETS}ceremony-reception-bg-opt.webp')` } : undefined}>
-    {!first && <AmbientVideo className="eg-event-video" src={`${ASSETS}celebration2.mp4`} poster={`${ASSETS}celebration-poster.webp`} />}
+    {!first && <AmbientVideo className="eg-event-video" src={`${ASSETS}celebration2.mp4`} poster={`${ASSETS}celebration-poster1.webp`} />}
     <div ref={root} className="eg-event-copy">
       <Copy as="p" field={`${prefix}.weekday`} className="eg-eyebrow">{formatDate(event.date, { weekday: 'long' })}</Copy>
       <Copy as="h2" field={`${prefix}.title`}>{wrapCardText(event.title, 18)}</Copy>
@@ -96,7 +116,7 @@ function EventCard({ event, eventKey, details: d, first }: { event: Celebration;
       <Copy as="p" field={`${prefix}.time`}>{formatTime(event.time ?? '')}</Copy>
       <Copy as="h3" field={`${prefix}.venue`}>{wrapCardText(event.venue, 24)}</Copy>
       <Copy as="p" field={`${prefix}.address`}>{wrapCardText(event.address, 32)}</Copy>
-      <div className="eg-links">{event.map.trim() && <Copy as="a" field={`${prefix}.directions`} href={mapURL(event.venue, event.address, event.map)} target="_blank" rel="noreferrer">Directions ↗</Copy>}<Copy as="button" type="button" field={`${prefix}.calendar`} onClick={() => downloadCalendar(event, d.offset, d.brideFirst ? `${d.bride} & ${d.groom}` : `${d.groom} & ${d.bride}`)}>Add to calendar</Copy></div>
+      <div className="eg-links">{event.map.trim() && <Copy as="a" field={`${prefix}.directions`} href={mapURL(event.venue, event.address, event.map)} target="_blank" rel="noreferrer">Directions →</Copy>}<Copy as="button" type="button" field={`${prefix}.calendar`} onClick={() => downloadCalendar(event, d.offset, d.brideFirst ? `${d.bride} & ${d.groom}` : `${d.groom} & ${d.bride}`)}>Add to calendar</Copy></div>
     </div>
     {first && <div className="eg-garland-wrap" aria-hidden="true"><InvitationMedia className="eg-garland" src={`${ASSETS}dresscode-hanging-garland-opt.webp`} alt="" /></div>}
   </Section>
@@ -110,9 +130,9 @@ export default function EmbroideredGarden({ details: d, rsvpTarget }: { details:
   const [coverHidden, setCoverHidden] = useState(false)
   const [namesVisible, setNamesVisible] = useState(false)
   const couple = d.brideFirst ? `${d.bride} & ${d.groom}` : `${d.groom} & ${d.bride}`
+  const mainKey = d.events[0]?.id || 'legacy-0'
   const keyedEvents = d.events.map((event, index) => ({ event, key: event.id || `legacy-${index}` }))
-  // Keep the main event first and preserve each card's editing identity when sorting.
-  const events = [...keyedEvents.slice(0, 1), ...keyedEvents.slice(1).sort((a, b) => a.event.date.localeCompare(b.event.date))]
+  const events = [...keyedEvents].sort((a, b) => `${a.event.date}T${a.event.time}`.localeCompare(`${b.event.date}T${b.event.time}`))
   const structure = JSON.stringify([events.map(e => e.key), !!d.dressCode.trim(), !!d.giftNote.trim(), !!d.gallery.trim()])
 
   useIntroFit(introRef, textSizingKey(d.textOverrides, 't6.welcome-intro.'))
@@ -211,8 +231,16 @@ export default function EmbroideredGarden({ details: d, rsvpTarget }: { details:
       <Copy as="p" field="welcome.message">{d.message}</Copy>
     </Section>
 
-    {/* Events */}
-    <div className="eg-events">{events.map(({ event, key }, index) => <EventCard key={key} event={event} eventKey={key} details={d} first={index === 0} />)}</div>
+    {/* Events — pre-wedding in story frames, then main + rest */}
+    {(() => {
+      const mainDT = `${d.events[0].date}T${d.events[0].time}`
+      const before = events.filter(e => e.key !== mainKey && `${e.event.date}T${e.event.time}` < mainDT)
+      const mainAndAfter = events.filter(e => e.key === mainKey || `${e.event.date}T${e.event.time}` >= mainDT)
+      return <div className="eg-events">
+        {before.map(({ event, key }) => <StoryCard key={key} event={event} eventKey={key} details={d} />)}
+        {mainAndAfter.map(({ event, key }) => <EventCard key={key} event={event} eventKey={key} details={d} first={key === mainKey} />)}
+      </div>
+    })()}
 
     {/* Dress code */}
     {d.dressCode.trim() && <Section data-invite-section="dress" className="eg-note">
