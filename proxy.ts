@@ -7,6 +7,7 @@ type InvitationDetails = {
   venue?: string
   message?: string
   companyName?: string
+  events?: Array<{ title?: string }>
 }
 
 type PublishedInvitation = { details?: InvitationDetails }
@@ -90,7 +91,12 @@ export default async function proxy(request: Request): Promise<Response | undefi
     const date = formattedDate(details.date)
     const venue = details.venue?.trim()
     const invitationMessage = details.message?.trim()
-    const description = invitationMessage || `Join ${couple} for their wedding${date ? ` on ${date}` : ''}${venue ? ` at ${venue}` : ''}.`
+    const celebrationNames = Array.isArray(details.events)
+      ? details.events.map(event => event.title?.trim()).filter((name): name is string => !!name)
+      : []
+    const description = celebrationNames.length
+      ? `Celebrations: ${celebrationNames.join(' · ')}`
+      : invitationMessage || `Join ${couple} for their wedding${date ? ` on ${date}` : ''}${venue ? ` at ${venue}` : ''}.`
   const image = new URL(`/api/og?slug=${encodeURIComponent(path)}&v=12`, url.origin).href
     const title = `${couple} are getting married!`
     const canonical = url.href
