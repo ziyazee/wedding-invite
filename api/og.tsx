@@ -77,7 +77,8 @@ export default async function handler(req: Request) {
 
   if (slug && supabaseUrl && supabaseKey) {
     try {
-      const r = await fetch(`${supabaseUrl}/rest/v1/rpc/get_published_invitation`, {
+      const rpc = slug.startsWith('test-invite/') ? 'get_test_published_invitation' : 'get_published_invitation'
+      const r = await fetch(`${supabaseUrl}/rest/v1/rpc/${rpc}`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',

@@ -22,13 +22,17 @@ function invitationPath(requestUrl: URL): string | null {
   if (requestUrl.pathname.startsWith('/invite/')) {
     return requestUrl.pathname.slice('/invite/'.length)
   }
+  if (requestUrl.pathname.startsWith('/test-invite/')) {
+    return requestUrl.pathname.slice(1)
+  }
 
-  // Published order URLs use either /orderId/randomSlug or a single
-  // path segment such as /orderId-randomCode. Ignore asset and app routes.
+  // Published URLs use either /orderId/randomSlug or a single public slug.
+  // Ignore asset and app routes before treating a root segment as an invite.
   const path = requestUrl.pathname.replace(/^\/+|\/+$/g, '')
   if (!path || /\.(?:html?|js|css|json|xml|txt|png|jpe?g|webp|avif|svg|gif|mp4|mov|webm|mp3|woff2?|ttf|otf)$/i.test(path)) return null
   if (/^(?:client|admin|login|account|dashboard|create|newDesign|testing567|edits|privacy|api|assets|templates|images)(?:\/|$)/i.test(path)) return null
-  if (/^\d+\/[A-Za-z0-9_-]+$/.test(path) || /^[A-Za-z0-9_-]{16,}$/.test(path)) return path
+  if (/^test-invite\/[a-z0-9-]+$/i.test(path)) return path
+  if (/^\d+\/[A-Za-z0-9_-]+$/.test(path) || /^[A-Za-z0-9_-]+$/.test(path)) return path
   return null
 }
 
@@ -62,7 +66,8 @@ export default async function proxy(request: Request): Promise<Response | undefi
   if (!path || !supabaseUrl || !anonKey) return undefined
 
   try {
-    const lookup = await fetch(`${supabaseUrl.replace(/\/$/, '')}/rest/v1/rpc/get_published_invitation`, {
+    const rpc = path.startsWith('test-invite/') ? 'get_test_published_invitation' : 'get_published_invitation'
+    const lookup = await fetch(`${supabaseUrl.replace(/\/$/, '')}/rest/v1/rpc/${rpc}`, {
       method: 'POST',
       headers: {
         apikey: anonKey,
@@ -102,7 +107,7 @@ export default async function proxy(request: Request): Promise<Response | undefi
     <meta property="og:description" content="${escapeHtml(description)}">
     <meta property="og:url" content="${escapeHtml(canonical)}">
     <meta property="og:image" content="${escapeHtml(image)}">
-    <meta property="og:image:alt" content="Mandap at Dusk wedding invitation for ${escapeHtml(couple)}">
+    <meta property="og:image:alt" content="Wedding invitation for ${escapeHtml(couple)}">
     <meta name="twitter:card" content="summary_large_image">
     <meta name="twitter:title" content="${escapeHtml(title)}">
     <meta name="twitter:description" content="${escapeHtml(description)}">
