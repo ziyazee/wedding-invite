@@ -115,7 +115,7 @@ function UploadIllustrationModal({ companyId, onClose, onUse }: { companyId: num
 }
 
 // This is the extra form page; the dashboard shell and phone stay mounted.
-export default function OrderPreviewStep({ details, previewFrame, designCategory, busy, editing, draftStatus, templateId, companyId, onChange, onFooterIllustrationChange, onBack, onNavigateStep }: Props) {
+export default function OrderPreviewStep({ details, previewFrame, designCategory, busy, editing: _editing, draftStatus, templateId, companyId, onChange, onFooterIllustrationChange, onBack: _onBack, onNavigateStep }: Props) {
   const heading = useRef<HTMLHeadingElement>(null)
   const [promptCopied, setPromptCopied] = useState(false)
   const [showUploadModal, setShowUploadModal] = useState(false)
