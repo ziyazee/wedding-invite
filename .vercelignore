@@ -1,1 +1,4 @@
-api/
+# Deploy the invitation preview image endpoint; keep other APIs excluded.
+api/*
+!api/og.ts
+!api/tsconfig.json
