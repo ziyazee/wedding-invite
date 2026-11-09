@@ -91,7 +91,7 @@ export default async function proxy(request: Request): Promise<Response | undefi
     const venue = details.venue?.trim()
     const invitationMessage = details.message?.trim()
     const description = invitationMessage || `Join ${couple} for their wedding${date ? ` on ${date}` : ''}${venue ? ` at ${venue}` : ''}.`
-    const image = new URL(`/api/og?slug=${encodeURIComponent(path)}&v=17`, url.origin).href
+    const image = new URL(`/api/og?slug=${encodeURIComponent(path)}&v=22`, url.origin).href
     const title = `${couple} are getting married!`
     const canonical = url.href
 

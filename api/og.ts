@@ -114,18 +114,18 @@ async function renderPreview(req: Request) {
     weddingDate ? el('div', { style: {
       position: 'absolute', top: 362, left: 60, width: 780,
       display: 'flex', justifyContent: 'center', fontFamily: 'Preview Date',
-      fontSize: 38, fontWeight: 400, letterSpacing: '2px',
+      fontSize: 46, fontWeight: 400, letterSpacing: '2px',
     } }, weddingDate) : null,
     celebrationText ? el('div', { style: {
       position: 'absolute', top: 408, left: 60, width: 780, height: 130,
       display: 'flex', alignItems: 'center', justifyContent: 'center',
-      textAlign: 'center', fontSize: celebrationText.length > 110 ? 24 : celebrationText.length > 65 ? 30 : 36,
+      textAlign: 'center', fontSize: celebrationText.length > 110 ? 27 : celebrationText.length > 65 ? 34 : 42,
       lineHeight: 1.2, wordBreak: 'break-word', letterSpacing: '.3px',
     } }, celebrationText) : null,
     companyName ? el('div', { style: {
-      position: 'absolute', top: celebrationText ? 565 : 500, left: 74, width: 752,
+      position: 'absolute', top: celebrationText ? 530 : 500, left: 74, width: 752,
       display: 'flex', justifyContent: 'center', textAlign: 'center',
-      fontSize: companyName.length > 35 ? 20 : 24,
+      fontSize: companyName.length > 35 ? 26 : 34,
       fontStyle: 'italic', fontWeight: 300, lineHeight: 1.15, letterSpacing: '1px', wordBreak: 'break-word',
     } }, `Invitation by ${companyName}`) : null,
   )
