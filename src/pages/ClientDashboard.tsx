@@ -1,7 +1,7 @@
 import { Fragment, createContext, useContext, useCallback, useEffect, useLayoutEffect, useMemo, useRef, useState, lazy, Suspense } from 'react'
 import type { FormEvent, ReactElement } from 'react'
 import { createPortal } from 'react-dom'
-import { cardTextLimit, nameTextLimit, designs, TEMPLATE_DISPLAY_ORDER, slugVariants, newInvitationPathCandidates, inviteUrl, withCurrentInviteUrl, companyPreviewUrl, validateDetails } from '../invitations/model'
+import { cardTextLimit, nameTextLimit, designs, TEMPLATE_DISPLAY_ORDER, newInvitationPathCandidates, inviteUrl, withCurrentInviteUrl, companyPreviewUrl, validateDetails } from '../invitations/model'
 import type { Celebration, InvitationData } from '../invitations/model'
 import type { TextLayout } from '../invitations/textLayout'
 import { readTextLayout } from '../invitations/textLayout'
