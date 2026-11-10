@@ -32,8 +32,6 @@ export function cardTextLimit(template: number, field: string): number | undefin
   return [2,3,5,6,7].includes(template) ? ({ title: 40, venue: 60, address: 100 } as Record<string, number>)[field] : undefined
 }
 export interface InvitationData {
-  /** Client-side order setup; stripped by validateDetails before publishing. */
-  orderInvitationPlans?: string;
   layoutVersion?: 1 | 2;
   textOverrides?: TextLayout;
   showCoupleIllustrations?: boolean;

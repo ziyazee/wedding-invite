@@ -114,7 +114,7 @@ function AdminWorkspace() {
       const publishedAt=new Date().toISOString()
       const expiresAt=expiresOn?new Date(`${expiresOn}T23:59:59`).toISOString():null
       if(expiresAt&&new Date(expiresAt)<=new Date(publishedAt)){setError('Choose an expiry date after the publication date.');return}
-      const pCandidates=Object.fromEntries(invitationRows.map(row=>[String(row.id),row.legacy_order_id!==null?[]:newInvitationPathCandidates(selected.groom_name,selected.bride_name,selected.form_data.brideFirst)]))
+      const pCandidates=Object.fromEntries(invitationRows.map(row=>[String(row.id),newInvitationPathCandidates(selected.groom_name,selected.bride_name,selected.form_data.brideFirst)]))
       setBusy(true);setError('');setNotice('')
       try{
         const {error:publishError}=await supabase.rpc('publish_couple_order_with_candidates',{p_order_id:selected.id,p_candidates:pCandidates,p_expires_at:expiresAt,p_admin_notes:notes})

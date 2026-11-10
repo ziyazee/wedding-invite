@@ -25,6 +25,7 @@ export default function Design18() {
   const firstRole = details.brideFirst ? 'BRIDE' : 'GROOM'
   const secondRole = details.brideFirst ? 'GROOM' : 'BRIDE'
   const video = useRef<HTMLVideoElement>(null)
+  const heroText = useRef<HTMLDivElement>(null)
   const skipIntro = useRef(false)
   const audio = useRef<HTMLAudioElement>(null)
   const root = useRef<HTMLElement>(null)
@@ -69,6 +70,7 @@ export default function Design18() {
     const urls = [
       '/templates/mandap-at-dusk/seam-garland.webp',
       '/templates/mandap-at-dusk/border2.webp',
+      '/templates/mandap-at-dusk/border3.png',
       '/templates/mandap-at-dusk/ivory-stationery-unframed.webp',
       '/templates/mandap-at-dusk/burgundy-stationery.webp',
       '/templates/mandap-at-dusk/couple-watercolor.webp',
@@ -98,15 +100,55 @@ export default function Design18() {
   }, [phase])
 
   useEffect(() => {
-    if (phase === 'closed' || matchMedia('(prefers-reduced-motion: reduce)').matches || !('IntersectionObserver' in window)) return
-    const observer = new IntersectionObserver(entries => entries.forEach(entry => {
-      if (!entry.isIntersecting) return
-      entry.target.classList.add('d18-visible')
-      observer.unobserve(entry.target)
-    }), { threshold: 0.1 })
-    root.current?.querySelectorAll('.d18-reveal').forEach(element => observer.observe(element))
-    return () => observer.disconnect()
+    if (phase === 'closed') return
+    const revealDuration = 2100 // Three consecutive 700ms text reveals.
+    if (phase === 'open') {
+      heroText.current?.style.setProperty('--d18-hero-elapsed', `${revealDuration}ms`)
+      return
+    }
+    let frame = 0
+    const syncText = () => {
+      const player = video.current
+      let elapsed = 0
+      if (player && Number.isFinite(player.duration) && player.duration > 0) {
+        const windowLength = Math.min(revealDuration, player.duration * 1000)
+        const start = player.duration * 1000 - windowLength
+        elapsed = Math.max(0, Math.min(1, (player.currentTime * 1000 - start) / windowLength)) * revealDuration
+      }
+      heroText.current?.style.setProperty('--d18-hero-elapsed', `${elapsed}ms`)
+      frame = requestAnimationFrame(syncText)
+    }
+    syncText()
+    return () => cancelAnimationFrame(frame)
   }, [phase])
+
+  useEffect(() => {
+    if (phase === 'closed' || matchMedia('(prefers-reduced-motion: reduce)').matches || !('IntersectionObserver' in window)) return
+    const elements = Array.from(root.current?.querySelectorAll<HTMLElement>('.d18-reveal:not(.d18-visible)') || [])
+    let nextRevealAt = 0
+    const observer = new IntersectionObserver(entries => {
+      const visible = entries.filter(entry => entry.isIntersecting)
+        .sort((a, b) => elements.indexOf(a.target as HTMLElement) - elements.indexOf(b.target as HTMLElement))
+      const now = performance.now()
+      visible.forEach(entry => {
+        const element = entry.target as HTMLElement
+        const delay = Math.min(600, Math.max(0, nextRevealAt - now))
+        element.style.setProperty('--d18-reveal-delay', `${delay}ms`)
+        element.classList.add('d18-visible')
+        element.classList.remove('d18-reveal-pending')
+        nextRevealAt = now + delay + 200
+        observer.unobserve(element)
+      })
+    }, { threshold: 0.1 })
+    elements.forEach(element => {
+      element.classList.add('d18-reveal-pending')
+      observer.observe(element)
+    })
+    return () => {
+      observer.disconnect()
+      elements.forEach(element => element.classList.remove('d18-reveal-pending'))
+    }
+  }, [phase, details.events, details.dressCode, details.giftNote, details.gallery])
 
   const remaining = Math.max(0, new Date(weddingISO(details)).getTime() - now)
   const countdown = [
@@ -125,7 +167,7 @@ export default function Design18() {
         <img src="/templates/mandap-at-dusk/open-invitation-button.webp" alt="" width="1080" height="360" draggable={false} />
       </button>
       <button className="d18-music" aria-label={music ? 'Pause music' : 'Play music'} onClick={() => music ? audio.current?.pause() : void audio.current?.play().catch(() => {})}>{music ? 'Ⅱ' : '♫'}</button>
-      {phase === 'open' && <div className="d18-ending-copy" aria-live="polite">
+      {phase !== 'closed' && <div ref={heroText} className="d18-ending-copy" aria-live="polite">
         <h1><span>{firstName}</span><i>&</i><span>{secondName}</span></h1>
       </div>}
     </section>
@@ -133,16 +175,16 @@ export default function Design18() {
     {phase !== 'closed' && <>
       <div className="d18-seam-florals" aria-hidden="true" />
       <div id="d18-invitation" className="d18-paper">
-      <section className="d18-intro d18-reveal">
-        <p className="d18-kicker">AN INVITATION FROM THE HEART</p><Flourish />
-        <h2 className="d18-script">Two souls.<br />One beautiful journey.</h2>
-        <p className="d18-message">{details.message}</p>
-        <p>Your presence, prayers, and love will make our day complete.</p>
-        {(firstFamily || secondFamily) && <div className="d18-families">
+      <section className="d18-intro">
+        <p className="d18-kicker d18-reveal">AN INVITATION FROM THE HEART</p><Flourish />
+        <h2 className="d18-script d18-reveal">Two souls.<br />One beautiful journey.</h2>
+        <p className="d18-message d18-reveal">{details.message}</p>
+        <p className="d18-reveal">Your presence, prayers, and love will make our day complete.</p>
+        {(firstFamily || secondFamily) && <div className="d18-families d18-reveal">
           {firstFamily && <p data-family={firstRole.toLowerCase()}><small>{firstRole}’S FAMILY</small>{firstFamily}</p>}
           {secondFamily && <p data-family={secondRole.toLowerCase()}><small>{secondRole}’S FAMILY</small>{secondFamily}</p>}
         </div>}
-        <Flourish /><span className="d18-signature d18-script"><span>{firstName}</span><i>&</i><span>{secondName}</span></span>
+        <Flourish /><span className="d18-signature d18-script d18-reveal"><span>{firstName}</span><i>&</i><span>{secondName}</span></span>
         <img className="d18-couple-art" src="/templates/mandap-at-dusk/couple-watercolor.webp" alt="" aria-hidden="true" loading="lazy" />
       </section>
 
@@ -155,17 +197,19 @@ export default function Design18() {
         {remaining > 0 ? <div className="d18-counts">{countdown.map((value, index) => <div key={index}><strong>{String(value).padStart(2, '0')}</strong><span>{['Days', 'Hours', 'Minutes', 'Seconds'][index]}</span></div>)}</div> : <p className="d18-script d18-after-date">A day to remember, a love forever.</p>}
       </section>
 
+      <header className="d18-section-heading d18-reveal"><p className="d18-kicker">MOMENTS TO CELEBRATE</p><h2 className="d18-script">Every gathering.<br /><em>One beginning.</em></h2><Flourish /></header>
       <section className="d18-events">
-        <header className="d18-section-heading d18-reveal"><p className="d18-kicker">MOMENTS TO CELEBRATE</p><h2 className="d18-script">Every gathering.<br /><em>One beginning.</em></h2><Flourish /></header>
-        {[...details.events].sort((a, b) => `${a.date}${a.time}`.localeCompare(`${b.date}${b.time}`)).map((event, index) => <article data-invite-event-key={event.id || `legacy-${details.events.indexOf(event)}`} className={`d18-event d18-reveal ${/nikah|wedding/i.test(event.title) ? 'd18-main-event' : ''}`} key={event.id || `legacy-${details.events.indexOf(event)}`}>
-          <p className="d18-event-index">{String(index + 1).padStart(2, '0')} <span>✧</span> THE CELEBRATION</p>
+        {[...details.events].sort((a, b) => `${a.date}${a.time}`.localeCompare(`${b.date}${b.time}`)).map(event => <article data-invite-event-key={event.id || `legacy-${details.events.indexOf(event)}`} className={`d18-event ${/nikah|wedding/i.test(event.title) ? 'd18-main-event' : ''}`} key={event.id || `legacy-${details.events.indexOf(event)}`}>
+          <div className="d18-event-copy d18-reveal">
           <h3 className="d18-script">{event.title}</h3>
           <div className="d18-event-date"><strong>{formatDate(event.date, { day: '2-digit' })}</strong><span>{formatDate(event.date, { weekday: 'long', month: 'long', year: 'numeric' })}{event.time && <small>{formatTime(event.time)}</small>}</span></div>
           <Flourish /><h4>{event.venue}</h4>{event.address !== event.venue && <p className="d18-address">{event.address}</p>}
         <div className="d18-event-actions"><a href={mapURL(event.venue, event.address, event.map)} target="_blank" rel="noreferrer">Directions <Arrow /></a><button onClick={() => downloadCalendar(event, details.offset, `${firstName} & ${secondName}`)}>Save the date <span>＋</span></button></div>
+          </div>
         </article>)}
       </section>
 
+      <div className="d18-closing">
       {(details.dressCode || details.giftNote || details.gallery) && <section className="d18-notes d18-reveal">
         {details.dressCode && <><p data-note="dress-heading" className="d18-kicker">A NOTE ON ATTIRE</p><p data-note="dress">{details.dressCode}</p></>}
         {details.giftNote && <><p data-note="gift-heading" className="d18-kicker">WITH LOVE</p><p data-note="gift">{details.giftNote}</p></>}
@@ -177,6 +221,7 @@ export default function Design18() {
         <h2 className="d18-script">Forever & ever</h2><p className="d18-footer-names"><span>{firstName}</span><i>&</i><span>{secondName}</span></p>
         <p>{formatDate(details.date)} · {details.address}</p><a href={mapURL(details.venue, details.address, details.map)} target="_blank" rel="noreferrer">{details.venue} <Arrow /></a>
       </footer>
+      </div>
       </div>
     </>}
   </main>

@@ -8,7 +8,7 @@
 .d18-entry-shade{position:absolute;inset:0;z-index:2;background:linear-gradient(180deg,#fff0 40%,#32151138 100%);pointer-events:none}
 .d18-kicker{font:9px/1.8 Georgia,serif;letter-spacing:2.5px;text-transform:uppercase;color:var(--d18-sage)}
 .d18-music{position:absolute;z-index:4;right:calc(3% + 24px);bottom:calc(7.2% - 5px);width:46px;height:46px;border:1px solid #b58a4377;border-radius:50%;background:#fff6e7ed;color:#722e25;cursor:pointer;font:18px Georgia,serif}
-.d18-ending-copy{position:absolute;z-index:3;top:22%;left:50%;width:min(90%,600px);transform:translateX(-50%);text-align:center;color:#713229;text-shadow:0 2px 16px #fff,0 1px 3px #fff;animation:d18-end-fade 1.6s ease both;pointer-events:none}
+.d18-ending-copy{position:absolute;z-index:3;top:22%;left:50%;width:min(90%,600px);transform:translateX(-50%);text-align:center;color:#713229;text-shadow:0 2px 16px #fff,0 1px 3px #fff;pointer-events:none}
 .d18-ending-kicker,.d18-ending-date{font:9px/1.8 Georgia,serif;letter-spacing:2.4px;text-transform:uppercase;margin:0;color:#865039}
 .d18-ending-copy h1{font:500 clamp(54px,12.5vw,104px)/.92 'Playfair Display',Georgia,serif;letter-spacing:.035em;text-transform:uppercase;margin:0;color:#5f2721}
 .d18-ending-copy h1 span{display:block}
@@ -21,7 +21,7 @@
 .d18-discover span{font:17px Georgia,serif}
 .d18-paper{position:relative;isolation:isolate;max-width:720px;margin:auto;background:var(--d18-paper);box-shadow:0 0 90px #5a241218;scroll-margin-top:0}
 .d18-paper::before{content:"";position:absolute;z-index:0;inset:0;pointer-events:none;background-image:url('/templates/mandap-at-dusk/border2.webp');background-size:100% auto;background-position:center top;background-repeat:repeat-y;opacity:.96}
-.d18-paper>section,.d18-paper>footer{position:relative;z-index:1}
+.d18-paper>section,.d18-paper>footer,.d18-paper>.d18-section-heading{position:relative;z-index:1}
 .d18-intro,.d18-countdown,.d18-notes,.d18-footer{text-align:center;padding:82px 19%}
 .d18-intro{padding-top:104px}
 .d18-intro>.d18-kicker{max-width:260px;margin:0 auto}
@@ -62,19 +62,19 @@
 .d18-counts strong{display:block;font-size:38px;font-weight:400;color:#8a6137}
 .d18-counts span{display:block;font:8px Georgia,serif;letter-spacing:1.5px;text-transform:uppercase;color:#81634a}
 .d18-after-date{font-size:30px}
-.d18-events{position:relative;isolation:isolate;padding:58px 8% 72px;background:transparent}
-.d18-events::before{content:"";position:absolute;z-index:-1;inset:0;pointer-events:none;background:linear-gradient(to right,var(--d18-paper) 0%,var(--d18-paper) 17%,transparent 27%,transparent 73%,var(--d18-paper) 83%,var(--d18-paper) 100%)}
-.d18-section-heading{text-align:center;margin:0 auto 36px}
+.d18-events{position:relative;isolation:isolate;padding:0 8% 72px;background:transparent}
+.d18-events::before{content:"";position:absolute;z-index:-1;inset:-64px 0 0;pointer-events:none;background:linear-gradient(to right,var(--d18-paper) 0%,var(--d18-paper) 17%,transparent 27%,transparent 73%,var(--d18-paper) 83%,var(--d18-paper) 100%);-webkit-mask-image:linear-gradient(to bottom,transparent,#000 64px);mask-image:linear-gradient(to bottom,transparent,#000 64px)}
+.d18-section-heading{text-align:center;margin:0 auto 36px;padding:58px 8% 0}
 .d18-section-heading h2 em{font-weight:400;color:#a25b2f}
 .d18-event{position:relative;isolation:isolate;display:flex;flex-direction:column;justify-content:center;box-sizing:border-box;width:100%;max-width:470px;aspect-ratio:2/3;margin:0 auto 30px;padding:82px 16% 72px;text-align:center;border:0;background:none;border-radius:0;box-shadow:none;filter:drop-shadow(0 8px 8px #514b3020);color:#5c3029}
 .d18-event::before{content:"";position:absolute;z-index:-1;inset:0;pointer-events:none;background:url('/templates/mandap-at-dusk/ivory-stationery-unframed.webp') center/100% 100% no-repeat;mask:url('/templates/mandap-at-dusk/stationery-silhouette.svg') center/100% 100% no-repeat;-webkit-mask:url('/templates/mandap-at-dusk/stationery-silhouette.svg') center/100% 100% no-repeat}
 .d18-main-event::before{background-image:url('/templates/mandap-at-dusk/burgundy-stationery.webp')}
 .d18-main-event{color:#fff5d9}
+.d18-event-copy{display:flex;flex-direction:column;width:100%;min-width:0}
 .d18-event-index{font:8px Georgia,serif;letter-spacing:2px;color:#9a7840}
-.d18-main-event .d18-event-index,.d18-main-event .d18-flourish{color:#f1d59c}
+.d18-main-event .d18-event-index,.d18-main-event .d18-flourish{color:#fff5d9}
 .d18-event-index span{padding:0 8px}
 .d18-event h3{font-size:39px;line-height:1.2;margin:18px 0 20px;color:#723229}
-.d18-main-event h3,.d18-main-event h4,.d18-main-event .d18-address{color:#fff5d9}
 .d18-event-date{display:flex;justify-content:center;align-items:center;gap:15px;text-align:left}
 .d18-event-date strong{font-size:52px;line-height:1;font-weight:400;border-right:1px solid #b98a45;padding-right:15px}
 .d18-main-event .d18-event-date{color:#fff5d9}
@@ -83,10 +83,17 @@
 .d18-event-date small{display:block;font-size:11px;margin-top:5px}
 .d18-event h4{font-size:24px;font-weight:500;line-height:1.3;margin:12px 0 4px;color:#812d29}
 .d18-address{font-size:16px;margin:0;color:#886e55}
+.d18-main-event h3,.d18-main-event h4,.d18-main-event .d18-address{color:#fff5d9}
+/* Match the maroon card even when the text editor restores a saved venue color.
+   The editor's override selector includes this specificity guard and !important. */
+.d18-page .d18-main-event h4:not(#invite-override-specificity){color:#fff5d9!important;-webkit-text-fill-color:#fff5d9!important}
 .d18-event-actions{display:flex;align-items:center;justify-content:center;gap:24px;flex-wrap:wrap;margin-top:18px}
 .d18-event-actions a,.d18-event-actions button,.d18-notes a,.d18-footer>a{display:inline-flex;align-items:center;gap:9px;border:0;border-bottom:1px solid #a35f3e88;background:none;text-decoration:none;color:inherit;font:13px 'Cormorant Garamond',Georgia,serif;padding:8px 0;cursor:pointer}
 .d18-event-actions a:hover,.d18-event-actions button:hover,.d18-notes a:hover,.d18-footer>a:hover{color:#692821}
 .d18-main-event .d18-event-actions a,.d18-main-event .d18-event-actions button{color:#fff5d9;border-color:#fff5d988}
+.d18-closing{position:relative;z-index:1;isolation:isolate;display:flow-root;background:var(--d18-paper)}
+/* Scale the artwork by width; shorter content crops the bottom without shrinking flowers. */
+.d18-closing::before{content:"";position:absolute;inset:0;z-index:-1;pointer-events:none;background:url('/templates/mandap-at-dusk/border3.png') center top/100% auto no-repeat;opacity:.96}
 .d18-notes{padding-top:44px;padding-bottom:48px}
 .d18-notes .d18-kicker:not(:first-child){margin-top:32px}
 .d18-footer{min-height:480px;padding-top:64px;padding-bottom:80px;background:transparent}
@@ -94,13 +101,18 @@
 .d18-footer-names{font:39px 'Great Vibes','Dancing Script',cursive;color:#78452e;margin:22px 0;display:flex;flex-direction:column;align-items:center}
 .d18-footer-names span{display:block}.d18-footer-names i{display:block;font:italic 23px 'Cormorant Garamond',serif}
 .d18-footer>p:not(.d18-kicker){font-size:15px;line-height:1.7}
-.d18-reveal{opacity:0;transform:translateY(25px);transition:opacity 800ms cubic-bezier(.22,.61,.36,1),transform 800ms cubic-bezier(.22,.61,.36,1)}
-.d18-reveal.d18-visible{opacity:1;transform:none}
-.d18-page .d18-ending-copy{animation-duration:800ms;animation-timing-function:cubic-bezier(.22,.61,.36,1)}
+.d18-reveal{opacity:1;transform:none}
+.d18-reveal.d18-reveal-pending{opacity:0;transform:translateY(25px)}
+.d18-reveal.d18-visible{opacity:1;transform:none;animation:d18-section-fade-up 800ms cubic-bezier(.22,.61,.36,1) var(--d18-reveal-delay,0ms) both}
+@keyframes d18-section-fade-up{from{opacity:0;transform:translateY(25px)}to{opacity:1;transform:translateY(0)}}
+.d18-ending-copy h1>span,.d18-ending-copy h1>i{animation:d18-hero-fade-up 700ms cubic-bezier(.22,.61,.36,1) both;animation-play-state:paused;animation-delay:calc(var(--d18-hero-start,0ms) - var(--d18-hero-elapsed,0ms))}
+.d18-ending-copy h1>i{--d18-hero-start:700ms}
+.d18-ending-copy h1>span:last-child{--d18-hero-start:1400ms}
+@keyframes d18-hero-fade-up{from{opacity:0;transform:translateY(25px)}to{opacity:1;transform:translateY(0)}}
 @keyframes d18-end-fade{from{opacity:0;translate:0 25px}to{opacity:1;translate:0 0}}
 @media(max-width:600px){.d18-event{padding:74px 14% 64px}}
 @media(max-width:430px){.d18-intro,.d18-countdown,.d18-notes,.d18-footer{padding-inline:19%}.d18-events{padding-inline:6%}.d18-event{padding-inline:9%}.d18-event-date{gap:11px}.d18-event-date span{font-size:12px}.d18-counts{gap:4px}.d18-counts strong{font-size:30px}.d18-counts span{letter-spacing:1px;font-size:7px}.d18-message,.d18-intro>p:not(.d18-kicker),.d18-notes>p:not(.d18-kicker){font-size:17px}}
-@media(prefers-reduced-motion:reduce){.d18-page *{animation:none!important;transition:none!important;scroll-behavior:auto!important}.d18-reveal{opacity:1;transform:none}}
+@media(prefers-reduced-motion:reduce){.d18-page *{animation:none!important;transition:none!important;scroll-behavior:auto!important}.d18-reveal,.d18-reveal.d18-reveal-pending{opacity:1;transform:none}}
 
 /* Keep button proportions relative to the invitation, including phone previews. */
 .d18-entry { container-type: inline-size; }

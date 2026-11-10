@@ -1,11 +1,5 @@
 /* Extra page inside the existing order form; no dashboard or phone layout overrides. */
 .client-workspace .order-personal-step { grid-column: 1 / -1; min-width: 0; }
-.client-workspace .invitation-plans-fieldset { display: grid; gap: 16px; }
-.client-workspace .invitation-plan-card { display: grid; gap: 14px; padding: 18px; border: 1px solid #ded8ca; border-radius: 12px; background: #fffdfa; }
-.client-workspace .invitation-plan-events { display: grid; grid-template-columns: repeat(auto-fit,minmax(180px,1fr)); gap: 8px 16px; }
-.client-workspace .invitation-plan-events > strong { grid-column: 1 / -1; }
-.client-workspace .invitation-plan-events label { display: flex; align-items: center; gap: 9px; margin: 0; font-weight: 400; }
-.client-workspace .invitation-plan-events input { width: 18px; min-height: 18px; margin: 0; }
 .client-workspace .order-personal-step h2 { scroll-margin-top: 150px; }
 .client-workspace .order-personal-step .event-locations-intro { margin-bottom: 24px; }
 .client-workspace .order-personal-step .event-locations-intro + .order-personal-event-map { margin-top: 24px; }

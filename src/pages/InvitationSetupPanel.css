@@ -1,0 +1,15 @@
+.invitation-setup-panel { display: grid; gap: 8px; padding: 10px 0; border-top: 1px solid #e7e1d6; border-bottom: 1px solid #e7e1d6; }
+.invitation-setup-panel-heading { display: flex; justify-content: space-between; align-items: baseline; color: #354c43; font-size: 14px; }
+.invitation-setup-panel-heading span { color: #777f77; font-size: 12px; }
+.invitation-setup-plan { display: grid; gap: 6px; }
+.invitation-setup-plan + .invitation-setup-plan { padding-top: 8px; border-top: 1px solid #eee9e0; }
+.invitation-setup-plan-heading { display: flex; gap: 8px; align-items: center; }
+.invitation-setup-default-name { display: flex; flex: 1; min-width: 0; align-items: center; gap: 8px; min-height: 30px; color: #354c43; }
+.invitation-setup-default-name span { color: #81877f; font-size: 11px; }
+.invitation-setup-plan-heading input { flex: 1; min-width: 0; height: 34px; padding: 5px 9px; border: 1px solid #ded8ca; border-radius: 7px; background: #fff; color: #28312c; font: inherit; font-size: 13px; }
+.invitation-setup-remove { border: 0; padding: 4px; background: transparent; color: #a65750; font-size: 12px; cursor: pointer; }
+.invitation-setup-events { display: flex; flex-wrap: wrap; gap: 5px; }
+.invitation-setup-events label, .invitation-setup-event-tag { display: inline-flex; align-items: center; gap: 5px; padding: 4px 7px; border: 1px solid #e4dfd5; border-radius: 16px; color: #59645d; font-size: 11px; cursor: pointer; }
+.invitation-setup-events label.selected, .invitation-setup-event-tag.selected { border-color: #9eb49e; background: #edf3eb; color: #354c43; }
+.invitation-setup-events input { width: 12px; height: 12px; margin: 0; accent-color: #354c43; }
+.invitation-setup-add { justify-self: start; padding: 3px 0; border: 0; background: transparent; color: #354c43; font: inherit; font-size: 13px; font-weight: 600; cursor: pointer; }

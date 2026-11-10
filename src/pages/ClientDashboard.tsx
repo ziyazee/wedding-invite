@@ -20,6 +20,8 @@ import './ClientDashboard.css'
 import EventLocationPicker from './EventLocationPicker'
 import OrderPreviewStep from './OrderPreviewStep'
 import OrderProgressBar from './OrderProgressBar'
+import InvitationSetupPanel from './InvitationSetupPanel'
+import type { InvitationSetupPlan } from './InvitationSetupPanel'
 
 const OrderTextEditor = lazy(() => import('./OrderTextEditor'))
 
@@ -71,6 +73,9 @@ function ClientWorkspace({ showHiddenTemplates = false }: { showHiddenTemplates?
   const [orders, setOrders] = useState<Order[]>([])
   const [coupleRows, setCoupleRows] = useState<CoupleTableRow[]>([])
   const [viewOrder, setViewOrder] = useState<Order | null>(null)
+  const [orderPublishError, setOrderPublishError] = useState('')
+  const [invitationSetupOrder, setInvitationSetupOrder] = useState<Order | null>(null)
+  const [invitationSetupPlans, setInvitationSetupPlans] = useState<InvitationSetupPlan[]>([])
   const [allTemplates, setAllTemplates] = useState<Template[]>([])
   const [company, setCompany] = useState<{ id: number; company_name: string; contact_name: string | null; slug: string | null; phone: string | null; branding_base_url: string | null; catalog_restricted: boolean; is_test_account?: boolean } | null>(null)
   const [templateSettings, setTemplateSettings] = useState<Record<number, TemplateSettings>>({})
@@ -107,6 +112,7 @@ function ClientWorkspace({ showHiddenTemplates = false }: { showHiddenTemplates?
   const [waSent, setWaSent] = useState(false)
   const [waError, setWaError] = useState('')
   useEffect(() => {
+    setOrderPublishError('')
     if (!viewOrder) return
     setWaPhone(viewOrder.phone_number || '')
     setWaSent(false)
@@ -540,17 +546,27 @@ function ClientWorkspace({ showHiddenTemplates = false }: { showHiddenTemplates?
   }
   async function publishClientOrder(order: Order) {
     if (!supabase) return
-    setBusy(true); setError(''); setNotice('')
+    setBusy(true); setError(''); setNotice(''); setOrderPublishError('')
     try {
       let data: any
       let publishError: any
       if (company?.is_test_account) {
         ({ data, error: publishError } = await supabase.rpc('publish_test_order', { p_order_id: order.id }))
       } else {
+        if (invitationSetupOrder?.id === order.id) {
+          if (!invitationSetupPlans.length || invitationSetupPlans.some(plan => !plan.name.trim() || !plan.eventIndexes.length)) {
+            throw new Error('Name each invitation and choose at least one event.')
+          }
+          const { error: configureError } = await supabase.rpc('configure_order_invitations', {
+            p_order_id: order.id,
+            p_plans: invitationSetupPlans.map(plan => ({ name: plan.name.trim(), event_indexes: plan.eventIndexes })),
+          })
+          if (configureError) throw configureError
+        }
         const { data: couple, error: coupleError } = await supabase.from('couple_orders').select('invitations(id,legacy_order_id)').eq('legacy_order_id', order.id).single()
         if (coupleError || !couple) throw coupleError || new Error('Couple order was not found.')
         const invitationRows = (couple.invitations || []) as Array<{ id:number; legacy_order_id:number|null }>
-        const candidateSets = Object.fromEntries(invitationRows.map(row => [String(row.id), row.legacy_order_id !== null ? [] : newInvitationPathCandidates(order.groom_name, order.bride_name, order.form_data.brideFirst)]))
+        const candidateSets = Object.fromEntries(invitationRows.map(row => [String(row.id), newInvitationPathCandidates(order.groom_name, order.bride_name, order.form_data.brideFirst)]))
         ;({ data, error: publishError } = await supabase.rpc('publish_couple_order_with_candidates', { p_order_id: order.id, p_candidates: candidateSets }))
       }
       if (publishError) throw publishError
@@ -561,11 +577,16 @@ function ClientWorkspace({ showHiddenTemplates = false }: { showHiddenTemplates?
       const published = { ...order, status: 'READY', published_path: path, published_url: inviteUrl(path), published_at: data?.published_at || new Date().toISOString(), invitations: publishedInvitations.map(item => ({...item, published_url: inviteUrl(item.published_path)})) }
       setViewOrder(published)
       setOrders(current => current.map(item => item.id === order.id ? published : item))
+      if (invitationSetupOrder?.id === order.id) {
+        setInvitationSetupOrder(null)
+        setInvitationSetupPlans([])
+      }
       setNotice(publishedInvitations.length > 1 ? 'Your invitations are live and ready to share.' : 'Your invitation is live and ready to share.')
-      await refresh()
+      await refresh().catch(() => setError('Your invitations were published, but the Orders list could not be refreshed. Please reload the page.'))
     } catch (cause) {
-      setViewOrder(null)
+      setViewOrder(order)
       const msg = cause instanceof Error ? cause.message : (cause && typeof cause === 'object' && 'message' in cause && typeof (cause as {message:unknown}).message === 'string' ? (cause as {message:string}).message : 'Unable to publish this invitation.')
+      setOrderPublishError(msg)
       setError(msg)
     } finally { setBusy(false) }
   }
@@ -698,16 +719,6 @@ Additional rules:
       setReview(true); return
     }
     if (!event.currentTarget.reportValidity()) return
-    let invitationPlanInput: Array<{ name: string; eventIndexes: number[] }> = []
-    if (showOrderPreview && !editingOrderId && !company?.is_test_account) {
-      try {
-        invitationPlanInput = JSON.parse(details.orderInvitationPlans || '[]')
-      } catch { setError('Please review your invitation setup.'); return }
-      const eventCount = 1 + extraEvents.length
-      if (!Array.isArray(invitationPlanInput) || !invitationPlanInput.length || invitationPlanInput.length > 10 || invitationPlanInput.some(plan => !plan || typeof plan.name !== 'string' || !plan.name.trim() || !Array.isArray(plan.eventIndexes) || !plan.eventIndexes.length || plan.eventIndexes.some(index => !Number.isInteger(index) || index < 0 || index >= eventCount))) {
-        setError('Give every invitation a name and select at least one event for it.'); return
-      }
-    }
     if (!showOrderPreview) {
       setError(''); setReview(false); setShowOrderPreview(true); return
     }
@@ -736,13 +747,17 @@ Additional rules:
       const publishedPath: string | null = reserved?.published_path || null
       if (!companyRow.is_test_account) {
         if (reserveError) throw reserveError
-        const plans = invitationPlanInput.map(plan => ({ name: plan.name.trim(), event_indexes: plan.eventIndexes }))
-        const { error: configureError } = await supabase.rpc('configure_order_invitations', { p_order_id: createdOrder.id, p_plans: plans })
+        if (!publishedPath) throw new Error('The order was created, but its invitation URL could not be reserved.')
+        const { error: configureError } = await supabase.rpc('configure_order_invitations', { p_order_id: createdOrder.id, p_plans: [{ name: 'Wedding', event_indexes: formData.events.map((_, index) => index) }] })
         if (configureError) throw configureError
+        const pendingSetup = { ...createdOrder, published_path: publishedPath, published_url: null }
+        setInvitationSetupOrder(pendingSetup)
+        setInvitationSetupPlans([{ name: 'Wedding', eventIndexes: formData.events.map((_, index) => index) }])
+        setViewOrder(pendingSetup)
+      } else {
+        setViewOrder({ ...createdOrder, published_path: publishedPath, published_url: null })
       }
-      setViewOrder({ ...createdOrder, published_path: publishedPath, published_url: null })
       setShowOrderPreview(false); setCopyingOrderId(null); setSelected(null); setDetails(initial); setPhoneNumber(defaultPhoneNumber); setWeddingEventTitle(initialWeddingEvent); setExtraEvents(initialExtraEvents); setShowDetails(false); setFormStep(0); setTab('Orders'); setReview(false); setPdfPrefilled(false); setPdfBrideFirst(false); await refresh()
-      if (reserveError) setError(`Order created, but its URL could not be reserved yet: ${reserveError.message}`)
       }
     } catch (cause) {
       const databaseMessage = cause && typeof cause === 'object' && 'message' in cause && typeof cause.message === 'string' ? cause.message : null
@@ -788,6 +803,7 @@ Additional rules:
   <span className={`status-pill status-${viewOrder.status.toLowerCase()}`}>{statusTitle[viewOrder.status]}</span>
   <h2 id="client-order-title">{viewOrder.groom_name} &amp; {viewOrder.bride_name}</h2>
   <p>{designs.find(d=>d.id===viewOrder.form_data.template)?.name} · Submitted {new Date(viewOrder.created_at).toLocaleDateString()}</p>
+  {orderPublishError && <p className="workspace-alert" role="alert">{orderPublishError}</p>}
 </>}
 {viewOrder.status==='READY'&&viewOrder.published_url&&(!viewOrder.expires_at||new Date(viewOrder.expires_at)>new Date())?<section className="client-published-actions" aria-label="Share your invitation">
   <div className="client-published-links">
@@ -812,7 +828,7 @@ Additional rules:
     {waError&&<p className="wa-error" role="alert">{waError}</p>}
   </div>
 </section>:viewOrder.status!=='CREATED'&&viewOrder.status!=='READY'&&viewOrder.expires_at&&new Date(viewOrder.expires_at)<=new Date()?<p className="workspace-alert">This invitation link has expired. Contact Shaadi Invites to renew it.</p>:viewOrder.status!=='CREATED'&&viewOrder.status!=='READY'&&<p className="form-note">Your invitation is being prepared. The public link will appear here after publication.</p>}
-{!(viewOrder.status==='READY'&&viewOrder.published_url&&(!viewOrder.expires_at||new Date(viewOrder.expires_at)>new Date()))&&<dl><dt>Wedding date</dt><dd>{viewOrder.form_data.date} · {viewOrder.form_data.time}</dd><dt>Venue</dt><dd>{viewOrder.form_data.venue}, {viewOrder.form_data.address}</dd><dt>Celebrations</dt><dd><ul className="publish-celebration-list">{viewOrder.form_data.events?.length ? viewOrder.form_data.events.map((event,index)=><li key={index}>{event.title} · {event.date} · {event.venue}</li>) : <li>Wedding</li>}</ul></dd><dt><span className="publish-whatsapp-label"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.6" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true"><path d="M21 11.5a9 9 0 0 1-13.4 7.8L3 21l1.6-4.7A9 9 0 1 1 21 11.5Z"/><path d="m8 7 2 3-1 1a8 8 0 0 0 4 4l1-1 3 1c-1 3-4 2-6 0s-5-5-3-8Z"/></svg>WhatsApp</span></dt><dd>{viewOrder.phone_number?.trim().replace(/^\+91\s*/, '+91 ') || '—'}</dd></dl>}{viewOrder.rejection_reason&&<p className="workspace-alert"><strong>Studio note:</strong> {viewOrder.rejection_reason}</p>}{viewOrder.status==='CREATED'&&<div className="client-publish-prompt">{company?.slug&&<><button type="button" className="secondary-action" disabled={busy} onClick={()=>void previewOrder(viewOrder)}><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg>{busy?'Opening preview…':'Preview invitation'}</button><p className="form-note">Opens in a new tab. Review the invitation before publishing.</p></>}<label>Wedding invitation URL<input readOnly value={viewOrder.published_url || (viewOrder.published_path ? inviteUrl(viewOrder.published_path) : 'Will be assigned when published')}/></label><p>Publish this invitation to make the link live.</p><button type="button" className="primary-action" disabled={busy} onClick={()=>void publishClientOrder(viewOrder)}>{busy?'Publishing…':'Publish invitation →'}</button></div>}</section></div>}
+{!(viewOrder.status==='READY'&&viewOrder.published_url&&(!viewOrder.expires_at||new Date(viewOrder.expires_at)>new Date()))&&<dl><dt>Wedding date</dt><dd>{viewOrder.form_data.date} · {viewOrder.form_data.time}</dd><dt>Venue</dt><dd>{viewOrder.form_data.venue}, {viewOrder.form_data.address}</dd><dt>Celebrations</dt><dd><ul className="publish-celebration-list">{viewOrder.form_data.events?.length ? viewOrder.form_data.events.map((event,index)=><li key={index}>{event.title} · {event.date} · {event.venue}</li>) : <li>Wedding</li>}</ul></dd><dt><span className="publish-whatsapp-label"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.6" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true"><path d="M21 11.5a9 9 0 0 1-13.4 7.8L3 21l1.6-4.7A9 9 0 1 1 21 11.5Z"/><path d="m8 7 2 3-1 1a8 8 0 0 0 4 4l1-1 3 1c-1 3-4 2-6 0s-5-5-3-8Z"/></svg>WhatsApp</span></dt><dd>{viewOrder.phone_number?.trim().replace(/^\+91\s*/, '+91 ') || '—'}</dd></dl>}{viewOrder.rejection_reason&&<p className="workspace-alert"><strong>Studio note:</strong> {viewOrder.rejection_reason}</p>}{viewOrder.status==='CREATED'&&<div className="client-publish-prompt">{invitationSetupOrder?.id===viewOrder.id&&<InvitationSetupPanel events={viewOrder.form_data.events||[]} plans={invitationSetupPlans} disabled={busy} onChange={setInvitationSetupPlans}/ >}{company?.slug&&<><button type="button" className="secondary-action" disabled={busy} onClick={()=>void previewOrder(viewOrder)}><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg>{busy?'Opening preview…':'Preview invitation'}</button><p className="form-note">Opens in a new tab. Review the invitation before publishing.</p></>}<label>Wedding invitation URL<input readOnly value={viewOrder.published_url || (viewOrder.published_path ? inviteUrl(viewOrder.published_path) : 'Will be assigned when published')}/></label><p>Publish this invitation to make the link live.</p><button type="button" className="primary-action" disabled={busy} onClick={()=>void publishClientOrder(viewOrder)}>{busy?'Publishing…':'Publish invitation →'}</button></div>}</section></div>}
       {tab === 'Overview' && <div className="overview-dashboard"><section className="client-overview-welcome"><div><span className="workspace-kicker">WELCOME BACK</span><h2>Your invitation studio</h2><p>Create beautiful digital wedding invitations and manage all your orders in one place.</p></div><button type="button" className="client-overview-primary" onClick={() => { setTab('Templates'); setSelected(chosen?.id || allTemplates[0]?.id || null) }}>＋ Create an invitation</button></section><div className="metric-grid">{[
         {label:'Total orders',value:counts.total,icon:<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.6" strokeLinecap="round" strokeLinejoin="round"><rect x="3" y="3" width="18" height="18" rx="3"/><path d="M8 10h8M8 14h5"/></svg>,tone:'blue',change:monthOrderChange},
         {label:'Total revenue',value:formatRevenue(datedOrders),icon:<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.6" strokeLinecap="round" strokeLinejoin="round"><path d="M12 2v20M6 6h9a3 3 0 0 1 0 6H6M8 12h8a3 3 0 0 1 0 6H6"/></svg>,tone:'green',change:revenueCoverage(datedOrders,revenueChangeLabel(monthRevenue,previousMonthRevenue,'last month'))},
@@ -1013,11 +1029,12 @@ function CoupleOrderTable({ couples, onSelect, onEdit, onCopy, onCreate }: { cou
     })
   }
   return <div className={`table-wrap ${couples.length===0?'orders-empty-table':''}`}>
-    <table className="orders-table couple-orders-table"><thead><tr><th>Couple</th><th>Contact</th><th>Invitations</th><th>RSVPs</th><th>Created</th><th>Details</th></tr></thead>
+    <table className="orders-table couple-orders-table"><thead><tr><th>Couple</th><th>Contact</th><th>Invitations</th><th>RSVPs</th><th>Created</th><th>Details</th><th>Edit</th><th>Copy</th></tr></thead>
       <tbody>{couples.map(couple => {
         const isExpanded = expanded.has(couple.id)
         const published = couple.invitations.filter(invitation => invitation.status === 'READY').length
         const responseCount = couple.invitations.reduce((sum, invitation) => sum + invitation.rsvp_count, 0)
+        const primaryOrder = couple.invitations.find(invitation => invitation.legacy_order)?.legacy_order
         return <Fragment key={couple.id}>
           <tr className="couple-order-row">
             <td><strong>{couple.groom_name} &amp; {couple.bride_name}</strong><small style={{ display: 'block', color: 'var(--client-muted)', marginTop: 4 }}>Couple order #{couple.id}</small></td>
@@ -1025,9 +1042,13 @@ function CoupleOrderTable({ couples, onSelect, onEdit, onCopy, onCreate }: { cou
             <td><strong>{couple.invitations.length} {couple.invitations.length === 1 ? 'invitation' : 'invitations'}</strong><small style={{ display: 'block', color: 'var(--client-muted)', marginTop: 4 }}>{published} published</small></td>
             <td>{responseCount}</td>
             <td>{new Date(couple.created_at).toLocaleDateString('en-IN',{day:'2-digit',month:'short',year:'numeric'})}</td>
-            <td><button type="button" className="order-action-secondary" aria-expanded={isExpanded} onClick={() => toggle(couple.id)}>{isExpanded ? 'Hide invitations ↑' : 'View invitations →'}</button></td>
+            <td>{couple.invitations.length === 1 ? <div className="order-actions couple-single-actions">
+              {couple.invitations[0].published_url && couple.invitations[0].status === 'READY' && (!couple.invitations[0].expires_at || new Date(couple.invitations[0].expires_at) > new Date()) ? <a className="order-action-primary" href={couple.invitations[0].published_url} target="_blank" rel="noreferrer">View invitation ↗</a> : couple.invitations[0].legacy_order && onSelect ? <button type="button" className="order-action-primary" onClick={() => onSelect(couple.invitations[0].legacy_order!)}>View invitation</button> : <span className="quiet">Not published</span>}
+            </div> : <button type="button" className="order-action-secondary" aria-expanded={isExpanded} onClick={() => toggle(couple.id)}>{isExpanded ? 'Hide invitations ↑' : 'View invitations →'}</button>}</td>
+            <td>{primaryOrder && onEdit ? <button type="button" className="order-action-secondary" onClick={() => onEdit(primaryOrder)}>Edit</button> : <span className="quiet">—</span>}</td>
+            <td>{primaryOrder && onCopy ? <button type="button" className="order-action-secondary" onClick={() => onCopy(primaryOrder)}>Copy</button> : <span className="quiet">—</span>}</td>
           </tr>
-          {isExpanded && <tr className="couple-invitations-expanded"><td colSpan={6}><table className="orders-table couple-invitations-table"><thead><tr><th>Invitation</th><th>Template</th><th>RSVPs</th><th>Status</th><th>Link</th><th>Actions</th></tr></thead><tbody>
+          {isExpanded && <tr className="couple-invitations-expanded"><td colSpan={8}><table className="orders-table couple-invitations-table"><thead><tr><th>Invitation</th><th>Template</th><th>RSVPs</th><th>Status</th><th>Link</th><th>Details</th><th>Edit</th><th>Copy</th></tr></thead><tbody>
             {couple.invitations.map(invitation => {
               const expired = Boolean(invitation.expires_at && new Date(invitation.expires_at) <= new Date())
               const active = Boolean(invitation.published_url && !expired)
@@ -1037,7 +1058,9 @@ function CoupleOrderTable({ couples, onSelect, onEdit, onCopy, onCreate }: { cou
                 <td>{invitation.rsvp_count}</td>
                 <td><span className={`status-pill status-${invitation.status.toLowerCase()}`}>{statusTitle[invitation.status] || invitation.status}</span></td>
                 <td>{active ? <a className="order-action-primary" href={invitation.published_url!} target="_blank" rel="noreferrer">↗ Open</a> : expired ? <span className="quiet">Expired</span> : <span className="quiet">Not published</span>}</td>
-                <td className="order-actions">{invitation.legacy_order ? <>{onSelect&&<button type="button" className="order-action-secondary" onClick={() => onSelect(invitation.legacy_order!)}>Details</button>}{onEdit&&<button type="button" className="order-action-secondary" onClick={() => onEdit(invitation.legacy_order!)}>Edit</button>}{onCopy&&<button type="button" className="order-action-secondary" onClick={() => onCopy(invitation.legacy_order!)}>Copy</button>}</> : <span className="quiet">—</span>}</td>
+                <td>{invitation.legacy_order && onSelect ? <button type="button" className="order-action-secondary" onClick={() => onSelect(invitation.legacy_order!)}>Details</button> : <span className="quiet">—</span>}</td>
+                <td>{invitation.legacy_order && onEdit ? <button type="button" className="order-action-secondary" onClick={() => onEdit(invitation.legacy_order!)}>Edit</button> : <span className="quiet">—</span>}</td>
+                <td>{invitation.legacy_order && onCopy ? <button type="button" className="order-action-secondary" onClick={() => onCopy(invitation.legacy_order!)}>Copy</button> : <span className="quiet">—</span>}</td>
               </tr>
             })}
           </tbody></table></td></tr>}
