@@ -32,6 +32,8 @@ export function cardTextLimit(template: number, field: string): number | undefin
   return [2,3,5,6,7].includes(template) ? ({ title: 40, venue: 60, address: 100 } as Record<string, number>)[field] : undefined
 }
 export interface InvitationData {
+  /** Client-side order setup; stripped by validateDetails before publishing. */
+  orderInvitationPlans?: string;
   layoutVersion?: 1 | 2;
   textOverrides?: TextLayout;
   showCoupleIllustrations?: boolean;
@@ -49,7 +51,7 @@ export function companyWhatsAppURL(phone?: string): string | undefined {
   const number = digits.length === 10 ? `91${digits}` : digits.length >= 11 && digits.length <= 15 ? digits : ''
   return number ? `https://wa.me/${number}?text=${encodeURIComponent(COMPANY_WHATSAPP_MESSAGE)}` : undefined
 }
-export interface SavedInvitation { slug: string; details: InvitationData; createdAt: string; orderId?: string }
+export interface SavedInvitation { slug: string; details: InvitationData; createdAt: string; orderId?: string; invitationId?: string }
 export const weddingISO = (d: InvitationData) => `${d.date}T${d.time || '00:00'}:00${d.offset}`
 export const formatDate = (date: string, options: Intl.DateTimeFormatOptions = { day: 'numeric', month: 'long', year: 'numeric' }) => new Date(`${date}T12:00:00Z`).toLocaleDateString('en-GB', { ...options, timeZone: 'UTC' })
 export const formatTime = (time: string) => { if (!time) return ''; return new Date(`2000-01-01T${time}:00Z`).toLocaleTimeString('en-US', { hour: 'numeric', minute: '2-digit', timeZone: 'UTC' }) }
@@ -88,6 +90,22 @@ export function inviteUrl(slug: string): string {
   }
   return `https://www.shaadiinvites.in/${slug}`
 }
+// New orders use a short couple slug and a four-digit suffix. The reservation
+// RPC remains responsible for checking uniqueness and retrying collisions.
+export function newInvitationPathCandidates(groom: string, bride: string, brideFirst = false): string[] {
+  const base = slugVariants(groom, bride, brideFirst)[0]
+  const candidates = new Set<string>()
+
+  while (candidates.size < 7) {
+    const random = new Uint32Array(1)
+    crypto.getRandomValues(random)
+    const suffix = String(random[0] % 10000).padStart(4, '0')
+    candidates.add(`${base}-${suffix}`)
+  }
+
+  return [...candidates]
+}
+
 // Saved URLs may predate the move from invitation subdomains to paths.
 // Keep the reserved path as the source of truth for every displayed/shared link.
 export function withCurrentInviteUrl<T extends { published_path: string | null; published_url: string | null }>(order: T): T {

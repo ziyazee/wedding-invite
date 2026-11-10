@@ -1,7 +1,7 @@
-import { createContext, useContext, useCallback, useEffect, useLayoutEffect, useMemo, useRef, useState, lazy, Suspense } from 'react'
+import { Fragment, createContext, useContext, useCallback, useEffect, useLayoutEffect, useMemo, useRef, useState, lazy, Suspense } from 'react'
 import type { FormEvent, ReactElement } from 'react'
 import { createPortal } from 'react-dom'
-import { cardTextLimit, nameTextLimit, designs, TEMPLATE_DISPLAY_ORDER, slugVariants, inviteUrl, withCurrentInviteUrl, companyPreviewUrl, validateDetails } from '../invitations/model'
+import { cardTextLimit, nameTextLimit, designs, TEMPLATE_DISPLAY_ORDER, slugVariants, newInvitationPathCandidates, inviteUrl, withCurrentInviteUrl, companyPreviewUrl, validateDetails } from '../invitations/model'
 import type { Celebration, InvitationData } from '../invitations/model'
 import type { TextLayout } from '../invitations/textLayout'
 import { readTextLayout } from '../invitations/textLayout'
@@ -23,7 +23,9 @@ import OrderProgressBar from './OrderProgressBar'
 
 const OrderTextEditor = lazy(() => import('./OrderTextEditor'))
 
-type Order = { id: number; groom_name: string; bride_name: string; status: string; created_at: string; form_data: InvitationData; published_path: string | null; published_url: string | null; management_id: string; published_at: string | null; expires_at: string | null; rejection_reason: string | null; template_code: string; phone_number: string; price?: number | null }
+type Order = { id: number; groom_name: string; bride_name: string; status: string; created_at: string; form_data: InvitationData; published_path: string | null; published_url: string | null; management_id: string; published_at: string | null; expires_at: string | null; rejection_reason: string | null; template_code: string; phone_number: string; price?: number | null; invitations?: Array<{ id: number; name: string; published_path: string; published_url: string }> }
+type CoupleInvitationRow = { id: number; name: string; status: string; template_code: string; form_data: InvitationData; published_path: string | null; published_url: string | null; expires_at: string | null; rsvp_count: number; legacy_order: Order | null }
+type CoupleTableRow = { id: number; groom_name: string; bride_name: string; phone_number: string; created_at: string; invitations: CoupleInvitationRow[] }
 type Template = InvitationTemplate
 type TemplateSettings = { price: number; sale_type: 'none' | 'percentage' | 'fixed'; sale_value: number; is_premium: boolean }
 const initial: InvitationData = { template: 1, groom: 'Groom', bride: 'Bride', date: '2026-12-20', time: '11:00', offset: '+05:30', venue: 'Royal Convention Centre', address: 'Downtown', map: '', message: 'With the love and blessings of our families, we invite you to celebrate the beginning of our forever.', groomFamily: '', brideFamily: '', dressCode: '', giftNote: '', music: '', gallery: '', events: [] }
@@ -37,6 +39,10 @@ const initialExtraEvents: Celebration[] = [
   { title: "Bride's Reception — Chikmagaluru", date: '2026-12-24', time: '11:00', venue: 'Heritage Convention Hall', address: 'Chikmagaluru', map: 'https://maps.app.goo.gl/NbvAqoYtcacD5Xas6' },
 ]
 const statusTitle: Record<string, string> = { CREATED: 'New', IN_PROGRESS: 'In progress', READY: 'Published', REJECTED: 'Needs changes' }
+function invitationEventLabel(details: InvitationData) {
+  const names = (details.events || []).map(event => event.title.trim()).filter(Boolean)
+  return names.length ? names.join(' + ') : 'Wedding invitation'
+}
 const CATEGORY_ORDER = ['Classic', 'Royal Hindu', 'Hindu', 'Muslim', 'Christian', 'Garden', 'Indian']
 const CEL_PALETTE = [
   { headerBg: '#E9F0E4', border: '#C5D5BC', icon: '#526D45' },
@@ -63,6 +69,7 @@ function ClientWorkspace({ showHiddenTemplates = false }: { showHiddenTemplates?
   const previewFrame = useRef<HTMLIFrameElement>(null)
   const [tab, setTab] = useState<'Overview' | 'Templates' | 'Orders' | 'Settings'>('Overview')
   const [orders, setOrders] = useState<Order[]>([])
+  const [coupleRows, setCoupleRows] = useState<CoupleTableRow[]>([])
   const [viewOrder, setViewOrder] = useState<Order | null>(null)
   const [allTemplates, setAllTemplates] = useState<Template[]>([])
   const [company, setCompany] = useState<{ id: number; company_name: string; contact_name: string | null; slug: string | null; phone: string | null; branding_base_url: string | null; catalog_restricted: boolean; is_test_account?: boolean } | null>(null)
@@ -130,10 +137,63 @@ function ClientWorkspace({ showHiddenTemplates = false }: { showHiddenTemplates?
     const companyData = companyResult.data
     if (companyResult.error || !companyData) {
       setError(companyResult.error?.message || 'Your account is not linked to a company yet.')
-      setCompany(null); setOrders([]); setLoading(false); return
+      setCompany(null); setOrders([]); setCoupleRows([]); setLoading(false); return
     }
     const ordersResult = await supabase.from(companyData.is_test_account ? 'test_order' : 'orders').select('*').eq('company_id', companyData.id).order('created_at', { ascending: false })
     if (ordersResult.error) setError(ordersResult.error.message)
+    const loadedOrders = ((ordersResult.data || []) as Order[]).map(withCurrentInviteUrl)
+    let loadedCoupleRows: CoupleTableRow[] = []
+    if (companyData.is_test_account) {
+      const testRsvpResult = await supabase.from('test_order_rsvps').select('order_id')
+      if (testRsvpResult.error) setError(testRsvpResult.error.message)
+      const counts = new Map<number, number>()
+      for (const response of testRsvpResult.data || []) counts.set(response.order_id, (counts.get(response.order_id) || 0) + 1)
+      loadedCoupleRows = loadedOrders.map(order => ({
+        id: order.id,
+        groom_name: order.groom_name,
+        bride_name: order.bride_name,
+        phone_number: order.phone_number,
+        created_at: order.created_at,
+        invitations: [{ id: order.id, name: invitationEventLabel(order.form_data), status: order.status, template_code: order.template_code, form_data: order.form_data, published_path: order.published_path, published_url: order.published_url, expires_at: order.expires_at, rsvp_count: counts.get(order.id) || 0, legacy_order: order }],
+      }))
+    } else {
+      const [couplesResult, rsvpsResult] = await Promise.all([
+        supabase.from('couple_orders').select('id,groom_name,bride_name,phone_number,created_at,invitations(id,legacy_order_id,invitation_name,template_code,form_data,status,published_path,published_url,expires_at)').eq('company_id', companyData.id).order('created_at', { ascending: false }),
+        supabase.from('order_rsvps').select('order_id,invitation_id'),
+      ])
+      if (couplesResult.error) setError(couplesResult.error.message)
+      if (rsvpsResult.error) setError(rsvpsResult.error.message)
+      const ordersById = new Map(loadedOrders.map(order => [order.id, order]))
+      const coupleRecords = (couplesResult.data || []) as Array<{ id: number; groom_name: string; bride_name: string; phone_number: string; created_at: string; invitations: Array<{ id: number; legacy_order_id: number | null; invitation_name: string; template_code: string; form_data: InvitationData; status: string; published_path: string | null; published_url: string | null; expires_at: string | null }> }>
+      const invitationForOrder = new Map<number, number>()
+      for (const couple of coupleRecords) for (const invitation of couple.invitations || []) {
+        if (invitation.legacy_order_id !== null) invitationForOrder.set(invitation.legacy_order_id, invitation.id)
+      }
+      const counts = new Map<number, number>()
+      for (const response of rsvpsResult.data || []) {
+        const invitationId = response.invitation_id ?? invitationForOrder.get(response.order_id)
+        if (invitationId !== undefined && invitationId !== null) counts.set(invitationId, (counts.get(invitationId) || 0) + 1)
+      }
+      loadedCoupleRows = coupleRecords.map(couple => ({
+        id: couple.id,
+        groom_name: couple.groom_name,
+        bride_name: couple.bride_name,
+        phone_number: couple.phone_number,
+        created_at: couple.created_at,
+        invitations: (couple.invitations || []).map(invitation => ({
+          id: invitation.id,
+          name: invitation.invitation_name || invitationEventLabel(invitation.form_data),
+          status: invitation.status,
+          template_code: invitation.template_code,
+          form_data: invitation.form_data,
+          published_path: invitation.published_path,
+          published_url: invitation.published_path ? inviteUrl(invitation.published_path) : invitation.published_url,
+          expires_at: invitation.expires_at,
+          rsvp_count: counts.get(invitation.id) || 0,
+          legacy_order: invitation.legacy_order_id === null ? null : ordersById.get(invitation.legacy_order_id) || null,
+        })),
+      }))
+    }
     let activeTemplates = templatesResult.data
     if (companyData?.catalog_restricted) {
       const { data: access, error: accessError } = await supabase.from('company_template_access').select('template_id').eq('company_id', companyData.id)
@@ -172,7 +232,8 @@ function ClientWorkspace({ showHiddenTemplates = false }: { showHiddenTemplates?
     }
     const firstTemplate = activeTemplates[0]
     if (firstTemplate) { setSelected(current => current ?? firstTemplate.id); setPreviewId(current => current ?? firstTemplate.id) }
-    setOrders(((ordersResult.data || []) as Order[]).map(withCurrentInviteUrl))
+    setOrders(loadedOrders)
+    setCoupleRows(loadedCoupleRows)
     if (data.user.email) {
       setCompany(companyData)
       if (companyData?.id) {
@@ -257,9 +318,10 @@ function ClientWorkspace({ showHiddenTemplates = false }: { showHiddenTemplates?
   const todayRevenue = revenueTrend(todayOrders)
   const yesterdayRevenue = revenueTrend(yesterdayOrders)
   const revenueChangeLabel = (current: number | null, previous: number | null, period: string) => current !== null && previous !== null ? changeLabel(current, previous, period) : 'Price tracking unavailable'
-  const filtered = orders.filter(order => {
-    const submitted = order.created_at.slice(0, 10)
-    return `${order.id} ${order.groom_name} ${order.bride_name} ${order.phone_number}`.toLowerCase().includes(orderSearch.toLowerCase()) && (!orderDateFrom || submitted >= orderDateFrom) && (!orderDateTo || submitted <= orderDateTo)
+  const filteredCoupleRows = coupleRows.filter(couple => {
+    const submitted = couple.created_at.slice(0, 10)
+    const invitationSearch = couple.invitations.map(invitation => `${invitation.id} ${invitation.legacy_order?.id || ''} ${invitation.name} ${invitation.status} ${invitation.published_path || ''}`).join(' ')
+    return `${couple.id} ${couple.groom_name} ${couple.bride_name} ${couple.phone_number} ${invitationSearch}`.toLowerCase().includes(orderSearch.toLowerCase()) && (!orderDateFrom || submitted >= orderDateFrom) && (!orderDateTo || submitted <= orderDateTo)
   })
   const categories = useMemo(() => {
     const unique = [...new Set(allTemplates.map(template => template.category).filter(Boolean))]
@@ -479,18 +541,27 @@ function ClientWorkspace({ showHiddenTemplates = false }: { showHiddenTemplates?
   async function publishClientOrder(order: Order) {
     if (!supabase) return
     setBusy(true); setError(''); setNotice('')
-    const candidates = order.published_path ? [order.published_path] : slugVariants(order.groom_name, order.bride_name, order.form_data.brideFirst)
     try {
-      const { data, error: publishError } = company?.is_test_account
-        ? await supabase.rpc('publish_test_order', { p_order_id: order.id })
-        : await supabase.rpc('publish_company_order_with_candidates', { p_order_id: order.id, p_candidate_paths: candidates })
+      let data: any
+      let publishError: any
+      if (company?.is_test_account) {
+        ({ data, error: publishError } = await supabase.rpc('publish_test_order', { p_order_id: order.id }))
+      } else {
+        const { data: couple, error: coupleError } = await supabase.from('couple_orders').select('invitations(id,legacy_order_id)').eq('legacy_order_id', order.id).single()
+        if (coupleError || !couple) throw coupleError || new Error('Couple order was not found.')
+        const invitationRows = (couple.invitations || []) as Array<{ id:number; legacy_order_id:number|null }>
+        const candidateSets = Object.fromEntries(invitationRows.map(row => [String(row.id), row.legacy_order_id !== null ? [] : newInvitationPathCandidates(order.groom_name, order.bride_name, order.form_data.brideFirst)]))
+        ;({ data, error: publishError } = await supabase.rpc('publish_couple_order_with_candidates', { p_order_id: order.id, p_candidates: candidateSets }))
+      }
       if (publishError) throw publishError
-      const path = data?.published_path
+      const publishedInvitations = (data?.invitations || []) as Array<{ id:number; name:string; published_path:string; published_url:string }>
+      const primaryPublished = publishedInvitations[0]
+      const path = data?.published_path || primaryPublished?.published_path
       if (!path) throw new Error('Publishing did not return an invitation URL. Please refresh the order and try again.')
-      const published = { ...order, status: 'READY', published_path: path, published_url: inviteUrl(path), published_at: data?.published_at || new Date().toISOString() }
+      const published = { ...order, status: 'READY', published_path: path, published_url: inviteUrl(path), published_at: data?.published_at || new Date().toISOString(), invitations: publishedInvitations.map(item => ({...item, published_url: inviteUrl(item.published_path)})) }
       setViewOrder(published)
       setOrders(current => current.map(item => item.id === order.id ? published : item))
-      setNotice('Your invitation is live and ready to share.')
+      setNotice(publishedInvitations.length > 1 ? 'Your invitations are live and ready to share.' : 'Your invitation is live and ready to share.')
       await refresh()
     } catch (cause) {
       setViewOrder(null)
@@ -627,6 +698,16 @@ Additional rules:
       setReview(true); return
     }
     if (!event.currentTarget.reportValidity()) return
+    let invitationPlanInput: Array<{ name: string; eventIndexes: number[] }> = []
+    if (showOrderPreview && !editingOrderId && !company?.is_test_account) {
+      try {
+        invitationPlanInput = JSON.parse(details.orderInvitationPlans || '[]')
+      } catch { setError('Please review your invitation setup.'); return }
+      const eventCount = 1 + extraEvents.length
+      if (!Array.isArray(invitationPlanInput) || !invitationPlanInput.length || invitationPlanInput.length > 10 || invitationPlanInput.some(plan => !plan || typeof plan.name !== 'string' || !plan.name.trim() || !Array.isArray(plan.eventIndexes) || !plan.eventIndexes.length || plan.eventIndexes.some(index => !Number.isInteger(index) || index < 0 || index >= eventCount))) {
+        setError('Give every invitation a name and select at least one event for it.'); return
+      }
+    }
     if (!showOrderPreview) {
       setError(''); setReview(false); setShowOrderPreview(true); return
     }
@@ -651,8 +732,14 @@ Additional rules:
       const createdOrder = data as Order
       const { data: reserved, error: reserveError } = companyRow.is_test_account
         ? { data: { published_path: createdOrder.published_path }, error: null }
-        : await supabase.rpc('reserve_company_order_path', { p_order_id: createdOrder.id, p_candidate_paths: slugVariants(createdOrder.groom_name, createdOrder.bride_name, createdOrder.form_data.brideFirst) })
+        : await supabase.rpc('reserve_company_order_path', { p_order_id: createdOrder.id, p_candidate_paths: newInvitationPathCandidates(createdOrder.groom_name, createdOrder.bride_name, createdOrder.form_data.brideFirst) })
       const publishedPath: string | null = reserved?.published_path || null
+      if (!companyRow.is_test_account) {
+        if (reserveError) throw reserveError
+        const plans = invitationPlanInput.map(plan => ({ name: plan.name.trim(), event_indexes: plan.eventIndexes }))
+        const { error: configureError } = await supabase.rpc('configure_order_invitations', { p_order_id: createdOrder.id, p_plans: plans })
+        if (configureError) throw configureError
+      }
       setViewOrder({ ...createdOrder, published_path: publishedPath, published_url: null })
       setShowOrderPreview(false); setCopyingOrderId(null); setSelected(null); setDetails(initial); setPhoneNumber(defaultPhoneNumber); setWeddingEventTitle(initialWeddingEvent); setExtraEvents(initialExtraEvents); setShowDetails(false); setFormStep(0); setTab('Orders'); setReview(false); setPdfPrefilled(false); setPdfBrideFirst(false); await refresh()
       if (reserveError) setError(`Order created, but its URL could not be reserved yet: ${reserveError.message}`)
@@ -694,8 +781,8 @@ Additional rules:
     <path d="M60.00 4.50C60.59 4.50 61.20 4.71 61.77 5.00C62.34 5.28 62.88 5.80 63.39 6.22C63.91 6.65 64.37 7.19 64.87 7.54C65.36 7.89 65.82 8.19 66.34 8.33C66.87 8.48 67.42 8.44 68.02 8.38C68.62 8.32 69.29 8.09 69.95 7.98C70.61 7.87 71.34 7.70 71.97 7.73C72.60 7.76 73.24 7.89 73.75 8.18C74.26 8.48 74.69 8.97 75.03 9.50C75.38 10.03 75.59 10.75 75.83 11.37C76.06 12.00 76.19 12.70 76.44 13.25C76.69 13.80 76.94 14.29 77.32 14.68C77.71 15.06 78.20 15.31 78.75 15.56C79.30 15.81 80.00 15.94 80.63 16.17C81.25 16.41 81.97 16.62 82.50 16.97C83.03 17.31 83.52 17.74 83.82 18.25C84.11 18.76 84.24 19.40 84.27 20.03C84.30 20.66 84.13 21.39 84.02 22.05C83.91 22.71 83.68 23.38 83.62 23.98C83.56 24.58 83.52 25.13 83.67 25.66C83.81 26.18 84.11 26.64 84.46 27.13C84.81 27.63 85.35 28.09 85.78 28.61C86.20 29.12 86.72 29.66 87.00 30.23C87.29 30.80 87.50 31.41 87.50 32.00C87.50 32.59 87.29 33.20 87.00 33.77C86.72 34.34 86.20 34.88 85.78 35.39C85.35 35.91 84.81 36.37 84.46 36.87C84.11 37.36 83.81 37.82 83.67 38.34C83.52 38.87 83.56 39.42 83.62 40.02C83.68 40.62 83.91 41.29 84.02 41.95C84.13 42.61 84.30 43.34 84.27 43.97C84.24 44.60 84.11 45.24 83.82 45.75C83.52 46.26 83.03 46.69 82.50 47.03C81.97 47.38 81.25 47.59 80.63 47.83C80.00 48.06 79.30 48.19 78.75 48.44C78.20 48.69 77.71 48.94 77.32 49.32C76.94 49.71 76.69 50.20 76.44 50.75C76.19 51.30 76.06 52.00 75.83 52.63C75.59 53.25 75.38 53.97 75.03 54.50C74.69 55.03 74.26 55.52 73.75 55.82C73.24 56.11 72.60 56.24 71.97 56.27C71.34 56.30 70.61 56.13 69.95 56.02C69.29 55.91 68.62 55.68 68.02 55.62C67.42 55.56 66.87 55.52 66.34 55.67C65.82 55.81 65.36 56.11 64.87 56.46C64.37 56.81 63.91 57.35 63.39 57.78C62.88 58.20 62.34 58.72 61.77 59.00C61.20 59.29 60.59 59.50 60.00 59.50C59.41 59.50 58.80 59.29 58.23 59.00C57.66 58.72 57.12 58.20 56.61 57.78C56.09 57.35 55.63 56.81 55.13 56.46C54.64 56.11 54.18 55.81 53.66 55.67C53.13 55.52 52.58 55.56 51.98 55.62C51.38 55.68 50.71 55.91 50.05 56.02C49.39 56.13 48.66 56.30 48.03 56.27C47.40 56.24 46.76 56.11 46.25 55.82C45.74 55.52 45.31 55.03 44.97 54.50C44.62 53.97 44.41 53.25 44.17 52.63C43.94 52.00 43.81 51.30 43.56 50.75C43.31 50.20 43.06 49.71 42.68 49.32C42.29 48.94 41.80 48.69 41.25 48.44C40.70 48.19 40.00 48.06 39.37 47.83C38.75 47.59 38.03 47.38 37.50 47.03C36.97 46.69 36.48 46.26 36.18 45.75C35.89 45.24 35.76 44.60 35.73 43.97C35.70 43.34 35.87 42.61 35.98 41.95C36.09 41.29 36.32 40.62 36.38 40.02C36.44 39.42 36.48 38.87 36.33 38.34C36.19 37.82 35.89 37.36 35.54 36.87C35.19 36.37 34.65 35.91 34.22 35.39C33.80 34.88 33.28 34.34 33.00 33.77C32.71 33.20 32.50 32.59 32.50 32.00C32.50 31.41 32.71 30.80 33.00 30.23C33.28 29.66 33.80 29.12 34.22 28.61C34.65 28.09 35.19 27.63 35.54 27.13C35.89 26.64 36.19 26.18 36.33 25.66C36.48 25.13 36.44 24.58 36.38 23.98C36.32 23.38 36.09 22.71 35.98 22.05C35.87 21.39 35.70 20.66 35.73 20.03C35.76 19.40 35.89 18.76 36.18 18.25C36.48 17.74 36.97 17.31 37.50 16.97C38.03 16.62 38.75 16.41 39.37 16.17C40.00 15.94 40.70 15.81 41.25 15.56C41.80 15.31 42.29 15.06 42.68 14.68C43.06 14.29 43.31 13.80 43.56 13.25C43.81 12.70 43.94 12.00 44.17 11.37C44.41 10.75 44.62 10.03 44.97 9.50C45.31 8.97 45.74 8.48 46.25 8.18C46.76 7.89 47.40 7.76 48.03 7.73C48.66 7.70 49.39 7.87 50.05 7.98C50.71 8.09 51.38 8.32 51.98 8.38C52.58 8.44 53.13 8.48 53.66 8.33C54.18 8.19 54.64 7.89 55.13 7.54C55.63 7.19 56.09 6.65 56.61 6.22C57.12 5.80 57.66 5.28 58.23 5.00C58.80 4.71 59.41 4.50 60.00 4.50Z" fill="#135330"/>
     <path className="client-published-success-check" pathLength="1" d="m49 32 7 7 15-15" stroke="white" strokeWidth="3.5" strokeLinecap="round" strokeLinejoin="round"/>
   </svg>
-  <h2 id="client-order-title">Awesome! The invitation is live</h2>
-  <p>The invitation has been published and is now ready to share with your customer.</p>
+  <h2 id="client-order-title">Awesome! {viewOrder.invitations && viewOrder.invitations.length > 1 ? 'Your invitations are live' : 'The invitation is live'}</h2>
+  <p>{viewOrder.invitations && viewOrder.invitations.length > 1 ? 'All invitations have been published and are ready to share with your customer.' : 'The invitation has been published and is now ready to share with your customer.'}</p>
 </header>:<>
   <span className="workspace-kicker">ORDER #{viewOrder.id}</span>
   <span className={`status-pill status-${viewOrder.status.toLowerCase()}`}>{statusTitle[viewOrder.status]}</span>
@@ -704,8 +791,8 @@ Additional rules:
 </>}
 {viewOrder.status==='READY'&&viewOrder.published_url&&(!viewOrder.expires_at||new Date(viewOrder.expires_at)>new Date())?<section className="client-published-actions" aria-label="Share your invitation">
   <div className="client-published-links">
-    {[{label:'Invitation Link',url:viewOrder.published_url!,kind:'invitation'},...(viewOrder.management_id?[{label:'Management Link',url:`${window.location.origin}/${viewOrder.management_id}`,kind:'management'}]:[])].map(link=><div className="client-published-link-row" key={link.kind}>
-      <span className="client-published-link-icon">{link.kind==='invitation'?<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.7" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true"><path d="m10 13 4-4m-6 6-1 1a4 4 0 0 1-6-6l4-4a4 4 0 0 1 6 0m2 2 1-1a4 4 0 0 1 6 6l-4 4a4 4 0 0 1-6 0" transform="translate(1 1)"/></svg>:<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.7" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true"><path d="m9 3 1-1h4l1 3 3 1 2 2-1 3 1 3-2 3-3 1-1 3h-4l-1-3-3-1-2-3 1-3-1-3 2-2 3-1Z"/><circle cx="12" cy="11.5" r="3"/></svg>}</span>
+    {[{label:viewOrder.invitations?.[0]?.name||'Invitation Link',url:viewOrder.published_url!,kind:'invitation'},...(viewOrder.invitations||[]).slice(1).map(item=>({label:item.name,url:item.published_url,kind:`invitation-${item.id}`})),...(viewOrder.management_id?[{label:'Management Link',url:`${window.location.origin}/${viewOrder.management_id}`,kind:'management'}]:[])].map(link=><div className="client-published-link-row" key={link.kind}>
+      <span className="client-published-link-icon">{link.kind.startsWith('invitation')?<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.7" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true"><path d="m10 13 4-4m-6 6-1 1a4 4 0 0 1-6-6l4-4a4 4 0 0 1 6 0m2 2 1-1a4 4 0 0 1 6 6l-4 4a4 4 0 0 1-6 0" transform="translate(1 1)"/></svg>:<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.7" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true"><path d="m9 3 1-1h4l1 3 3 1 2 2-1 3 1 3-2 3-3 1-1 3h-4l-1-3-3-1-2-3 1-3-1-3 2-2 3-1Z"/><circle cx="12" cy="11.5" r="3"/></svg>}</span>
       <div className="client-published-link-copy"><h3>{link.label}</h3><a href={link.url} target="_blank" rel="noreferrer">{link.url}</a></div>
       <div className="client-published-link-actions">
         <a className="client-published-open" href={link.url} target="_blank" rel="noreferrer" aria-label={`Open ${link.label.toLowerCase()} in a new tab`}><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.7" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true"><path d="M14 3h7v7m0-7L10 14m0-10H5a2 2 0 0 0-2 2v13a2 2 0 0 0 2 2h13a2 2 0 0 0 2-2v-5"/></svg></a>
@@ -733,7 +820,7 @@ Additional rules:
         {label:"Today's revenue",value:formatRevenue(todayOrders),icon:<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.6" strokeLinecap="round" strokeLinejoin="round"><circle cx="12" cy="12" r="9"/><path d="M12 6v12M8 9h6.5a2 2 0 0 1 0 4H8M9 13h6a2 2 0 0 1 0 4H8"/></svg>,tone:'gold',change:revenueCoverage(todayOrders,revenueChangeLabel(todayRevenue,yesterdayRevenue,'yesterday'))},
       ].map(metric=><article className={`metric-card metric-${metric.tone}`} key={metric.label}><span>{metric.label}</span><strong>{metric.value}</strong><i aria-hidden="true">{metric.icon}</i><small className={metric.change.startsWith('↑')?'metric-change-up':metric.change.startsWith('↓')?'metric-change-down':'metric-change-neutral'}>{metric.change.includes(' from ')?<><b>{metric.change.slice(0,metric.change.indexOf(' from '))}</b>{metric.change.slice(metric.change.indexOf(' from '))}</>:metric.change}</small></article>)}</div><div className="client-overview-columns"><section className="client-recent-orders"><div className="section-heading recent-orders-heading"><h2>Recent orders</h2><button className="text-action" onClick={() => setTab('Orders')}>View all →</button></div><OrderTable orders={orders.slice(0,5)} onSelect={setViewOrder} variant="overview"/><div className="recent-orders-footer">Showing {orders.length===0?'0':`1–${Math.min(5,orders.length)}`} of {orders.length} orders<button type="button" onClick={()=>setTab('Orders')}>View all orders →</button></div></section><aside className="client-overview-side-card"><h2>Orders by status</h2><div className="client-status-breakdown"><div className="client-status-donut" style={{ background: `conic-gradient(#557260 0 ${orders.length ? orders.filter(order=>order.status==='READY').length/orders.length*100 : 0}%, #e3a05b 0 ${orders.length ? (orders.filter(order=>order.status==='READY').length+orders.filter(order=>order.status==='IN_PROGRESS').length)/orders.length*100 : 0}%, #a87592 0 ${orders.length ? (orders.filter(order=>order.status==='READY').length+orders.filter(order=>order.status==='IN_PROGRESS').length+orders.filter(order=>order.status==='CREATED').length)/orders.length*100 : 0}%, #db7f8e 0 100%)` }}><span><strong>{orders.length}</strong><small>Orders</small></span></div><ul><li><i className="status-dot status-dot-published"/>Published <b>{orders.filter(order=>order.status==='READY').length}</b></li><li><i className="status-dot status-dot-progress"/>In progress <b>{orders.filter(order=>order.status==='IN_PROGRESS').length}</b></li><li><i className="status-dot status-dot-new"/>New <b>{orders.filter(order=>order.status==='CREATED').length}</b></li><li><i className="status-dot status-dot-changes"/>Needs changes <b>{orders.filter(order=>order.status==='REJECTED').length}</b></li></ul></div></aside></div><section className="client-popular-templates"><div className="section-heading"><h2>Popular templates</h2><button className="text-action" onClick={()=>setTab('Templates')}>View all templates →</button></div><div className="client-popular-grid">{allTemplates.slice(0,7).map(template=><button type="button" className="client-popular-template" key={template.id} onClick={()=>chooseTemplate(template.id)}><img src={TEMPLATE_THUMBNAIL_OVERRIDES[template.id] ?? template.thumbnail_url} alt=""/><strong>{template.name}</strong><small>{template.category}</small></button>)}</div></section></div>}
       {tab === 'Templates' && <>{chosen ? <div className="order-create"><div className="order-template-rail"><button className="back-action" onClick={() => setSelected(null)}>← All templates</button>{templates.map(template => <button key={template.id} className={`rail-template ${selected === template.id ? 'selected' : ''}`} onClick={() => chooseTemplate(template.id)}><img src={template.thumbnail_url} alt=""/><span>{template.name}<small>{template.category}</small></span></button>)}</div><form className="order-form" onSubmit={submitOrder}><OrderProgressBar current={review ? 3 : showOrderPreview ? 4 : formStep} onNavigate={step => { if (step === 3) { setShowOrderPreview(false); setReview(true) } else if (step === 4) { setReview(false); setShowOrderPreview(true) } else { setReview(false); setShowOrderPreview(false); setFormStep(step) } }} /><div className="form-heading"><div><span className="workspace-kicker">{editingOrderId ? `EDIT ORDER #${editingOrderId}` : copyingOrderId !== null ? `COPY OF ORDER #${copyingOrderId}` : 'NEW INVITATION ORDER'}</span><h2>{chosen.name}</h2><div className="client-couple-order-control"><span className="client-couple-order-prefix">This beautiful invitation for</span><div className={`client-couple-order-options${details.brideFirst ? " bride-first" : ""}`} role="group" aria-label="Choose which name comes first"><button type="button" className={!details.brideFirst ? "active" : ""} aria-pressed={!details.brideFirst} onClick={() => setCoupleOrder(false)}>{details.groom}</button><button type="button" className={details.brideFirst ? "active" : ""} aria-pressed={!!details.brideFirst} onClick={() => setCoupleOrder(true)}>{details.bride}</button></div></div></div><label className="form-heading-phone"><span>WhatsApp number <i>*</i></span><span className="wa-input-wrap"><img src="/whatsapp-icon.png" alt="" className="wa-icon"/><span className="wa-prefix">+91</span><input type="tel" required disabled={!!editingOrderId} value={phoneNumber} onChange={e=>setPhoneNumber(e.target.value.replace(/[^\d]/g,'').slice(0,10))} placeholder="98765 43210"/></span></label></div>{showOrderPreview ? <OrderPreviewStep details={livePreviewDetails} previewFrame={previewFrame} designCategory={chosen.category} busy={busy} editing={!!editingOrderId} draftStatus={draftStatus} templateId={selected!} companyId={company!.id} onChange={setField} onFooterIllustrationChange={v=>setDetails(prev=>({...prev,footerIllustration:v||undefined}))} onBack={() => { setShowOrderPreview(false); setReview(true); setError('') }} onNavigateStep={step => { if (step === 3) { setShowOrderPreview(false); setReview(true) } else if (step === 4) { setReview(false); setShowOrderPreview(true) } else { setReview(false); setShowOrderPreview(false); setFormStep(step) } }} /> : <><fieldset><legend>01 · The couple</legend><div className="form-grid"><Field label="Groom's name" required value={details.groom} onChange={v => setField('groom',v)}/><Field label="Bride's name" required value={details.bride} onChange={v => setField('bride',v)}/><Field label="Groom's family" value={details.groomFamily} onChange={v => setField('groomFamily',v)}/><Field label="Bride's family" value={details.brideFamily} onChange={v => setField('brideFamily',v)}/><label style={{gridColumn:'1 / -1'}}>Welcome message<textarea rows={3} value={details.message} maxLength={2000} onChange={e => setField('message', e.target.value)}/></label></div></fieldset><fieldset><legend>02 · Wedding details</legend><div className="wedding-details-layout"><div className="form-grid wedding-details-grid"><Field label="Wedding celebration name" required value={weddingEventTitle} onChange={setWeddingEventTitle}/><Field label="Wedding date" type="date" required value={details.date} onChange={v => setField('date',v)}/><Field label="Ceremony time" type="time" value={details.time} onChange={v => setField('time',v)}/><Field label="Venue" required value={details.venue} onChange={v => setField('venue',v)}/><Field label="Address" required value={details.address} onChange={v => setField('address',v)}/></div><div className="celebration-location"><EventLocationPicker title={weddingEventTitle || 'Wedding'} venue={details.venue} address={details.address} value={details.map} disabled={busy} onPendingChange={updatePendingLocationCount} onChange={map => setField('map', map)}/></div></div></fieldset><fieldset><legend>03 · Celebrations</legend><p className="form-note">The wedding celebration is included from the details above.</p>{extraEvents.map((item,index)=>{const cp=CEL_PALETTE[index%7];return<div className="celebration-editor" key={index} style={{'--cel-bg':cp.headerBg,'--cel-border':cp.border,'--cel-icon':cp.icon} as React.CSSProperties}><div className="celebration-header"><span className="celebration-icon" aria-hidden="true"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><rect x="3" y="4" width="18" height="18" rx="2"/><path d="M16 2v4M8 2v4M3 10h18"/></svg></span><span className="celebration-number">{String(index+1).padStart(2,'0')}</span><h3 className="celebration-title">{item.title||`Celebration ${index+1}`}</h3><button type="button" className="celebration-remove" onClick={()=>setExtraEvents(events=>events.filter((_,i)=>i!==index))} aria-label={`Remove celebration ${index+1}`}><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><polyline points="3 6 5 6 21 6"/><path d="M19 6l-1 14H6L5 6"/><path d="M10 11v6M14 11v6"/><path d="M9 6V4h6v2"/></svg>Remove</button></div><div className="celebration-card-body"><div className="form-grid celebration-grid"><Field label="Event name" required value={item.title} onChange={v=>setExtraEvents(events=>events.map((event,i)=>i===index?{...event,title:v}:event))}/><Field label="Date" type="date" required value={item.date} onChange={v=>setExtraEvents(events=>events.map((event,i)=>i===index?{...event,date:v}:event))}/><Field label="Time" type="time" value={item.time ?? ''} onChange={v=>setExtraEvents(events=>events.map((event,i)=>i===index?{...event,time:v}:event))}/><Field label="Venue" required value={item.venue} onChange={v=>setExtraEvents(events=>events.map((event,i)=>i===index?{...event,venue:v}:event))}/><Field label="Address" required value={item.address} onChange={v=>setExtraEvents(events=>events.map((event,i)=>i===index?{...event,address:v}:event))}/></div><div className="celebration-location"><EventLocationPicker title={item.title || `Celebration ${index + 1}`} venue={item.venue} address={item.address} value={item.map || ''} disabled={busy} onPendingChange={updatePendingLocationCount} onChange={map => setExtraEvents(events=>events.map((event,i)=>i===index?{...event,map}:event))}/></div></div></div>})}<button type="button" className="celebration-add" disabled={extraEvents.length>=9} onClick={()=>setExtraEvents(events=>[...events,{title:'',date:details.date,time:'',venue:'',address:'',map:''}])}><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round"><path d="M12 5v14M5 12h14"/></svg>Add another celebration</button></fieldset>{editingOrderId&&<div className="form-submit-row">{formStep===2&&!review?<button type="button" className="primary-action" disabled={busy} onClick={()=>{setShowOrderPreview(false);setReview(true)}}>Continue →</button>:<button type="submit" className="primary-action" disabled={busy}>Continue →</button>}</div>}{!editingOrderId&&<div className="form-submit-row"><button type="button" className="back-action" onClick={() => setReview(false)}>← Back</button>{formStep===2&&!review?<button type="button" className="primary-action" disabled={busy} onClick={()=>{setShowOrderPreview(false);setReview(true)}}>Continue →</button>:<button type="submit" className="primary-action" disabled={busy}>Continue →</button>}</div>}</>}</form></div> : <><section className="client-collection-intro"><div><span className="workspace-kicker">THE ART OF A BEAUTIFUL BEGINNING</span><h2>Choose a design that tells their story.</h2><p>Preview the collection and prepare a personal invitation order for your couple.</p></div><div className="client-collection-art" aria-hidden="true"><span>Shaadi Invites</span><i>✧</i></div></section><div className="client-collection-heading"><div><span className="workspace-kicker">THE COLLECTION</span><h2>Invitation designs <small>{templates.length} curated styles</small></h2></div><span className="client-collection-note">Select a design to begin an order <b>↓</b></span></div><div className="template-grid">{templates.map((template,index)=><article className="template-tile" key={template.id}><a className="template-image" href={template.preview_url} target="_blank" rel="noreferrer">{TEMPLATE_INTRO_VIDEOS[template.id]?<video src={TEMPLATE_INTRO_VIDEOS[template.id]} poster={TEMPLATE_THUMBNAIL_OVERRIDES[template.id]??template.thumbnail_url} autoPlay muted loop playsInline ref={el=>{if(el){el.muted=true;el.setAttribute('muted','');el.play().catch(()=>{})}}}/>:<img src={TEMPLATE_INTRO_IMAGES[template.id]??template.thumbnail_url} alt={`${template.name} preview`} loading="lazy"/>}<span>PREVIEW ↗</span></a><div><small>{String(index+1).padStart(2,'0')} · {template.category}</small><h2>{template.name}</h2><button className="text-action" onClick={() => chooseTemplate(template.id)}>Choose this design <b>→</b></button></div></article>)}</div></>}</>}
-      {tab === 'Orders' && <><p className="workspace-lede orders-description">View and manage all invitation orders submitted by your customers.</p><div className="orders-summary"><span className="orders-summary-item"><span className="orders-summary-label">Total</span><span className="orders-summary-value">{orders.length}</span></span><span className="orders-summary-divider"/><span className="orders-summary-item"><span className="orders-summary-label">Published</span><span className="orders-summary-value">{orders.filter(o=>o.status==='READY').length}</span></span><span className="orders-summary-divider"/><span className="orders-summary-item"><span className="orders-summary-label">Pending</span><span className="orders-summary-value">{orders.filter(o=>o.status==='CREATED'||o.status==='IN_PROGRESS').length}</span></span></div><div className="orders-filters"><label className="orders-search"><span aria-hidden="true"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.3-4.3"/></svg></span><input value={orderSearch} onChange={e => {setOrderSearch(e.target.value);setOrdersPage(0)}} placeholder="Search by order ID, couple name, or phone…" aria-label="Search orders"/></label><div className="orders-date-filter"><span aria-hidden="true"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><rect x="3" y="4" width="18" height="18" rx="2"/><path d="M16 2v4M8 2v4M3 10h18"/></svg></span><input type="date" value={orderDateFrom} onChange={e=>{setOrderDateFrom(e.target.value);setOrdersPage(0)}} aria-label="Submitted from"/><span className="orders-date-separator">to</span><input type="date" value={orderDateTo} onChange={e=>{setOrderDateTo(e.target.value);setOrdersPage(0)}} aria-label="Submitted to"/></div></div><OrderTable orders={filtered.slice(ordersPage*20,ordersPage*20+20)} onSelect={setViewOrder} onEdit={startEditOrder} onCopy={startCopyOrder} onCreate={orders.length===0?()=>{setTab('Templates');setSelected(chosen?.id||allTemplates[0]?.id||null)}:undefined}/>{filtered.length>20&&<div className="pagination"><button disabled={ordersPage===0} onClick={()=>setOrdersPage(p=>p-1)}>← Previous</button><span>Page {ordersPage+1} of {Math.max(1,Math.ceil(filtered.length/20))}</span><button disabled={(ordersPage+1)*20>=filtered.length} onClick={()=>setOrdersPage(p=>p+1)}>Next →</button></div>}</>}
+      {tab === 'Orders' && <><p className="workspace-lede orders-description">One row per couple. Expand a couple to manage each invitation and see its RSVP count.</p><div className="orders-summary"><span className="orders-summary-item"><span className="orders-summary-label">Couples</span><span className="orders-summary-value">{coupleRows.length}</span></span><span className="orders-summary-divider"/><span className="orders-summary-item"><span className="orders-summary-label">Published invitations</span><span className="orders-summary-value">{coupleRows.reduce((count,couple)=>count+couple.invitations.filter(invitation=>invitation.status==='READY').length,0)}</span></span><span className="orders-summary-divider"/><span className="orders-summary-item"><span className="orders-summary-label">Pending invitations</span><span className="orders-summary-value">{coupleRows.reduce((count,couple)=>count+couple.invitations.filter(invitation=>invitation.status==='CREATED'||invitation.status==='IN_PROGRESS').length,0)}</span></span></div><div className="orders-filters"><label className="orders-search"><span aria-hidden="true"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.3-4.3"/></svg></span><input value={orderSearch} onChange={e => {setOrderSearch(e.target.value);setOrdersPage(0)}} placeholder="Search by couple, invitation, or phone…" aria-label="Search couples and invitations"/></label><div className="orders-date-filter"><span aria-hidden="true"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><rect x="3" y="4" width="18" height="18" rx="2"/><path d="M16 2v4M8 2v4M3 10h18"/></svg></span><input type="date" value={orderDateFrom} onChange={e=>{setOrderDateFrom(e.target.value);setOrdersPage(0)}} aria-label="Submitted from"/><span className="orders-date-separator">to</span><input type="date" value={orderDateTo} onChange={e=>{setOrderDateTo(e.target.value);setOrdersPage(0)}} aria-label="Submitted to"/></div></div><CoupleOrderTable couples={filteredCoupleRows.slice(ordersPage*20,ordersPage*20+20)} onSelect={setViewOrder} onEdit={startEditOrder} onCopy={startCopyOrder} onCreate={coupleRows.length===0?()=>{setTab('Templates');setSelected(chosen?.id||allTemplates[0]?.id||null)}:undefined}/>{filteredCoupleRows.length>20&&<div className="pagination"><button disabled={ordersPage===0} onClick={()=>setOrdersPage(p=>p-1)}>← Previous</button><span>Page {ordersPage+1} of {Math.max(1,Math.ceil(filteredCoupleRows.length/20))}</span><button disabled={(ordersPage+1)*20>=filteredCoupleRows.length} onClick={()=>setOrdersPage(p=>p+1)}>Next →</button></div>}</>}
       {tab === 'Settings' && <TemplateSettingsPanel companyName={company?.company_name || 'your company'} templates={allTemplates} settings={templateSettings} defaults={templateDefaults} error={error} canSave={Boolean(company)} onChange={editTemplateSetting} onSaveAll={saveAllTemplateSettings} onCustomizeDemo={setEditingDemo}/>}
     </section>
     {tab === 'Templates' && <aside className="client-preview-panel"><div className="client-preview-heading"><div><span className="workspace-kicker">LIVE PREVIEW</span><h2>{previewTemplate?.name || 'Invitation preview'}</h2></div><span className="preview-live-dot" aria-label="Live preview"/></div>{previewTemplate ? <><div className="client-device-frame"><div className="client-device-screen"><InvitationPreviewFrame templateId={previewTemplate.id} ref={previewFrame} title={`${previewTemplate.name} mobile invitation preview`} src={previewSrc} allow="autoplay; fullscreen" allowFullScreen /></div></div><div className="client-preview-thumbs" aria-label="Choose a design to preview">{templates.map(template=><button type="button" key={template.id} className={previewTemplate.id === template.id ? 'active' : ''} onClick={()=>setPreviewId(template.id)} aria-label={`Preview ${template.name}`}><img src={template.thumbnail_url} alt=""/></button>)}</div><a className="client-preview-open" href={previewTemplate.preview_url} target="_blank" rel="noreferrer">Preview Full Invitation <span>↗</span></a><button type="button" className="client-preview-choose" onClick={()=>chooseTemplate(previewTemplate.id)}>Get this design <span>→</span></button></> : <p className="form-note">Your invitation previews will appear here.</p>}</aside>}
@@ -915,6 +1002,52 @@ function TemplateSettingsPanel({companyName,templates,settings,defaults:_default
   async function handleSaveAll(){setSaving(true);await onSaveAll();setSaving(false);setSaved(true)}
   return <><div className="client-settings-intro"><div><span className="workspace-kicker">YOUR TEMPLATE CATALOG</span><h2>Configure your designs</h2><p>Set your price, optional discount, and premium status for each template. These settings belong to {companyName}.</p></div><button type="button" className={`primary-action client-settings-save${saved?' is-saved':''}`} disabled={!canSave||saving} onClick={handleSaveAll}>{saving?'Saving…':saved?'Saved ✓':'Save changes'}</button></div>{error&&<p className="workspace-alert" role="alert">{error}</p>}<div className="client-template-settings">{templates.map(template=>{const setting=settings[template.id]||{price:0,sale_type:'none' as const,sale_value:0,is_premium:false};return <article className="client-template-setting" key={template.id}><div className="client-template-setting-art"><span className="setting-art-wrap"><img src={TEMPLATE_THUMBNAIL_OVERRIDES[template.id] ?? template.thumbnail_url} alt={`${template.name} invitation cover`}/><button type="button" className="setting-demo-overlay" onClick={()=>onCustomizeDemo(template.id)}>✎ Customize</button></span><TemplatePrice setting={setting}/></div><div className="client-template-setting-content"><h3 style={{fontSize:template.name.length>20?'12px':template.name.length>14?'13px':'15px'}}>{template.name}</h3><div className="client-template-setting-fields"><label>Price (INR)<span className="client-settings-input-wrap"><i aria-hidden="true">₹</i><input type="number" min="0" step="1" value={setting.price||''} onChange={event=>handleChange(template.id,{price:event.target.value===''?0:Number(event.target.value)})}/></span></label><label>Sale type<select value={setting.sale_type} onChange={event=>handleChange(template.id,{sale_type:event.target.value as TemplateSettings['sale_type'],sale_value:event.target.value==='none'?0:setting.sale_value})}><option value="none">No sale</option><option value="percentage">Percentage discount</option><option value="fixed">Fixed discount</option></select></label>{setting.sale_type!=='none'&&<label className="client-discount-setting">{setting.sale_type==='percentage'?'Discount percentage':'Discount amount (INR)'}<span className="client-settings-input-wrap">{setting.sale_type==='fixed'&&<i aria-hidden="true">₹</i>}<input type="number" min="0" max={setting.sale_type==='percentage'?100:setting.price} step={setting.sale_type==='percentage'?'0.1':'1'} value={setting.sale_value||''} onChange={event=>handleChange(template.id,{sale_value:event.target.value===''?0:Number(event.target.value)})}/>{setting.sale_type==='percentage'&&<i aria-hidden="true">%</i>}</span></label>}</div><label className="client-premium-setting"><input type="checkbox" checked={setting.is_premium} onChange={event=>handleChange(template.id,{is_premium:event.target.checked})}/><span className="client-premium-switch" aria-hidden="true"/><span className="client-premium-copy"><b>Premium template</b></span></label></div></article>})}</div></>
 }
+function CoupleOrderTable({ couples, onSelect, onEdit, onCopy, onCreate }: { couples: CoupleTableRow[]; onSelect?: (order:Order)=>void; onEdit?: (order:Order)=>void; onCopy?: (order:Order)=>void; onCreate?:()=>void }) {
+  const [expanded, setExpanded] = useState<Set<number>>(() => new Set())
+  function toggle(id: number) {
+    setExpanded(current => {
+      const next = new Set(current)
+      if (next.has(id)) next.delete(id)
+      else next.add(id)
+      return next
+    })
+  }
+  return <div className={`table-wrap ${couples.length===0?'orders-empty-table':''}`}>
+    <table className="orders-table couple-orders-table"><thead><tr><th>Couple</th><th>Contact</th><th>Invitations</th><th>RSVPs</th><th>Created</th><th>Details</th></tr></thead>
+      <tbody>{couples.map(couple => {
+        const isExpanded = expanded.has(couple.id)
+        const published = couple.invitations.filter(invitation => invitation.status === 'READY').length
+        const responseCount = couple.invitations.reduce((sum, invitation) => sum + invitation.rsvp_count, 0)
+        return <Fragment key={couple.id}>
+          <tr className="couple-order-row">
+            <td><strong>{couple.groom_name} &amp; {couple.bride_name}</strong><small style={{ display: 'block', color: 'var(--client-muted)', marginTop: 4 }}>Couple order #{couple.id}</small></td>
+            <td>{couple.phone_number?.replace(/^\+91\s*/, '+91 ') || '—'}</td>
+            <td><strong>{couple.invitations.length} {couple.invitations.length === 1 ? 'invitation' : 'invitations'}</strong><small style={{ display: 'block', color: 'var(--client-muted)', marginTop: 4 }}>{published} published</small></td>
+            <td>{responseCount}</td>
+            <td>{new Date(couple.created_at).toLocaleDateString('en-IN',{day:'2-digit',month:'short',year:'numeric'})}</td>
+            <td><button type="button" className="order-action-secondary" aria-expanded={isExpanded} onClick={() => toggle(couple.id)}>{isExpanded ? 'Hide invitations ↑' : 'View invitations →'}</button></td>
+          </tr>
+          {isExpanded && <tr className="couple-invitations-expanded"><td colSpan={6}><table className="orders-table couple-invitations-table"><thead><tr><th>Invitation</th><th>Template</th><th>RSVPs</th><th>Status</th><th>Link</th><th>Actions</th></tr></thead><tbody>
+            {couple.invitations.map(invitation => {
+              const expired = Boolean(invitation.expires_at && new Date(invitation.expires_at) <= new Date())
+              const active = Boolean(invitation.published_url && !expired)
+              return <tr key={invitation.id}>
+                <td>{invitation.name}</td>
+                <td>{designs.find(design => design.id === invitation.form_data.template)?.name || 'Invitation design'}</td>
+                <td>{invitation.rsvp_count}</td>
+                <td><span className={`status-pill status-${invitation.status.toLowerCase()}`}>{statusTitle[invitation.status] || invitation.status}</span></td>
+                <td>{active ? <a className="order-action-primary" href={invitation.published_url!} target="_blank" rel="noreferrer">↗ Open</a> : expired ? <span className="quiet">Expired</span> : <span className="quiet">Not published</span>}</td>
+                <td className="order-actions">{invitation.legacy_order ? <>{onSelect&&<button type="button" className="order-action-secondary" onClick={() => onSelect(invitation.legacy_order!)}>Details</button>}{onEdit&&<button type="button" className="order-action-secondary" onClick={() => onEdit(invitation.legacy_order!)}>Edit</button>}{onCopy&&<button type="button" className="order-action-secondary" onClick={() => onCopy(invitation.legacy_order!)}>Copy</button>}</> : <span className="quiet">—</span>}</td>
+              </tr>
+            })}
+          </tbody></table></td></tr>}
+        </Fragment>
+      })}</tbody>
+    </table>
+    {couples.length === 0 && <div className="empty-state"><svg viewBox="0 0 240 150" role="img" aria-label="Wedding invitation illustration"><path d="M73 41 160 25l27 91-99 14z" fill="#faf7f1" stroke="#e8dfd2" strokeWidth="3"/><path d="m65 50 88-17 28 85-98 13z" fill="#fffdf9" stroke="#e9e1d5" strokeWidth="3"/><path d="M111 80c-14-13-29 7 0 24 29-17 14-37 0-24Z" fill="none" stroke="#b48a4c" strokeWidth="4"/><path d="M110 66v-9m-14 17-6-5m34 5 6-5" stroke="#c29b60" strokeWidth="3" strokeLinecap="round"/><path d="M55 124c-20-7-29-22-33-39m164 39c20-7 29-22 33-39M40 104l-13-3m26-3-1-13m150 19 13-3m-26-3 1-13" fill="none" stroke="#e9e1d5" strokeWidth="3" strokeLinecap="round"/></svg><h2>{onCreate?'No orders yet':'No matching couples'}</h2><p>{onCreate?'Your submitted couple orders will appear here.':'Try changing your search or filters.'}</p>{onCreate&&<button className="orders-create-first" onClick={onCreate}><span aria-hidden="true">＋</span> Create Your First Order</button>}</div>}
+  </div>
+}
+
 function OrderTable({ orders, onSelect, onEdit, onCopy, onCreate, variant = 'orders' }: { orders: Order[]; onSelect?: (order:Order)=>void; onEdit?: (order:Order)=>void; onCopy?: (order:Order)=>void; onCreate?:()=>void; variant?: 'orders'|'overview' }) {
   return <div className={`table-wrap ${orders.length===0?'orders-empty-table':''}`}>
     <table className="orders-table"><thead><tr>{variant!=='overview'&&<th>Create copy</th>}<th>Order</th><th>Couple</th><th>Template</th><th>Contact</th><th>Status</th><th>Price</th>{variant==='overview'?<><th>Date</th><th>Actions</th></>:<><th>Details</th><th>Edit</th><th>Link</th></>}</tr></thead>

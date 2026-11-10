@@ -294,10 +294,13 @@ if (editingOrderId):
 
 else (new order):
   → supabase.from('orders').insert(...)
-  → supabase.rpc('reserve_company_order_path', { candidate_paths: slugVariants(...) })
+  → supabase.rpc('reserve_company_order_path', { candidate_paths: newInvitationPathCandidates(...) })
+  → supabase.rpc('configure_order_invitations', { named plans and event indexes })
   → sets viewOrder (triggers order confirmation dialog)
   → resets all state, switches to Orders tab
 ```
+
+The couple-level schema foundation is in `202611100001_couple_invitation_foundation.sql`. Existing `orders` rows remain the parent/source anchor; migration 100001 copies them into `couple_orders` plus one `invitations` row without changing existing links, and maps RSVP rows through `invitation_id`. Migration `202611100002_couple_rsvp_management_board.sql` makes each management link show RSVP responses across the couple’s invitations, labeled by invitation. Migration `202611100003_multi_invitation_plans.sql` supports named invitation children with event subsets, batch publishing, public child-link lookup, and per-invitation RSVP writes. All three migrations have been applied. The create form defaults a plan named Wedding with the wedding event selected; users can add plans, name each one, and choose event combinations. The Orders tab groups by couple, expands to invitation rows, and shows each link and RSVP count.
 
 ---
 

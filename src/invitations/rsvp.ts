@@ -1,6 +1,6 @@
 import { supabase } from '../lib/supabase'
 
-export interface RsvpTarget { orderId: string; path: string }
+export interface RsvpTarget { orderId: string; path: string; invitationId?: string }
 export interface RsvpResponse {
   name: string
   attendance: 'yes' | 'no'
@@ -15,8 +15,8 @@ export interface RsvpSubmitRequest {
 }
 
 const tokens = new Map<string, string>()
-function submissionToken(orderId: string) {
-  const key = `order-rsvp-token:${orderId}`
+function submissionToken(orderId: string, invitationId?: string) {
+  const key = `order-rsvp-token:${invitationId || orderId}`
   let token = tokens.get(key)
   if (!token) {
     try {
@@ -33,10 +33,11 @@ function submissionToken(orderId: string) {
 export async function saveOrderRsvp(target: RsvpTarget, response: RsvpResponse) {
   if (!supabase) throw new Error('RSVP is temporarily unavailable. Please try again later.')
   const testing = target.orderId.startsWith('test-')
-  const { data, error } = await supabase.rpc(testing ? 'submit_test_order_rsvp' : 'submit_order_rsvp', {
+  const { data, error } = await supabase.rpc(target.invitationId && !testing ? 'submit_invitation_rsvp' : testing ? 'submit_test_order_rsvp' : 'submit_order_rsvp', {
     p_order_id: testing ? target.orderId.slice(5) : target.orderId,
     p_published_path: target.path,
-    p_submission_token: submissionToken(target.orderId),
+    p_submission_token: submissionToken(target.orderId, target.invitationId),
+    ...(target.invitationId && !testing ? { p_invitation_id: target.invitationId } : {}),
     p_full_name: response.name,
     p_attendance: response.attendance,
     p_guest_count: response.count,

@@ -5,7 +5,8 @@ import MusicPicker from './MusicPicker'
 import MusicPlaybackControls from './MusicPlaybackControls'
 import './OrderPreviewStep.css'
 
-type PersonalField = 'dressCode' | 'message' | 'giftNote' | 'map' | 'music' | 'musicStart' | 'musicEnd'
+type PersonalField = 'dressCode' | 'message' | 'giftNote' | 'map' | 'music' | 'musicStart' | 'musicEnd' | 'orderInvitationPlans'
+type InvitationPlan = { name: string; eventIndexes: number[] }
 type Props = {
   details: InvitationData
   previewFrame: RefObject<HTMLIFrameElement | null>
@@ -120,6 +121,15 @@ export default function OrderPreviewStep({ details, previewFrame, designCategory
   const [promptCopied, setPromptCopied] = useState(false)
   const [showUploadModal, setShowUploadModal] = useState(false)
   const [venueImages, setVenueImages] = useState<VenueImage[]>([])
+  const [invitationPlans, setInvitationPlans] = useState<InvitationPlan[]>(() => {
+    try { return details.orderInvitationPlans ? JSON.parse(details.orderInvitationPlans) : [{ name: 'Wedding', eventIndexes: [0] }] }
+    catch { return [{ name: 'Wedding', eventIndexes: [0] }] }
+  })
+  const updateInvitationPlans = (update: (plans: InvitationPlan[]) => InvitationPlan[]) => {
+    const next = update(invitationPlans)
+    setInvitationPlans(next)
+    onChange('orderInvitationPlans', JSON.stringify(next))
+  }
 
   useEffect(() => { heading.current?.focus() }, [])
 
@@ -137,6 +147,16 @@ export default function OrderPreviewStep({ details, previewFrame, designCategory
   }, [companyId, templateId])
 
   return <div className="order-personal-step">
+    {!_editing && <fieldset disabled={busy} className="invitation-plans-fieldset">
+      <legend>Invitations</legend>
+      <p className="form-note">Choose which events each invitation includes. Wedding is selected by default; an event can appear in more than one invitation.</p>
+      {invitationPlans.map((plan, planIndex) => <section className="invitation-plan-card" key={planIndex}>
+        <label>Invitation name <i>*</i><input required maxLength={80} value={plan.name} placeholder="e.g. Mehendi + Wedding" onChange={event => updateInvitationPlans(plans => plans.map((item, index) => index === planIndex ? { ...item, name: event.target.value } : item))}/></label>
+        <div className="invitation-plan-events"><strong>Events in this invitation</strong>{details.events.map((item, eventIndex) => <label key={eventIndex}><input type="checkbox" checked={plan.eventIndexes.includes(eventIndex)} onChange={event => updateInvitationPlans(plans => plans.map((current, index) => index !== planIndex ? current : { ...current, eventIndexes: event.target.checked ? [...current.eventIndexes, eventIndex] : current.eventIndexes.filter(value => value !== eventIndex) }))}/>{item.title}</label>)}</div>
+        {invitationPlans.length > 1 && <button type="button" className="back-action" onClick={() => updateInvitationPlans(plans => plans.filter((_, index) => index !== planIndex))}>Remove invitation</button>}
+      </section>)}
+      <button type="button" className="secondary-action" onClick={() => updateInvitationPlans(plans => [...plans, { name: '', eventIndexes: [] }])}>＋ Add invitation</button>
+    </fieldset>}
     <fieldset disabled={busy}>
       <legend>Music</legend>
       <MusicPicker value={details.music} designCategory={designCategory} companyId={companyId} previewInPhone onChange={value => onChange('music', value)}/>

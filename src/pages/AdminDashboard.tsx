@@ -1,6 +1,6 @@
 import { useCallback, useEffect, useMemo, useState } from 'react'
 import type { FormEvent, ReactNode } from 'react'
-import { designs, slugVariants, inviteUrl, withCurrentInviteUrl, validateDetails } from '../invitations/model'
+import { designs, slugVariants, newInvitationPathCandidates, inviteUrl, withCurrentInviteUrl, validateDetails } from '../invitations/model'
 import type { InvitationData } from '../invitations/model'
 import InvitationRenderer from '../invitations/InvitationRenderer'
 import { isSupabaseConfigured, supabase } from '../lib/supabase'
@@ -107,6 +107,24 @@ function AdminWorkspace() {
   function rejectOrder(){const reason=window.prompt('Share a reason with the client.');if(!reason?.trim())return;void changeOrder({status:'REJECTED',rejection_reason:reason.trim()},'Order rejected and the client will see the reason.')}
   async function publish(){
     if(!selected || !supabase)return
+    const { data: couple, error: coupleError } = await supabase.from('couple_orders').select('id,invitations(id,legacy_order_id,uses_snapshot)').eq('legacy_order_id',selected.id).maybeSingle()
+    if(coupleError){setError(coupleError.message);return}
+    const invitationRows=(couple?.invitations||[]) as Array<{id:number;legacy_order_id:number|null;uses_snapshot?:boolean}>
+    if(invitationRows.length>1||invitationRows.some(row=>row.uses_snapshot)){
+      const publishedAt=new Date().toISOString()
+      const expiresAt=expiresOn?new Date(`${expiresOn}T23:59:59`).toISOString():null
+      if(expiresAt&&new Date(expiresAt)<=new Date(publishedAt)){setError('Choose an expiry date after the publication date.');return}
+      const pCandidates=Object.fromEntries(invitationRows.map(row=>[String(row.id),row.legacy_order_id!==null?[]:newInvitationPathCandidates(selected.groom_name,selected.bride_name,selected.form_data.brideFirst)]))
+      setBusy(true);setError('');setNotice('')
+      try{
+        const {error:publishError}=await supabase.rpc('publish_couple_order_with_candidates',{p_order_id:selected.id,p_candidates:pCandidates,p_expires_at:expiresAt,p_admin_notes:notes})
+        if(publishError)throw publishError
+        setNotice('All invitations for this couple are published.')
+        await refresh()
+      }catch(cause){setError(cause instanceof Error?cause.message:'Unable to publish the couple invitations.')}
+      finally{setBusy(false)}
+      return
+    }
     if(selected.published_path){
       const publishedAt=selected.published_at||new Date().toISOString()
       const expiresAt=expiresOn?new Date(`${expiresOn}T23:59:59`).toISOString():null
