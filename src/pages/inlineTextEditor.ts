@@ -17,7 +17,7 @@ export function openInlineTextEditor(element: HTMLElement, value: string, onSave
   editor.wrap = 'off'
   editor.maxLength = 500
   editor.setAttribute('aria-label', `Edit ${element.dataset.inviteLabel || 'invitation text'}`)
-  editor.style.cssText = 'all:initial;position:fixed;z-index:2147483647;box-sizing:border-box;margin:0;padding:0;border:0;border-radius:2px;background:#fff;outline:1px solid #a57b32;resize:none;white-space:pre;overflow-wrap:normal;word-break:normal;overflow:auto;touch-action:auto;user-select:text;-webkit-user-select:text;pointer-events:auto'
+  editor.style.cssText = 'all:initial;position:fixed;z-index:2147483647;box-sizing:border-box;margin:0;padding:0;border:0;border-radius:2px;background:transparent;outline:1px solid #a57b32;resize:none;white-space:pre;overflow-wrap:normal;word-break:normal;overflow:auto;touch-action:auto;user-select:text;-webkit-user-select:text;pointer-events:auto'
   editor.style.fontFamily = computed.fontFamily
   editor.style.fontWeight = computed.fontWeight
   editor.style.fontStyle = computed.fontStyle

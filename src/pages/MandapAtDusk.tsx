@@ -7,6 +7,9 @@ import HeartDateReveal from './HeartDateReveal'
 import './Design18.css'
 
 const demo = invitationExample(4)!
+const formatRevealTime = (time: string) => time
+  ? new Intl.DateTimeFormat('en-US', { hour: 'numeric', minute: '2-digit', hour12: true, timeZone: 'UTC' }).format(new Date(`2000-01-01T${time}:00Z`))
+  : ''
 
 function Flourish() {
   return <div className="d18-flourish" aria-hidden="true"><span />✧<span /></div>
@@ -175,21 +178,21 @@ export default function Design18() {
     {phase !== 'closed' && <>
       <div className="d18-seam-florals" aria-hidden="true" />
       <div id="d18-invitation" className="d18-paper">
-      <section className="d18-intro">
+      <section className="d18-intro" data-invite-section="welcome">
         <p className="d18-kicker d18-reveal">AN INVITATION FROM THE HEART</p><Flourish />
         <h2 className="d18-script d18-reveal">Two souls.<br />One beautiful journey.</h2>
         <p className="d18-message d18-reveal">{details.message}</p>
         <p className="d18-reveal">Your presence, prayers, and love will make our day complete.</p>
         {(firstFamily || secondFamily) && <div className="d18-families d18-reveal">
-          {firstFamily && <p data-family={firstRole.toLowerCase()}><small>{firstRole}’S FAMILY</small>{firstFamily}</p>}
-          {secondFamily && <p data-family={secondRole.toLowerCase()}><small>{secondRole}’S FAMILY</small>{secondFamily}</p>}
+          {firstFamily && <p data-family={firstRole.toLowerCase()}><small>{firstRole}’S FAMILY</small><span data-invite-text={details.brideFirst ? 't4.bride.family' : 't4.groom.family'} data-invite-label={`${firstRole} family`}>{firstFamily}</span></p>}
+          {secondFamily && <p data-family={secondRole.toLowerCase()}><small>{secondRole}’S FAMILY</small><span data-invite-text={details.brideFirst ? 't4.groom.family' : 't4.bride.family'} data-invite-label={`${secondRole} family`}>{secondFamily}</span></p>}
         </div>}
         <Flourish /><span className="d18-signature d18-script d18-reveal"><span>{firstName}</span><i>&</i><span>{secondName}</span></span>
         <img className="d18-couple-art" src="/templates/mandap-at-dusk/couple-watercolor.webp" alt="" aria-hidden="true" loading="lazy" />
       </section>
 
       <section className="d18-heart-section d18-reveal" aria-label="Scratch to reveal the wedding date">
-        <HeartDateReveal date={formatDate(details.date, { day: 'numeric', month: 'long', year: 'numeric' })} day={formatDate(details.date, { weekday: 'long' })} time={formatTime(details.time)} tone="rose" coatingImage="/templates/mandap-at-dusk/scratch.webp" revealedImage="/templates/mandap-at-dusk/post-scratch.webp" />
+        <HeartDateReveal date={formatDate(details.date, { day: 'numeric', month: 'long', year: 'numeric' })} day={formatDate(details.date, { weekday: 'long' })} time={formatRevealTime(details.time)} eventName={details.events.find(event => /wedding|nikah/i.test(event.title))?.title || details.events[0]?.title || ''} tone="rose" coatingImage="/templates/mandap-at-dusk/scratch.webp" revealedImage="/templates/mandap-at-dusk/post-scratch.webp" />
       </section>
 
       <section className="d18-countdown d18-reveal">
@@ -202,7 +205,7 @@ export default function Design18() {
         {[...details.events].sort((a, b) => `${a.date}${a.time}`.localeCompare(`${b.date}${b.time}`)).map(event => <article data-invite-event-key={event.id || `legacy-${details.events.indexOf(event)}`} className={`d18-event ${/nikah|wedding/i.test(event.title) ? 'd18-main-event' : ''}`} key={event.id || `legacy-${details.events.indexOf(event)}`}>
           <div className="d18-event-copy d18-reveal">
           <h3 className="d18-script">{event.title}</h3>
-          <div className="d18-event-date"><strong>{formatDate(event.date, { day: '2-digit' })}</strong><span>{formatDate(event.date, { weekday: 'long', month: 'long', year: 'numeric' })}{event.time && <small>{formatTime(event.time)}</small>}</span></div>
+          <div className="d18-event-date"><strong>{formatDate(event.date, { day: '2-digit' })}</strong><span>{formatDate(event.date, { weekday: 'long', month: 'long', year: 'numeric' })}{event.time && <small>{formatTime(event.time)} onwards</small>}</span></div>
           <Flourish /><h4>{event.venue}</h4>{event.address !== event.venue && <p className="d18-address">{event.address}</p>}
         <div className="d18-event-actions"><a href={mapURL(event.venue, event.address, event.map)} target="_blank" rel="noreferrer">Directions <Arrow /></a><button onClick={() => downloadCalendar(event, details.offset, `${firstName} & ${secondName}`)}>Save the date <span>＋</span></button></div>
           </div>
@@ -219,7 +222,7 @@ export default function Design18() {
       <footer className="d18-footer d18-reveal">
         <p className="d18-kicker">MADE WITH LOVE FOR OUR FAMILY AND FRIENDS</p><Flourish />
         <h2 className="d18-script">Forever & ever</h2><p className="d18-footer-names"><span>{firstName}</span><i>&</i><span>{secondName}</span></p>
-        <p>{formatDate(details.date)} · {details.address}</p><a href={mapURL(details.venue, details.address, details.map)} target="_blank" rel="noreferrer">{details.venue} <Arrow /></a>
+        <p>{formatDate(details.date)} · {details.address}</p><a href={mapURL(details.venue, details.address, details.map)} target="_blank" rel="noreferrer">{details.venue}</a>
       </footer>
       </div>
       </div>

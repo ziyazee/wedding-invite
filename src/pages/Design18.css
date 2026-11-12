@@ -46,6 +46,7 @@
 .d18-page .rg-heart-date strong{font-size:clamp(14px,3.5vw,21px);font-weight:600}
 .d18-page .rg-heart-date>span:not(.rg-script){font-size:16px;font-style:italic}
 .d18-page .rg-heart-date small{font-size:11px}
+.d18-page .rg-heart-meta{display:flex;align-items:center;justify-content:center;gap:6px;white-space:nowrap}
 .d18-page .rg-heart-coating{position:absolute;z-index:1;inset:0;width:100%;height:100%;touch-action:none;cursor:crosshair;transition:opacity .7s ease}
 .d18-page .rg-heart-reveal.is-revealed .rg-heart-coating{opacity:0;pointer-events:none}
 .d18-page .rg-heart-outline{position:absolute;inset:0;width:100%;height:100%;pointer-events:none}
@@ -91,6 +92,7 @@
 .d18-page .d18-main-event h4:not(#invite-override-specificity){color:#fff5d9!important;-webkit-text-fill-color:#fff5d9!important}
 .d18-event-actions{display:flex;align-items:center;justify-content:center;gap:8px 12px;flex-wrap:wrap;margin-top:8px}
 .d18-event-actions a,.d18-event-actions button,.d18-notes a,.d18-footer>a{display:inline-flex;align-items:center;gap:9px;border:0;border-bottom:1px solid #a35f3e88;background:none;text-decoration:none;color:inherit;font:13px 'Cormorant Garamond',Georgia,serif;padding:8px 0;cursor:pointer}
+.d18-footer>a{border-bottom:0}
 .d18-event-actions a,.d18-event-actions button{gap:6px;font-size:11px;padding:6px 0}
 .d18-event-actions a:hover,.d18-event-actions button:hover,.d18-notes a:hover,.d18-footer>a:hover{color:#692821}
 .d18-main-event .d18-event-actions a,.d18-main-event .d18-event-actions button{color:#fff5d9;border-color:#fff5d988}
