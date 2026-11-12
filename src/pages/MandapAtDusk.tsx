@@ -163,7 +163,7 @@ export default function Design18() {
   ]
 
   return <main ref={root} className={`d18-page d18-${phase}`}>
-    <audio ref={audio} src={details.music || '/templates/mandap-at-dusk/inkem.mp3'} loop preload="none" onPlay={() => setMusic(true)} onPause={() => setMusic(false)} />
+    <audio ref={audio} src={details.music || '/templates/mandap-at-dusk/inkem.mp3'} loop preload="auto" onPlay={() => setMusic(true)} onPause={() => setMusic(false)} />
     <section className="d18-entry" aria-label="Wedding invitation entry">
       <video ref={video} className="d18-entry-video" src="/templates/mandap-at-dusk/entry.mp4" poster="/templates/mandap-at-dusk/entry-poster.jpg" muted playsInline disablePictureInPicture preload="metadata" onLoadedMetadata={() => { if (skipIntro.current && video.current) { video.current.currentTime = 1.95; skipIntro.current = false } }} onTimeUpdate={event => { const player = event.currentTarget; if (phase === 'playing' && Number.isFinite(player.duration) && player.duration - player.currentTime <= 2 && player.duration > player.currentTime) setShowScrollPrompt(true) }} onEnded={finish} onError={() => { if (phase === 'playing') finish() }} />
       <div className="d18-entry-shade" />
