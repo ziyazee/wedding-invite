@@ -34,6 +34,7 @@ export default function Design18() {
   const root = useRef<HTMLElement>(null)
   const [phase, setPhase] = useState<'closed' | 'playing' | 'open'>('closed')
   const [music, setMusic] = useState(false)
+  const [showScrollPrompt, setShowScrollPrompt] = useState(false)
   const [now, setNow] = useState(() => Date.now())
   const finish = () => {
     video.current?.pause()
@@ -164,12 +165,13 @@ export default function Design18() {
   return <main ref={root} className={`d18-page d18-${phase}`}>
     <audio ref={audio} src={details.music || '/templates/mandap-at-dusk/inkem.mp3'} loop preload="none" onPlay={() => setMusic(true)} onPause={() => setMusic(false)} />
     <section className="d18-entry" aria-label="Wedding invitation entry">
-      <video ref={video} className="d18-entry-video" src="/templates/mandap-at-dusk/entry.mp4" poster="/templates/mandap-at-dusk/entry-poster.jpg" muted playsInline disablePictureInPicture preload="metadata" onLoadedMetadata={() => { if (skipIntro.current && video.current) { video.current.currentTime = 1.95; skipIntro.current = false } }} onEnded={finish} onError={() => { if (phase === 'playing') finish() }} />
+      <video ref={video} className="d18-entry-video" src="/templates/mandap-at-dusk/entry.mp4" poster="/templates/mandap-at-dusk/entry-poster.jpg" muted playsInline disablePictureInPicture preload="metadata" onLoadedMetadata={() => { if (skipIntro.current && video.current) { video.current.currentTime = 1.95; skipIntro.current = false } }} onTimeUpdate={event => { const player = event.currentTarget; if (phase === 'playing' && Number.isFinite(player.duration) && player.duration - player.currentTime <= 2 && player.duration > player.currentTime) setShowScrollPrompt(true) }} onEnded={finish} onError={() => { if (phase === 'playing') finish() }} />
       <div className="d18-entry-shade" />
       <button className={`d18-enter${phase !== 'closed' ? ' d18-enter-dismissed' : ''}`} aria-label="Open invitation" onClick={openInvitation} disabled={phase !== 'closed'} aria-hidden={phase !== 'closed'} tabIndex={phase === 'closed' ? 0 : -1}>
         <img src="/templates/mandap-at-dusk/open-invitation-button.webp" alt="" width="1080" height="360" draggable={false} />
       </button>
       <button className="d18-music" aria-label={music ? 'Pause music' : 'Play music'} onClick={() => music ? audio.current?.pause() : void audio.current?.play().catch(() => {})}>{music ? 'Ⅱ' : '♫'}</button>
+      {showScrollPrompt && <div className="d18-scroll-prompt is-visible" aria-hidden="true"><span>Scroll down</span><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5"><path d="M12 4v15m-6-6 6 6 6-6" /></svg></div>}
       {phase !== 'closed' && <div ref={heroText} className="d18-ending-copy" aria-live="polite">
         <h1><span>{firstName}</span><i>&</i><span>{secondName}</span></h1>
       </div>}
