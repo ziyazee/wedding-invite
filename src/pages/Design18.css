@@ -107,9 +107,9 @@
 .d18-notes .d18-kicker:not(:first-child){margin-top:32px}
 .d18-footer{min-height:480px;padding-top:64px;padding-bottom:80px;background:transparent}
 .d18-footer h2{margin-bottom:14px}
-.d18-footer-names{font:clamp(42px,11vw,52px) 'Great Vibes','Dancing Script',cursive;color:#78452e;margin:22px 0;display:flex;flex-direction:column;align-items:center}
-.d18-footer-names span{display:block}.d18-footer-names i{display:block;font:italic 27px 'Cormorant Garamond',serif}
-.d18-footer>p:not(.d18-kicker){font-size:15px;line-height:1.7}
+.d18-footer-names{font:38px 'Great Vibes','Dancing Script',cursive;color:#78452e;margin:22px 0;display:flex;flex-direction:column;align-items:center}
+.d18-footer-names span{display:block}.d18-footer-names i{display:block;font:italic 38px 'Cormorant Garamond',serif}
+.d18-footer>p:not(.d18-kicker):not(.d18-footer-names){font-size:15px;line-height:1.7}
 .d18-reveal{opacity:1;transform:none}
 .d18-reveal.d18-reveal-pending{opacity:0;transform:translateY(25px)}
 .d18-reveal.d18-visible{opacity:1;transform:none;animation:d18-section-fade-up 800ms cubic-bezier(.22,.61,.36,1) var(--d18-reveal-delay,0ms) both}

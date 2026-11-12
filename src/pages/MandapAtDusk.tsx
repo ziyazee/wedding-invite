@@ -224,7 +224,7 @@ export default function Design18() {
       <footer className="d18-footer d18-reveal">
         <p className="d18-kicker">MADE WITH LOVE FOR OUR FAMILY AND FRIENDS</p><Flourish />
         <h2 className="d18-script">Forever & ever</h2><p className="d18-footer-names"><span>{firstName}</span><i>&</i><span>{secondName}</span></p>
-        <p>{formatDate(details.date)} · {details.address}</p><a href={mapURL(details.venue, details.address, details.map)} target="_blank" rel="noreferrer">{details.venue}</a>
+        <a href={mapURL(details.venue, details.address, details.map)} target="_blank" rel="noreferrer">{details.venue}</a>
       </footer>
       </div>
       </div>
