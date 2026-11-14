@@ -11,6 +11,16 @@ const formatRevealTime = (time: string) => time
   ? new Intl.DateTimeFormat('en-US', { hour: 'numeric', minute: '2-digit', hour12: true, timeZone: 'UTC' }).format(new Date(`2000-01-01T${time}:00Z`))
   : ''
 
+function hasStartingBuffer(player: HTMLMediaElement | null, requestedStart: number) {
+  if (!player || player.error || player.readyState < 3 || !Number.isFinite(player.duration)) return false
+  const start = requestedStart >= 0 && requestedStart < player.duration ? requestedStart : 0
+  const end = Math.min(start + 1, player.duration)
+  for (let i = 0; i < player.buffered.length; i++) {
+    if (player.buffered.start(i) <= start && player.buffered.end(i) >= end) return true
+  }
+  return false
+}
+
 function Flourish() {
   return <div className="d18-flourish" aria-hidden="true"><span />✧<span /></div>
 }
@@ -34,6 +44,8 @@ export default function Design18() {
   const root = useRef<HTMLElement>(null)
   const [phase, setPhase] = useState<'closed' | 'playing' | 'open'>('closed')
   const [music, setMusic] = useState(false)
+  const [mediaReady, setMediaReady] = useState(false)
+  const [mediaError, setMediaError] = useState(false)
   const [showScrollPrompt, setShowScrollPrompt] = useState(false)
   const [now, setNow] = useState(() => Date.now())
   const finish = () => {
@@ -41,8 +53,35 @@ export default function Design18() {
     setPhase('open')
   }
 
+  function canOpenInvitation() {
+    return hasStartingBuffer(audio.current, details.musicStart ?? 0)
+      && (matchMedia('(prefers-reduced-motion: reduce)').matches || hasStartingBuffer(video.current, 1.95))
+  }
+
+  useEffect(() => {
+    if (phase !== 'closed') return
+    const players = [video.current, audio.current].filter((player): player is HTMLVideoElement | HTMLAudioElement => player !== null)
+    const sync = () => {
+      setMediaReady(canOpenInvitation())
+      setMediaError(players.some(player => !!player.error))
+    }
+    const events = ['loadedmetadata', 'loadeddata', 'progress', 'canplay', 'canplaythrough', 'seeked', 'emptied', 'error']
+    players.forEach(player => events.forEach(event => player.addEventListener(event, sync)))
+    sync()
+    return () => players.forEach(player => events.forEach(event => player.removeEventListener(event, sync)))
+  }, [phase, details.music, details.musicStart])
+
   function openInvitation() {
     if (phase !== 'closed') return
+    if (!canOpenInvitation()) {
+      setMediaReady(false)
+      // A tap can initiate loading on mobile browsers that limit preloading.
+      // Opening and playback still wait for both starting buffers to be ready.
+      for (const player of [video.current, audio.current]) {
+        if (player && (player.error || player.readyState === 0 || player.networkState === 1)) player.load()
+      }
+      return
+    }
     if (audio.current) {
       audio.current.volume = 0.35
       void audio.current.play().catch(() => {})
@@ -165,11 +204,12 @@ export default function Design18() {
   return <main ref={root} className={`d18-page d18-${phase}`}>
     <audio ref={audio} src={details.music || '/templates/mandap-at-dusk/inkem.mp3'} loop preload="auto" onPlay={() => setMusic(true)} onPause={() => setMusic(false)} />
     <section className="d18-entry" aria-label="Wedding invitation entry">
-      <video ref={video} className="d18-entry-video" src="/templates/mandap-at-dusk/entry.mp4" poster="/templates/mandap-at-dusk/entry-poster.jpg" muted playsInline disablePictureInPicture preload="metadata" onLoadedMetadata={() => { if (skipIntro.current && video.current) { video.current.currentTime = 1.95; skipIntro.current = false } }} onTimeUpdate={event => { const player = event.currentTarget; if (phase === 'playing' && Number.isFinite(player.duration) && player.duration - player.currentTime <= 2 && player.duration > player.currentTime) setShowScrollPrompt(true) }} onEnded={finish} onError={() => { if (phase === 'playing') finish() }} />
+      <video ref={video} className="d18-entry-video" src="/templates/mandap-at-dusk/entry.mp4" poster="/templates/mandap-at-dusk/entry-poster.jpg" muted playsInline disablePictureInPicture preload="auto" onLoadedMetadata={() => { if (skipIntro.current && video.current) { video.current.currentTime = 1.95; skipIntro.current = false } }} onTimeUpdate={event => { const player = event.currentTarget; if (phase === 'playing' && Number.isFinite(player.duration) && player.duration - player.currentTime <= 2 && player.duration > player.currentTime) setShowScrollPrompt(true) }} onEnded={finish} onError={() => { if (phase === 'playing') finish() }} />
       <div className="d18-entry-shade" />
-      <button className={`d18-enter${phase !== 'closed' ? ' d18-enter-dismissed' : ''}`} aria-label="Open invitation" onClick={openInvitation} disabled={phase !== 'closed'} aria-hidden={phase !== 'closed'} tabIndex={phase === 'closed' ? 0 : -1}>
+      <button className={`d18-enter${phase !== 'closed' ? ' d18-enter-dismissed' : ''}`} aria-label={mediaError ? 'Retry loading invitation' : mediaReady ? 'Open invitation' : 'Preparing invitation'} aria-disabled={!mediaReady && !mediaError} aria-describedby={phase === 'closed' && !mediaReady ? 'd18-media-status' : undefined} onClick={openInvitation} disabled={phase !== 'closed'} aria-hidden={phase !== 'closed'} tabIndex={phase === 'closed' ? 0 : -1}>
         <img src="/templates/mandap-at-dusk/open-invitation-button.webp" alt="" width="1080" height="360" draggable={false} />
       </button>
+      {phase === 'closed' && !mediaReady && <p id="d18-media-status" className="d18-media-status" role="status">{mediaError ? 'Couldn’t load the invitation. Tap to retry.' : 'Preparing your invitation…'}</p>}
       <button className="d18-music" aria-label={music ? 'Pause music' : 'Play music'} onClick={() => music ? audio.current?.pause() : void audio.current?.play().catch(() => {})}>{music ? 'Ⅱ' : '♫'}</button>
       {showScrollPrompt && <div className="d18-scroll-prompt is-visible" aria-hidden="true"><span>Scroll down</span><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5"><path d="M12 4v15m-6-6 6 6 6-6" /></svg></div>}
       {phase !== 'closed' && <div ref={heroText} className="d18-ending-copy" aria-live="polite">
