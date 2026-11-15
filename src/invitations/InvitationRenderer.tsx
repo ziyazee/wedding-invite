@@ -30,6 +30,7 @@ const MandapAtDusk = lazy(() => import('../pages/MandapAtDusk'))
 const Tajmahal = lazy(() => import('../templates/Tajmahal'))
 const Kerala = lazy(() => import('../templates/Kerala'))
 const TextLayoutLayer = lazy(() => import('./TextLayoutLayer'))
+const BloomNative = lazy(() => import('../pages/bloom/Bloom'))
 const OrderFrameInvitation = lazy(() => import('./OrderFrameInvitation'))
 const DesignedByFooter = lazy(() => import('./components/DesignedByFooter'))
 
@@ -91,6 +92,7 @@ function renderTemplate(details: InvitationData, animatedDetails: InvitationData
   }
 
   // Native React components with their own layout
+  if (template === 7) return <BloomNative details={details} rsvpTarget={rsvpTarget} />
   if (template === 2) return <Majestic details={details} rsvpTarget={rsvpTarget} />
   if (template === 5) return <SecretGarden details={details} rsvpTarget={rsvpTarget} />
   if (template === 6) return <EmbroideredGarden details={details} rsvpTarget={rsvpTarget} />

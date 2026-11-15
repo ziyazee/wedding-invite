@@ -1,0 +1,1139 @@
+/* Bloom (template 7) — native React scoped styles
+   Extracted from reference.css (Tailwind build), interactions.css, and bloomRules. */
+
+/* ── Design tokens ── */
+.bloom-native {
+  --background: 33.75deg 53.333% 94.118%;
+  --foreground: 84 46% 18%;
+  --ivory: 33.75deg 53.333% 94.118%;
+  --sage: 81 25% 55%;
+  --sage-dark: 84 46% 22%;
+  --sage-light: 81 22% 65%;
+  --gold: 343 41% 63%;
+  --gold-dark: 84 46% 33%;
+  --gold-soft: 81 25% 72%;
+  --dusty-rose: 343 41% 63%;
+  --dusty-rose-soft: 353 65% 88%;
+  --radius: .375rem;
+  --shadow-soft: 0 2px 18px -6px hsl(30 24% 20% / .08), 0 4px 10px -4px hsl(30 24% 20% / .05);
+  --shadow-elegant: 0 12px 40px -16px hsl(30 24% 20% / .14), 0 4px 14px -4px hsl(30 24% 20% / .06);
+  --font-body: "mrs-eaves", serif;
+  --font-display: "caprizant", "mrs-eaves", serif;
+  --font-script: "caprizant", "mrs-eaves", serif;
+  --font-subtitle: "otta-pe", "mrs-eaves", sans-serif;
+  background-color: hsl(var(--background));
+  color: hsl(var(--foreground));
+  font-family: var(--font-body);
+  line-height: 1.5;
+  -webkit-font-smoothing: antialiased;
+  overflow-x: hidden;
+}
+
+/* ── Shared component classes ── */
+.bloom-native .section-heading {
+  margin-bottom: .75rem;
+  font-family: var(--font-display);
+  font-size: 2.25rem;
+  font-weight: 400;
+  letter-spacing: .035em;
+  line-height: 1.1;
+  color: hsl(var(--sage-dark));
+}
+@media (min-width: 768px) {
+  .bloom-native .section-heading { font-size: 3rem; line-height: 1; }
+}
+.bloom-native .section-eyebrow {
+  font-family: var(--font-subtitle);
+  font-size: 10.5px;
+  font-weight: 400;
+  text-transform: uppercase;
+  letter-spacing: .42em;
+  color: hsl(var(--gold-dark) / .8);
+}
+@media (min-width: 768px) {
+  .bloom-native .section-eyebrow { font-size: .75rem; line-height: 1rem; }
+}
+.bloom-native .section-rule {
+  display: block;
+  width: 3rem;
+  height: 1px;
+  margin: 1.25rem auto;
+  background-color: hsl(var(--gold) / .4);
+}
+.bloom-native .section-padding {
+  padding: 6rem 1.5rem;
+}
+@media (min-width: 768px) {
+  .bloom-native .section-padding { padding: 9rem 4rem; }
+}
+.bloom-native .card-refined {
+  position: relative;
+  border-radius: calc(var(--radius) - 4px);
+  border: 1px solid hsl(var(--gold) / .2);
+  background-color: hsl(var(--ivory) / .95);
+  padding: 1.75rem;
+  backdrop-filter: blur(2px);
+  box-shadow: var(--shadow-soft);
+  transition: box-shadow .5s ease, transform .5s ease;
+}
+@media (min-width: 768px) {
+  .bloom-native .card-refined { padding: 2.5rem; }
+}
+.bloom-native .card-refined:hover {
+  box-shadow: var(--shadow-elegant);
+  transform: translateY(-2px);
+}
+
+/* ── Font families ── */
+.bloom-native .font-body { font-family: var(--font-body); }
+.bloom-native .font-display { font-family: var(--font-display); }
+.bloom-native .font-script { font-family: var(--font-script); }
+.bloom-native .font-subtitle { font-family: var(--font-subtitle); }
+
+/* ── Hero ── */
+.bloom-native .bloom-hero {
+  position: relative;
+  min-height: 100vh;
+  min-height: 100dvh;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+  background-color: hsl(var(--background));
+}
+.bloom-native .bloom-hero-bg {
+  position: absolute;
+  inset: 0;
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
+}
+@media (min-width: 768px) {
+  .bloom-native .bloom-hero-bg { background-size: contain; }
+}
+.bloom-native .bloom-hero-content {
+  position: relative;
+  z-index: 10;
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: flex-start;
+  text-align: center;
+  padding: 20vh 1.5rem 0;
+}
+@media (min-width: 768px) {
+  .bloom-native .bloom-hero-content {
+    justify-content: center;
+    padding: 10vh 1.5rem 10vh;
+  }
+}
+.bloom-native .bloom-hero-inner {
+  width: 100%;
+  max-width: 68%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+@media (min-width: 768px) { .bloom-native .bloom-hero-inner { max-width: 36%; } }
+@media (min-width: 1024px) { .bloom-native .bloom-hero-inner { max-width: 30%; } }
+@media (min-width: 1280px) { .bloom-native .bloom-hero-inner { max-width: 26%; } }
+
+.bloom-native .bloom-arch-wrap {
+  width: 100%;
+  margin-bottom: 1.5rem;
+  margin-top: -.5rem;
+}
+@media (min-width: 768px) {
+  .bloom-native .bloom-arch-wrap { margin-bottom: 0; margin-top: 0; }
+}
+.bloom-native .bloom-arch-mobile {
+  width: 100%;
+  height: auto;
+  overflow: visible;
+  margin: 0;
+  padding: 10px 10px 0 10px;
+  margin-top: 1rem;
+  padding-top: 14px;
+}
+@media (min-width: 768px) { .bloom-native .bloom-arch-mobile { display: none; } }
+.bloom-native .bloom-arch-desktop {
+  display: none;
+  width: 100%;
+  height: auto;
+  overflow: hidden;
+}
+@media (min-width: 768px) { .bloom-native .bloom-arch-desktop { display: block; } }
+.bloom-native .bloom-arch-text {
+  fill: hsl(var(--foreground));
+  font-family: var(--font-body);
+  font-weight: 600;
+}
+.bloom-native .bloom-hero-names {
+  margin-bottom: -.5rem;
+  margin-top: -7rem;
+}
+@media (min-width: 768px) {
+  .bloom-native .bloom-hero-names { margin-top: -1rem; margin-bottom: .5rem; }
+}
+.bloom-native .bloom-hero-name {
+  font-family: var(--font-script);
+  font-weight: 400;
+  font-size: 2.25rem;
+  color: hsl(var(--foreground));
+  display: block;
+  line-height: .95;
+}
+@media (min-width: 768px) { .bloom-native .bloom-hero-name { font-size: 3rem; } }
+@media (min-width: 1024px) { .bloom-native .bloom-hero-name { font-size: 3.75rem; } }
+.bloom-native .bloom-hero-amp {
+  font-family: var(--font-display);
+  font-weight: 400;
+  font-size: 1.25rem;
+  color: hsl(var(--foreground) / .9);
+  display: block;
+  margin: .25rem 0;
+  font-style: italic;
+  letter-spacing: .3em;
+}
+.bloom-native .bloom-hero-date {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: .12em;
+  color: #7c9658;
+  font-family: "freighttextcmp-pro", serif;
+  font-size: clamp(.85rem, 2.4vw, 1.05rem);
+  font-weight: 700;
+  letter-spacing: .35em;
+  line-height: 1.15;
+  padding-left: .35em;
+  margin-top: .5rem;
+  margin-bottom: .25rem;
+}
+.bloom-native .bloom-discover {
+  position: relative;
+  z-index: 10;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: .5rem;
+  text-align: center;
+  color: hsl(var(--foreground));
+  padding-bottom: 2rem;
+  cursor: pointer;
+  background: none;
+  border: 0;
+  font: inherit;
+  transition: color .3s;
+}
+.bloom-native .bloom-discover:hover { color: hsl(var(--gold)); }
+.bloom-native .bloom-discover span {
+  font-size: .75rem;
+  letter-spacing: .3em;
+  text-transform: uppercase;
+  font-family: var(--font-body);
+}
+
+/* ── Countdown ── */
+.bloom-native .bloom-countdown {
+  padding: 74px 1rem;
+  position: relative;
+  overflow: hidden;
+  background-color: #f4ede1;
+}
+@media (min-width: 768px) {
+  .bloom-native .bloom-countdown { padding-top: 5rem; padding-bottom: 5rem; }
+}
+.bloom-native .bloom-countdown-frame {
+  position: relative;
+  width: 100%;
+  max-width: 36rem;
+  margin: 0 auto;
+  text-align: center;
+  background-position: center;
+  background-repeat: no-repeat;
+  background-size: contain;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 2.5rem;
+  aspect-ratio: 892 / 714;
+}
+@media (min-width: 768px) {
+  .bloom-native .bloom-countdown-frame { padding: 3.5rem 4rem; }
+}
+.bloom-native .bloom-countdown-values {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  width: 100%;
+  align-items: center;
+  justify-content: center;
+}
+.bloom-native .bloom-countdown-unit {
+  flex: 1;
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 0;
+}
+@media (min-width: 768px) {
+  .bloom-native .bloom-countdown-unit { padding: 0 .25rem; }
+}
+.bloom-native .bloom-countdown-value {
+  font-family: var(--font-display);
+  font-size: 1.875rem;
+  font-weight: 300;
+  color: hsl(var(--sage-dark));
+  line-height: 1;
+  letter-spacing: .02em;
+}
+@media (min-width: 768px) {
+  .bloom-native .bloom-countdown-value { font-size: 2.75rem; }
+}
+.bloom-native .bloom-countdown-label {
+  margin-top: .75rem;
+  font-size: 10px;
+  letter-spacing: .1em;
+  text-transform: uppercase;
+  color: hsl(var(--gold-dark) / .8);
+  font-family: var(--font-body);
+}
+.bloom-native .bloom-countdown-divider {
+  width: 1px;
+  height: 2rem;
+  background-color: hsl(var(--sage-dark) / .2);
+  margin: 0 .25rem .25rem;
+  flex-shrink: 0;
+}
+
+/* ── Welcome ── */
+.bloom-native .bloom-welcome {
+  position: relative;
+  padding: 5rem 1.5rem 0;
+  background-color: #f4ede1;
+  overflow: visible;
+}
+@media (min-width: 768px) {
+  .bloom-native .bloom-welcome { padding-top: 7rem; }
+}
+.bloom-native .bloom-welcome-flowers-top {
+  position: absolute;
+  top: 0;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 100%;
+  height: auto;
+  pointer-events: none;
+  user-select: none;
+  z-index: 10;
+}
+@media (min-width: 768px) { .bloom-native .bloom-welcome-flowers-top { top: -4rem; max-width: 28rem; } }
+@media (min-width: 1024px) { .bloom-native .bloom-welcome-flowers-top { top: -6rem; max-width: 32rem; } }
+.bloom-native .bloom-welcome-floral-footer {
+  margin: 3rem -1.5rem -40px;
+}
+.bloom-native .bloom-welcome-flowers-bottom {
+  position: relative;
+  display: block;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 100%;
+  height: auto;
+  pointer-events: none;
+  user-select: none;
+  z-index: 20;
+}
+@media (min-width: 768px) { .bloom-native .bloom-welcome-flowers-bottom { max-width: 28rem; } }
+@media (min-width: 1024px) { .bloom-native .bloom-welcome-flowers-bottom { max-width: 32rem; } }
+.bloom-native .bloom-welcome-inner {
+  max-width: 36rem;
+  width: 100%;
+  margin: 0 auto;
+  text-align: center;
+  position: relative;
+  padding-top: 40px;
+}
+.bloom-native .bloom-welcome-heading {
+  font-family: var(--font-script);
+  font-size: 3rem;
+  color: hsl(var(--sage-dark));
+  line-height: 1;
+  padding-top: 125px;
+}
+@media (min-width: 768px) {
+  .bloom-native .bloom-welcome-heading {
+    font-size: 3.75rem;
+    padding-top: 4rem;
+  }
+}
+.bloom-native .bloom-welcome-family-intro {
+  margin-top: 2.5rem;
+  font-family: var(--font-body);
+  font-style: italic;
+  font-weight: 300;
+  font-size: 1rem;
+  line-height: 1.625;
+  color: hsl(var(--sage-dark) / .9);
+  white-space: pre-line;
+  max-width: 28rem;
+  margin-left: auto;
+  margin-right: auto;
+}
+@media (min-width: 768px) {
+  .bloom-native .bloom-welcome-family-intro { font-size: 1.125rem; }
+}
+.bloom-native .bloom-welcome-names {
+  margin-top: 2.5rem;
+  display: flex;
+  flex-direction: column;
+  gap: .5rem;
+}
+.bloom-native .bloom-welcome-person {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+.bloom-native .bloom-welcome-name {
+  font-family: var(--font-display);
+  font-size: 2.25rem;
+  font-weight: 400;
+  color: hsl(var(--sage-dark));
+  line-height: 1.1;
+  letter-spacing: .01em;
+}
+@media (min-width: 768px) { .bloom-native .bloom-welcome-name { font-size: 3rem; } }
+.bloom-native .bloom-welcome-name-and {
+  font-family: var(--font-script);
+  font-size: 1.875rem;
+  color: hsl(var(--dusty-rose));
+  padding: .25rem 0;
+  font-weight: 500;
+}
+.bloom-native .bloom-welcome-family {
+  font-size: 1rem;
+  line-height: 1.5;
+  white-space: pre-line;
+  overflow-wrap: anywhere;
+  margin: .5rem 0 0;
+}
+.bloom-native .bloom-welcome-message {
+  margin-top: 3rem;
+  max-width: 24rem;
+  margin-left: auto;
+  margin-right: auto;
+  font-family: var(--font-body);
+  font-style: italic;
+  font-weight: 300;
+  font-size: 1.125rem;
+  line-height: 1.625;
+  color: hsl(var(--sage-dark));
+  white-space: pre-line;
+}
+@media (min-width: 768px) {
+  .bloom-native .bloom-welcome-message { font-size: 1.25rem; }
+}
+.bloom-native .bloom-welcome-date-block {
+  padding-top: .5rem;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: .25rem;
+}
+.bloom-native .bloom-welcome-weekday {
+  text-transform: uppercase;
+  letter-spacing: .3em;
+  font-size: 11px;
+  font-style: normal;
+  color: hsl(var(--dusty-rose));
+  font-weight: 600;
+  font-family: var(--font-subtitle);
+}
+.bloom-native .bloom-welcome-written-date {
+  color: hsl(var(--sage-dark));
+  font-style: normal;
+  font-family: var(--font-body);
+  font-size: 1rem;
+  line-height: 1.625;
+  padding-bottom: 70px;
+}
+@media (min-width: 768px) {
+  .bloom-native .bloom-welcome-written-date { font-size: 1.125rem; }
+}
+
+/* ── Ceremony ── */
+.bloom-native .bloom-ceremony {
+  position: relative;
+  background-color: #F5F0E8;
+  overflow: hidden;
+}
+.bloom-native .bloom-ceremony-frame {
+  position: relative;
+  width: 100%;
+  margin: 0 auto;
+  background-repeat: no-repeat;
+  background-position: center;
+  background-size: 100% 100%;
+}
+.bloom-native .bloom-ceremony-aspect {
+  width: 100%;
+  aspect-ratio: 941 / 1672;
+}
+.bloom-native .bloom-ceremony-illustration {
+  position: absolute;
+  left: 50%;
+  transform: translateX(-50%);
+  bottom: 6%;
+  width: 82%;
+  max-width: 720px;
+  pointer-events: none;
+  user-select: none;
+}
+.bloom-native .bloom-ceremony-copy {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+.bloom-native .bloom-ceremony-text {
+  text-align: center;
+  padding: 0 1.5rem;
+  width: 100%;
+  max-width: 32rem;
+}
+@media (min-width: 640px) { .bloom-native .bloom-ceremony-text { padding: 0 2.5rem; } }
+.bloom-native .bloom-ceremony-title {
+  font-family: var(--font-display);
+  font-size: 2.25rem;
+  color: hsl(var(--sage-dark));
+  letter-spacing: .02em;
+  margin-bottom: .5rem;
+  line-height: 1.1;
+  white-space: pre-line;
+  padding-top: 20px;
+  padding-bottom: 10px;
+}
+@media (min-width: 640px) { .bloom-native .bloom-ceremony-title { font-size: 2.25rem; } }
+@media (min-width: 768px) { .bloom-native .bloom-ceremony-title { font-size: 3rem; } }
+.bloom-native .bloom-ceremony-subtitle {
+  font-family: var(--font-subtitle);
+  font-size: 10px;
+  letter-spacing: .42em;
+  text-transform: uppercase;
+  color: hsl(var(--gold-dark) / .8);
+  margin-bottom: 1.25rem;
+  white-space: nowrap;
+}
+@media (min-width: 640px) { .bloom-native .bloom-ceremony-subtitle { font-size: 11px; } }
+.bloom-native .bloom-ceremony-venue {
+  font-family: var(--font-display);
+  font-size: 1.875rem;
+  color: hsl(var(--sage-dark));
+  margin-bottom: .25rem;
+  letter-spacing: .02em;
+  white-space: pre-line;
+}
+@media (min-width: 640px) { .bloom-native .bloom-ceremony-venue { font-size: 1.5rem; } }
+@media (min-width: 768px) { .bloom-native .bloom-ceremony-venue { font-size: 1.875rem; } }
+.bloom-native .bloom-ceremony-location {
+  font-family: var(--font-subtitle);
+  font-size: .75rem;
+  letter-spacing: .42em;
+  text-transform: uppercase;
+  color: hsl(var(--gold-dark) / .8);
+  margin-bottom: 1rem;
+  white-space: pre-line;
+  text-align: center;
+}
+@media (min-width: 640px) { .bloom-native .bloom-ceremony-location { font-size: 10px; } }
+.bloom-native .bloom-ceremony-details {
+  margin-bottom: 1.25rem;
+}
+@media (min-width: 640px) { .bloom-native .bloom-ceremony-details { margin-bottom: 1.5rem; } }
+.bloom-native .bloom-ceremony-datetime {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: center;
+  gap: .5rem;
+  color: hsl(var(--sage-dark));
+}
+@media (min-width: 640px) { .bloom-native .bloom-ceremony-datetime { gap: .75rem; } }
+.bloom-native .bloom-ceremony-date-text {
+  font-family: var(--font-body);
+  font-size: .875rem;
+  letter-spacing: .05em;
+  font-style: italic;
+  opacity: .7;
+  text-align: center;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  line-height: 1.2;
+}
+@media (min-width: 640px) { .bloom-native .bloom-ceremony-date-text { font-size: .875rem; } }
+.bloom-native .bloom-ceremony-date-dot {
+  color: hsl(var(--gold) / .4);
+}
+.bloom-native .bloom-ceremony-time {
+  font-family: var(--font-body);
+  font-size: 1.125rem;
+  font-weight: 500;
+  font-style: normal;
+  font-variant-numeric: lining-nums tabular-nums;
+  line-height: 1.4;
+  white-space: nowrap;
+}
+@media (min-width: 640px) { .bloom-native .bloom-ceremony-time { font-size: 1.125rem; } }
+.bloom-native .bloom-ceremony-address-line {
+  font-family: var(--font-body);
+  letter-spacing: .05em;
+}
+.bloom-native .bloom-ceremony-address-line:first-child { font-size: .875rem; }
+.bloom-native .bloom-ceremony-address-line:last-child { font-size: .75rem; opacity: .7; }
+@media (min-width: 640px) {
+  .bloom-native .bloom-ceremony-address-line:first-child { font-size: .875rem; }
+  .bloom-native .bloom-ceremony-address-line:last-child { font-size: .75rem; }
+}
+.bloom-native .bloom-ceremony-rule {
+  width: 2.5rem;
+  height: 1px;
+  background-color: hsl(var(--gold) / .3);
+  margin: .75rem auto 1rem;
+}
+.bloom-native .bloom-ceremony-address {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: .125rem;
+  color: hsl(var(--sage-dark));
+}
+.bloom-native .bloom-ceremony-buttons {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: center;
+  gap: 1rem;
+  padding: 2rem 1.5rem;
+  flex-wrap: wrap;
+}
+@media (min-width: 640px) { .bloom-native .bloom-ceremony-buttons { gap: 2rem; } }
+.bloom-native .bloom-ceremony-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: .5rem;
+  white-space: nowrap;
+  font-family: var(--font-body);
+  font-size: .875rem;
+  letter-spacing: .15em;
+  text-transform: uppercase;
+  color: hsl(var(--sage-dark) / .7);
+  border: 0;
+  border-bottom: 1px solid hsl(var(--gold) / .3);
+  background: none;
+  padding-bottom: .25rem;
+  cursor: pointer;
+  text-decoration: none;
+  transition: color .3s;
+}
+.bloom-native .bloom-ceremony-btn:hover {
+  color: hsl(var(--gold));
+  border-color: hsl(var(--gold));
+}
+.bloom-native .bloom-ceremony-btn svg {
+  width: .875rem;
+  height: .875rem;
+}
+
+/* ── Events (additional celebrations) ── */
+.bloom-native .bloom-events {
+  background-color: #F5F0E8;
+  padding: 0 0 2rem;
+}
+.bloom-native .bloom-event-card {
+  position: relative;
+  width: 100%;
+  min-height: 0;
+  isolation: isolate;
+  display: grid;
+  grid-template-columns: minmax(0, 1fr);
+  background-color: #F5F0E8;
+  --bloom-fit: 1;
+}
+.bloom-native .bloom-event-card[data-bloom-card="video"] { padding: 0; background-image: none; }
+.bloom-native .bloom-event-video {
+  display: block;
+  grid-area: 1 / 1;
+  width: 100%;
+  height: auto;
+  align-self: center;
+  pointer-events: none;
+}
+.bloom-native .bloom-event-copy {
+  grid-area: 1 / 1;
+  position: relative;
+  z-index: 1;
+  box-sizing: border-box;
+  min-width: 0;
+  overflow-wrap: anywhere;
+  text-align: center;
+}
+.bloom-native .bloom-event-card .bloom-event-copy {
+  position: absolute !important;
+  top: 18%;
+  bottom: 18%;
+  left: 18%;
+  width: 64%;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  gap: calc(4px + 6px * var(--bloom-fit));
+}
+.bloom-native .bloom-event-copy > * {
+  flex: none;
+  min-width: 0;
+  max-width: 100%;
+  margin: 0;
+}
+.bloom-native .bloom-event-copy h2 {
+  font-size: calc(24px + 16px * var(--bloom-fit));
+  line-height: 1.1;
+}
+.bloom-native .bloom-event-copy h3 {
+  font-size: calc(16px + 9px * var(--bloom-fit));
+  line-height: 1.2;
+}
+.bloom-native .bloom-event-copy p {
+  font-size: calc(13px + 5px * var(--bloom-fit));
+  line-height: 1.3;
+}
+.bloom-native .bloom-event-copy .bloom-eyebrow {
+  font-size: 11px;
+}
+.bloom-native .bloom-event-copy .bloom-date-stacked {
+  font-size: 13px;
+  letter-spacing: .18em;
+}
+.bloom-native .bloom-event-copy [data-card-text] {
+  white-space: pre-line;
+}
+.bloom-native .bloom-event-copy .bloom-event-links {
+  font-size: 14px;
+  gap: 8px 12px;
+}
+.bloom-native .bloom-event-expanded > video {
+  position: absolute;
+  inset: 0;
+  width: 100% !important;
+  height: 100% !important;
+  object-fit: fill;
+  align-self: stretch !important;
+}
+
+/* ── Notes (dress code, gift, gallery, closing) ── */
+.bloom-native .bloom-note {
+  max-width: 680px;
+  margin: 0 auto;
+  padding: 55px 30px;
+  text-align: center;
+  background-color: #F5F0E8;
+  color: hsl(var(--foreground));
+}
+@media (max-width: 600px) { .bloom-native .bloom-note { padding: 40px 24px; } }
+.bloom-native .bloom-note h2 {
+  font-family: var(--font-script);
+  font-size: 42px;
+  line-height: 1.2;
+  margin: 12px 0 24px;
+}
+@media (max-width: 600px) { .bloom-native .bloom-note h2 { font-size: 33px; } }
+.bloom-native .bloom-note p {
+  font-size: 20px;
+  line-height: 1.6;
+  white-space: pre-line;
+  overflow-wrap: anywhere;
+}
+@media (max-width: 600px) { .bloom-native .bloom-note p { font-size: 18px; } }
+.bloom-native .bloom-note img {
+  display: block;
+  width: 100%;
+  height: auto;
+  margin: 24px auto 0;
+}
+.bloom-native .bloom-note a {
+  font: inherit;
+  color: inherit;
+  border-bottom: 1px solid currentColor;
+  text-decoration: none;
+  padding: 9px 2px;
+  cursor: pointer;
+}
+.bloom-native .bloom-closing-names {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+.bloom-native .bloom-closing-names span { display: block; }
+.bloom-native .bloom-closing-names .bloom-closing-amp {
+  display: block;
+  font-size: 24px;
+  font-style: italic;
+}
+.bloom-native .bloom-couple-illustration {
+  display: block;
+  width: 100%;
+  height: auto;
+  margin: 24px auto 0;
+}
+
+/* ── RSVP ── */
+.bloom-native .bloom-rsvp-section {
+  padding: 4px 1rem 4rem;
+  background-color: #F5F0E8;
+}
+@media (min-width: 768px) { .bloom-native .bloom-rsvp-section { padding: 4px 1.5rem 5rem; } }
+.bloom-native .bloom-rsvp-header {
+  text-align: center;
+  margin-bottom: 3rem;
+}
+.bloom-native .bloom-rsvp-header .section-heading { padding-top: 30px; }
+.bloom-native .bloom-rsvp-floral-top {
+  position: absolute;
+  top: -2rem;
+  right: -.5rem;
+  width: 14rem;
+  pointer-events: none;
+  user-select: none;
+  z-index: 10;
+}
+@media (min-width: 768px) { .bloom-native .bloom-rsvp-floral-top { width: 18rem; } }
+.bloom-native .bloom-rsvp-floral-bottom {
+  position: absolute;
+  bottom: -4rem;
+  left: -2.5rem;
+  width: 14rem;
+  pointer-events: none;
+  user-select: none;
+  z-index: 10;
+}
+@media (min-width: 768px) { .bloom-native .bloom-rsvp-floral-bottom { width: 18rem; } }
+.bloom-native .bloom-rsvp-form {
+  max-width: 36rem;
+  margin: 0 auto;
+}
+.bloom-native .bloom-rsvp-form .card-refined { position: relative; }
+.bloom-native .bloom-rsvp-form form {
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+  font-family: var(--font-body);
+}
+.bloom-native .bloom-rsvp-form label {
+  display: block;
+  font-size: .875rem;
+  color: hsl(var(--sage-dark));
+  margin-bottom: .5rem;
+}
+.bloom-native .bloom-rsvp-form input:not([type="radio"]),
+.bloom-native .bloom-rsvp-form textarea {
+  box-sizing: border-box;
+  width: 100%;
+  padding: .75rem 1rem;
+  border: 1px solid hsl(var(--gold) / .3);
+  border-radius: var(--radius);
+  background: hsl(var(--ivory));
+  color: inherit;
+  font: inherit;
+  font-size: .9375rem;
+}
+.bloom-native .bloom-rsvp-form input::placeholder,
+.bloom-native .bloom-rsvp-form textarea::placeholder {
+  color: hsl(var(--sage-dark) / .5);
+}
+.bloom-native .bloom-rsvp-form textarea {
+  resize: vertical;
+  min-height: 120px;
+}
+.bloom-native .bloom-rsvp-form fieldset {
+  border: 0;
+  padding: 0;
+  margin: 0;
+}
+.bloom-native .bloom-rsvp-form legend {
+  font-size: .875rem;
+  color: hsl(var(--sage-dark));
+  margin-bottom: .75rem;
+}
+.bloom-native .bloom-rsvp-radio-row {
+  display: flex;
+  gap: 1.5rem;
+}
+.bloom-native .bloom-rsvp-radio-row label {
+  display: flex;
+  align-items: center;
+  gap: .5rem;
+  cursor: pointer;
+  margin-bottom: 0;
+}
+.bloom-native .bloom-rsvp-radio-row input[type="radio"] {
+  width: 1.125rem;
+  height: 1.125rem;
+  accent-color: hsl(var(--dusty-rose));
+}
+.bloom-native .bloom-guest-counter {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 1rem;
+}
+.bloom-native .bloom-guest-counter button {
+  width: 2.5rem;
+  height: 2.5rem;
+  border: 1px solid hsl(var(--gold) / .3);
+  border-radius: var(--radius);
+  background: transparent;
+  color: inherit;
+  font-size: 1.25rem;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+.bloom-native .bloom-guest-counter output {
+  min-width: 1.5rem;
+  text-align: center;
+  font-size: 1rem;
+}
+.bloom-native .bloom-guest-names label {
+  margin-top: .75rem;
+}
+.bloom-native .bloom-rsvp-note {
+  font-size: .8125rem;
+  opacity: .7;
+  text-align: center;
+}
+.bloom-native .bloom-rsvp-submit {
+  width: 100%;
+  padding: .875rem;
+  border: 0;
+  border-radius: var(--radius);
+  background: hsl(var(--sage-dark));
+  color: white;
+  font: inherit;
+  font-size: .875rem;
+  letter-spacing: .15em;
+  text-transform: uppercase;
+  cursor: pointer;
+  transition: opacity .3s;
+}
+.bloom-native .bloom-rsvp-submit:disabled { opacity: .5; cursor: default; }
+.bloom-native .bloom-rsvp-status {
+  text-align: center;
+  font-size: .8125rem;
+}
+
+/* ── Footer ── */
+.bloom-native .bloom-footer {
+  text-align: center;
+  position: relative;
+  overflow: hidden;
+  background-color: #F5F0E8;
+  padding-bottom: 2rem;
+  padding-top: 0;
+  margin-top: 10px;
+}
+.bloom-native .bloom-footer-frame {
+  position: relative;
+  max-width: 28rem;
+  margin: 0 auto;
+  padding: 3rem 1.5rem 1rem;
+}
+.bloom-native .bloom-footer-bordered {
+  position: relative;
+  background-color: #F5F0E8;
+  border-image-source: url("/templates/bloom/assets/checkered-frame-BwM-aUT2.webp");
+  border-image-slice: 120 fill;
+  border-image-width: 60px;
+  border-image-repeat: stretch;
+  border-style: solid;
+  border-width: 60px;
+}
+.bloom-native .bloom-footer-content {
+  text-align: center;
+  padding: 2rem 1rem;
+  margin: -1rem;
+}
+.bloom-native .bloom-footer-names {
+  font-family: var(--font-script);
+  font-size: 3rem;
+  color: hsl(var(--sage-dark));
+  line-height: 1.1;
+  padding: 0;
+  margin: 0;
+}
+@media (min-width: 768px) { .bloom-native .bloom-footer-names { font-size: 3.75rem; } }
+.bloom-native .bloom-footer-names .bloom-closing-amp {
+  font-style: italic;
+}
+.bloom-native .bloom-footer-date {
+  margin-top: 1rem;
+  font-size: .875rem;
+}
+@media (min-width: 768px) { .bloom-native .bloom-footer-date { font-size: 1rem; } }
+
+/* ── Opening gate ── */
+.bloom-native .bloom-opening {
+  position: absolute;
+  inset: 0;
+  height: 100dvh;
+  z-index: 50;
+  cursor: pointer;
+  pointer-events: auto;
+  opacity: 1;
+}
+.bloom-native .bloom-opening-bg {
+  position: absolute;
+  inset: 0;
+  background-color: hsl(var(--background));
+}
+.bloom-native .bloom-opening-poster {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  opacity: 1;
+}
+.bloom-native .bloom-opening-video {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  opacity: 0;
+  transition: opacity 500ms ease-in-out;
+}
+.bloom-native .bloom-opening-cta {
+  position: absolute;
+  inset-inline: 0;
+  bottom: 4rem;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+  padding: 0 1.5rem;
+  pointer-events: none;
+}
+.bloom-native .bloom-opening-btn {
+  font-family: var(--font-body);
+  font-size: .7rem;
+  letter-spacing: .5em;
+  text-transform: uppercase;
+  color: rgba(255, 255, 255, .9);
+  filter: drop-shadow(0 1px 4px rgba(0, 0, 0, .4));
+  background: none;
+  border: 0;
+  cursor: pointer;
+  pointer-events: auto;
+  animation: bloom-pulse 2.4s ease-in-out infinite;
+}
+@media (min-width: 768px) { .bloom-native .bloom-opening-btn { font-size: .75rem; } }
+
+.bloom-native.bloom-stage-one .bloom-opening-video { opacity: 1; }
+.bloom-native.bloom-finished .bloom-opening {
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 1000ms ease;
+}
+.bloom-native.bloom-started .bloom-opening {
+  position: absolute;
+  height: 100dvh;
+  opacity: 0;
+  visibility: hidden;
+  pointer-events: none;
+}
+
+/* ── Music toggle ── */
+.bloom-native .bloom-music-toggle {
+  position: fixed;
+  bottom: 1.5rem;
+  right: 1.5rem;
+  z-index: 40;
+  width: 48px;
+  height: 48px;
+  border-radius: 50%;
+  border: 1px solid #ebc9d5;
+  background: white;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition: opacity .3s;
+  box-shadow: 0 2px 8px rgba(0,0,0,.1);
+}
+.bloom-native .bloom-music-toggle svg { width: 20px; height: 20px; color: hsl(var(--sage-dark)); }
+
+/* ── Scroll reveal ── */
+.bloom-native [data-reveal] {
+  opacity: 0;
+  transform: translateY(18px);
+  transition: opacity 600ms cubic-bezier(.22,.61,.36,1), transform 600ms cubic-bezier(.22,.61,.36,1);
+}
+.bloom-native [data-reveal].visible {
+  opacity: 1;
+  transform: none;
+}
+@media (prefers-reduced-motion: reduce) {
+  .bloom-native [data-reveal] {
+    opacity: 1 !important;
+    transform: none !important;
+    transition: none !important;
+  }
+}
+
+/* ── Keyframes ── */
+@keyframes bloom-pulse {
+  0%, 100% { opacity: 1; }
+  50% { opacity: .4; }
+}
+
+/* ── Event date stacked display ── */
+.bloom-native .bloom-date-stacked {
+  font-size: 14px;
+  font-weight: 700;
+  letter-spacing: .42em;
+  line-height: 1.15;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: .12em;
+  padding-left: .42em;
+  color: #7c9658;
+}
+.bloom-native .bloom-event-links {
+  display: flex;
+  justify-content: center;
+  gap: 12px;
+  flex-wrap: wrap;
+  margin-top: 24px;
+}
+.bloom-native .bloom-event-links a,
+.bloom-native .bloom-event-links button {
+  font: inherit;
+  color: inherit;
+  border: 0;
+  border-bottom: 1px solid currentColor;
+  background: none;
+  padding: 9px 2px;
+  cursor: pointer;
+  text-decoration: none;
+  font-size: 14px;
+  white-space: normal;
+  text-align: center;
+}
+.bloom-native .bloom-event-links [hidden] { display: none !important; }
+
+/* ── Hidden utility ── */
+.bloom-native [hidden] { display: none !important; }
