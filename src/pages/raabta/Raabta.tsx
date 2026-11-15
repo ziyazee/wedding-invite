@@ -1,7 +1,8 @@
 import { useEffect, useMemo, useRef, useState } from 'react'
 import type { ComponentProps } from 'react'
-import type { Celebration, InvitationData } from '../../invitations/model'
+import type { InvitationData } from '../../invitations/model'
 import { formatDate, formatTime, mapURL, weddingISO } from '../../invitations/model'
+import { saveOrderRsvp } from '../../invitations/rsvp'
 import type { RsvpTarget } from '../../invitations/rsvp'
 import { EditableText, InvitationLayoutProvider } from '../../invitations/components/EditableText'
 import { InvitationSection as Section } from '../../invitations/components/InvitationSection'
@@ -141,7 +142,7 @@ export default function Raabta({ details: d = DEMO, rsvpTarget }: { details?: In
     if (!wishName.trim() || !wishMsg.trim()) return
     if (rsvpTarget) {
       setWishStatus('Sending...')
-      rsvpTarget.submitWish?.({ guestName: wishName, message: wishMsg })
+      saveOrderRsvp(rsvpTarget, { name: wishName, attendance: 'yes', count: 0, guests: [], message: wishMsg })
         .then(() => {
           setWishName(''); setWishMsg('')
           setWishStatus('Your wish has been shared.')
@@ -210,9 +211,9 @@ export default function Raabta({ details: d = DEMO, rsvpTarget }: { details?: In
           <div className="scene-hero-content">
             <img src={`${ASSETS}crescent-moon.webp`} alt="" className="scene-hero-moon" />
             <div className="hero-names-row" ref={heroRowRef}>
-              <Copy as="span" field="hero.groom" className="hero-name" label="Hero groom" ref={heroGroomRef}>{groomFirst}</Copy>
+              <span className="hero-name" ref={heroGroomRef}><Copy as="span" field="hero.groom" label="Hero groom">{groomFirst}</Copy></span>
               <span className="hero-join" ref={heroJoinRef}>&amp;</span>
-              <Copy as="span" field="hero.bride" className="hero-name" label="Hero bride" ref={heroBrideRef}>{brideFirst}</Copy>
+              <span className="hero-name" ref={heroBrideRef}><Copy as="span" field="hero.bride" label="Hero bride">{brideFirst}</Copy></span>
             </div>
             <div className="hero-rule" aria-hidden="true" />
             <Copy as="div" field="hero.blessing" className="hero-blessing" label="Hero blessing">Together with our families, we joyfully invite you</Copy>
