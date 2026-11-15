@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useRef, useState } from 'react'
+import { useEffect, useRef, useState } from 'react'
 import type { ComponentProps } from 'react'
 import type { InvitationData } from '../../invitations/model'
 import { formatDate, formatTime, mapURL, weddingISO } from '../../invitations/model'
@@ -11,7 +11,6 @@ import { useScratchCard } from './useScratchCard'
 import { useScrollReveal } from './useScrollReveal'
 import { useHeroFit } from './useHeroFit'
 import { useRaabtaMusic } from './useRaabtaMusic'
-import { useYoutubeCrosstalk } from './useYoutubeCrosstalk'
 import { useFloatingLanterns } from './useFloatingLanterns'
 import { useLanternGust } from './useLanternGust'
 import RsvpSection from './RsvpSection'
@@ -84,7 +83,6 @@ export default function Raabta({ details: d = DEMO, rsvpTarget }: { details?: In
   const scratchCanvasRef = useRef<HTMLCanvasElement>(null)
   const scratchWrapRef = useRef<HTMLDivElement>(null)
   const scratchConfettiRef = useRef<HTMLDivElement>(null)
-  const youtubeRef = useRef<HTMLIFrameElement>(null)
 
   const groomFirst = firstName(d.groom)
   const brideFirst = firstName(d.bride)
@@ -102,13 +100,6 @@ export default function Raabta({ details: d = DEMO, rsvpTarget }: { details?: In
     openGate()
   }
 
-  const youtubeUrl = useMemo(() => {
-    const g = d.gallery || ''
-    const match = g.match(/youtube\.com\/embed\/[^\s,]+/)
-    if (match) return 'https://www.' + match[0] + '?rel=0'
-    return undefined
-  }, [d.gallery])
-  useYoutubeCrosstalk(youtubeRef, youtubeUrl)
   useFloatingLanterns(rootRef)
   useLanternGust(rootRef)
 
@@ -310,28 +301,6 @@ export default function Raabta({ details: d = DEMO, rsvpTarget }: { details?: In
           </div>
         </Section>
 
-        {/* ── Video ── */}
-        {youtubeUrl && (
-          <Section data-invite-section="video">
-          <div className="scene scene-video">
-            <div className="scene-inner">
-              <Copy as="h2" field="video.title" className="video-title reveal" label="Video title">On Screen</Copy>
-              <Copy as="p" field="video.caption" className="video-caption reveal" label="Video caption">Take a moment to watch our pre-wedding film — a little piece of our story before we begin this new chapter.</Copy>
-              <div className="video-embed-wrap reveal">
-                <iframe
-                  ref={youtubeRef}
-                  src={youtubeUrl}
-                  title="Pre-wedding film"
-                  allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
-                  allowFullScreen
-                  loading="lazy"
-                  referrerPolicy="strict-origin-when-cross-origin"
-                />
-              </div>
-            </div>
-          </div>
-          </Section>
-        )}
 
         {/* ── Lantern Divider ── */}
         <div className="lantern-divider">
