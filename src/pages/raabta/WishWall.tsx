@@ -21,7 +21,7 @@ export default function WishWall({ wishes: propWishes }: { wishes: Wish[] }) {
   const allWishes = propWishes.length > 0 ? propWishes : DEMO_WISHES
   const wallRef = useRef<HTMLDivElement>(null)
   const [visibleIdxs, setVisibleIdxs] = useState<number[]>([])
-  const [hiddenIdxs, setHiddenIdxs] = useState<number[]>([])
+  const [, setHiddenIdxs] = useState<number[]>([])
   const [fadingOut, setFadingOut] = useState<number | null>(null)
   const rotSlotRef = useRef(0)
   const timerRef = useRef<ReturnType<typeof setInterval> | null>(null)

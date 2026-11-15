@@ -21,7 +21,7 @@ export function useHeroFit(
       for (const el of parts) el.style.fontSize = ''
 
       const maxWidth = window.innerWidth * 0.9
-      const natural = row.scrollWidth
+      const natural = row!.scrollWidth
       if (natural <= maxWidth) return
 
       const ratio = maxWidth / natural

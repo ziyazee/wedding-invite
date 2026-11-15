@@ -199,7 +199,7 @@ export default function Raabta({ details: d = DEMO, rsvpTarget }: { details?: In
         </div>
 
         {/* ── Scene 1: Hero ── */}
-        <Section name="hero">
+        <Section data-invite-section="hero">
         <div className="scene scene-hero">
           <img src={`${ASSETS}mosque-scene.webp`} alt="" className="scene-hero-mosque" />
           <div className="stars" aria-hidden="true">
@@ -221,7 +221,7 @@ export default function Raabta({ details: d = DEMO, rsvpTarget }: { details?: In
         </Section>
 
         {/* ── Scene 2: Blessings ── */}
-        <Section name="blessing">
+        <Section data-invite-section="blessing">
         <div className="scene scene-blessing scene-crowned">
           <div className="scene-inner">
             <div className="vessel reveal">
@@ -250,7 +250,7 @@ export default function Raabta({ details: d = DEMO, rsvpTarget }: { details?: In
         </Section>
 
         {/* ── Scene 3: Nikah Invite + Scratch Card ── */}
-        <Section name="invite">
+        <Section data-invite-section="invite">
         <div className="scene scene-invite">
           <div className="scene-inner">
             <img src={`${ASSETS}lattice-arch.webp`} alt="" className="scene-arch reveal" />
@@ -276,7 +276,7 @@ export default function Raabta({ details: d = DEMO, rsvpTarget }: { details?: In
         {/* ── Function Scenes ── */}
         <div className="functions-run">
           {(d.events || []).map((event, i) => (
-            <Section key={event.id || `fn-${i}`} name={`function-${i}`}>
+            <Section key={event.id || `fn-${i}`} data-invite-section={`function-${i}`}>
             <div className="scene scene-function">
               <div className="function-card reveal">
                 <img src={`${ASSETS}corner-spray.webp`} alt="" className="fn-corner fn-corner-tl" />
@@ -311,7 +311,7 @@ export default function Raabta({ details: d = DEMO, rsvpTarget }: { details?: In
 
         {/* ── Video ── */}
         {youtubeUrl && (
-          <Section name="video">
+          <Section data-invite-section="video">
           <div className="scene scene-video">
             <div className="scene-inner">
               <Copy as="h2" field="video.title" className="video-title reveal" label="Video title">On Screen</Copy>
@@ -346,7 +346,7 @@ export default function Raabta({ details: d = DEMO, rsvpTarget }: { details?: In
         </div>
 
         {/* ── Things to Know ── */}
-        <Section name="things">
+        <Section data-invite-section="things">
         <div className="scene scene-things scene-crowned">
           <div className="scene-inner">
             <div className="vessel reveal">
@@ -387,7 +387,7 @@ export default function Raabta({ details: d = DEMO, rsvpTarget }: { details?: In
         </Section>
 
         {/* ── Countdown ── */}
-        <Section name="countdown">
+        <Section data-invite-section="countdown">
         <div className="scene scene-countdown">
           <div className="scene-inner">
             <div className="countdown-sub">Counting down</div>
@@ -416,7 +416,7 @@ export default function Raabta({ details: d = DEMO, rsvpTarget }: { details?: In
         </Section>
 
         {/* ── RSVP + Wishes ── */}
-        <Section name="rsvp">
+        <Section data-invite-section="rsvp">
         <div className="scene scene-rsvp">
           <div className="scene-inner">
 
@@ -447,7 +447,7 @@ export default function Raabta({ details: d = DEMO, rsvpTarget }: { details?: In
             {/* ── Footer ── */}
             <div className="footer-ending">
               <img src={`${ASSETS}footer-ornament.webp`} alt="" className="footer-ornament" />
-              <DesignedByFooter details={d} />
+              <DesignedByFooter />
             </div>
 
           </div>

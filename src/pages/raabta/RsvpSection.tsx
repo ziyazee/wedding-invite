@@ -1,4 +1,5 @@
 import { useRef, useState } from 'react'
+import { saveOrderRsvp } from '../../invitations/rsvp'
 import type { RsvpTarget } from '../../invitations/rsvp'
 import { fireConfetti } from './Confetti'
 
@@ -23,7 +24,7 @@ export default function RsvpSection({ rsvpTarget }: { rsvpTarget?: RsvpTarget })
     e.preventDefault()
     if (rsvpTarget) {
       setRsvpStatus('Sending...')
-      rsvpTarget.submitRsvp?.({ guestName: rsvpName, attending, plusCount: guestCount })
+      saveOrderRsvp(rsvpTarget, { name: rsvpName, attendance: attending as 'yes' | 'no', count: guestCount, guests: [], message: '' })
         .then(() => setRsvpStatus('RSVP submitted successfully. Thank you!'))
         .catch(() => setRsvpStatus('Could not submit RSVP right now.'))
     } else {
