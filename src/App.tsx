@@ -30,7 +30,7 @@ const MaroonLetter = lazySitePage(() => import('./pages/MaroonLetter'))
 const EmeraldParchment = lazySitePage(() => import('./pages/EmeraldParchment'))
 const ShaadiPathT02 = lazySitePage(() => import('./pages/ShaadiPathT02'))
 const DestinationWedding = lazySitePage(() => import('./pages/DestinationWedding'))
-const Raabta = lazySitePage(() => import('./pages/Raabta'))
+const Raabta = lazy(() => import('./pages/raabta/Raabta'))
 const Qubool = lazySitePage(() => import('./pages/Qubool'))
 const Mangal = lazySitePage(() => import('./pages/Mangal'))
 const Viah = lazySitePage(() => import('./pages/Viah'))
@@ -178,4 +178,3 @@ export default function App() {
     </Routes></InvitationLoadingBoundary></Suspense></InvitationViewport>
   )
 }
-

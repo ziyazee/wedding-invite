@@ -31,6 +31,7 @@ const Tajmahal = lazy(() => import('../templates/Tajmahal'))
 const Kerala = lazy(() => import('../templates/Kerala'))
 const TextLayoutLayer = lazy(() => import('./TextLayoutLayer'))
 const BloomNative = lazy(() => import('../pages/bloom/Bloom'))
+const RaabtaNative = lazy(() => import('../pages/raabta/Raabta'))
 const OrderFrameInvitation = lazy(() => import('./OrderFrameInvitation'))
 const DesignedByFooter = lazy(() => import('./components/DesignedByFooter'))
 
@@ -87,12 +88,13 @@ function renderTemplate(details: InvitationData, animatedDetails: InvitationData
   const { template } = details
 
   // Iframe-based templates with text overlay editing
-  if ([9, 10, 11, 12, 13, 14, 15, 16].includes(template)) {
+  if ([9, 10, 11, 12, 14, 15, 16].includes(template)) {
     return <TextLayoutLayer details={details} layout={details.textOverrides}><OrderFrameInvitation key={template} details={details} rsvpTarget={rsvpTarget} /></TextLayoutLayer>
   }
 
   // Native React components with their own layout
   if (template === 7) return <BloomNative details={details} rsvpTarget={rsvpTarget} />
+  if (template === 13) return <RaabtaNative details={details} rsvpTarget={rsvpTarget} />
   if (template === 2) return <Majestic details={details} rsvpTarget={rsvpTarget} />
   if (template === 5) return <SecretGarden details={details} rsvpTarget={rsvpTarget} />
   if (template === 6) return <EmbroideredGarden details={details} rsvpTarget={rsvpTarget} />
