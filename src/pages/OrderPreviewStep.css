@@ -1,5 +1,14 @@
 /* Extra page inside the existing order form; no dashboard or phone layout overrides. */
 .client-workspace .order-personal-step { grid-column: 1 / -1; min-width: 0; }
+.client-workspace .invitation-translation-control { display: flex; flex-wrap: wrap; align-items: center; gap: 10px 14px; margin: 0 0 18px; }
+.client-workspace .invitation-translation-control .form-note { margin: 0; }
+.client-workspace .invitation-language-label { font-size: 14px; color: #354c43; font-weight: 500; white-space: nowrap; }
+.client-workspace .invitation-language-tags { display: flex; flex-wrap: wrap; gap: 6px; }
+.client-workspace .language-tag { padding: 6px 14px; border: 1px solid #d5d0c5; border-radius: 20px; background: #faf8f4; font: inherit; font-size: 13px; color: #666; cursor: pointer; transition: all .15s; }
+.client-workspace .language-tag:hover:not(:disabled) { border-color: #354c43; color: #354c43; }
+.client-workspace .language-tag.active { background: #354c43; border-color: #354c43; color: #fff; }
+.client-workspace .language-tag:disabled { opacity: .5; cursor: default; }
+.client-workspace .language-translate-status { font-size: 13px; color: #888; font-style: italic; }
 .client-workspace .order-personal-step h2 { scroll-margin-top: 150px; }
 .client-workspace .order-personal-step .event-locations-intro { margin-bottom: 24px; }
 .client-workspace .order-personal-step .event-locations-intro + .order-personal-event-map { margin-top: 24px; }

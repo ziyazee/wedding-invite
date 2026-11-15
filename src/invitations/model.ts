@@ -1,6 +1,7 @@
 import { readTextLayout } from './textLayout.ts'
 import type { TextLayout } from './textLayout.ts'
 import { catalogMusicPath, isCatalogMusic } from './musicCatalog.ts'
+import { invitationLocale } from './i18n'
 
 export const TEMPLATE_DISPLAY_ORDER: Record<number, number> = { 2:1, 6:2, 13:3, 14:4, 7:5, 5:6, 1:7, 3:8, 15:9, 4:10, 16:11, 17:12, 18:13 }
 export const designs = [
@@ -42,6 +43,9 @@ export interface InvitationData {
   musicStart?: number; musicEnd?: number;
   companyLogo?: string; companyName?: string; companyPhone?: string;
   footerIllustration?: string;
+  language?: string;
+  translations?: Record<string, Record<string, string>>;
+  labels?: Record<string, string>;
 }
 export const COMPANY_WHATSAPP_MESSAGE = 'Hi,\nI am looking for digital wedding invitation'
 export function companyWhatsAppURL(phone?: string): string | undefined {
@@ -51,8 +55,8 @@ export function companyWhatsAppURL(phone?: string): string | undefined {
 }
 export interface SavedInvitation { slug: string; details: InvitationData; createdAt: string; orderId?: string; invitationId?: string }
 export const weddingISO = (d: InvitationData) => `${d.date}T${d.time || '00:00'}:00${d.offset}`
-export const formatDate = (date: string, options: Intl.DateTimeFormatOptions = { day: 'numeric', month: 'long', year: 'numeric' }) => new Date(`${date}T12:00:00Z`).toLocaleDateString('en-GB', { ...options, timeZone: 'UTC' })
-export const formatTime = (time: string) => { if (!time) return ''; return new Date(`2000-01-01T${time}:00Z`).toLocaleTimeString('en-US', { hour: 'numeric', minute: '2-digit', timeZone: 'UTC' }) }
+export const formatDate = (date: string, options: Intl.DateTimeFormatOptions = { day: 'numeric', month: 'long', year: 'numeric' }) => new Date(`${date}T12:00:00Z`).toLocaleDateString(invitationLocale(), { ...options, timeZone: 'UTC' })
+export const formatTime = (time: string) => { if (!time) return ''; return new Date(`2000-01-01T${time}:00Z`).toLocaleTimeString(invitationLocale(), { hour: 'numeric', minute: '2-digit', timeZone: 'UTC' }) }
 export const mapURL = (venue: string, address: string, url = '') => url || `https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(`${venue}, ${address}`)}`
 export function nameSlug(groom: string, bride: string) {
   return `${groom}${bride}`.normalize('NFKD').replace(/[\u0300-\u036f]/g, '').toLowerCase().replace(/[^a-z0-9]/g, '').slice(0, 80) || 'wedding'
@@ -179,5 +183,7 @@ export function validateDetails(value: unknown, allowRetired = false): Invitatio
     ...(typeof d.companyName === 'string' && d.companyName ? { companyName: d.companyName } : {}),
     ...(typeof d.companyPhone === 'string' && d.companyPhone ? { companyPhone: d.companyPhone } : {}),
     ...(typeof d.footerIllustration === 'string' && d.footerIllustration ? { footerIllustration: d.footerIllustration } : {}),
+    ...(typeof d.language === 'string' && ['hi', 'kn', 'ml'].includes(d.language) ? { language: d.language } : {}),
+    ...(d.translations && typeof d.translations === 'object' && !Array.isArray(d.translations) ? { translations: d.translations } : {}),
   }
 }

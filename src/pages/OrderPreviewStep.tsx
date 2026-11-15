@@ -1,11 +1,12 @@
 import { useEffect, useRef, useState, type RefObject } from 'react'
 import type { InvitationData } from '../invitations/model'
+import { LANGUAGES, INVITATION_LABELS, resolveTranslations } from '../invitations/i18n'
 import { supabase, isSupabaseConfigured } from '../lib/supabase'
 import MusicPicker from './MusicPicker'
 import MusicPlaybackControls from './MusicPlaybackControls'
 import './OrderPreviewStep.css'
 
-type PersonalField = 'dressCode' | 'message' | 'giftNote' | 'map' | 'music' | 'musicStart' | 'musicEnd'
+type PersonalField = 'dressCode' | 'message' | 'giftNote' | 'map' | 'music' | 'musicStart' | 'musicEnd' | 'language'
 type Props = {
   details: InvitationData
   previewFrame: RefObject<HTMLIFrameElement | null>
@@ -16,6 +17,7 @@ type Props = {
   templateId: number
   companyId: number
   onChange: (field: PersonalField, value: string | number | undefined) => void
+  onTranslationsChange: (translations: Record<string, Record<string, string>>) => void
   onFooterIllustrationChange: (value: string) => void
   onBack: () => void
   onNavigateStep: (step: number) => void
@@ -115,11 +117,93 @@ function UploadIllustrationModal({ companyId, onClose, onUse }: { companyId: num
 }
 
 // This is the extra form page; the dashboard shell and phone stay mounted.
-export default function OrderPreviewStep({ details, previewFrame, designCategory, busy, editing: _editing, draftStatus, templateId, companyId, onChange, onFooterIllustrationChange, onBack: _onBack, onNavigateStep }: Props) {
+export default function OrderPreviewStep({ details, previewFrame, designCategory, busy, editing: _editing, draftStatus, templateId, companyId, onChange, onTranslationsChange, onFooterIllustrationChange, onBack: _onBack, onNavigateStep }: Props) {
   const heading = useRef<HTMLHeadingElement>(null)
   const [promptCopied, setPromptCopied] = useState(false)
   const [showUploadModal, setShowUploadModal] = useState(false)
   const [venueImages, setVenueImages] = useState<VenueImage[]>([])
+  const [translationBusy, setTranslationBusy] = useState(false)
+  const [translationMessage, setTranslationMessage] = useState('')
+  const selectedLang = details.language || 'en'
+
+  const applyTranslatedPreview = (langCode: string, translationMap?: Record<string, string>) => {
+    if (!previewFrame.current?.contentWindow) return
+    if (langCode === 'en' || !translationMap) {
+      previewFrame.current.contentWindow.postMessage({ type: 'shaadi-preview-update', data: { ...details, language: undefined } }, window.location.origin)
+      return
+    }
+    const translatedDetails = resolveTranslations({ ...details, language: langCode, translations: { [langCode]: translationMap } })
+    previewFrame.current.contentWindow.postMessage({ type: 'shaadi-preview-update', data: translatedDetails }, window.location.origin)
+  }
+
+  const handleLanguageChange = (langCode: string) => {
+    onChange('language', langCode === 'en' ? undefined : langCode)
+    setTranslationMessage('')
+    const existing = details.translations?.[langCode]
+    if (langCode === 'en' || existing) {
+      applyTranslatedPreview(langCode, existing)
+    } else if (langCode !== 'en') {
+      void translatePreview(langCode)
+    }
+  }
+
+  const translatePreview = async (langOverride?: string) => {
+    const langCode = langOverride || selectedLang
+    const langName = LANGUAGES.find(l => l.code === langCode)?.name || langCode
+    if (!previewFrame.current?.contentWindow || !supabase) {
+      setTranslationMessage('The invitation preview is not ready yet.')
+      return
+    }
+    const fields: { path: string; text: string }[] = []
+    const add = (path: string, text: string | undefined) => { if (text?.trim()) fields.push({ path, text: text.trim() }) }
+    add('groom', details.groom); add('bride', details.bride)
+    add('groomFamily', details.groomFamily); add('brideFamily', details.brideFamily)
+    add('message', details.message); add('dressCode', details.dressCode); add('giftNote', details.giftNote)
+    add('venue', details.venue); add('address', details.address)
+    for (const [key, text] of Object.entries(INVITATION_LABELS)) add(key, text)
+    details.events.forEach((event, index) => {
+      add(`events.${index}.title`, event.title); add(`events.${index}.venue`, event.venue); add(`events.${index}.address`, event.address)
+      event.schedule?.forEach((moment, momentIndex) => {
+        add(`events.${index}.schedule.${momentIndex}.title`, moment.title)
+        add(`events.${index}.schedule.${momentIndex}.description`, moment.description)
+        add(`events.${index}.schedule.${momentIndex}.location`, moment.location)
+      })
+    })
+    if (!fields.length) {
+      setTranslationMessage('There is no invitation text to translate yet.')
+      return
+    }
+    if (fields.length > 600 || fields.reduce((total, field) => total + field.text.length, 0) > 18000) {
+      setTranslationMessage('This invitation has too much text to translate at once.')
+      return
+    }
+
+    setTranslationBusy(true)
+    setTranslationMessage('')
+    try {
+      const { data, error } = await supabase.functions.invoke('openai-translate-invitation', { body: { fields, targetLanguage: langName } })
+      if (error) {
+        let message = ''
+        if (error.context instanceof Response) {
+          try { message = (await error.context.clone().json())?.error ?? '' } catch { /* Use the Supabase error below. */ }
+        }
+        throw new Error(message || error.message)
+      }
+      if (data?.error) throw new Error(data.error)
+      const translationMap = data?.translations
+      if (!translationMap || typeof translationMap !== 'object' || fields.some(field => typeof translationMap[field.path] !== 'string')) {
+        throw new Error('The translation response was incomplete. Please try again.')
+      }
+      onTranslationsChange({ ...details.translations, [langCode]: translationMap })
+      applyTranslatedPreview(langCode, translationMap)
+      const cost = Number.isFinite(data?.estimatedCostUsd) ? `$${Number(data.estimatedCostUsd).toFixed(5)}` : 'unavailable'
+      setTranslationMessage(`${langName} translation is ready. Estimated OpenAI cost: ${cost}.`)
+    } catch (error) {
+      setTranslationMessage(error instanceof Error ? error.message : 'Could not translate the invitation. Please try again.')
+    } finally {
+      setTranslationBusy(false)
+    }
+  }
 
   useEffect(() => { heading.current?.focus() }, [])
 
@@ -144,6 +228,14 @@ export default function OrderPreviewStep({ details, previewFrame, designCategory
     </fieldset>
     <fieldset disabled={busy}>
       <legend>Personal touches</legend>
+      <div className="invitation-translation-control">
+        <span className="invitation-language-label">Language</span>
+        <div className="invitation-language-tags">
+          {LANGUAGES.map(l => <button type="button" key={l.code} className={`language-tag${selectedLang === l.code ? ' active' : ''}`} disabled={busy || translationBusy} onClick={() => handleLanguageChange(l.code)}>{l.name}</button>)}
+        </div>
+        {translationBusy && <span className="language-translate-status">Translating…</span>}
+        {translationMessage && <p className="form-note" role="status">{translationMessage}</p>}
+      </div>
       <div className="form-grid"><label>Dress code<input value={details.dressCode} maxLength={600} onChange={event => onChange('dressCode', event.target.value)}/></label></div>
       <label>Short note<textarea rows={2} value={details.giftNote} maxLength={600} onChange={event => onChange('giftNote', event.target.value)}/></label>
     </fieldset>

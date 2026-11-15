@@ -35,7 +35,7 @@ const DEMO: InvitationData = {
   message: 'Our favourite story is the one we are beginning together. Please celebrate with us.',
   groomFamily: 'The D\'Souza family', brideFamily: 'The Fernandes family',
   dressCode: '', giftNote: 'A card and your company are more than enough.',
-  music: '', gallery: '', brideFirst: false,
+  music: '', gallery: '', brideFirst: false, language: '',
   showCoupleIllustrations: true, musicStart: 0, musicEnd: 0,
   companyName: '', companyLogo: '', companyPhone: '',
   events: [
@@ -44,6 +44,7 @@ const DEMO: InvitationData = {
     { id: 'reception', title: 'Celebration Reception', date: '2027-05-22', time: '18:30', venue: 'The Conservatory', address: 'Bengaluru, Karnataka', map: '' },
   ],
   textOverrides: null as any,
+  labels: {} as any,
 }
 
 type CopyProps = Omit<ComponentProps<typeof EditableText>, 'textId'> & { field: string }
@@ -185,7 +186,7 @@ export default function Bloom({ details: d, rsvpTarget }: { details?: Invitation
               <Copy as="h2" field="welcome.heading" className="bloom-welcome-heading">Welcome</Copy>
             </div>
             <Copy as="p" field="welcome.familyIntro" className="bloom-welcome-family-intro" data-reveal>
-              Together with their families
+              {details.labels?.togetherWithFamilies || 'Together with their families'}
             </Copy>
             <div className="bloom-welcome-names" data-reveal>
               <WelcomePerson name={firstName} family={details.brideFirst ? details.brideFamily : details.groomFamily} person={details.brideFirst ? 'bride' : 'groom'} />
@@ -259,7 +260,7 @@ export default function Bloom({ details: d, rsvpTarget }: { details?: Invitation
         {/* ── Dress Code ── */}
         {details.dressCode.trim() && (
           <div className="bloom-note" data-reveal>
-            <Copy as="h2" field="dressCode.heading" className="font-script">Dress code</Copy>
+            <Copy as="h2" field="dressCode.heading" className="font-script">{details.labels?.dressCode || 'Dress code'}</Copy>
             <Copy as="p" field="dressCode.text">{details.dressCode}</Copy>
             {details.showCoupleIllustrations !== false && (
               <InvitationMedia className="bloom-couple-illustration" src={`${ASSETS}black-tie-illustration-Bzqxj15v.webp`} alt="Wedding attire illustration" />
@@ -270,7 +271,7 @@ export default function Bloom({ details: d, rsvpTarget }: { details?: Invitation
         {/* ── Gift Note ── */}
         {details.giftNote.trim() && (
           <div className="bloom-note" data-reveal>
-            <Copy as="h2" field="giftNote.heading" className="font-script">A little note</Copy>
+            <Copy as="h2" field="giftNote.heading" className="font-script">{details.labels?.giftNote || 'A little note'}</Copy>
             <Copy as="p" field="giftNote.text">{details.giftNote}</Copy>
           </div>
         )}
@@ -278,7 +279,7 @@ export default function Bloom({ details: d, rsvpTarget }: { details?: Invitation
         {/* ── Gallery ── */}
         {details.gallery.trim() && (
           <div className="bloom-note" data-reveal>
-            <a href={details.gallery} target="_blank" rel="noreferrer">Our photo gallery ↗</a>
+            <a href={details.gallery} target="_blank" rel="noreferrer">{details.labels?.photoGallery || 'Our photo gallery'} ↗</a>
           </div>
         )}
 
@@ -357,7 +358,7 @@ function EventCard({ event, index, details, couple }: { event: Celebration; inde
         <Copy as="h3" field={`event-${index}.venue`} data-card-text>{wrapCardText(event.venue, 24)}</Copy>
         <p data-card-text>{wrapCardText(event.address, 32)}</p>
         <div className="bloom-event-links">
-          <a href={mapURL(event.venue, event.address, event.map)} target="_blank" rel="noreferrer" hidden={!event.map.trim()}>Directions ↗</a>
+          <a href={mapURL(event.venue, event.address, event.map)} target="_blank" rel="noreferrer" hidden={!event.map.trim()}>{details.labels?.directions || 'Directions'} ↗</a>
           <button type="button" onClick={() => downloadCalendar(event, details.offset, couple)}>Add to calendar</button>
         </div>
       </div>
@@ -365,7 +366,7 @@ function EventCard({ event, index, details, couple }: { event: Celebration; inde
   )
 }
 
-function BloomRsvp({ rsvpTarget }: { details: InvitationData; rsvpTarget?: RsvpTarget; firstName: string; secondName: string }) {
+function BloomRsvp({ details, rsvpTarget, firstName, secondName }: { details: InvitationData; rsvpTarget?: RsvpTarget; firstName: string; secondName: string }) {
   const [attendance, setAttendance] = useState<'yes' | 'no'>('yes')
   const [guestCount, setGuestCount] = useState(1)
   const [busy, setBusy] = useState(false)

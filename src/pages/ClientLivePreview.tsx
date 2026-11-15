@@ -64,6 +64,7 @@ export default function ClientLivePreview() {
     const updatePreview = (next: InvitationData | null) => {
       // Keep the visible invitation while a different template's lazy renderer
       // loads. Edits within the same template retain their immediate behavior.
+      document.documentElement.lang = next?.language || 'en'
       if (isBrowsePreview || (next && next.template !== renderedTemplate.current)) startTransition(() => setDetails(next))
       else setDetails(next)
     }
