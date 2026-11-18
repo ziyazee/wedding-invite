@@ -1,11 +1,14 @@
 import { useState } from 'react'
 import type { FormEvent } from 'react'
 import { Link, useNavigate } from 'react-router-dom'
-import { isSupabaseConfigured, supabase } from '../lib/supabase'
+import { isSupabaseConfigured, supabase } from '../../lib/supabase'
+import { getUserRole, useAuth } from '../../lib/auth'
+import { getCompanyByEmail } from '../../lib/auth/resolveCompany'
 import './Login.css'
 
 export default function Login() {
   const navigate = useNavigate()
+  const { refresh } = useAuth()
   const [email, setEmail] = useState('')
   const [password, setPassword] = useState('')
   const [busy, setBusy] = useState(false)
@@ -24,19 +27,17 @@ export default function Login() {
       if (authError) throw authError
       if (!data.user) throw new Error('We could not verify this account. Please try again.')
 
-      const role = String(data.user.app_metadata?.role || '').toUpperCase()
+      const role = getUserRole(data.user)
       if (role === 'ADMIN') {
+        refresh()
         navigate('/admin/dashboard', { replace: true })
       } else if (data.user.email) {
-        const { data: company, error: companyError } = await supabase
-          .from('companies')
-          .select('id')
-          .ilike('email', data.user.email)
-          .maybeSingle()
-        if (companyError || !company) {
+        const company = await getCompanyByEmail(data.user.email)
+        if (!company) {
           await supabase.auth.signOut()
           throw new Error('This email is not linked to a client company. Please contact Shaadi Invites support.')
         }
+        refresh()
         navigate('/client/dashboard', { replace: true })
       } else {
         await supabase.auth.signOut()

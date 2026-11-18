@@ -60,8 +60,8 @@ function getInviteSlug(): string | null {
   }
   return new URLSearchParams(window.location.search).get('invite')
 }
-const Login = lazySitePage(() => import('./pages/Login'))
-const AccountSetup = lazySitePage(() => import('./pages/AccountSetup'))
+const Login = lazySitePage(() => import('./pages/auth/Login'))
+const AccountSetup = lazySitePage(() => import('./pages/auth/AccountSetup'))
 const ClientDashboard = lazySitePage(() => import('./pages/ClientDashboard'))
 const ClientDashboardTesting = lazySitePage(() => import('./pages/ClientDashboard').then(m => ({ default: m.ClientDashboardTesting })))
 const Edits = lazySitePage(() => import('./pages/Edits'))

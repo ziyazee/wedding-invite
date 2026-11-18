@@ -1,11 +1,14 @@
 import { useEffect, useState } from 'react'
 import type { FormEvent } from 'react'
 import { Link, useNavigate } from 'react-router-dom'
-import { supabase } from '../lib/supabase'
+import { supabase } from '../../lib/supabase'
+import { getUserRole, useAuth } from '../../lib/auth'
+import { getCompanyByEmail } from '../../lib/auth/resolveCompany'
 import './Login.css'
 
 export default function AccountSetup() {
   const navigate = useNavigate()
+  const { refresh } = useAuth()
   const [email, setEmail] = useState('')
   const [loading, setLoading] = useState(true)
   const [password, setPassword] = useState('')
@@ -19,9 +22,9 @@ export default function AccountSetup() {
         if (!supabase) throw new Error('Account setup is not configured.')
         const { data: { user }, error } = await supabase.auth.getUser()
         if (error || !user?.email) throw new Error('This setup link has expired or is invalid. Ask Shaadi Invites for a new link.')
-        if (String(user.app_metadata?.role).toUpperCase() === 'ADMIN') throw new Error('Open the store owner’s setup link in a separate browser session.')
-        const { data: company, error: companyError } = await supabase.from('companies').select('id').eq('email', user.email.toLowerCase()).maybeSingle()
-        if (companyError || !company) throw new Error('This account is not linked to a store. Contact Shaadi Invites.')
+        if (getUserRole(user) === 'ADMIN') throw new Error("Open the store owner's setup link in a separate browser session.")
+        const company = await getCompanyByEmail(user.email)
+        if (!company) throw new Error('This account is not linked to a store. Contact Shaadi Invites.')
         if (!cancelled) setEmail(user.email)
       } catch (cause) {
         if (!cancelled) setError(cause instanceof Error ? cause.message : 'Unable to verify this setup link.')
@@ -39,6 +42,7 @@ export default function AccountSetup() {
     try {
       const { error } = await supabase.auth.updateUser({ password })
       if (error) throw error
+      refresh()
       navigate('/client/dashboard', { replace: true })
     } catch (cause) { setError(cause instanceof Error ? cause.message : 'Unable to save your password.') }
     finally { setBusy(false) }

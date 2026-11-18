@@ -14,7 +14,8 @@ import { isSupabaseConfigured, supabase } from '../lib/supabase'
 import { companyAssetURL } from '../lib/companyAssets'
 import { companyPreviewError } from '../lib/companyPreview'
 import { invitationUploadAccept, invitationUploadMimeType } from '../lib/invitationUpload'
-import { DashboardAccess, signOutToLogin } from './DashboardAccess'
+import { useAuth } from '../lib/auth'
+import { DashboardAccess, signOutToLogin } from './auth/DashboardAccess'
 import './Workspaces.css'
 import './ClientDashboard.css'
 import EventLocationPicker from './EventLocationPicker'
@@ -65,6 +66,7 @@ export function ClientDashboardTesting() {
 }
 
 function ClientWorkspace({ showHiddenTemplates = false }: { showHiddenTemplates?: boolean }) {
+  const { user: authUser, company } = useAuth()
   const draftRestored = useRef(false)
   const [draftKey, setDraftKey] = useState<string | null>(null)
   const [draftStatus, setDraftStatus] = useState('Preparing draft…')
@@ -77,7 +79,6 @@ function ClientWorkspace({ showHiddenTemplates = false }: { showHiddenTemplates?
   const [invitationSetupOrder, setInvitationSetupOrder] = useState<Order | null>(null)
   const [invitationSetupPlans, setInvitationSetupPlans] = useState<InvitationSetupPlan[]>([])
   const [allTemplates, setAllTemplates] = useState<Template[]>([])
-  const [company, setCompany] = useState<{ id: number; company_name: string; contact_name: string | null; slug: string | null; phone: string | null; branding_base_url: string | null; catalog_restricted: boolean; is_test_account?: boolean } | null>(null)
   const [templateSettings, setTemplateSettings] = useState<Record<number, TemplateSettings>>({})
   const [companyLogo, setCompanyLogo] = useState('/logo.png')
   const [details, setDetails] = useState(initial)
@@ -132,24 +133,14 @@ function ClientWorkspace({ showHiddenTemplates = false }: { showHiddenTemplates?
 
   const refresh = useCallback(async () => {
     if (!supabase || !isSupabaseConfigured) { setError('Connect Supabase to load your company dashboard.'); setLoading(false); return }
-    const { data, error: authError } = await supabase.auth.getUser()
-    if (authError || !data.user) { setLoading(false); return }
-    const [templatesResult, companyResult] = await Promise.all([
-      loadTemplateCatalog(!showHiddenTemplates).then(data => ({ data, error: null as { message: string } | null })).catch(error => ({ data: [] as Template[], error: { message: error instanceof Error ? error.message : 'Could not load templates.' } })),
-      // Select existing columns so normal accounts also work before the test-account migration.
-      supabase.from('companies').select('*').ilike('email', data.user.email || '').maybeSingle(),
-    ])
+    if (!authUser || !company) { setLoading(false); return }
+    const templatesResult = await loadTemplateCatalog(!showHiddenTemplates).then(data => ({ data, error: null as { message: string } | null })).catch(error => ({ data: [] as Template[], error: { message: error instanceof Error ? error.message : 'Could not load templates.' } }))
     if (templatesResult.error) setError(templatesResult.error.message)
-    const companyData = companyResult.data
-    if (companyResult.error || !companyData) {
-      setError(companyResult.error?.message || 'Your account is not linked to a company yet.')
-      setCompany(null); setOrders([]); setCoupleRows([]); setLoading(false); return
-    }
-    const ordersResult = await supabase.from(companyData.is_test_account ? 'test_order' : 'orders').select('*').eq('company_id', companyData.id).order('created_at', { ascending: false })
+    const ordersResult = await supabase.from(company.is_test_account ? 'test_order' : 'orders').select('*').eq('company_id', company.id).order('created_at', { ascending: false })
     if (ordersResult.error) setError(ordersResult.error.message)
     const loadedOrders = ((ordersResult.data || []) as Order[]).map(withCurrentInviteUrl)
     let loadedCoupleRows: CoupleTableRow[] = []
-    if (companyData.is_test_account) {
+    if (company.is_test_account) {
       const testRsvpResult = await supabase.from('test_order_rsvps').select('order_id')
       if (testRsvpResult.error) setError(testRsvpResult.error.message)
       const counts = new Map<number, number>()
@@ -164,7 +155,7 @@ function ClientWorkspace({ showHiddenTemplates = false }: { showHiddenTemplates?
       }))
     } else {
       const [couplesResult, rsvpsResult] = await Promise.all([
-        supabase.from('couple_orders').select('id,groom_name,bride_name,phone_number,created_at,invitations(id,legacy_order_id,invitation_name,template_code,form_data,status,published_path,published_url,expires_at)').eq('company_id', companyData.id).order('created_at', { ascending: false }),
+        supabase.from('couple_orders').select('id,groom_name,bride_name,phone_number,created_at,invitations(id,legacy_order_id,invitation_name,template_code,form_data,status,published_path,published_url,expires_at)').eq('company_id', company.id).order('created_at', { ascending: false }),
         supabase.from('order_rsvps').select('order_id,invitation_id'),
       ])
       if (couplesResult.error) setError(couplesResult.error.message)
@@ -201,14 +192,14 @@ function ClientWorkspace({ showHiddenTemplates = false }: { showHiddenTemplates?
       }))
     }
     let activeTemplates = templatesResult.data
-    if (companyData?.catalog_restricted) {
-      const { data: access, error: accessError } = await supabase.from('company_template_access').select('template_id').eq('company_id', companyData.id)
+    if (company.catalog_restricted) {
+      const { data: access, error: accessError } = await supabase.from('company_template_access').select('template_id').eq('company_id', company.id)
       if (accessError) { setError(accessError.message); activeTemplates = [] }
       else { const allowed = new Set((access || []).map(item => item.template_id)); activeTemplates = activeTemplates.filter(template => allowed.has(template.id)) }
     }
     setAllTemplates(activeTemplates)
     if(!draftRestored.current&&!templatesResult.error){
-      const key=`shaadi-client-draft-v1:${data.user.id}${companyData.is_test_account ? ':test' : ''}`
+      const key=`shaadi-client-draft-v1:${authUser.id}${company.is_test_account ? ':test' : ''}`
       try{
         const saved=localStorage.getItem(key)
         const draft=saved?JSON.parse(saved):null
@@ -240,22 +231,19 @@ function ClientWorkspace({ showHiddenTemplates = false }: { showHiddenTemplates?
     if (firstTemplate) { setSelected(current => current ?? firstTemplate.id); setPreviewId(current => current ?? firstTemplate.id) }
     setOrders(loadedOrders)
     setCoupleRows(loadedCoupleRows)
-    if (data.user.email) {
-      setCompany(companyData)
-      if (companyData?.id) {
-        const [{ data: settingsData, error: settingsError }, { data: defaultsData, error: defaultsError }] = await Promise.all([
-          supabase.from('company_template_settings').select('template_id,price,sale_type,sale_value,is_premium').eq('company_id', companyData.id),
-          supabase.from('company_template_defaults').select('template_id,demo_data').eq('company_id', companyData.id),
-        ])
-        if (settingsError) setError(settingsError.message)
-        else setTemplateSettings(Object.fromEntries((settingsData || []).map(setting => [setting.template_id, { price: Number(setting.price), sale_type: setting.sale_type, sale_value: Number(setting.sale_value), is_premium: setting.is_premium }])) as Record<number, TemplateSettings>)
-        if (defaultsError) setError(defaultsError.message)
-        else setTemplateDefaults(Object.fromEntries((defaultsData || []).map(row => [row.template_id, row.demo_data as Record<string, unknown>])))
-      } else { setTemplateSettings({}); setTemplateDefaults({}) }
-      setCompanyLogo(companyAssetURL(companyData, 'logo') || '/logo.png')
-    }
+    if (company.id) {
+      const [{ data: settingsData, error: settingsError }, { data: defaultsData, error: defaultsError }] = await Promise.all([
+        supabase.from('company_template_settings').select('template_id,price,sale_type,sale_value,is_premium').eq('company_id', company.id),
+        supabase.from('company_template_defaults').select('template_id,demo_data').eq('company_id', company.id),
+      ])
+      if (settingsError) setError(settingsError.message)
+      else setTemplateSettings(Object.fromEntries((settingsData || []).map(setting => [setting.template_id, { price: Number(setting.price), sale_type: setting.sale_type, sale_value: Number(setting.sale_value), is_premium: setting.is_premium }])) as Record<number, TemplateSettings>)
+      if (defaultsError) setError(defaultsError.message)
+      else setTemplateDefaults(Object.fromEntries((defaultsData || []).map(row => [row.template_id, row.demo_data as Record<string, unknown>])))
+    } else { setTemplateSettings({}); setTemplateDefaults({}) }
+    setCompanyLogo(companyAssetURL(company, 'logo') || '/logo.png')
     setLoading(false)
-  }, [showHiddenTemplates])
+  }, [showHiddenTemplates, authUser, company])
 
   useEffect(() => { void refresh() }, [refresh])
   useEffect(()=>{
@@ -282,20 +270,11 @@ function ClientWorkspace({ showHiddenTemplates = false }: { showHiddenTemplates?
     sections.forEach((section, index) => { section.style.display = showAll ? 'block' : index === step ? 'block' : 'none' })
   }, [formStep, review, selected, showDetails, tab, loading, editingOrderId, showOrderPreview])
   useEffect(() => {
-    if (!supabase) return
-    let channel: ReturnType<NonNullable<typeof supabase>['channel']> | undefined
-    let active = true
-    void (async () => {
-      const { data: { user } } = await supabase!.auth.getUser()
-      if (!user || !active) return
-      if (!user.email || !active) return
-      const { data: company } = await supabase!.from('companies').select('*').ilike('email', user.email).maybeSingle()
-      const companyId = Number(company?.id)
-      if (!Number.isSafeInteger(companyId) || companyId <= 0 || !active) return
-      channel = supabase!.channel(`client-orders-${companyId}`).on('postgres_changes', { event: '*', schema: 'public', table: company?.is_test_account ? 'test_order' : 'orders', filter: `company_id=eq.${companyId}` }, () => { void refresh() }).subscribe()
-    })()
-    return () => { active = false; if (channel) void supabase!.removeChannel(channel) }
-  }, [refresh])
+    if (!supabase || !company) return
+    const companyId = company.id
+    const channel = supabase.channel(`client-orders-${companyId}`).on('postgres_changes', { event: '*', schema: 'public', table: company.is_test_account ? 'test_order' : 'orders', filter: `company_id=eq.${companyId}` }, () => { void refresh() }).subscribe()
+    return () => { void supabase!.removeChannel(channel) }
+  }, [refresh, company])
   const counts = useMemo(() => ({ total: orders.length }), [orders])
   const now = new Date()
   const todayStart = new Date(now.getFullYear(), now.getMonth(), now.getDate())
@@ -694,9 +673,8 @@ Additional rules:
         reader.readAsDataURL(file)
       })
       if (!supabase) throw new Error('No Supabase client available.')
-      const { data: authData, error: authError } = await supabase.auth.getUser()
-      if (authError || !authData.user || !company?.id) throw new Error('Unable to confirm your company account for this invitation upload.')
-      const { error: activityError } = await supabase.from('company_pdf_uploads').insert({ company_id: company.id, uploaded_by: authData.user.id, filename: file.name })
+      if (!authUser || !company?.id) throw new Error('Unable to confirm your company account for this invitation upload.')
+      const { error: activityError } = await supabase.from('company_pdf_uploads').insert({ company_id: company.id, uploaded_by: authUser.id, filename: file.name })
       if (activityError) throw new Error(`Could not record this invitation upload: ${activityError.message}`)
       const extracted = await callExtract(base64, file.name, mimeType)
       setPdfUseFull(new Set())
@@ -724,10 +702,9 @@ Additional rules:
     }
     setBusy(true); setNotice(''); setError('')
     try {
-      const { data: { user } } = await supabase.auth.getUser()
-      if (!user) throw new Error('Your session expired. Please sign in again.')
-      const { data: companyRow, error: companyError } = await supabase.from('companies').select('*').ilike('email', user.email || '').maybeSingle()
-      if (companyError || !companyRow) throw new Error('Your account is not linked to a company yet.')
+      if (!authUser) throw new Error('Your session expired. Please sign in again.')
+      if (!company) throw new Error('Your account is not linked to a company yet.')
+      const companyRow = company
       const phone = '+91' + phoneNumber.trim().replace(/[^\d]/g,'')
       const formData = validateDetails({ ...details, musicStart: details.musicStart ?? 0, template: selected, events: [{ ...(copyingOrderId !== null ? details.events?.[0] : undefined), title: weddingEventTitle, date: details.date, time: details.time, venue: details.venue, address: details.address, map: details.map }, ...extraEvents], companyLogo: companyAssetURL(companyRow, 'logo'), companyName: company?.company_name || undefined, companyPhone: companyRow.phone || company?.phone || undefined })
       const templateCode = templates.find(template => template.id === selected)?.template_code
@@ -738,7 +715,7 @@ Additional rules:
         setShowOrderPreview(false); setEditingOrderId(null); setCopyingOrderId(null); setSelected(null); setDetails(initial); setPhoneNumber(defaultPhoneNumber); setWeddingEventTitle(initialWeddingEvent); setExtraEvents(initialExtraEvents); setShowDetails(false); setFormStep(0); setTab('Orders'); setReview(false); setPdfPrefilled(false); setPdfBrideFirst(false); setNotice('Order updated successfully.'); await refresh()
       } else {
       const companyId = companyRow.id
-      const { data, error: insertError } = await supabase.from(companyRow.is_test_account ? 'test_order' : 'orders').insert({ company_id: companyId, template_code: templateCode, created_by: user.id, groom_name: formData.groom, bride_name: formData.bride, phone_number: phone, form_data: formData }).select('*').single()
+      const { data, error: insertError } = await supabase.from(companyRow.is_test_account ? 'test_order' : 'orders').insert({ company_id: companyId, template_code: templateCode, created_by: authUser.id, groom_name: formData.groom, bride_name: formData.bride, phone_number: phone, form_data: formData }).select('*').single()
       if (insertError) throw insertError
       const createdOrder = data as Order
       const { data: reserved, error: reserveError } = companyRow.is_test_account

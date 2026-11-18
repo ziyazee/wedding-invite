@@ -4,7 +4,7 @@ import { designs, slugVariants, newInvitationPathCandidates, inviteUrl, withCurr
 import type { InvitationData } from '../invitations/model'
 import InvitationRenderer from '../invitations/InvitationRenderer'
 import { isSupabaseConfigured, supabase } from '../lib/supabase'
-import { DashboardAccess, signOutToLogin } from './DashboardAccess'
+import { DashboardAccess, signOutToLogin } from './auth/DashboardAccess'
 import './Workspaces.css'
 import './AdminDashboard.css'
 import AdminCompaniesPanel from './AdminCompaniesPanel'
