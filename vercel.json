@@ -19,6 +19,16 @@
       "maxDuration": 120
     }
   },
+  "env": {
+    "YOUTUBE_DL_FILENAME": "yt-dlp_linux"
+  },
+  "installCommand": "YOUTUBE_DL_FILENAME=yt-dlp_linux YOUTUBE_DL_SKIP_PYTHON_CHECK=1 npm install",
+  "functions": {
+    "api/music/optimize.ts": {
+      "includeFiles": ["node_modules/ffmpeg-static/ffmpeg", "node_modules/youtube-dl-exec/bin/yt-dlp_linux"],
+      "maxDuration": 120
+    }
+  },
   "headers": [
     {
       "source": "/assets/(.*)",

@@ -245,6 +245,9 @@ export default function EmbroideredGarden({ details: d, rsvpTarget }: { details:
 =======
     {/* Events */}
     <div className="eg-events">{events.map(({ event, key }, index) => <Fragment key={key}><EventCard event={event} eventKey={key} details={d} first={index === 0} />{index === 0 && d.hallPhoto && <div className="eg-hall-polaroid-wrap"><div className="eg-polaroid"><img className="eg-polaroid-photo" src={d.hallPhoto} alt="Wedding hall" /><span className="eg-polaroid-caption">Our venue</span></div></div>}</Fragment>)}</div>
+<<<<<<< Updated upstream
+>>>>>>> Stashed changes
+=======
 >>>>>>> Stashed changes
 
     {/* Dress code */}

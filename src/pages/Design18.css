@@ -101,14 +101,20 @@
 .d18-event-actions a:hover,.d18-event-actions button:hover,.d18-notes a:hover,.d18-footer>a:hover{color:#692821}
 .d18-main-event .d18-event-actions a,.d18-main-event .d18-event-actions button{color:#fff5d9;border-color:#fff5d988}
 <<<<<<< Updated upstream
+<<<<<<< Updated upstream
 .d18-closing{position:relative;z-index:1;isolation:isolate;display:flow-root;background:var(--d18-paper)}
 /* Scale the artwork by width; shorter content crops the bottom without shrinking flowers. */
 .d18-closing::before{content:"";position:absolute;inset:0;z-index:-1;pointer-events:none;background:url('/templates/mandap-at-dusk/border3.png') center top/100% auto no-repeat;opacity:.96}
 =======
+=======
+>>>>>>> Stashed changes
 .d18-hall-polaroid{padding:48px 24px;display:flex;justify-content:center}
 .d18-polaroid{width:min(80vw,380px);background:#faf8f5;padding:12px 12px 48px;box-shadow:0 4px 24px rgba(0,0,0,.12),0 1px 4px rgba(0,0,0,.08);transform:rotate(-1.5deg)}
 .d18-polaroid-photo{display:block;width:100%;height:auto;object-fit:cover}
 .d18-polaroid-caption{display:block;margin-top:12px;font-family:'Great Vibes','Dancing Script',cursive;font-size:18px;color:var(--d18-ink);text-align:center}
+<<<<<<< Updated upstream
+>>>>>>> Stashed changes
+=======
 >>>>>>> Stashed changes
 .d18-notes{padding-top:44px;padding-bottom:48px}
 .d18-notes .d18-kicker:not(:first-child){margin-top:32px}
