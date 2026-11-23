@@ -579,6 +579,9 @@ function ClientWorkspace({ showHiddenTemplates = false }: { showHiddenTemplates?
         body: {
           phone,
           groomBride: `${viewOrder.groom_name} & ${viewOrder.bride_name}`,
+          groomName: viewOrder.groom_name,
+          brideName: viewOrder.bride_name,
+          weddingDate: viewOrder.form_data?.date || '',
           inviteUrl: viewOrder.published_url,
           managementUrl: `${window.location.origin}/${viewOrder.management_id}`,
           companyName: company?.company_name ?? 'Shaadi Invites',
@@ -588,9 +591,10 @@ function ClientWorkspace({ showHiddenTemplates = false }: { showHiddenTemplates?
         const details = sendError.context instanceof Response
           ? await sendError.context.json().catch(() => null)
           : null
-        throw new Error(details?.error || sendError.message)
+        const resultDetails = details?.results ? ` — ${JSON.stringify(details.results)}` : ''
+        throw new Error((details?.error || sendError.message) + resultDetails)
       }
-      if (!data?.success) throw new Error(data?.error || 'Failed to send WhatsApp message.')
+      if (!data?.success) throw new Error(data?.error || JSON.stringify(data?.results) || 'Failed to send WhatsApp message.')
       setWaSent(true)
     } catch (err) {
       setWaError(err instanceof Error ? err.message : 'Failed to send. Please try again.')
