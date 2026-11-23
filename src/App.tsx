@@ -22,6 +22,7 @@ const ATimelessUnion = lazySitePage(() => import('./pages/ATimelessUnion'))
 const ATimelessUnionPreview = lazySitePage(() => import('./pages/ATimelessUnionPreview'))
 const CelebrationsEmbed = lazySitePage(() => import('./pages/a-timeless-union/CelebrationsEmbed'))
 const MandapAtDuskPreview = lazySitePage(() => import('./pages/MandapAtDuskPreview'))
+const RubyHourPreview = lazySitePage(() => import('./pages/RubyHourPreview'))
 const Mahal = lazySitePage(() => import('./templates/Mahal'))
 const Tajmahal = lazySitePage(() => import('./templates/Tajmahal'))
 const Kerala = lazySitePage(() => import('./templates/Kerala'))
@@ -161,6 +162,7 @@ export default function App() {
       <Route path="/mahal" element={<Mahal />} />
       <Route path="/tajmahal" element={<Tajmahal />} />
       <Route path="/kerala" element={<Kerala />} />
+      <Route path="/ruby-hour" element={<RubyHourPreview />} />
       {/* Testing templates */}
       <Route path="/maroon-letter" element={<MaroonLetter />} />
       <Route path="/emerald-parchment" element={<EmeraldParchment />} />

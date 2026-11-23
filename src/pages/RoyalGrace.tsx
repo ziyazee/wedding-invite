@@ -266,6 +266,7 @@ export default function RoyalGrace() {
           </InvitationSection>
         </article>)}</div></CelebrationLayout>
         </div>
+        {details?.hallPhoto && <div className="rg-hall-polaroid-wrap"><div className="rg-polaroid"><img className="rg-polaroid-photo" src={details.hallPhoto} alt="Wedding hall" /><span className="rg-polaroid-caption">Our venue</span></div></div>}
       </InvitationSection>
       {!details && <InvitationSection data-invite-section="gallery" className="rg-section mr-gallery"><Divider textId="t1.gallery.divider-top" /><p className="rg-eyebrow">Captured with love</p><h2 className="rg-script">Every moment, held close.</h2><p>Visit the gallery as the celebration unfolds and relive the memories with us.</p><Divider textId="t1.gallery.divider-bottom" /></InvitationSection>}
       <PersonalNotes family={false}/>

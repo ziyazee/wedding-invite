@@ -1,4 +1,4 @@
-import { useEffect, useRef, useState } from 'react'
+import { Fragment, useEffect, useRef, useState } from 'react'
 import type { ComponentProps } from 'react'
 import type { Celebration, InvitationData } from '../../invitations/model'
 import { formatDate, formatTime, mapURL, weddingISO } from '../../invitations/model'
@@ -231,6 +231,7 @@ export default function EmbroideredGarden({ details: d, rsvpTarget }: { details:
       <Copy as="p" field="welcome.message">{d.message}</Copy>
     </Section>
 
+<<<<<<< Updated upstream
     {/* Events — pre-wedding in story frames, then main + rest */}
     {(() => {
       const mainDT = `${d.events[0].date}T${d.events[0].time}`
@@ -241,6 +242,10 @@ export default function EmbroideredGarden({ details: d, rsvpTarget }: { details:
         {mainAndAfter.map(({ event, key }) => <EventCard key={key} event={event} eventKey={key} details={d} first={key === mainKey} />)}
       </div>
     })()}
+=======
+    {/* Events */}
+    <div className="eg-events">{events.map(({ event, key }, index) => <Fragment key={key}><EventCard event={event} eventKey={key} details={d} first={index === 0} />{index === 0 && d.hallPhoto && <div className="eg-hall-polaroid-wrap"><div className="eg-polaroid"><img className="eg-polaroid-photo" src={d.hallPhoto} alt="Wedding hall" /><span className="eg-polaroid-caption">Our venue</span></div></div>}</Fragment>)}</div>
+>>>>>>> Stashed changes
 
     {/* Dress code */}
     {d.dressCode.trim() && <Section data-invite-section="dress" className="eg-note">

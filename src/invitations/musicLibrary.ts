@@ -1,5 +1,6 @@
 import { supabase } from '../lib/supabase'
 export const musicBucket = 'invitation-music'
+export const musicIncomingBucket = 'invitation-music-incoming'
 export const musicUploadLimit = 20 * 1024 * 1024
 export const musicLibraryUpdated = 'shaadi-music-library-updated'
 export type MusicTrack = { id?: string; label: string; category: string; src: string; localPath?: string; companyId?: number }
@@ -92,31 +93,8 @@ export async function storeExistingMusic(track: MusicTrack) {
 }
 
 export async function validateMusicFile(file: File) {
-  if (!/\.mp3$/i.test(file.name) || !file.size || file.size > musicUploadLimit) throw new Error('Choose an MP3 file up to 20 MB.')
-  const header = new Uint8Array(await file.slice(0, 10).arrayBuffer())
-  const hasID3 = header[0] === 0x49 && header[1] === 0x44 && header[2] === 0x33
-  const hasMpegFrame = header[0] === 0xff && (header[1] & 0xe0) === 0xe0 && (header[1] & 0x06) === 0x02
-  if (!hasID3 && !hasMpegFrame) throw new Error('This file is not an MP3. Choose an MP3 audio file.')
-  // Verify that the browser can read audio, not just a renamed file extension.
-  const url = URL.createObjectURL(file)
-  const audio = new Audio()
-  try {
-    await new Promise<void>((resolve, reject) => {
-      const finish = (error?: Error) => {
-        window.clearTimeout(timeout)
-        audio.onloadedmetadata = null
-        audio.onerror = null
-        if (error) reject(error); else resolve()
-      }
-      const timeout = window.setTimeout(() => finish(new Error('Could not read this MP3. Choose the file again.')), 15000)
-      audio.onloadedmetadata = () => finish(Number.isFinite(audio.duration) && audio.duration > 0 ? undefined : new Error('Choose a playable MP3 file.'))
-      audio.onerror = () => finish(new Error('This file could not be read as audio. Choose a playable MP3.'))
-      audio.preload = 'metadata'
-      audio.src = url
-    })
-  } finally {
-    audio.removeAttribute('src')
-    audio.load()
-    URL.revokeObjectURL(url)
+  const supportedExtension = /\.(mp3|m4a|mp4|aac|wav|wave|ogg|oga|opus|flac|webm|wma|aif|aiff)$/i.test(file.name)
+  if ((!file.type.startsWith('audio/') && !supportedExtension) || !file.size || file.size > musicUploadLimit) {
+    throw new Error('Choose an audio file up to 20 MB.')
   }
 }

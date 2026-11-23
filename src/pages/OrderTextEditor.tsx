@@ -1,17 +1,111 @@
 import { useEffect, useRef, useState } from 'react'
 import { createPortal } from 'react-dom'
 import { emptyTextLayout, readTextLayout, textFonts } from '../invitations/textLayout'
-import type { TextLayout, TextOverride } from '../invitations/textLayout'
+import type { TextLayout } from '../invitations/textLayout'
 import { textSection, textSelector, textTranslation, watchTextDocuments } from '../invitations/textLayoutDom'
 import './OrderTextEditor.css'
 import { attachTextResizeHandle } from './textResizeHandle'
 import { captureTextSizes, textPosition, withTextSizes } from './textEditorGeometry'
 import { openInlineTextEditor } from './inlineTextEditor'
+import { GOOGLE_FONTS, loadGoogleFont } from '../invitations/googleFonts'
 
 type Selection = { id: string; element: HTMLElement; label: string; size: number; color: string }
 type Props = { template: number; value?: TextLayout; onChange: (value: TextLayout) => void; draftStatus: string }
 const bounded = (value: number) => Math.max(-1, Math.min(1, value))
-const fontLabels: Record<keyof typeof textFonts, string> = { serif: 'Georgia', sans: 'Arial', classic: 'Times New Roman', mono: 'Courier New' }
+
+const SYSTEM_FONTS = [
+  { key: 'serif',   label: 'Georgia (Serif)',        family: 'Georgia, "Times New Roman", serif' },
+  { key: 'sans',    label: 'Arial (Sans-serif)',      family: 'Arial, Helvetica, sans-serif' },
+  { key: 'classic', label: 'Times New Roman',         family: '"Times New Roman", Times, serif' },
+  { key: 'mono',    label: 'Courier New (Mono)',      family: '"Courier New", monospace' },
+]
+
+function FontPicker({ value, onChange }: { value: string; onChange: (key: string) => void }) {
+  const [open, setOpen] = useState(false)
+  const [query, setQuery] = useState('')
+  const ref = useRef<HTMLDivElement>(null)
+  const inputRef = useRef<HTMLInputElement>(null)
+
+  const currentLabel = value
+    ? (SYSTEM_FONTS.find(f => f.key === value)?.label ?? GOOGLE_FONTS.find(f => f.key === value)?.label ?? value)
+    : 'Template default'
+  const currentFamily = value ? textFonts[value] : undefined
+
+  const q = query.toLowerCase()
+  const systemMatches = SYSTEM_FONTS.filter(f => !q || f.label.toLowerCase().includes(q))
+  const googleMatches = GOOGLE_FONTS.filter(f => !q || f.label.toLowerCase().includes(q))
+
+  // Load visible google fonts for preview
+  useEffect(() => {
+    if (!open) return
+    googleMatches.slice(0, 30).forEach(f => loadGoogleFont(f.label))
+  }, [open, query]) // eslint-disable-line react-hooks/exhaustive-deps
+
+  useEffect(() => {
+    if (!open) return
+    const handler = (e: MouseEvent) => { if (!ref.current?.contains(e.target as Node)) setOpen(false) }
+    document.addEventListener('mousedown', handler)
+    return () => document.removeEventListener('mousedown', handler)
+  }, [open])
+
+  useEffect(() => { if (open) inputRef.current?.focus() }, [open])
+
+  function select(key: string) {
+    onChange(key)
+    setOpen(false)
+    setQuery('')
+  }
+
+  return (
+    <div className="ote-font-picker" ref={ref}>
+      <button type="button" className="ote-font-trigger" style={{ fontFamily: currentFamily }} onClick={() => setOpen(o => !o)}>
+        <span>{currentLabel}</span>
+        <svg viewBox="0 0 10 6" fill="none" stroke="currentColor" strokeWidth="1.5"><path d="M1 1l4 4 4-4"/></svg>
+      </button>
+      {open && (
+        <div className="ote-font-dropdown">
+          <div className="ote-font-search">
+            <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" strokeWidth="1.5"><circle cx="6.5" cy="6.5" r="4.5"/><path d="M10 10l3 3"/></svg>
+            <input ref={inputRef} type="text" placeholder="Search fonts…" value={query} onChange={e => setQuery(e.target.value)}/>
+            {query && <button type="button" className="ote-font-clear" onClick={() => setQuery('')}>✕</button>}
+          </div>
+          <div className="ote-font-list">
+            {!q && (
+              <button type="button" className={`ote-font-option${!value ? ' ote-font-active' : ''}`} onClick={() => select('')}>
+                Template default
+              </button>
+            )}
+            {systemMatches.length > 0 && (
+              <>
+                {!q && <div className="ote-font-group">System fonts</div>}
+                {systemMatches.map(f => (
+                  <button key={f.key} type="button" className={`ote-font-option${value === f.key ? ' ote-font-active' : ''}`} style={{ fontFamily: f.family }} onClick={() => select(f.key)}>
+                    {f.label}
+                  </button>
+                ))}
+              </>
+            )}
+            {googleMatches.length > 0 && (
+              <>
+                {!q && <div className="ote-font-group">Google Fonts</div>}
+                {googleMatches.map(f => (
+                  <button key={f.key} type="button" className={`ote-font-option${value === f.key ? ' ote-font-active' : ''}`} style={{ fontFamily: f.family }}
+                    onMouseEnter={() => loadGoogleFont(f.label)}
+                    onClick={() => { loadGoogleFont(f.label); select(f.key) }}>
+                    {f.label}
+                  </button>
+                ))}
+              </>
+            )}
+            {systemMatches.length === 0 && googleMatches.length === 0 && (
+              <div className="ote-font-empty">No fonts match "{query}"</div>
+            )}
+          </div>
+        </div>
+      )}
+    </div>
+  )
+}
 
 function EditorIcon({ name }: { name: 'text' | 'eye' | 'pointer' | 'undo' | 'redo' | 'reset' }) {
   return <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.6" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
@@ -227,11 +321,7 @@ export default function OrderTextEditor({ template, value, onChange, draftStatus
     {!preview && <>
       {selection ? <div className="ote-selection"><span className="ote-selection-dot"/><span><small>SELECTED TEXT</small><strong>{selection.label}</strong></span></div> : <div className="ote-empty"><span className="ote-pointer"><EditorIcon name="pointer"/></span><strong>{supported ? 'Make every detail yours' : 'Text editing is coming'}</strong><p>{supported ? 'Tap text to select it. Drag to move, use the corner handle to resize, or tap Edit to type. Scroll using the space around text.' : 'Editing will be available here once this design is connected.'}</p>{supported && <div className="ote-capabilities"><span>Font</span><span>Size</span><span>Position</span></div>}</div>}
       {selection && <div className="ote-controls">
-        <label className="ote-font-control">Font<select value={entry.fontFamily ?? ''} style={{ fontFamily: entry.fontFamily ? textFonts[entry.fontFamily] : undefined }} onChange={event => {
-          const font = event.target.value
-          if (font && !Object.hasOwn(textFonts, font)) return
-          update({ fontFamily: (font || undefined) as TextOverride['fontFamily'] })
-        }}><option value="">Template default</option>{(Object.keys(textFonts) as (keyof typeof textFonts)[]).map(font => <option key={font} value={font} style={{ fontFamily: textFonts[font] }}>{fontLabels[font]}</option>)}</select></label>
+        <label className="ote-font-control">Font<FontPicker value={entry.fontFamily ?? ''} onChange={key => update({ fontFamily: key || undefined })}/></label>
         <button type="button" onClick={() => editText.current(selection.element)}>Edit text in phone</button>
         <label>Size (px)<input type="number" min="8" max="160" step="1" value={entry.fontSize ?? selection.size} onChange={e => { const n = Number(e.target.value); if (e.target.value && n >= 8 && n <= 160) update({ fontSize: n }) }}/></label>
         <label>Horizontal (%)<input type="number" min="-100" max="100" step="0.5" value={Number((position.x * 100).toFixed(2))} onChange={e => { if (e.target.value) update({ x: bounded(Number(e.target.value) / 100) }) }}/></label>

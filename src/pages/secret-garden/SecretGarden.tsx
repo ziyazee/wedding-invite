@@ -181,6 +181,7 @@ export default function SecretGarden({ details: d, rsvpTarget }: { details: Invi
             {d.time && <p className="sg-venue-time"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" aria-hidden="true"><circle cx="12" cy="12" r="10"/><path d="M12 6v6l4 2"/></svg>{formatTime(d.time)}</p>}
           </div>
         </div>
+        {d.hallPhoto && <div className="sg-hall-polaroid"><div className="sg-polaroid"><img className="sg-polaroid-photo" src={d.hallPhoto} alt="Wedding hall" /><span className="sg-polaroid-caption">Our venue</span></div></div>}
         <div className="sg-actions">
           {d.map.trim() && <Copy as="a" field="venue.directions" href={mapURL(d.venue, d.address, d.map)} target="_blank" rel="noreferrer">Google Maps</Copy>}
           <Copy as="button" type="button" field="venue.calendar" onClick={() => downloadCalendar(wedding, d.offset, couple)}>Add to calendar</Copy>

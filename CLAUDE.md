@@ -25,6 +25,7 @@ Architecture documentation lives in `project-context/`:
 | `STORE_LANDING.md` | Store landing page layout, mobile tabs, WhatsApp flow, preview |
 | `PERFORMANCE_GUIDELINES.md` | Code splitting, caching, known bottlenecks |
 | `DEPLOYMENT.md` | Vercel, Supabase, DNS, environment variables |
+| `ADMIN_DASHBOARD.md` | Admin workspace structure, tabs, companies panel, revenue, design tokens |
 | `KNOWN_ISSUES.md` | Technical debt, legacy code, risky areas |
 | `DEPENDENCY_MAP.md` | File import relationships, high-impact files |
 | `CONTEXT_RETRIEVAL.md` | Which docs to read for which task type |

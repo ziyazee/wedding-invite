@@ -1,4 +1,7 @@
 /* Client studio layout, rebuilt around template selection, customization and preview. */
+.hall-photo-upload{display:flex;flex-direction:column;gap:8px;padding:16px 0 4px;font-size:14px;color:var(--client-muted,#737A74)}
+.hall-photo-upload input[type=file]{font-size:13px}
+.hall-photo-thumb{width:120px;height:80px;object-fit:cover;border-radius:8px;border:1px solid var(--client-line,#E7E3DA)}
 .client-workspace {
   min-height: 100svh;
   display: grid;

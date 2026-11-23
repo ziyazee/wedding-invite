@@ -1,14 +1,16 @@
 // Persisted with each order. IDs describe a template, section and form field;
 // they must never depend on entered text or a celebration's display order.
-export const textFonts = {
+import { googleFontMap } from './googleFonts'
+export const textFonts: Record<string, string> = {
   serif: 'Georgia, "Times New Roman", serif',
   sans: 'Arial, Helvetica, sans-serif',
   classic: '"Times New Roman", Times, serif',
   mono: '"Courier New", monospace',
-} as const
+  ...googleFontMap,
+}
 export type TextOverride = {
   fontSize?: number
-  fontFamily?: keyof typeof textFonts
+  fontFamily?: string
   color?: string
   x?: number
   y?: number

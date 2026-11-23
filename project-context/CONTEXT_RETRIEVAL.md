@@ -108,10 +108,19 @@ Use this guide to determine which documentation to consult based on the task at 
 
 ---
 
+### Admin Dashboard Change
+**Read:**
+1. `ADMIN_DASHBOARD.md` → full admin workspace structure, tabs, companies panel, revenue logic, design tokens
+
+**Inspect source:** `src/pages/AdminDashboard.tsx`, `src/pages/AdminCompaniesPanel.tsx`, `src/pages/AdminMusicPanel.tsx`
+
+---
+
 ### Order Workflow Issue
 **Read:**
 1. `DATA_FLOW.md` → order creation, publishing, management flows
 2. `DATABASE_SCHEMA.md` → orders table, status constraints, RPCs
+3. `ADMIN_DASHBOARD.md` → order status lifecycle, slug generation, real-time updates
 
 **Inspect source:** `src/pages/ClientDashboard.tsx`, `src/pages/AdminDashboard.tsx`, `src/pages/OrderManagement.tsx`
 

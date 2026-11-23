@@ -212,6 +212,7 @@ export default function Design18() {
         <div className="d18-event-actions"><a href={mapURL(event.venue, event.address, event.map)} target="_blank" rel="noreferrer">Directions <Arrow /></a><button onClick={() => downloadCalendar(event, details.offset, `${firstName} & ${secondName}`)}>Save the date <span>＋</span></button></div>
           </div>
         </article>)}
+        {details.hallPhoto && <div className="d18-hall-polaroid d18-reveal"><div className="d18-polaroid"><img className="d18-polaroid-photo" src={details.hallPhoto} alt="Wedding hall" /><span className="d18-polaroid-caption">Our venue</span></div></div>}
       </section>
 
       <div className="d18-closing">

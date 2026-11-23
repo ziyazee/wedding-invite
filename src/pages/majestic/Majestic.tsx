@@ -310,6 +310,15 @@ export default function Majestic({ details: d, rsvpTarget }: { details: Invitati
     <Countdown details={d} />
     <InvitationMedia className="mj-intro-lights" src="/templates/majestic/assets/lights.webp" alt="" />
     <Section data-invite-section="welcome" className="mj-welcome"><Copy as="p" field="welcome.caption" className="mj-eyebrow">Together with our families</Copy><Names details={d} section="welcome" family /><Copy as="p" field="welcome.message">{d.message}</Copy></Section>
+<<<<<<< Updated upstream
+=======
+    <Section data-invite-section="venue" className="mj-details">
+      <Copy as="h2" field="venue.heading">Details</Copy><Copy as="p" field="venue.caption" className="mj-eyebrow">When &amp; where</Copy>
+      <div className="mj-venue-card"><InvitationMedia className="mj-venue-frame" src="/templates/majestic/assets/ornate-badge-2PyCLI0e.webp" alt="" width={1080} height={1080} /><div className="mj-venue-copy"><Copy as="h3" field="venue.location">{d.events[0]?.title || 'Wedding'}</Copy><Copy as="p" field="venue.name" className="mj-venue-name">{d.venue}</Copy><Copy as="p" field="venue.address">{d.address}</Copy><Copy as="p" field="venue.time">{formatTime(d.time)}</Copy></div></div>
+      <div className="mj-hall-photo"><img className="mj-hall-img" src={d.hallPhoto || '/auditoriams/tmai-pai.webp'} alt="Wedding hall" /></div>
+      <div className="mj-actions">{d.map.trim() && <Copy as="a" field="venue.directions" href={d.map} target="_blank" rel="noreferrer">Google Maps</Copy>}<Copy as="button" type="button" field="venue.calendar" onClick={() => downloadCalendar(wedding, d.offset, couple)}>Add to calendar</Copy></div>
+    </Section>
+>>>>>>> Stashed changes
     <Section data-invite-section="programme" className="mj-programme"><InvitationMedia src="/templates/majestic/assets/food.webp" alt="" /><Copy as="h2" field="programme.heading">The programme</Copy></Section>
     <div className="mj-events">{events.map(({ event, key }) => <Fragment key={key}><EventCard event={event} eventKey={key} details={d} /></Fragment>)}</div>
     {d.dressCode.trim() && <Section data-invite-section="dress" className="mj-dress"><Copy as="h2" field="dress.heading">Dress Code</Copy><Copy as="p" field="dress.caption" className="mj-eyebrow">A few gentle reminders</Copy>{d.showCoupleIllustrations !== false && <InvitationMedia src="/templates/majestic/assets/dress-code-new.webp" alt="Wedding attire illustration" />}<div className="mj-dress-card"><Copy as="h3" field="dress.text">{d.dressCode}</Copy></div></Section>}

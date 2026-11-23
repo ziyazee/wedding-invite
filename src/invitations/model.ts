@@ -2,7 +2,7 @@ import { readTextLayout } from './textLayout.ts'
 import type { TextLayout } from './textLayout.ts'
 import { catalogMusicPath, isCatalogMusic } from './musicCatalog.ts'
 
-export const TEMPLATE_DISPLAY_ORDER: Record<number, number> = { 2:1, 6:2, 13:3, 14:4, 7:5, 5:6, 1:7, 3:8, 15:9, 4:10, 16:11, 17:12, 18:13 }
+export const TEMPLATE_DISPLAY_ORDER: Record<number, number> = { 2:1, 6:2, 13:3, 14:4, 7:5, 5:6, 1:7, 3:8, 15:9, 4:10, 16:11, 17:12, 18:13, 19:14 }
 export const designs = [
   { id: 1, name: 'Royal Grace', description: 'Sage and ivory stationery with pearls and delicate botanical relief.', route: '/royal-grace', image: '/templates/royal-grace/opening-poster.jpg', color: '#8b9274' },
   { id: 2, name: 'Majestic', description: 'Pearl accents, chandeliers and grand garden scenes.', route: '/majestic', image: '/templates/majestic/assets/hero-poster-DkA1j00-.jpg', color: '#e9dfca' },
@@ -22,6 +22,7 @@ export const designs = [
   { id: 16, name: 'Viah', description: 'Bold Punjabi wedding vibes with hot pink, gold, and phulkari motifs.', route: '/viah', image: '/templates/viah/assets/gate/00-gate-p.webp', color: '#FF1493' },
   { id: 17, name: 'Tajmahal', description: 'A moonlit palace invitation with family blessings and a cinematic opening.', route: '/tajmahal', image: '/templates/tajmahal/assets/opening-poster.jpg', color: '#101a30' },
   { id: 18, name: 'Kerala', description: 'A lush tropical invitation with backwater serenity and Kerala wedding traditions.', route: '/kerala', image: '/templates/kerala/assets/opening-poster.jpg', color: '#0a1a0f' },
+  { id: 19, name: 'Ruby Hour', description: 'Deep burgundy luxury with gold accents and velvet textures.', route: '/ruby-hour', image: '/templates/ruby-hour/assets/film-ruby-first.jpg', color: '#1a0207' },
 ] as const
 export interface WeddingMoment { id: string; time: string; title: string; description: string; location: string }
 export interface Celebration { id?: string; title: string; date: string; time?: string; venue: string; address: string; map: string; schedule?: WeddingMoment[] }
@@ -39,6 +40,7 @@ export interface InvitationData {
   template: number; groom: string; bride: string; date: string; time: string; offset: string;
   venue: string; address: string; map: string; message: string; groomFamily: string; brideFamily: string;
   dressCode: string; giftNote: string; music: string; gallery: string; events: Celebration[];
+  hallPhoto?: string;
   musicStart?: number; musicEnd?: number;
   companyLogo?: string; companyName?: string; companyPhone?: string;
   footerIllustration?: string;
@@ -175,6 +177,7 @@ export function validateDetails(value: unknown, allowRetired = false): Invitatio
     ...(d.musicStart !== undefined ? { musicStart: d.musicStart } : {}),
     ...(d.musicEnd !== undefined ? { musicEnd: d.musicEnd } : {}),
     events:d.events.map(e=>({...(typeof e.id==='string'&&/^[a-zA-Z0-9_-]{1,80}$/.test(e.id)?{id:e.id}:{}),...(e.schedule !== undefined ? { schedule: schedule(e.schedule) } : {}),title:text(e.title,'celebration name',cardTextLimit(d.template,'title') ?? 100,true),date:date(e.date),time:time(e.time),venue:text(e.venue,'celebration venue',cardTextLimit(d.template,'venue') ?? 160,true),address:text(e.address,'celebration address',cardTextLimit(d.template,'address') ?? 300,true),map:url(e.map,'map link')})),
+    ...(typeof d.hallPhoto === 'string' && d.hallPhoto ? { hallPhoto: d.hallPhoto } : {}),
     ...(typeof d.companyLogo === 'string' && d.companyLogo ? { companyLogo: d.companyLogo } : {}),
     ...(typeof d.companyName === 'string' && d.companyName ? { companyName: d.companyName } : {}),
     ...(typeof d.companyPhone === 'string' && d.companyPhone ? { companyPhone: d.companyPhone } : {}),

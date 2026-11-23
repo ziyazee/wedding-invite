@@ -82,6 +82,25 @@ templateInvitationData[18] = {
   })),
 }
 
+templateInvitationData[19] = {
+  ...examples[1],
+  template: 19,
+  groom: 'Alexander',
+  bride: 'Valentina',
+  date: '2027-06-19',
+  venue: 'Château de Bordeaux',
+  address: 'Rue du Château, Bordeaux, France',
+  groomFamily: '',
+  brideFamily: '',
+  message: 'We are delighted to invite you to share in the joy of our wedding celebration. Your presence would mean the world to us.',
+  dressCode: 'Black tie — dark tones, velvet & satin textures',
+  giftNote: 'Your presence is the greatest gift. If you wish to honour us further, a contribution towards our honeymoon would be cherished.',
+  events: [
+    { id: 'ceremony', title: 'Ceremony', date: '2027-06-19', time: '16:00', venue: 'Château de Bordeaux', address: 'Rue du Château, Bordeaux, France', map: '' },
+    { id: 'dinner', title: 'Dinner & Dancing', date: '2027-06-19', time: '19:00', venue: 'Château de Bordeaux', address: 'Rue du Château, Bordeaux, France', map: '' },
+  ],
+}
+
 export function invitationExample(templateId: number): InvitationData | undefined {
   return templateInvitationData[templateId]
 }

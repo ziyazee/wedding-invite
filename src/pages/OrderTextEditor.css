@@ -56,6 +56,25 @@
 .ote-save-status small { color: #7a756a; font-size: 10px; line-height: 1.6; }
 .ote-save-error .ote-status-dot { background: #b2773c; }
 .ote-save-error small { color: #966c3e; }
+/* Font picker */
+.ote-font-picker { position: relative; width: 100%; }
+.ote-font-trigger { display: flex; align-items: center; justify-content: space-between; gap: 8px; width: 100%; min-height: 38px; padding: 7px 10px; border: 1px solid #e6dfd3; border-radius: 8px; background: #fffefa; color: #4c4234; font-size: 13px; text-align: left; cursor: pointer; }
+.ote-font-trigger span { flex: 1; min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.ote-font-trigger svg { flex-shrink: 0; width: 10px; height: 6px; color: #9a8a78; }
+.ote-font-trigger:hover { background: #faf4e9; border-color: #c8ae7c; }
+.ote-font-dropdown { position: absolute; z-index: 9999; left: 0; right: 0; top: calc(100% + 4px); border: 1px solid #e6dfd3; border-radius: 10px; background: #fffefa; box-shadow: 0 8px 32px #59421d18; overflow: hidden; }
+.ote-font-search { display: flex; align-items: center; gap: 7px; padding: 8px 10px; border-bottom: 1px solid #eee7dc; background: #f9f6ef; }
+.ote-font-search svg { flex-shrink: 0; width: 14px; height: 14px; color: #a09080; }
+.ote-font-search input { flex: 1; min-width: 0; height: 28px; padding: 4px 6px; border: 1px solid #e0d8cc; border-radius: 6px; background: #fff; color: #42382b; font: 12px Inter, Arial, sans-serif; }
+.ote-font-search input:focus { outline: none; border-color: #a57b32; }
+.ote-font-clear { flex-shrink: 0; min-height: unset; padding: 2px 6px; border: none; background: none; color: #a09080; font-size: 11px; cursor: pointer; }
+.ote-font-list { max-height: 240px; overflow-y: auto; padding: 4px 0; overscroll-behavior: contain; }
+.ote-font-group { padding: 6px 12px 3px; color: #9a8a78; font-size: 9px; font-weight: 600; letter-spacing: .12em; text-transform: uppercase; }
+.ote-font-option { display: block; width: 100%; min-height: unset; padding: 8px 12px; border: none; border-radius: 0; background: none; color: #42382b; font-size: 14px; text-align: left; cursor: pointer; transition: background .1s; }
+.ote-font-option:hover { background: #f4ede0; }
+.ote-font-option.ote-font-active { background: #f0e8d4; color: #7a5c28; font-weight: 600; }
+.ote-font-empty { padding: 16px 12px; color: #9a8a78; font-size: 12px; text-align: center; }
+
 .order-text-editor :focus-visible { outline: 2px solid #a57b32; outline-offset: 3px; }
 .client-workspace.has-client-preview .client-preview-panel:has(.order-text-editor) { justify-content: flex-start; overflow-y: auto; }
 .client-preview-panel:has(.order-text-editor) .client-device-frame { margin: 0 auto 12px; flex-shrink: 0; }

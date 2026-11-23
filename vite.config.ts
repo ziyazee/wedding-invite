@@ -5,6 +5,8 @@ import { fileURLToPath } from 'node:url'
 import { applicationAPI } from './server/applications.ts'
 import { invitationAPI } from './server/invitations.ts'
 import { editsAPI } from './server/edits.ts'
+import { hallPhotoAPI } from './server/hallPhotos.ts'
+import { musicOptimizerAPI } from './server/musicOptimizer.ts'
 import { INVITATION_VIEWPORT_THEMES } from './src/invitations/invitationViewportThemes.ts'
 
 export default defineConfig({
@@ -119,6 +121,6 @@ export default defineConfig({
         })
       },
     },
-    react(), tailwindcss(), invitationAPI(), applicationAPI(), editsAPI(),
+    react(), tailwindcss(), invitationAPI(), applicationAPI(), editsAPI(), hallPhotoAPI(), musicOptimizerAPI(),
   ],
 })

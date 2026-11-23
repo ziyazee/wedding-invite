@@ -91,8 +91,27 @@ export async function personalizeBloom(
  address.children[1].textContent = wrapCardText(locality, 32)
  if (!locality) address.children[1].remove()
  const venueArt = bloomCeremony.querySelector('img')
- if (venueArt) venueArt.alt = ''
+ if (venueArt) {
+  venueArt.src = d.hallPhoto || '/auditoriams/tmai-pai.webp'
+  venueArt.alt = ''
+ }
  const controls = bloomCeremony.lastElementChild
+ if (d.hallPhoto && controls) {
+  const polaroidWrap = doc.createElement('div')
+  polaroidWrap.style.cssText = 'position:relative;z-index:2;padding:0 24px;margin-top:-160px;display:flex;justify-content:center'
+  const polaroid = doc.createElement('div')
+  polaroid.style.cssText = 'width:min(80vw,380px);background:#faf8f5;padding:12px 12px 48px;box-shadow:0 4px 24px rgba(0,0,0,.12),0 1px 4px rgba(0,0,0,.08);transform:rotate(-1.5deg)'
+  const photo = doc.createElement('img')
+  photo.src = d.hallPhoto
+  photo.alt = 'Wedding hall'
+  photo.style.cssText = 'display:block;width:100%;height:auto;object-fit:cover'
+  const caption = doc.createElement('span')
+  caption.textContent = 'Our venue'
+  caption.style.cssText = 'display:block;margin-top:12px;font-family:inherit;font-style:italic;font-size:18px;color:#635642;text-align:center'
+  polaroid.append(photo, caption)
+  polaroidWrap.append(polaroid)
+  controls.before(polaroidWrap)
+ }
  const originalButtons = controls?.querySelectorAll('button')
  if (originalButtons?.length === 2) {
   const directions = doc.createElement('a')

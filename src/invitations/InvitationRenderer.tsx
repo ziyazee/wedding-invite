@@ -29,6 +29,7 @@ const Design17 = lazy(() => import('../pages/Design17'))
 const MandapAtDusk = lazy(() => import('../pages/MandapAtDusk'))
 const Tajmahal = lazy(() => import('../templates/Tajmahal'))
 const Kerala = lazy(() => import('../templates/Kerala'))
+const RubyHour = lazy(() => import('../pages/ruby-hour/RubyHour'))
 const TextLayoutLayer = lazy(() => import('./TextLayoutLayer'))
 const BloomNative = lazy(() => import('../pages/bloom/Bloom'))
 const RaabtaNative = lazy(() => import('../pages/raabta/Raabta'))
@@ -98,6 +99,7 @@ function renderTemplate(details: InvitationData, animatedDetails: InvitationData
   if (template === 2) return <Majestic details={details} rsvpTarget={rsvpTarget} />
   if (template === 5) return <SecretGarden details={details} rsvpTarget={rsvpTarget} />
   if (template === 6) return <EmbroideredGarden details={details} rsvpTarget={rsvpTarget} />
+  if (template === 19) return <RubyHour details={details} rsvpTarget={rsvpTarget} />
 
   // Standalone page component (no SiteFonts or TextLayoutLayer)
   if (template === 1) return <RoyalGrace />

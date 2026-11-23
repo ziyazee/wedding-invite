@@ -13,6 +13,10 @@
   - Convert `ornate-badge-2PyCLI0e.png` (1 MB) and `footer-flowers.png` (446 KB) to WebP.
   - Compress `celebrations.mp4` (2.8 MB) — lower bitrate/resolution since it's a background texture, not primary content.
   - Add a Service Worker for cache-first asset loading (benefits all templates, not just Majestic).
+- [ ] Per-order section customization (native React templates).
+  - **Phase 1 — Visibility:** Allow hiding individual sections per order. Store as `form_data.sectionConfig` (new key, backward compatible). Each section gets a stable ID using the existing `t{templateId}.{sectionName}` scheme. `InvitationSection` reads `sectionConfig` from `InvitationContext` and skips rendering if `visible: false`. Admin configures per order in the order editor.
+  - **Phase 2 — Reordering:** Allow changing section order per order. Requires refactoring each native template from fixed JSX into a `sections.map(...)` pattern. Only viable for templates where sections are visually independent (no flowing connectors between them). Treat iframe templates (Embroidered Garden, Bloom) as a separate track using DOM manipulation.
+  - **Scope:** Native React templates only for Phase 1 (Royal Grace, Majestic, Secret Garden, etc.). Iframe templates deferred.
 - [ ] Fix missing Bloom and The Artful Love Story thumbnails in the Settings tab.
   - **Where:** `TemplateSettingsPanel` in `src/pages/ClientDashboard.tsx` (~line 679). The `.setting-art-wrap` element uses a bare `<img src={template.thumbnail_url}>`. Bloom (id 7) and The Artful Love Story (id 8) have no `thumbnail_url` from the catalog, so their cards render a broken image.
   - **Fix:** Mirror the media logic already used in the Templates tab cards (~line 491): check `TEMPLATE_INTRO_VIDEOS[id]` first (renders a `<video>`), then fall back to `TEMPLATE_THUMBNAIL_OVERRIDES[id] ?? TEMPLATE_INTRO_IMAGES[id] ?? template.thumbnail_url`. All three maps are already imported from `src/lib/templateCardData.ts`.
