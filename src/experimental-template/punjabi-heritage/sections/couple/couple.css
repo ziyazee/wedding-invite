@@ -1,0 +1,115 @@
+/* Couple — families under a phulkari valance; deorhi crests over parchment cards. */
+
+.ph-couple {
+  padding-top: 0;
+  background: linear-gradient(to bottom, var(--ph-bg) 0%, var(--ph-bg-elevated) 45%, var(--ph-bg) 100%);
+}
+.ph-couple__valance {
+  display: block;
+  width: min(100%, 560px);
+  height: auto;
+  margin: 0 auto 36px;
+  -webkit-mask-image: linear-gradient(to right, transparent, #000 6%, #000 94%, transparent);
+  mask-image: linear-gradient(to right, transparent, #000 6%, #000 94%, transparent);
+}
+.ph-couple__jodi {
+  margin: 0 0 14px;
+  font-family: var(--ph-font-display);
+  font-size: clamp(40px, 12vw, 54px);
+  line-height: 1;
+  color: var(--ph-suha);
+}
+.ph-couple__heading {
+  margin: 0 0 56px;
+  font-family: var(--ph-font-body);
+  font-style: italic;
+  font-size: 20px;
+  line-height: 1.5;
+  color: var(--ph-text-soft);
+}
+
+.ph-family {
+  position: relative;
+  width: 100%;
+  margin-top: 28px;
+  padding: 64px 28px 84px;
+  background: var(--ph-bg-elevated);
+  /* Chope border: a printed double rule in the old block-print manner. */
+  border: 1px solid var(--ph-gold);
+  box-shadow: inset 0 0 0 5px var(--ph-bg-elevated), inset 0 0 0 6px var(--ph-line-strong);
+}
+.ph-family__crest {
+  position: absolute;
+  top: -44px;
+  left: 50%;
+  width: min(78%, 300px);
+  height: auto;
+  transform: translateX(-50%);
+  pointer-events: none;
+}
+.ph-family__corner {
+  position: absolute;
+  bottom: -2px;
+  width: 62px;
+  height: auto;
+  pointer-events: none;
+}
+.ph-family__corner--l { left: -2px; }
+.ph-family__corner--r { right: -2px; transform: scaleX(-1); }
+.ph-family__label {
+  margin: 0 0 14px;
+  font-family: var(--ph-font-caps);
+  font-size: 12px;
+  letter-spacing: 0.22em;
+  line-height: 1.6;
+  text-transform: uppercase;
+  color: var(--ph-gold);
+}
+.ph-family__parent {
+  margin: 0;
+  font-size: 17px;
+  line-height: 1.7;
+  color: var(--ph-text);
+}
+.ph-family__amp {
+  margin: 0;
+  font-style: italic;
+  font-size: 18px;
+  color: var(--ph-suha);
+}
+.ph-family__name {
+  margin: 22px 0 0;
+  font-family: var(--ph-font-display);
+  font-weight: 400;
+  font-size: clamp(28px, 8vw, 34px);
+  line-height: 1.15;
+  color: var(--ph-text-soft);
+}
+.ph-family__place {
+  margin: 8px 0 0;
+  font-family: var(--ph-font-caps);
+  font-size: 12px;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  color: var(--ph-text-dim);
+}
+
+.ph-couple__paranda {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  margin: 40px 0 20px;
+  color: var(--ph-suha);
+}
+.ph-couple__paranda svg { overflow: visible; }
+.ph-couple__paranda .ph-draw { stroke: var(--ph-suha); }
+.ph-couple__paranda-mark {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -52%);
+  font-family: var(--ph-font-display);
+  font-size: 22px;
+  line-height: 1;
+}

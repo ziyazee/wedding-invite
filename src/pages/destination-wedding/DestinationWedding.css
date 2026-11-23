@@ -1,0 +1,145 @@
+.dest{
+  --dest-maroon:#7a1021;--dest-gold:#d4af37;--dest-bg:#fcf7f2;--dest-text:#2c1b18;
+  --dest-muted:#6b4c46;--dest-accent:#4a0612;--dest-peach:#ffdab9;--dest-teal:#2a5f5e;
+  --dest-olive:#c8ce8e;--dest-cream:#fff8ef;
+  position:relative;width:100%;min-height:100dvh;overflow-x:hidden;background:var(--dest-bg);
+  color:var(--dest-text);font-family:'Outfit',sans-serif;line-height:1.5;
+  -webkit-font-smoothing:antialiased
+}
+.dest *,.dest *::before,.dest *::after{box-sizing:border-box}
+.dest img{display:block;max-width:100%;height:auto}
+.dest-serif{font-family:'Cormorant Garamond',Georgia,serif}
+
+/* ── Music toggle ── */
+.dest-music{position:fixed;top:16px;right:16px;z-index:100;width:44px;height:44px;border:2px solid var(--dest-gold);border-radius:50%;background:rgba(122,16,33,.85);color:#fff;font-size:18px;cursor:pointer;backdrop-filter:blur(4px);-webkit-backdrop-filter:blur(4px);display:grid;place-items:center;transition:transform .2s}
+.dest-music:active{transform:scale(.9)}
+
+/* ── Floating lanterns ── */
+.dest-lantern{position:absolute;width:clamp(36px,8vw,64px);pointer-events:none;opacity:.55;filter:drop-shadow(0 8px 12px rgba(212,175,55,.3));animation:dest-float 6s ease-in-out infinite alternate}
+.dest-lantern:nth-child(even){animation-duration:7s;animation-delay:-3s}
+.dest-lantern:nth-child(3n){animation-duration:8s;animation-delay:-2s;opacity:.4}
+@keyframes dest-float{0%{transform:translateY(0) rotate(-2deg)}100%{transform:translateY(-18px) rotate(2deg)}}
+
+/* ══════════ GATE ══════════ */
+.dest-gate{position:relative;width:100%;min-height:100dvh;display:flex;flex-direction:column;align-items:center;justify-content:center;overflow:hidden;background:#1a0510}
+.dest-gate-bg{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;opacity:.85}
+.dest-gate-content{position:relative;z-index:2;display:flex;flex-direction:column;align-items:center;gap:clamp(12px,3vw,28px);text-align:center;padding:0 20px}
+.dest-gate-ganesh{width:clamp(80px,22vw,160px);filter:drop-shadow(0 4px 16px rgba(212,175,55,.4))}
+.dest-gate-names{font-family:'Cormorant Garamond',Georgia,serif;font-size:clamp(32px,8.5vw,72px);font-weight:600;color:var(--dest-gold);line-height:1.1;letter-spacing:.06em;text-shadow:0 2px 20px rgba(0,0,0,.5)}
+.dest-gate-weds{font-family:'Cormorant Garamond',Georgia,serif;font-size:clamp(16px,4vw,28px);color:var(--dest-peach);letter-spacing:.3em;text-transform:uppercase;opacity:.85}
+.dest-gate-date{font-size:clamp(13px,3vw,20px);color:rgba(255,248,239,.7);letter-spacing:.12em}
+.dest-gate-btn{margin-top:clamp(16px,4vw,32px);padding:14px 36px;border:2px solid var(--dest-gold);border-radius:40px;background:transparent;color:var(--dest-gold);font-family:'Outfit',sans-serif;font-size:clamp(14px,3.2vw,18px);letter-spacing:.12em;cursor:pointer;text-transform:uppercase;transition:background .3s,color .3s;animation:dest-pulse 2.5s ease-in-out infinite}
+.dest-gate-btn:hover{background:var(--dest-gold);color:var(--dest-accent)}
+@keyframes dest-pulse{0%,100%{box-shadow:0 0 0 0 rgba(212,175,55,.4)}50%{box-shadow:0 0 0 12px rgba(212,175,55,0)}}
+
+/* gate transitions */
+.dest-closed .dest-gate{pointer-events:auto}
+.dest-opening .dest-gate{animation:dest-gate-fade .9s ease forwards}
+.dest-open .dest-gate{display:none}
+@keyframes dest-gate-fade{0%{opacity:1;transform:scale(1)}100%{opacity:0;transform:scale(1.05)}}
+
+/* ══════════ HERO ══════════ */
+.dest-hero{position:relative;width:100%;min-height:100dvh;display:flex;flex-direction:column;align-items:center;justify-content:center;overflow:hidden;padding:clamp(40px,10vw,80px) 20px}
+.dest-hero-bg{position:absolute;inset:0;width:100%;height:100%;object-fit:cover}
+.dest-hero-overlay{position:absolute;inset:0;background:linear-gradient(180deg,rgba(252,247,242,.3) 0%,rgba(252,247,242,.75) 40%,rgba(252,247,242,.85) 100%)}
+.dest-hero-inner{position:relative;z-index:2;display:flex;flex-direction:column;align-items:center;gap:clamp(8px,2vw,20px);text-align:center}
+.dest-hero-blessing{font-size:clamp(13px,2.8vw,18px);color:var(--dest-muted);letter-spacing:.08em;line-height:1.6}
+.dest-hero-names{font-family:'Cormorant Garamond',Georgia,serif;font-size:clamp(36px,10vw,80px);font-weight:600;color:var(--dest-maroon);line-height:1.1;letter-spacing:.04em}
+.dest-hero-amp{display:block;font-size:.4em;font-weight:300;color:var(--dest-gold);letter-spacing:.15em;margin:4px 0}
+.dest-hero-date{font-size:clamp(14px,3.2vw,22px);color:var(--dest-muted);letter-spacing:.15em;margin-top:4px}
+.dest-hero-venue{font-size:clamp(12px,2.6vw,16px);color:var(--dest-muted);letter-spacing:.08em;opacity:.8}
+
+/* ══════════ BLESSINGS / FAMILY ══════════ */
+.dest-blessings{position:relative;width:100%;padding:clamp(48px,10vw,80px) 20px;text-align:center;background:var(--dest-cream);overflow:hidden}
+.dest-blessings-ganesh{width:clamp(48px,12vw,80px);margin:0 auto clamp(12px,3vw,24px);opacity:.7}
+.dest-blessings-heading{font-family:'Cormorant Garamond',Georgia,serif;font-size:clamp(18px,4vw,28px);font-weight:400;color:var(--dest-maroon);line-height:1.4;letter-spacing:.04em;margin:0 auto;max-width:480px}
+.dest-family-block{margin:clamp(16px,4vw,32px) auto 0;max-width:500px}
+.dest-family-pair{margin:clamp(8px,2vw,16px) 0;font-size:clamp(15px,3.2vw,20px);color:var(--dest-text);line-height:1.5}
+.dest-family-label{display:block;font-size:clamp(11px,2.2vw,14px);color:var(--dest-muted);letter-spacing:.12em;text-transform:uppercase;margin-bottom:4px}
+.dest-family-together{font-size:clamp(12px,2.4vw,15px);color:var(--dest-muted);font-style:italic;margin:clamp(6px,1.5vw,12px) 0}
+.dest-blessings-invite{font-size:clamp(13px,2.8vw,17px);color:var(--dest-muted);font-style:italic;margin:clamp(12px,3vw,24px) auto 0;max-width:420px;line-height:1.5}
+.dest-divider-diamond{display:flex;width:clamp(120px,30vw,200px);align-items:center;justify-content:center;gap:10px;color:var(--dest-gold);margin:clamp(12px,3vw,24px) auto}
+.dest-divider-diamond span{height:1px;flex:1;background:var(--dest-gold)}
+.dest-divider-diamond i{font-style:normal;font-size:14px}
+
+/* ══════════ COUPLE MESSAGE / WORDS OF LOVE ══════════ */
+.dest-message{position:relative;width:100%;padding:clamp(48px,10vw,80px) 20px;overflow:hidden}
+.dest-message-bg{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;opacity:.15}
+.dest-message-inner{position:relative;z-index:2;max-width:600px;margin:0 auto;text-align:center}
+.dest-message-heading{font-family:'Cormorant Garamond',Georgia,serif;font-size:clamp(24px,5.5vw,40px);font-weight:400;color:var(--dest-maroon);letter-spacing:.06em;margin:0 0 clamp(16px,4vw,32px)}
+.dest-message-text{font-size:clamp(14px,3vw,17px);color:var(--dest-text);line-height:1.8;white-space:pre-line;overflow-wrap:anywhere}
+
+/* ══════════ EVENTS ══════════ */
+.dest-events{position:relative;width:100%;padding:clamp(32px,8vw,64px) 16px;overflow:hidden}
+.dest-events-bg{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;opacity:.12}
+.dest-events-flower{position:absolute;left:50%;transform:translateX(-50%);width:clamp(180px,50vw,320px);pointer-events:none;opacity:.7;z-index:1}
+.dest-events-flower-top{top:-10px}
+.dest-events-flower-bottom{bottom:-10px;transform:translateX(-50%) rotate(180deg)}
+.dest-events-inner{position:relative;z-index:2;display:flex;flex-direction:column;align-items:center;gap:clamp(28px,6vw,48px)}
+
+/* ══════════ COUNTDOWN ══════════ */
+.dest-countdown{position:relative;width:100%;min-height:clamp(320px,60vw,480px);display:flex;flex-direction:column;align-items:center;justify-content:center;overflow:hidden;padding:clamp(40px,8vw,60px) 20px}
+.dest-countdown-bg{position:absolute;inset:0;width:100%;height:100%;object-fit:cover}
+.dest-countdown-overlay{position:absolute;inset:0;background:linear-gradient(180deg,rgba(74,6,18,.6),rgba(122,16,33,.75))}
+.dest-countdown-inner{position:relative;z-index:2;text-align:center}
+.dest-countdown-heading{font-family:'Cormorant Garamond',Georgia,serif;font-size:clamp(24px,5.5vw,40px);font-weight:400;color:var(--dest-gold);letter-spacing:.1em;margin:0 0 clamp(20px,5vw,40px)}
+.dest-countdown-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:clamp(8px,3vw,24px)}
+.dest-countdown-unit{display:flex;flex-direction:column;align-items:center;gap:4px;min-width:clamp(56px,14vw,90px)}
+.dest-countdown-num{font-family:'Cormorant Garamond',Georgia,serif;font-size:clamp(32px,8vw,60px);font-weight:700;color:#fff;line-height:1;text-shadow:0 2px 8px rgba(0,0,0,.3)}
+.dest-countdown-label{font-size:clamp(10px,2.2vw,14px);color:var(--dest-peach);letter-spacing:.12em;text-transform:uppercase}
+
+/* ══════════ SCRATCH CARD / SAVE THE DATE ══════════ */
+.dest-scratch{position:relative;width:100%;padding:clamp(48px,10vw,80px) 20px;text-align:center;background:var(--dest-cream)}
+.dest-scratch-heading{font-family:'Cormorant Garamond',Georgia,serif;font-size:clamp(20px,4.5vw,32px);font-weight:400;color:var(--dest-maroon);letter-spacing:.08em;margin:0 0 clamp(12px,3vw,24px)}
+.dest-scratch-hint{font-size:clamp(12px,2.5vw,15px);color:var(--dest-muted);margin:0 0 clamp(16px,4vw,28px);letter-spacing:.06em}
+.dest-scratch-box{position:relative;width:clamp(240px,65vw,360px);aspect-ratio:3/2;margin:0 auto;border-radius:16px;overflow:hidden;box-shadow:0 4px 20px rgba(122,16,33,.15)}
+.dest-scratch-reveal{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;border-radius:16px}
+.dest-scratch-canvas{position:absolute;inset:0;width:100%;height:100%;z-index:2;cursor:crosshair;border-radius:16px;touch-action:none}
+.dest-scratch-date{margin:clamp(16px,4vw,28px) auto 0;font-family:'Cormorant Garamond',Georgia,serif;font-size:clamp(18px,4vw,28px);color:var(--dest-maroon);letter-spacing:.08em;opacity:0;transition:opacity .6s .3s}
+.dest-scratch-date.dest-revealed{opacity:1}
+
+/* ══════════ RSVP ══════════ */
+.dest-rsvp{position:relative;width:100%;padding:clamp(48px,10vw,80px) 20px;text-align:center;background:var(--dest-bg)}
+.dest-rsvp-heading{font-family:'Cormorant Garamond',Georgia,serif;font-size:clamp(28px,6.5vw,48px);font-weight:400;color:var(--dest-maroon);letter-spacing:.06em;margin:0 0 clamp(8px,2vw,16px)}
+.dest-rsvp-sub{font-size:clamp(13px,2.8vw,17px);color:var(--dest-muted);margin:0 0 clamp(20px,5vw,36px);max-width:440px;margin-left:auto;margin-right:auto;line-height:1.6}
+.dest-rsvp-btn{display:inline-flex;align-items:center;gap:10px;padding:14px 32px;border:2px solid var(--dest-maroon);border-radius:40px;background:transparent;color:var(--dest-maroon);font-family:'Outfit',sans-serif;font-size:clamp(14px,3vw,17px);letter-spacing:.08em;text-decoration:none;cursor:pointer;transition:background .3s,color .3s}
+.dest-rsvp-btn:hover{background:var(--dest-maroon);color:#fff}
+.dest-rsvp-btn svg{width:20px;height:20px}
+
+/* ══════════ FOOTER ══════════ */
+.dest-footer{position:relative;width:100%;min-height:clamp(200px,40vw,320px);display:flex;flex-direction:column;align-items:center;justify-content:center;overflow:hidden;padding:clamp(32px,8vw,60px) 20px}
+.dest-footer-bg{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;opacity:.3}
+.dest-footer-overlay{position:absolute;inset:0;background:linear-gradient(180deg,var(--dest-bg),rgba(252,247,242,.85))}
+.dest-footer-inner{position:relative;z-index:2;text-align:center}
+.dest-footer-names{font-family:'Cormorant Garamond',Georgia,serif;font-size:clamp(28px,7vw,52px);font-weight:600;color:var(--dest-maroon);letter-spacing:.04em;line-height:1.15}
+.dest-footer-amp{display:block;font-size:.4em;font-weight:300;color:var(--dest-gold);letter-spacing:.15em;margin:2px 0}
+.dest-footer-date{font-size:clamp(13px,2.8vw,18px);color:var(--dest-muted);letter-spacing:.12em;margin-top:clamp(8px,2vw,16px)}
+.dest-footer-hashtag{font-size:clamp(12px,2.4vw,15px);color:var(--dest-gold);letter-spacing:.06em;margin-top:8px}
+
+/* ══════════ SCROLL REVEAL ══════════ */
+.dest-anim{opacity:0;transform:translateY(24px);transition:opacity .7s ease,transform .7s ease}
+.dest-anim.dest-visible{opacity:1;transform:translateY(0)}
+.dest-anim-d1{transition-delay:.12s}
+.dest-anim-d2{transition-delay:.24s}
+.dest-anim-d3{transition-delay:.36s}
+.dest-anim-d4{transition-delay:.48s}
+
+/* ══════════ RESPONSIVE ══════════ */
+@media(max-width:600px){
+  .dest-gate-names{letter-spacing:.03em}
+  .dest-hero-names{letter-spacing:.02em}
+  .dest-countdown-grid{gap:8px}
+  .dest-scratch-box{width:clamp(220px,75vw,320px)}
+  .dest-rsvp-btn{padding:12px 26px}
+}
+@media(max-width:380px){
+  .dest-gate-btn{padding:12px 28px;font-size:13px}
+  .dest-countdown-num{font-size:28px}
+  .dest-scratch-box{width:85vw}
+}
+@media(prefers-reduced-motion:reduce){
+  .dest-lantern{animation:none}
+  .dest-gate-btn{animation:none}
+  .dest-anim{opacity:1;transform:none;transition:none}
+  @keyframes dest-gate-fade{0%,100%{opacity:0}}
+}

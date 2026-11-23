@@ -1,0 +1,66 @@
+/* Closing — the kalyana manavarai scene is the backdrop. All text sits in the quiet parchment above
+   the stage, directly on the painting, with no card. */
+
+.tm-closing {
+  min-height: 960px;
+  justify-content: flex-start;
+  padding-top: 88px;
+  padding-bottom: 80px;
+  background: transparent;
+}
+.tm-host.has-media .tm-closing {
+  background: transparent;
+}
+.tm-closing .tm-section__inner {
+  text-shadow: 0 0 18px rgba(242, 234, 217, 0.9), 0 0 4px rgba(242, 234, 217, 0.7);
+}
+/* Scene keeps its full 9:16 composition, pinned to the bottom, so the text above never meets the mandapam. */
+.tm-host.has-media[data-section='closing'] > .tm-media--background {
+  inset: auto 0 0 0;
+  height: auto;
+  aspect-ratio: 9 / 16;
+}
+.tm-host[data-section='closing'] > .tm-media {
+  -webkit-mask-image: linear-gradient(to bottom, transparent 0, #000 14%);
+  mask-image: linear-gradient(to bottom, transparent 0, #000 14%);
+}
+.tm-closing__orn {
+  display: block;
+  width: 110px;
+  height: 40px;
+  margin: 0 auto 22px;
+  overflow: visible;
+}
+.tm-closing__blessing {
+  margin: 0 0 22px;
+  font-family: var(--tm-font-display);
+  font-style: italic;
+  font-weight: 500;
+  font-size: clamp(23px, 6.6vw, 28px);
+  line-height: 1.42;
+  color: var(--tm-text);
+}
+.tm-closing__note {
+  margin-bottom: 30px;
+  font-size: 14px;
+  line-height: 1.7;
+  color: var(--tm-text-soft);
+}
+.tm-closing__sign {
+  margin: 0;
+  font-family: var(--tm-font-display);
+  font-weight: 500;
+  font-style: italic;
+  font-size: 44px;
+  line-height: 1.1;
+  color: var(--tm-ember);
+}
+.tm-closing__date {
+  margin: 14px 0 0;
+  font-size: 11px;
+  font-weight: 500;
+  letter-spacing: 0.4em;
+  text-indent: 0.4em;
+  text-transform: uppercase;
+  color: var(--tm-text-soft);
+}

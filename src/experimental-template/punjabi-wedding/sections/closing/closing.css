@@ -1,0 +1,60 @@
+/* Closing — the golden-hour pavilion scene is the backdrop. All text sits in the quiet
+   sky above the pavilion, directly on the painting, with no card. */
+
+.pb-closing {
+  min-height: 1040px;
+  justify-content: flex-start;
+  padding-top: 88px;
+  padding-bottom: 80px;
+  background: transparent;
+}
+.pb-host.has-media .pb-closing {
+  background: transparent;
+}
+.pb-closing .pb-section__inner {
+  text-shadow: 0 0 18px rgba(255, 244, 238, 0.85), 0 0 4px rgba(255, 244, 238, 0.6);
+}
+.pb-host[data-section='closing'] > .pb-media {
+  -webkit-mask-image: linear-gradient(to bottom, transparent 0, #000 14%);
+  mask-image: linear-gradient(to bottom, transparent 0, #000 14%);
+}
+.pb-closing__orn {
+  display: block;
+  width: 110px;
+  height: 40px;
+  margin: 0 auto 22px;
+  overflow: visible;
+}
+.pb-closing__blessing {
+  margin: 0 0 22px;
+  font-family: var(--pb-font-display);
+  font-style: italic;
+  font-weight: 400;
+  font-size: clamp(23px, 6.6vw, 28px);
+  line-height: 1.42;
+  color: var(--pb-text);
+}
+.pb-closing__note {
+  margin-bottom: 34px;
+  font-size: 14px;
+  line-height: 1.7;
+  color: var(--pb-text-soft);
+}
+.pb-closing__sign {
+  margin: 0;
+  font-family: var(--pb-font-display);
+  font-weight: 500;
+  font-style: italic;
+  font-size: 46px;
+  line-height: 1.1;
+  color: var(--pb-ember);
+}
+.pb-closing__date {
+  margin: 14px 0 0;
+  font-size: 11px;
+  font-weight: 500;
+  letter-spacing: 0.4em;
+  text-indent: 0.4em;
+  text-transform: uppercase;
+  color: var(--pb-text-soft);
+}

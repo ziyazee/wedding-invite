@@ -1,0 +1,132 @@
+/* RSVP — a varaverpu ledger: calm zari-ruled fields under a pair of kuthuvilakku. */
+
+.tm-rsvp {
+  position: relative;
+  overflow: hidden;
+  padding-top: 280px;
+  background: linear-gradient(to bottom, var(--tm-bg) 0%, var(--tm-bg-deep) 45%, var(--tm-bg) 100%);
+}
+.tm-rsvp__header {
+  position: absolute;
+  top: 40px;
+  left: 50%;
+  z-index: 0;
+  width: 100%;
+  max-width: 330px;
+  height: auto;
+  transform: translateX(-50%);
+  pointer-events: none;
+}
+.tm-rsvp .tm-section__inner {
+  position: relative;
+  z-index: 1;
+}
+.tm-rsvp__lede {
+  margin: 16px 0 40px;
+}
+.tm-form {
+  display: grid;
+  gap: 24px;
+  text-align: left;
+}
+.tm-field {
+  display: grid;
+  gap: 8px;
+}
+.tm-field__label {
+  font-size: 10px;
+  font-weight: 500;
+  letter-spacing: 0.3em;
+  text-transform: uppercase;
+  color: var(--tm-gold);
+}
+.tm-input {
+  width: 100%;
+  padding: 12px 0;
+  border: 0;
+  border-bottom: 1px solid var(--tm-line-strong);
+  border-radius: 0;
+  background: transparent;
+  color: var(--tm-text);
+  font: inherit;
+  font-size: 16px;
+  transition: border-color 0.3s;
+}
+.tm-input::placeholder {
+  color: var(--tm-text-dim);
+}
+.tm-input:focus {
+  outline: none;
+  border-bottom-color: var(--tm-gold);
+}
+.tm-input:focus-visible {
+  box-shadow: 0 1px 0 0 var(--tm-gold);
+}
+select.tm-input option {
+  background: var(--tm-bg-elevated);
+  color: var(--tm-text);
+}
+.tm-choice {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 12px;
+}
+/* zari-trimmed buttons: a hairline border with a second inset thread */
+.tm-btn {
+  padding: 14px 12px;
+  border: 1px solid var(--tm-gold);
+  border-radius: var(--tm-radius);
+  background: transparent;
+  box-shadow: inset 0 0 0 3px var(--tm-bg), inset 0 0 0 4px var(--tm-line);
+  color: var(--tm-text-soft);
+  font: inherit;
+  font-size: 11px;
+  font-weight: 500;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  cursor: pointer;
+  transition: background 0.3s, color 0.3s, opacity 0.3s;
+}
+.tm-btn:hover:not(:disabled),
+.tm-btn.is-active {
+  background: #8e1b1b;
+  border-color: #8e1b1b;
+  box-shadow: inset 0 0 0 3px #8e1b1b, inset 0 0 0 4px rgba(247, 241, 227, 0.5);
+  color: #f7f1e3;
+}
+.tm-btn:focus-visible {
+  outline: 2px solid var(--tm-gold);
+  outline-offset: 3px;
+}
+.tm-btn:disabled {
+  opacity: 0.4;
+  cursor: not-allowed;
+}
+.tm-btn--solid {
+  background: #8e1b1b;
+  border-color: #8e1b1b;
+  box-shadow: inset 0 0 0 3px #8e1b1b, inset 0 0 0 4px rgba(247, 241, 227, 0.5);
+  color: #f7f1e3;
+}
+.tm-btn--solid:hover:not(:disabled) {
+  background: #6a1313;
+}
+.tm-form__error {
+  margin: 0;
+  font-size: 13px;
+  text-align: center;
+  color: var(--tm-error);
+}
+.tm-rsvp__thanks {
+  display: grid;
+  justify-items: center;
+  gap: 12px;
+}
+.tm-rsvp__check {
+  width: 72px;
+  height: 72px;
+}
+.tm-rsvp__check .tm-draw {
+  stroke: var(--tm-gold);
+  stroke-width: 1.6;
+}

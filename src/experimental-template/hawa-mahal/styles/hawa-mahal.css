@@ -1,0 +1,1526 @@
+/* ============================================================
+   Hawa Mahal — Complete Stylesheet
+   All class names prefixed: hm-
+   All custom properties prefixed: --hm-
+   No global selectors (body, html, *, :root)
+   ============================================================ */
+
+/* --- Google Fonts --- */
+@import url('https://fonts.googleapis.com/css2?family=Cinzel+Decorative:wght@700&family=Cormorant+Garamond:ital,wght@0,400;0,500;0,600;1,400&family=Cormorant+SC:wght@500;600&display=swap');
+
+/* ============================================================
+   1. Custom Properties
+   ============================================================ */
+.hm-root {
+  /* Color tokens */
+  --hm-night: #0B1620;
+  --hm-night-deep: #060E15;
+  --hm-sandstone: #C4836A;
+  --hm-sandstone-light: #D4A07A;
+  --hm-sandstone-pale: #F0DDD0;
+  --hm-sandstone-shadow: #6E4A3A;
+  --hm-gold: #D4A055;
+  --hm-gold-bright: #E8B86D;
+  --hm-gold-deep: #B8892E;
+  --hm-teal: #2A4540;
+  --hm-teal-light: #3D5C52;
+  --hm-ivory: #F5EDE0;
+  --hm-marble: #FAF7F2;
+  --hm-deep-brown: #2A1F1A;
+  --hm-ember: #C4956A;
+
+  /* Gradients */
+  --hm-gradient-sky: linear-gradient(180deg, #060E15 0%, #0B1620 100%);
+  --hm-gradient-sky-to-sandstone: linear-gradient(180deg, #0B1620 0%, #2A1F1A 40%, #6E4A3A 100%);
+  --hm-gradient-sandstone-warmth: linear-gradient(180deg, #F0DDD0 0%, #F5EDE0 100%);
+  --hm-gradient-night-vignette: radial-gradient(ellipse at 50% 30%, #0B1620 0%, #060E15 100%);
+
+  /* Spacing */
+  --hm-space-xs: 4px;
+  --hm-space-sm: 8px;
+  --hm-space-md: 16px;
+  --hm-space-lg: 24px;
+  --hm-space-xl: 40px;
+  --hm-space-2xl: 64px;
+  --hm-space-3xl: 96px;
+  --hm-gutter: 24px;
+  --hm-section-pad: 64px;
+  --hm-content-max: 354px;
+}
+
+/* ============================================================
+   2. Root Element
+   ============================================================ */
+.hm-root {
+  isolation: isolate;
+  overflow-x: hidden;
+  background-color: var(--hm-night);
+  color: var(--hm-ivory);
+  font-family: 'Cormorant Garamond', Georgia, serif;
+  font-size: 16px;
+  line-height: 1.6;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+/* ============================================================
+   3. Typography Classes
+   ============================================================ */
+.hm-font-display {
+  font-family: 'Cinzel Decorative', 'Cinzel', Georgia, serif;
+  font-weight: 700;
+}
+
+.hm-font-body {
+  font-family: 'Cormorant Garamond', Georgia, serif;
+}
+
+.hm-font-label {
+  font-family: 'Cormorant SC', 'Cormorant Garamond', Georgia, serif;
+}
+
+/* ============================================================
+   4. Section Shared Styles
+   ============================================================ */
+.hm-section {
+  position: relative;
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+}
+
+.hm-section-content {
+  position: relative;
+  z-index: 10;
+  width: 100%;
+  max-width: var(--hm-content-max);
+  padding: 0 var(--hm-gutter);
+  box-sizing: border-box;
+}
+
+/* ============================================================
+   5. Section Transition Zones
+   ============================================================ */
+.hm-section-bleed {
+  position: absolute;
+  bottom: -48px;
+  left: 0;
+  width: 100%;
+  height: 48px;
+  z-index: 0;
+  pointer-events: none;
+}
+
+.hm-section-bleed--welcome-to-family {
+  background: linear-gradient(180deg, #0B1620 0%, #F0DDD0 100%);
+}
+
+.hm-section-bleed--family-to-countdown {
+  background: linear-gradient(180deg, #F0DDD0 0%, #6E4A3A 50%, #0B1620 100%);
+}
+
+.hm-section-bleed--countdown-to-celebrations {
+  background: linear-gradient(180deg, #0B1620 0%, #F5EDE0 100%);
+}
+
+.hm-section-bleed--celebrations-to-rsvp {
+  background: linear-gradient(180deg, #F5EDE0 0%, #0B1620 100%);
+}
+
+/* ============================================================
+   5b. Welcome Message Section (hm-welcome-msg)
+   ============================================================ */
+
+.hm-welcome-msg {
+  padding: var(--hm-section-pad) var(--hm-gutter);
+  background: var(--hm-gradient-night-vignette);
+  overflow: hidden;
+}
+
+/* Override GSAP hidden defaults for this non-animated section */
+.hm-welcome-msg .hm-welcome-label,
+.hm-welcome-msg .hm-welcome-gold-rule,
+.hm-welcome-msg .hm-welcome-message {
+  opacity: 1;
+  visibility: visible;
+}
+
+/* Content wrapper — centered column above the arch */
+.hm-wmsg-content {
+  position: relative;
+  z-index: 2;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  width: 100%;
+  max-width: var(--hm-content-max, 354px);
+  text-align: center;
+  padding: 56px 0 48px;
+}
+
+/* Mehrab arch positioned behind the text */
+.hm-wmsg-arch {
+  position: absolute;
+  top: 20px;
+  left: 50%;
+  transform: translateX(-50%);
+  z-index: -1;
+  pointer-events: none;
+}
+
+/* Top lotus medallion */
+.hm-wmsg-lotus {
+  opacity: 0.85;
+}
+
+/* Label row: diya — label — diya */
+.hm-wmsg-label-row {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  justify-content: center;
+}
+
+.hm-wmsg-diya {
+  opacity: 0.65;
+  flex-shrink: 0;
+}
+
+.hm-wmsg-diya--flip {
+  transform: scaleX(-1);
+}
+
+/* Ornamental divider: dots — rule — lotus — rule — dots */
+.hm-wmsg-ornament {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  width: 85%;
+  max-width: 300px;
+}
+
+.hm-wmsg-rule {
+  flex: 1;
+  height: 1px;
+  background: linear-gradient(90deg, transparent 0%, var(--hm-gold) 30%, var(--hm-gold) 70%, transparent 100%);
+  opacity: 0.45;
+}
+
+.hm-wmsg-ornament-dot {
+  width: 3px;
+  height: 3px;
+  border-radius: 50%;
+  background: var(--hm-gold);
+  opacity: 0.4;
+}
+
+/* Background floating motifs */
+.hm-wmsg-bg {
+  position: absolute;
+  inset: 0;
+  z-index: 0;
+  pointer-events: none;
+  overflow: hidden;
+}
+
+.hm-wmsg-bg-el {
+  position: absolute;
+}
+
+.hm-wmsg-paisley-tl {
+  top: 12%;
+  left: 4%;
+  transform: rotate(-25deg);
+}
+
+.hm-wmsg-paisley-br {
+  bottom: 10%;
+  right: 3%;
+  transform: rotate(160deg);
+}
+
+.hm-wmsg-marigold-tr {
+  top: 8%;
+  right: 6%;
+}
+
+.hm-wmsg-marigold-bl {
+  bottom: 14%;
+  left: 6%;
+}
+
+/* Cornice container at section bottom */
+.hm-section-cornice {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  width: 100%;
+  z-index: 6;
+}
+
+/* Cornice at section top */
+.hm-section-cornice-top {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  z-index: 6;
+}
+
+/* ============================================================
+   6. Welcome Section
+   ============================================================ */
+.hm-welcome {
+  min-height: 100vh;
+  min-height: 100svh;
+  overflow: hidden;
+  background: var(--hm-gradient-night-vignette);
+}
+
+.hm-tap-to-open {
+  position: absolute;
+  top: 70%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  z-index: 20;
+  background: rgba(6, 14, 21, 0.35);
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
+  border: 1px solid var(--hm-gold);
+  color: var(--hm-gold);
+  font-family: 'Cormorant SC', 'Cormorant Garamond', Georgia, serif;
+  font-size: 14px;
+  font-weight: 600;
+  letter-spacing: 0.15em;
+  padding: 14px 36px;
+  cursor: pointer;
+  text-transform: uppercase;
+}
+
+.hm-music {
+  position: absolute;
+  z-index: 20;
+  right: calc(3% + 24px);
+  bottom: calc(7.2% - 5px);
+  width: 46px;
+  height: 46px;
+  border: 1px solid var(--hm-gold);
+  border-radius: 50%;
+  background: rgba(6, 14, 21, 0.5);
+  backdrop-filter: blur(6px);
+  -webkit-backdrop-filter: blur(6px);
+  color: var(--hm-gold);
+  cursor: pointer;
+  font: 18px Georgia, serif;
+}
+
+.hm-entry-video {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100vh;
+  height: 100svh;
+  object-fit: cover;
+  z-index: 1;
+}
+
+.hm-welcome-overlay {
+  position: absolute;
+  inset: 0;
+  z-index: 2;
+  background: linear-gradient(180deg, rgba(6,14,21,0.65) 0%, rgba(6,14,21,0.85) 100%);
+  opacity: 0;
+}
+
+.hm-welcome-jali {
+  position: absolute;
+  inset: 0;
+  z-index: 3;
+  opacity: 0;
+  pointer-events: none;
+}
+
+.hm-welcome-stars {
+  position: absolute;
+  inset: 0;
+  z-index: 4;
+  pointer-events: none;
+  opacity: 0;
+}
+
+.hm-welcome-content-wrapper {
+  position: absolute;
+  inset: 0;
+  z-index: 10;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: flex-start;
+  text-align: center;
+  padding: 100px 24px 24px;
+  gap: 8px;
+}
+
+/* Welcome typography */
+.hm-welcome-label {
+  font-family: 'Cinzel Decorative', 'Cinzel', Georgia, serif;
+  font-size: 26px;
+  font-weight: 700;
+  color: var(--hm-gold-bright);
+  letter-spacing: 0.06em;
+  line-height: 1.3;
+  text-align: center;
+}
+
+.hm-welcome-gold-rule {
+  width: 80%;
+  max-width: 283px;
+  height: 1px;
+  background: var(--hm-gold);
+  opacity: 0;
+  visibility: hidden;
+}
+
+.hm-welcome-arch-container {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+}
+
+.hm-welcome-arch {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+}
+
+.hm-word {
+  display: inline-block;
+  opacity: 0;
+}
+
+.hm-couple-names {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: var(--hm-space-sm);
+  visibility: hidden;
+}
+
+.hm-couple-name {
+  font-family: 'Cinzel Decorative', 'Cinzel', Georgia, serif;
+  font-size: 32px;
+  font-weight: 700;
+  color: var(--hm-marble);
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  line-height: 1.2;
+}
+
+.hm-couple-ampersand {
+  font-family: 'Cormorant Garamond', Georgia, serif;
+  font-size: 20px;
+  font-weight: 400;
+  font-style: italic;
+  color: var(--hm-gold-bright);
+  line-height: 1.3;
+}
+
+.hm-welcome-message {
+  font-family: 'Cormorant Garamond', Georgia, serif;
+  font-size: 17.5px;
+  font-weight: 400;
+  font-style: italic;
+  color: var(--hm-ivory);
+  letter-spacing: 0.015em;
+  line-height: 1.75;
+  max-width: 320px;
+  text-align: center;
+  margin: 0;
+}
+
+.hm-welcome-date {
+  font-family: 'Cormorant SC', 'Cormorant Garamond', Georgia, serif;
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--hm-gold-bright);
+  letter-spacing: 0.1em;
+  line-height: 1.4;
+}
+
+/* Scroll indicator */
+.hm-scroll-indicator {
+  position: absolute;
+  bottom: 24px;
+  left: 50%;
+  transform: translateX(-50%);
+  z-index: 11;
+  animation: hm-scroll-float 3s ease-in-out infinite;
+  will-change: transform, opacity;
+  opacity: 0;
+  visibility: hidden;
+}
+
+.hm-welcome-lotus-top {
+  opacity: 0;
+  visibility: hidden;
+}
+
+/* ============================================================
+   7. Stars
+   ============================================================ */
+.hm-star {
+  position: absolute;
+  border-radius: 50%;
+  background: var(--hm-ember);
+  animation: hm-twinkle var(--hm-star-duration) ease-in-out var(--hm-star-delay) infinite;
+  will-change: opacity;
+}
+
+/* ============================================================
+   8. Family Section
+   ============================================================ */
+.hm-family {
+  background-color: var(--hm-sandstone-pale);
+  padding: var(--hm-section-pad) var(--hm-gutter);
+}
+
+.hm-family-heading {
+  font-family: 'Cinzel Decorative', 'Cinzel', Georgia, serif;
+  font-size: 22px;
+  font-weight: 700;
+  color: var(--hm-deep-brown);
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  line-height: 1.25;
+}
+
+.hm-family-gold-rule {
+  width: 80px;
+  height: 1px;
+  background: var(--hm-gold);
+  margin: 0 auto;
+}
+
+.hm-family-side-label {
+  font-family: 'Cormorant SC', 'Cormorant Garamond', Georgia, serif;
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--hm-sandstone-shadow);
+  letter-spacing: 0.1em;
+  line-height: 1.4;
+}
+
+.hm-family-member-name {
+  font-family: 'Cormorant Garamond', Georgia, serif;
+  font-size: 18px;
+  font-weight: 500;
+  color: var(--hm-deep-brown);
+  letter-spacing: 0.01em;
+  line-height: 1.6;
+}
+
+.hm-family-member-desc {
+  font-family: 'Cormorant Garamond', Georgia, serif;
+  font-size: 14px;
+  font-weight: 400;
+  color: var(--hm-sandstone-shadow);
+  letter-spacing: 0.02em;
+  line-height: 1.5;
+}
+
+/* ============================================================
+   9. Countdown Section
+   ============================================================ */
+.hm-countdown {
+  background: var(--hm-gradient-sky);
+  padding: var(--hm-section-pad) var(--hm-gutter);
+}
+
+.hm-countdown-jali-overlay {
+  position: absolute;
+  inset: 0;
+  z-index: 1;
+  opacity: 0.04;
+  pointer-events: none;
+}
+
+.hm-countdown-jali-band {
+  position: absolute;
+  left: var(--hm-gutter);
+  right: var(--hm-gutter);
+  height: 32px;
+  z-index: 2;
+  opacity: 0.06;
+  pointer-events: none;
+  animation: hm-jali-glow 6s ease-in-out infinite;
+  will-change: opacity;
+  -webkit-mask-image: linear-gradient(90deg, transparent 0%, rgba(0,0,0,1) 48px, rgba(0,0,0,1) calc(100% - 48px), transparent 100%);
+  mask-image: linear-gradient(90deg, transparent 0%, rgba(0,0,0,1) 48px, rgba(0,0,0,1) calc(100% - 48px), transparent 100%);
+}
+
+.hm-countdown-label {
+  font-family: 'Cormorant SC', 'Cormorant Garamond', Georgia, serif;
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--hm-gold-bright);
+  letter-spacing: 0.1em;
+  line-height: 1.4;
+}
+
+.hm-countdown-timer {
+  max-width: 320px;
+  width: 100%;
+  display: flex;
+  justify-content: center;
+  align-items: flex-start;
+  gap: 12px;
+  position: relative;
+}
+
+.hm-countdown-col {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  min-width: 56px;
+}
+
+.hm-countdown-digit {
+  font-family: 'Cinzel Decorative', 'Cinzel', Georgia, serif;
+  font-size: 40px;
+  font-weight: 700;
+  color: var(--hm-gold-bright);
+  letter-spacing: 0.04em;
+  line-height: 1.0;
+  font-variant-numeric: tabular-nums;
+  display: inline-block;
+}
+
+.hm-countdown-unit {
+  font-family: 'Cormorant SC', 'Cormorant Garamond', Georgia, serif;
+  font-size: 11px;
+  font-weight: 500;
+  color: var(--hm-ivory);
+  opacity: 0.7;
+  letter-spacing: 0.12em;
+  line-height: 1.3;
+  margin-top: var(--hm-space-xs);
+}
+
+.hm-countdown-separator {
+  width: 3px;
+  height: 3px;
+  border-radius: 50%;
+  background: var(--hm-gold);
+  opacity: 0.4;
+  margin-top: 20px;
+  flex-shrink: 0;
+}
+
+.hm-countdown-full-date {
+  font-family: 'Cormorant Garamond', Georgia, serif;
+  font-size: 18px;
+  font-weight: 500;
+  color: var(--hm-ivory);
+  letter-spacing: 0.01em;
+  line-height: 1.6;
+}
+
+.hm-countdown-day {
+  font-family: 'Cormorant SC', 'Cormorant Garamond', Georgia, serif;
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--hm-gold-bright);
+  letter-spacing: 0.1em;
+  line-height: 1.4;
+}
+
+.hm-countdown-time {
+  font-family: 'Cormorant Garamond', Georgia, serif;
+  font-size: 16px;
+  font-weight: 400;
+  color: var(--hm-ivory);
+  letter-spacing: 0.01em;
+  line-height: 1.6;
+}
+
+/* ============================================================
+   10. Celebrations Section
+   ============================================================ */
+.hm-celebrations {
+  background: var(--hm-ivory);
+  padding: var(--hm-section-pad) var(--hm-gutter);
+  position: relative;
+  overflow: hidden;
+}
+
+
+.hm-celebrations--single-event {
+  padding-top: var(--hm-space-3xl);
+  padding-bottom: var(--hm-space-3xl);
+}
+
+.hm-celebrations-bg {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  z-index: 0;
+  overflow: hidden;
+}
+
+/* Rajasthani floating motifs */
+.hm-cb-el {
+  position: absolute;
+  pointer-events: none;
+}
+
+/* Paisleys — gentle sway */
+.hm-cb-paisley-1 { top: 3%;   left: 2%;   opacity: 0.45; animation: hm-sway-1 14s ease-in-out infinite; }
+.hm-cb-paisley-2 { top: 48%;  right: 1%;  opacity: 0.35; animation: hm-sway-2 16s ease-in-out infinite 3s; transform: scaleX(-1); }
+.hm-cb-paisley-3 { bottom: 10%; left: 4%; opacity: 0.3;  animation: hm-sway-1 18s ease-in-out infinite 7s; }
+
+/* Marigolds — slow spin + drift */
+.hm-cb-marigold-1 { top: 14%;  right: 3%;  opacity: 0.4;  animation: hm-bloom-1 12s ease-in-out infinite; }
+.hm-cb-marigold-2 { top: 58%;  left: 2%;   opacity: 0.35; animation: hm-bloom-2 15s ease-in-out infinite 4s; }
+.hm-cb-marigold-3 { bottom: 5%; right: 6%; opacity: 0.3;  animation: hm-bloom-1 18s ease-in-out infinite 9s; }
+
+/* Diyas — gentle bob like a floating lamp */
+.hm-cb-diya-1 { top: 34%;  left: 3%;   opacity: 0.4;  animation: hm-lamp 10s ease-in-out infinite 2s; }
+.hm-cb-diya-2 { top: 76%;  right: 2%;  opacity: 0.35; animation: hm-lamp 13s ease-in-out infinite 6s; }
+
+/* Sway — paisley drift left-right with tilt */
+@keyframes hm-sway-1 {
+  0%, 100% { transform: translate(0, 0) rotate(0deg); }
+  25%      { transform: translate(12px, -8px) rotate(4deg); }
+  50%      { transform: translate(-6px, -16px) rotate(-3deg); }
+  75%      { transform: translate(8px, -6px) rotate(2deg); }
+}
+@keyframes hm-sway-2 {
+  0%, 100% { transform: scaleX(-1) translate(0, 0) rotate(0deg); }
+  30%      { transform: scaleX(-1) translate(-10px, -12px) rotate(-4deg); }
+  60%      { transform: scaleX(-1) translate(8px, -20px) rotate(3deg); }
+  85%      { transform: scaleX(-1) translate(-5px, -8px) rotate(-2deg); }
+}
+
+/* Bloom — marigold slow spin with vertical drift */
+@keyframes hm-bloom-1 {
+  0%, 100% { transform: rotate(0deg) translateY(0); }
+  25%      { transform: rotate(20deg) translateY(-10px); }
+  50%      { transform: rotate(-10deg) translateY(-18px); }
+  75%      { transform: rotate(15deg) translateY(-6px); }
+}
+@keyframes hm-bloom-2 {
+  0%, 100% { transform: rotate(0deg) translateY(0); }
+  33%      { transform: rotate(-15deg) translateY(-14px); }
+  66%      { transform: rotate(20deg) translateY(-8px); }
+}
+
+/* Lamp — gentle vertical bob */
+@keyframes hm-lamp {
+  0%, 100% { transform: translateY(0); }
+  30%      { transform: translateY(-12px); }
+  60%      { transform: translateY(-20px); }
+  80%      { transform: translateY(-8px); }
+}
+
+.hm-celebrations-heading {
+  font-family: 'Cinzel Decorative', 'Cinzel', Georgia, serif;
+  font-size: 22px;
+  font-weight: 700;
+  color: var(--hm-deep-brown);
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  line-height: 1.25;
+  position: relative;
+  z-index: 1;
+}
+
+.hm-celebrations-gold-rule {
+  width: 80px;
+  height: 1px;
+  background: linear-gradient(90deg, transparent, var(--hm-gold-deep), transparent);
+  margin: 0 auto;
+  position: relative;
+  z-index: 1;
+}
+
+/* ============================================================
+   Event Card — complete redesign
+   Gold header band + warm ivory body + bold CTAs
+   ============================================================ */
+
+.hm-celebrations-inner {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  width: 100%;
+  max-width: var(--hm-content-max, 354px);
+  position: relative;
+  z-index: 1;
+}
+
+.hm-event-card {
+  width: 100%;
+  max-width: var(--hm-content-max);
+  border-radius: 6px;
+  overflow: hidden;
+  box-shadow:
+    0 4px 6px rgba(42, 31, 26, 0.06),
+    0 12px 28px rgba(42, 31, 26, 0.1),
+    0 24px 56px rgba(42, 31, 26, 0.06);
+  position: relative;
+  z-index: 1;
+}
+
+/* ---- Gold header band ---- */
+.hm-event-card-header {
+  background: linear-gradient(135deg, #A07830 0%, var(--hm-gold) 30%, var(--hm-gold-bright) 50%, var(--hm-gold) 70%, #A07830 100%);
+  padding: 14px 24px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 14px;
+}
+
+.hm-event-card-header-rule {
+  flex: 1;
+  max-width: 50px;
+  height: 1px;
+  background: rgba(255, 255, 255, 0.45);
+}
+
+.hm-event-type {
+  font-family: 'Cormorant SC', 'Cormorant Garamond', Georgia, serif;
+  font-size: 12px;
+  font-weight: 600;
+  color: #FFFDF5;
+  letter-spacing: 0.28em;
+  line-height: 1;
+  text-transform: uppercase;
+  white-space: nowrap;
+}
+
+/* ---- Card body ---- */
+.hm-event-card-body {
+  background: linear-gradient(180deg, #FFFBF2 0%, #FBF4E4 100%);
+  padding: 36px 28px 32px;
+  text-align: center;
+  position: relative;
+}
+
+/* Paisley accent — top left */
+.hm-event-card-accent {
+  position: absolute;
+  pointer-events: none;
+  z-index: 0;
+}
+.hm-event-card-accent--left {
+  top: 6px;
+  left: 6px;
+  transform: rotate(20deg);
+}
+.hm-event-card-accent--right {
+  top: 6px;
+  right: 6px;
+  transform: rotate(-20deg) scaleX(-1);
+}
+
+/* ---- Card typography ---- */
+.hm-event-name {
+  font-family: 'Cinzel Decorative', 'Cinzel', Georgia, serif;
+  font-size: 24px;
+  font-weight: 700;
+  color: var(--hm-deep-brown);
+  letter-spacing: 0.04em;
+  line-height: 1.3;
+  margin: 0;
+  position: relative;
+  z-index: 1;
+}
+
+/* Ornamental rule ——◆—— */
+.hm-event-ornament-rule {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  width: 100%;
+  position: relative;
+  z-index: 1;
+}
+
+.hm-event-ornament-rule::before,
+.hm-event-ornament-rule::after {
+  content: '';
+  flex: 1;
+  max-width: 65px;
+  height: 1px;
+  background: linear-gradient(90deg, transparent, var(--hm-gold-deep));
+  opacity: 0.55;
+}
+
+.hm-event-ornament-rule::after {
+  background: linear-gradient(90deg, var(--hm-gold-deep), transparent);
+}
+
+/* ---- Details ---- */
+.hm-event-detail-row {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  position: relative;
+  z-index: 1;
+}
+
+.hm-event-detail-text {
+  font-family: 'Cormorant Garamond', Georgia, serif;
+  font-size: 16px;
+  font-weight: 500;
+  color: var(--hm-deep-brown);
+  letter-spacing: 0.02em;
+  line-height: 1.6;
+}
+
+.hm-event-card-divider {
+  width: 50%;
+  height: 1px;
+  background: linear-gradient(90deg, transparent, var(--hm-gold-deep), transparent);
+  margin: 0 auto;
+  opacity: 0.4;
+  position: relative;
+  z-index: 1;
+}
+
+.hm-event-venue {
+  font-family: 'Cormorant Garamond', Georgia, serif;
+  font-size: 18px;
+  font-weight: 600;
+  color: var(--hm-deep-brown);
+  letter-spacing: 0.03em;
+  line-height: 1.5;
+  position: relative;
+  z-index: 1;
+}
+
+.hm-event-address {
+  font-family: 'Cormorant Garamond', Georgia, serif;
+  font-size: 14px;
+  font-weight: 400;
+  color: var(--hm-sandstone-shadow);
+  letter-spacing: 0.02em;
+  line-height: 1.5;
+  position: relative;
+  z-index: 1;
+}
+
+/* ---- Buttons — two styles ---- */
+.hm-event-actions {
+  display: flex;
+  justify-content: center;
+  gap: 12px;
+  flex-wrap: wrap;
+  position: relative;
+  z-index: 1;
+}
+
+/* Shared button base */
+.hm-event-btn--filled,
+.hm-event-btn--outline {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 42px;
+  padding: 9px 22px;
+  border-radius: 3px;
+  font-family: 'Cormorant SC', 'Cormorant Garamond', Georgia, serif;
+  font-size: 12px;
+  font-weight: 700;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  line-height: 1.4;
+  cursor: pointer;
+  text-decoration: none;
+  transition: filter 200ms ease, box-shadow 200ms ease, background 200ms ease, color 200ms ease;
+}
+
+/* Filled gold button (primary) */
+.hm-event-btn--filled {
+  border: none;
+  background: linear-gradient(180deg, var(--hm-gold-bright) 0%, var(--hm-gold-deep) 100%);
+  color: #FFFDF5;
+  box-shadow: 0 2px 8px rgba(184, 137, 46, 0.3);
+}
+
+.hm-event-btn--filled:hover {
+  filter: brightness(1.1);
+  box-shadow: 0 4px 16px rgba(184, 137, 46, 0.4);
+}
+
+.hm-event-btn--filled:active {
+  filter: brightness(0.95);
+}
+
+/* Outlined button (secondary) */
+.hm-event-btn--outline {
+  border: 1.5px solid var(--hm-gold-deep);
+  background: transparent;
+  color: var(--hm-gold-deep);
+}
+
+.hm-event-btn--outline:hover {
+  background: var(--hm-gold-deep);
+  color: #FFFDF5;
+}
+
+.hm-event-btn--outline:active {
+  background: var(--hm-gold);
+  border-color: var(--hm-gold);
+  color: var(--hm-deep-brown);
+}
+
+.hm-event-btn--filled:focus-visible,
+.hm-event-btn--outline:focus-visible {
+  outline: 2px solid var(--hm-gold);
+  outline-offset: 3px;
+}
+
+/* ---- Card connector — dotted line + mehrab + mandap ---- */
+.hm-card-connector {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 8px 0;
+  position: relative;
+  z-index: 1;
+}
+
+.hm-card-connector-dots {
+  width: 2px;
+  height: 56px;
+  background-image: radial-gradient(circle, var(--hm-gold-deep) 1.5px, transparent 1.5px);
+  background-size: 2px 8px;
+  background-repeat: repeat-y;
+  opacity: 0.55;
+}
+
+.hm-card-connector-motif {
+  width: 52px;
+  height: auto;
+  margin-top: -2px;
+}
+
+/* Celebrations transition zone lotus */
+.hm-celebrations-transition-lotus {
+  position: absolute;
+  bottom: -36px;
+  left: 50%;
+  transform: translateX(-50%);
+  z-index: 4;
+}
+
+/* Event rest rule (7+ events) */
+.hm-event-rest-rule {
+  width: 60px;
+  height: 1px;
+  background: var(--hm-gold);
+  margin: 0 auto;
+}
+
+/* ============================================================
+   11. RSVP Section
+   ============================================================ */
+.hm-rsvp {
+  background: var(--hm-gradient-sky);
+  padding: var(--hm-section-pad) var(--hm-gutter);
+}
+
+.hm-rsvp-jali {
+  position: absolute;
+  inset: 0;
+  z-index: 1;
+  opacity: 0.03;
+  pointer-events: none;
+}
+
+.hm-rsvp-heading {
+  font-family: 'Cinzel Decorative', 'Cinzel', Georgia, serif;
+  font-size: 22px;
+  font-weight: 700;
+  color: var(--hm-marble);
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  line-height: 1.25;
+}
+
+.hm-rsvp-gold-rule {
+  width: 80px;
+  height: 1px;
+  background: var(--hm-gold);
+  margin: 0 auto;
+}
+
+.hm-rsvp-message {
+  font-family: 'Cormorant Garamond', Georgia, serif;
+  font-size: 16px;
+  font-weight: 400;
+  font-style: italic;
+  color: var(--hm-ivory);
+  letter-spacing: 0.01em;
+  line-height: 1.6;
+}
+
+/* Form container */
+.hm-rsvp-form-container {
+  width: 100%;
+  max-width: 338px;
+  padding: 28px 32px;
+  background: rgba(11, 22, 32, 0.60);
+  border-left: 1px solid rgba(212, 160, 85, 0.15);
+  border-right: 1px solid rgba(212, 160, 85, 0.15);
+  border-bottom: 1px solid rgba(212, 160, 85, 0.15);
+  position: relative;
+}
+
+.hm-rsvp-form-arch {
+  position: relative;
+  margin-top: -24px;
+  margin-bottom: 8px;
+  display: flex;
+  justify-content: center;
+}
+
+/* Form fields */
+.hm-rsvp-form-field {
+  display: flex;
+  flex-direction: column;
+  gap: var(--hm-space-xs);
+}
+
+.hm-rsvp-label {
+  font-family: 'Cormorant SC', 'Cormorant Garamond', Georgia, serif;
+  font-size: 13px;
+  font-weight: 500;
+  color: var(--hm-ember);
+  letter-spacing: 0.06em;
+  line-height: 1.4;
+  text-align: left;
+  transition: color 200ms ease;
+}
+
+.hm-rsvp-input {
+  background: transparent;
+  border: none;
+  border-bottom: 1px solid rgba(212, 160, 85, 0.4);
+  color: var(--hm-ivory);
+  font-family: 'Cormorant Garamond', Georgia, serif;
+  font-size: 16px;
+  font-weight: 400;
+  letter-spacing: 0.01em;
+  line-height: 1.6;
+  padding: 6px 0;
+  outline: none;
+  width: 100%;
+  transition: border-color 200ms ease;
+}
+
+.hm-rsvp-input::placeholder {
+  color: var(--hm-ember);
+  opacity: 0.6;
+}
+
+.hm-rsvp-input:focus {
+  border-bottom-color: var(--hm-gold-bright);
+}
+
+.hm-rsvp-field--focused .hm-rsvp-label {
+  color: var(--hm-gold-bright);
+}
+
+.hm-rsvp-textarea {
+  background: transparent;
+  border: none;
+  border-bottom: 1px solid rgba(212, 160, 85, 0.4);
+  color: var(--hm-ivory);
+  font-family: 'Cormorant Garamond', Georgia, serif;
+  font-size: 16px;
+  font-weight: 400;
+  letter-spacing: 0.01em;
+  line-height: 1.6;
+  padding: 6px 0;
+  outline: none;
+  width: 100%;
+  resize: none;
+  min-height: 60px;
+  transition: border-color 200ms ease;
+}
+
+.hm-rsvp-textarea::placeholder {
+  color: var(--hm-ember);
+  opacity: 0.6;
+}
+
+.hm-rsvp-textarea:focus {
+  border-bottom-color: var(--hm-gold-bright);
+}
+
+/* Attendance toggle */
+.hm-rsvp-toggle {
+  display: flex;
+  gap: var(--hm-space-sm);
+  flex-wrap: wrap;
+}
+
+.hm-rsvp-toggle-option {
+  flex: 1;
+  min-width: 120px;
+  min-height: 44px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 10px 12px;
+  background: transparent;
+  border: 1px solid rgba(212, 160, 85, 0.3);
+  border-radius: 2px;
+  color: var(--hm-ivory);
+  font-family: 'Cormorant SC', 'Cormorant Garamond', Georgia, serif;
+  font-size: 13px;
+  font-weight: 600;
+  letter-spacing: 0.06em;
+  line-height: 1.4;
+  cursor: pointer;
+  transition: background-color 200ms ease, color 200ms ease;
+}
+
+.hm-rsvp-toggle-option--selected {
+  background: var(--hm-gold);
+  color: var(--hm-deep-brown);
+  border-color: var(--hm-gold);
+}
+
+/* Submit button */
+.hm-rsvp-submit {
+  width: 100%;
+  min-height: 48px;
+  padding: 12px 24px;
+  background: var(--hm-gold);
+  border: none;
+  border-radius: 2px;
+  color: var(--hm-deep-brown);
+  font-family: 'Cormorant SC', 'Cormorant Garamond', Georgia, serif;
+  font-size: 14px;
+  font-weight: 600;
+  letter-spacing: 0.08em;
+  line-height: 1.4;
+  cursor: pointer;
+  transition: background-color 150ms ease;
+}
+
+.hm-rsvp-submit:hover {
+  background: var(--hm-gold-bright);
+}
+
+.hm-rsvp-submit:active {
+  background: var(--hm-gold-deep);
+}
+
+.hm-rsvp-submit:focus-visible {
+  outline: 2px solid var(--hm-marble);
+  outline-offset: 2px;
+}
+
+/* Confirmation */
+.hm-rsvp-confirmation {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+  gap: var(--hm-space-sm);
+  padding: 32px 0;
+}
+
+.hm-rsvp-confirmation-heading {
+  font-family: 'Cinzel Decorative', 'Cinzel', Georgia, serif;
+  font-size: 20px;
+  font-weight: 700;
+  color: var(--hm-gold-bright);
+  letter-spacing: 0.04em;
+  line-height: 1.25;
+}
+
+.hm-rsvp-confirmation-text {
+  font-family: 'Cormorant Garamond', Georgia, serif;
+  font-size: 16px;
+  font-weight: 400;
+  font-style: italic;
+  color: var(--hm-ivory);
+  letter-spacing: 0.01em;
+  line-height: 1.6;
+}
+
+/* Error state */
+.hm-rsvp-error {
+  color: #D4756A;
+  font-family: 'Cormorant Garamond', Georgia, serif;
+  font-size: 14px;
+  opacity: 0;
+  transition: opacity 200ms ease;
+}
+
+.hm-rsvp-error--visible {
+  opacity: 1;
+}
+
+.hm-rsvp-input--error {
+  border-bottom-color: #D4756A;
+}
+
+/* ============================================================
+   12. Closing Section
+   ============================================================ */
+.hm-closing {
+  background: linear-gradient(180deg, #FAF7F2 0%, #F0DDD0 100%);
+  padding: var(--hm-section-pad) var(--hm-gutter) 24px;
+  overflow: hidden;
+}
+
+.hm-closing-jali {
+  position: absolute;
+  inset: 0;
+  z-index: 1;
+  opacity: 0.06;
+  pointer-events: none;
+}
+
+.hm-closing-stars {
+  display: none;
+}
+
+.hm-closing-gold-rule {
+  width: 100px;
+  height: 1px;
+  background: var(--hm-gold-deep);
+  opacity: 0.5;
+  margin: 0 auto;
+}
+
+.hm-closing-arch-container {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+}
+
+.hm-closing-arch {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+}
+
+.hm-closing-message {
+  font-family: 'Cormorant Garamond', Georgia, serif;
+  font-size: 18px;
+  font-weight: 400;
+  font-style: italic;
+  color: var(--hm-deep-brown);
+  letter-spacing: 0.01em;
+  line-height: 1.6;
+  max-width: 300px;
+}
+
+.hm-closing-couple-names {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: var(--hm-space-sm);
+}
+
+.hm-closing-couple-name {
+  font-family: 'Cinzel Decorative', 'Cinzel', Georgia, serif;
+  font-size: 24px;
+  font-weight: 700;
+  color: var(--hm-deep-brown);
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  line-height: 1.2;
+}
+
+.hm-closing-ampersand {
+  font-family: 'Cormorant Garamond', Georgia, serif;
+  font-size: 18px;
+  font-weight: 400;
+  font-style: italic;
+  color: var(--hm-gold-deep);
+  line-height: 1.3;
+}
+
+.hm-closing-hashtag {
+  font-family: 'Cormorant SC', 'Cormorant Garamond', Georgia, serif;
+  font-size: 13px;
+  font-weight: 500;
+  color: var(--hm-gold-deep);
+  letter-spacing: 0.08em;
+  line-height: 1.4;
+}
+
+.hm-closing-footer {
+  opacity: 0.6;
+  color: var(--hm-sandstone-shadow) !important;
+}
+
+/* ============================================================
+   13. Cornice Shimmer (GSAP sets initial position)
+   ============================================================ */
+.hm-cornice-shimmer {
+  background: linear-gradient(
+    90deg,
+    var(--hm-gold) 0%,
+    var(--hm-gold-bright) 45%,
+    #F5E0B5 50%,
+    var(--hm-gold-bright) 55%,
+    var(--hm-gold) 100%
+  );
+  background-size: 200% 100%;
+}
+
+/* ============================================================
+   14. CSS Keyframes
+   ============================================================ */
+@keyframes hm-twinkle {
+  0%, 100% {
+    opacity: 0.1;
+  }
+  50% {
+    opacity: 0.7;
+  }
+}
+
+@keyframes hm-scroll-float {
+  0%, 100% {
+    transform: translateX(-50%);
+    opacity: 0.6;
+  }
+  50% {
+    transform: translateX(calc(-50% + 4px));
+    opacity: 1;
+  }
+}
+
+@keyframes hm-jali-glow {
+  0%, 100% {
+    opacity: 0.04;
+  }
+  50% {
+    opacity: 0.08;
+  }
+}
+
+@keyframes hm-shimmer {
+  0%, 100% {
+    background-position: 100% 0;
+  }
+  50% {
+    background-position: -100% 0;
+  }
+}
+
+/* ============================================================
+   15. Viewport Pause (IntersectionObserver)
+   ============================================================ */
+[data-hm-paused] .hm-star,
+[data-hm-paused] .hm-scroll-indicator,
+[data-hm-paused] .hm-countdown-jali-band,
+[data-hm-paused] .hm-event-arch-shimmer,
+[data-hm-paused] [class*="hm-cb-"] {
+  animation-play-state: paused !important;
+}
+
+[data-hm-paused] .hm-star,
+[data-hm-paused] .hm-scroll-indicator {
+  will-change: auto;
+}
+
+/* ============================================================
+   16. Reduced Motion
+   ============================================================ */
+@media (prefers-reduced-motion: reduce) {
+  /* Kill all CSS animations */
+  .hm-star,
+  .hm-scroll-indicator,
+  .hm-countdown-jali-band,
+  .hm-event-arch-shimmer,
+  .hm-gold-shimmer,
+  .hm-cornice-shimmer,
+  [class*="hm-cb-"] {
+    animation: none !important;
+  }
+
+  /* Kill all CSS transitions */
+  .hm-rsvp-input,
+  .hm-rsvp-textarea,
+  .hm-rsvp-label,
+  .hm-rsvp-toggle-option,
+  .hm-rsvp-submit,
+  .hm-event-btn {
+    transition: none !important;
+  }
+
+  /* Static states */
+  .hm-star {
+    opacity: 0.4;
+  }
+
+  .hm-scroll-indicator {
+    opacity: 0.8;
+    visibility: visible;
+  }
+
+  .hm-countdown-jali-band {
+    opacity: 0.06;
+  }
+
+  /* All welcome content visible immediately */
+  .hm-welcome-content-wrapper,
+  .hm-welcome-content,
+  .hm-welcome-label,
+  .hm-welcome-gold-rule,
+  .hm-couple-names,
+  .hm-welcome-message,
+  .hm-welcome-date,
+  .hm-welcome-lotus-top,
+  .hm-word {
+    opacity: 1 !important;
+    visibility: visible !important;
+    transform: none !important;
+  }
+
+  .hm-welcome-overlay {
+    opacity: 1 !important;
+    visibility: visible !important;
+  }
+
+  .hm-welcome-jali {
+    opacity: 0.04 !important;
+    visibility: visible !important;
+  }
+
+  .hm-welcome-stars {
+    opacity: 1 !important;
+    visibility: visible !important;
+  }
+
+  /* All arches pre-drawn */
+  .hm-welcome-arch path,
+  .hm-rsvp-arch path,
+  .hm-closing-arch path {
+    stroke-dashoffset: 0 !important;
+    stroke-dasharray: none !important;
+  }
+}

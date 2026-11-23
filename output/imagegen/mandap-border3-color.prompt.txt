@@ -1,0 +1,9 @@
+Tool: built-in image_gen
+Edit target: public/templates/mandap-at-dusk/border3.webp
+Color reference: public/templates/mandap-at-dusk/border2.webp
+Output: public/templates/mandap-at-dusk/border3.webp
+
+Final refinement prompt:
+Precise background color correction only. First attached image is the edit target. Second is the original background reference. The target's blank parchment currently measures average RGB 217,185,151; the original reference's blank parchment measures RGB 222,193,159. Make the target parchment slightly lighter and a little less reddish: raise red by approximately 5, green by 8, blue by 8. Visually match the SECOND image's parchment as closely as possible, with a blank central area averaging #DEC19F. Keep first image's flowers, petals, leaves, gold bells, layout, uncropped top and bottom arrangements and blank margins exactly unchanged. Do not darken the parchment again. Do not brighten it to yellow. Same vertical dimensions and composition, no text.
+
+Use case: precise-object-edit. Image 1 (border3.webp) is the edit target. Image 2 (border2.webp) is ONLY the parchment background color and texture reference. Correct ONLY the parchment background in image 1 to match the muted beige/tan parchment in image 2. The target background is less yellow and more muted, approximately RGB(222,193,159), hex #DEC19F in its blank central region; preserve the subtle natural variations visible in image 2. Avoid the brighter golden/yellow cast currently in image 1. Keep ALL flower arrangements, leaves, jasmine chains, gold bells, petals, positions, scale, detail, and their soft shadows from image 1 unchanged. Keep image 1's complete uncropped top and bottom flower clusters, small blank margins and portrait proportions. Do not copy image 2's clipped flowers. Keep the central writing space completely blank. No text, no watermark, no added border. Output the full corrected image.

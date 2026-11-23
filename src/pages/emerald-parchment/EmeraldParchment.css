@@ -1,0 +1,481 @@
+/* Emerald Parchment – Template 10 – scoped native styles */
+
+.emerald-native {
+  --c-dark: #0f1e16;
+  --c-deep: #1f3a2b;
+  --c-mid: rgba(31,58,43,0.85);
+  --c-light: rgba(31,58,43,0.6);
+  --gold: #b98a4a;
+  --gold-light: #d4b374;
+  --parchment: #efe4c9;
+  --bg: #f5efe3;
+
+  position: relative;
+  width: 100%;
+  min-height: 100svh;
+  background: var(--bg);
+  overflow: hidden;
+  font-family: 'Playfair Display', serif;
+  -webkit-font-smoothing: antialiased;
+}
+
+/* Font class helpers */
+.emerald-native .f-script { font-family: 'Parisienne', cursive; }
+.emerald-native .f-heading { font-family: 'Playfair Display', serif; font-style: italic; }
+.emerald-native .f-arabic { font-family: 'Katibeh', serif; }
+
+/* ── Loading ── */
+.emerald-native .ep-loading {
+  position: fixed; inset: 0; z-index: 100;
+  display: flex; flex-direction: column; align-items: center; justify-content: center;
+  background: var(--bg);
+  transition: opacity 0.8s ease;
+}
+.emerald-native .ep-loading.hidden { opacity: 0; pointer-events: none; }
+.emerald-native .ep-loading-ring {
+  width: 48px; height: 48px; border-radius: 50%;
+  border: 2px solid rgba(185,138,74,0.3);
+  border-top-color: var(--gold);
+  animation: emerald-spin 1s linear infinite;
+}
+.emerald-native .ep-loading-names {
+  margin-top: 18px;
+  font-family: 'Parisienne', cursive;
+  font-size: 1.6rem; color: var(--c-deep);
+}
+
+/* ── Shell / Card ── */
+.emerald-native .ep-shell {
+  position: relative; width: 100%; min-height: 100svh;
+  display: flex; justify-content: center;
+  background: var(--bg);
+}
+.emerald-native .ep-card {
+  position: relative;
+  width: min(100vw, calc(100svh * 9 / 16));
+  min-height: 100svh;
+  background: var(--bg);
+  overflow: hidden;
+}
+
+/* ── Hero ── */
+.emerald-native .ep-hero {
+  position: relative; width: 100%; height: 100svh;
+  display: flex; flex-direction: column; align-items: center; justify-content: center;
+  background: var(--c-dark);
+  overflow: hidden;
+  transition: opacity 0.8s ease;
+}
+.emerald-native .ep-hero.hidden { opacity: 0; pointer-events: none; }
+.emerald-native .ep-hero-poster {
+  position: absolute; inset: 0; width: 100%; height: 100%;
+  object-fit: cover; z-index: 1;
+  transition: opacity 0.6s ease;
+}
+.emerald-native .ep-hero-video {
+  position: absolute; inset: 0; width: 100%; height: 100%;
+  object-fit: cover; z-index: 0;
+}
+
+/* ── Love seal ── */
+.emerald-native .ep-love-seal-hero {
+  position: absolute; top: 40px; left: 50%;
+  transform: translateX(-50%); z-index: 5;
+}
+.emerald-native .ep-love-seal {
+  display: block; width: 140px; height: auto; mix-blend-mode: multiply;
+}
+
+/* ── Hero names overlay ── */
+.emerald-native .ep-hero-overlay {
+  position: absolute; inset: 0; z-index: 6;
+  display: flex; align-items: center; justify-content: center;
+}
+.emerald-native .ep-names-wrap {
+  display: flex; flex-direction: column; align-items: center;
+  gap: 4px; text-align: center; padding: 0 16px;
+  opacity: 0; transform: translateY(18px);
+  transition: opacity 0.7s ease, transform 0.7s ease;
+}
+.emerald-native .ep-names-wrap.show {
+  opacity: 1; transform: translateY(0);
+}
+.emerald-native .ep-salam-text {
+  direction: rtl; font-family: 'Katibeh', serif;
+  font-size: 1.4rem; line-height: 1.5;
+  color: var(--parchment); text-shadow: 0 2px 12px rgba(0,0,0,0.5);
+  margin-bottom: 8px;
+}
+.emerald-native .ep-invited-text {
+  font-family: 'Playfair Display', serif; font-style: italic;
+  font-size: 13px; letter-spacing: 0.04em;
+  color: var(--gold-light); text-shadow: 0 2px 10px rgba(0,0,0,0.55);
+}
+.emerald-native .ep-hero-names {
+  display: flex; flex-direction: column; align-items: center; gap: 2px;
+  margin-top: 12px;
+}
+.emerald-native .ep-hero-name {
+  font-family: 'Parisienne', cursive;
+  font-size: clamp(2.2rem, 11vw, 3.2rem);
+  font-weight: 400; color: var(--parchment);
+  line-height: 1.1;
+  text-shadow: 0 3px 18px rgba(0,0,0,0.5);
+  min-height: 1.2em;
+}
+.emerald-native .ep-hero-parents {
+  font-family: 'Playfair Display', serif; font-style: italic;
+  font-size: 12px; color: var(--gold-light);
+  text-shadow: 0 2px 10px rgba(0,0,0,0.5);
+  opacity: 0; transition: opacity 0.5s ease;
+}
+.emerald-native .ep-hero-parents.visible { opacity: 1; }
+.emerald-native .ep-hero-ampersand {
+  font-family: 'Parisienne', cursive;
+  font-size: clamp(1.4rem, 7vw, 2rem);
+  color: var(--gold-light); line-height: 1;
+  text-shadow: 0 2px 10px rgba(0,0,0,0.45);
+  opacity: 0; transform: scale(0.6);
+  transition: opacity 0.4s ease, transform 0.4s ease;
+}
+.emerald-native .ep-hero-ampersand.visible {
+  opacity: 1; transform: scale(1);
+}
+
+/* Typewriter cursor */
+.emerald-native .tw-cursor {
+  display: inline-block; width: 2px; height: 1em;
+  background: var(--parchment); margin-left: 2px;
+  vertical-align: baseline;
+  animation: emerald-blink 0.65s step-end infinite;
+}
+
+/* ── Tap button ── */
+.emerald-native .ep-tap-btn {
+  position: absolute; bottom: 14%; left: 50%;
+  transform: translateX(-50%); z-index: 10;
+  display: flex; flex-direction: column; align-items: center;
+  gap: 10px; background: none; border: none; cursor: pointer;
+  padding: 12px;
+}
+.emerald-native .ep-tap-ring {
+  width: 56px; height: 56px; border-radius: 50%;
+  border: 1.5px solid var(--gold-light);
+  display: flex; align-items: center; justify-content: center;
+  animation: emerald-pulse-ring 2.4s ease-in-out infinite;
+}
+.emerald-native .ep-tap-dot {
+  width: 10px; height: 10px; border-radius: 50%;
+  background: var(--gold-light);
+}
+.emerald-native .ep-tap-label {
+  font-family: 'Playfair Display', serif; font-style: italic;
+  font-size: 13px; letter-spacing: 0.08em;
+  color: var(--gold-light); text-shadow: 0 2px 10px rgba(0,0,0,0.7);
+}
+
+/* ── Scroll hint ── */
+.emerald-native .ep-scroll-hint {
+  position: absolute; bottom: 8%; left: 50%;
+  transform: translateX(-50%); z-index: 10;
+  display: flex; flex-direction: column; align-items: center; gap: 4px;
+  animation: emerald-fade-in 0.55s ease forwards;
+}
+.emerald-native .ep-scroll-hint-label {
+  font-family: 'Playfair Display', serif; font-style: italic;
+  color: var(--gold-light); text-shadow: 0 2px 8px rgba(0,0,0,0.7);
+}
+.emerald-native .ep-scroll-hint-chevron {
+  animation: emerald-bounce-down 1.5s ease-in-out infinite;
+}
+.emerald-native .ep-scroll-hint-chevron svg {
+  width: 20px; height: 20px; color: var(--gold-light);
+}
+
+/* ── Page system ── */
+.emerald-native .ep-pages {
+  position: relative; width: 100%; min-height: 100svh;
+}
+.emerald-native .ep-page {
+  position: absolute; inset: 0;
+  display: flex; flex-direction: column; align-items: center;
+  justify-content: center;
+  padding: 32px 24px 80px;
+  opacity: 0; pointer-events: none;
+  transition: opacity 0.6s ease;
+}
+.emerald-native .ep-page.active {
+  opacity: 1; pointer-events: auto;
+}
+.emerald-native .ep-page-inner {
+  display: flex; flex-direction: column; align-items: center;
+  text-align: center; width: 100%; max-width: 340px;
+}
+
+/* ── Scroll button (per page) ── */
+.emerald-native .ep-scroll-btn {
+  position: absolute; bottom: 24px; left: 50%;
+  transform: translateX(-50%);
+  display: flex; flex-direction: column; align-items: center; gap: 4px;
+  background: none; border: none; cursor: pointer; padding: 8px;
+}
+.emerald-native .ep-scroll-btn-label {
+  font-family: 'Playfair Display', serif; font-style: italic;
+  font-size: 12px; letter-spacing: 0.08em; color: var(--c-light);
+}
+.emerald-native .ep-scroll-btn-chevron svg {
+  width: 20px; height: 20px; color: var(--gold-light);
+  animation: emerald-bounce-down 1.5s ease-in-out infinite;
+}
+
+/* ── SVG ornaments ── */
+.emerald-native .orn { display: block; }
+
+/* ── Typography ── */
+.emerald-native .ep-page-heading {
+  font-family: 'Playfair Display', serif; font-style: italic; font-weight: 400;
+  color: var(--c-deep); line-height: 1.2;
+}
+.emerald-native .ep-text-body {
+  font-family: 'Playfair Display', serif; font-style: italic;
+  color: var(--c-mid); font-size: 14px; line-height: 1.65;
+}
+.emerald-native .ep-text-small {
+  font-family: 'Playfair Display', serif; font-style: italic;
+  color: var(--c-light); font-size: 11px; letter-spacing: 0.05em; line-height: 1.5;
+}
+
+/* ── Welcome/Date ── */
+.emerald-native .ep-bismillah {
+  direction: rtl; text-align: center; width: 100%;
+  font-family: 'Katibeh', serif; font-size: 1.8rem; line-height: 1.5;
+  color: var(--c-deep); margin-bottom: 10px;
+}
+.emerald-native .ep-big-day {
+  font-family: 'Playfair Display', serif; font-size: clamp(2.8rem, 14vw, 4rem);
+  font-weight: 400; color: var(--c-deep); line-height: 1; letter-spacing: -0.02em;
+}
+.emerald-native .ep-month-year {
+  font-family: 'Playfair Display', serif; font-size: 11px; font-weight: 600;
+  text-transform: uppercase; letter-spacing: 0.22em; color: var(--c-deep);
+  margin-top: 12px;
+}
+.emerald-native .ep-when-line {
+  font-family: 'Playfair Display', serif; font-size: 14px; color: var(--c-mid);
+  margin-top: 8px;
+}
+
+/* ── Countdown ── */
+.emerald-native .ep-countdown-grid {
+  display: grid; grid-template-columns: repeat(4, 1fr); gap: 8px;
+  width: 100%; margin: 16px 0;
+}
+.emerald-native .ep-cd-unit { display: flex; flex-direction: column; align-items: center; }
+.emerald-native .ep-cd-num {
+  font-family: 'Playfair Display', serif; font-size: clamp(1.6rem, 8vw, 2.4rem);
+  font-weight: 600; color: var(--c-deep); line-height: 1;
+}
+.emerald-native .ep-cd-label {
+  font-family: 'Playfair Display', serif; font-size: 9px; font-weight: 600;
+  text-transform: uppercase; letter-spacing: 0.2em; color: var(--c-mid);
+  margin-top: 4px;
+}
+
+/* ── Venue ── */
+.emerald-native .ep-venue-name { font-size: 1.2rem; margin-top: 16px; }
+.emerald-native .ep-venue-addr { font-size: 13px; margin-top: 8px; }
+.emerald-native .ep-map-link {
+  display: inline-flex; align-items: center; gap: 6px;
+  margin-top: 24px; padding: 8px 20px;
+  border: 1px solid rgba(185,138,74,0.45); border-radius: 999px;
+  font-family: 'Playfair Display', serif; font-style: italic;
+  font-size: 12px; color: var(--c-deep); text-decoration: none;
+  transition: background 0.2s;
+}
+.emerald-native .ep-map-link:hover { background: rgba(185,138,74,0.1); }
+
+/* ── Timeline ── */
+.emerald-native .ep-timeline {
+  list-style: none; width: 100%; position: relative;
+  text-align: left; padding-left: 4px; margin: 0; padding-top: 0;
+}
+.emerald-native .ep-tl-line {
+  position: absolute; top: 10px; bottom: 10px; left: 11px; width: 1px;
+  background: rgba(31,58,43,0.25);
+}
+.emerald-native .ep-tl-item {
+  display: flex; gap: 16px; padding-bottom: 20px; position: relative;
+}
+.emerald-native .ep-tl-item:last-child { padding-bottom: 0; }
+.emerald-native .ep-tl-dot {
+  position: relative; z-index: 1; margin-top: 6px;
+  width: 10px; height: 10px; border-radius: 50%; flex-shrink: 0;
+  background: var(--gold);
+}
+.emerald-native .ep-tl-content { flex: 1; min-width: 0; }
+.emerald-native .ep-tl-name {
+  font-family: 'Playfair Display', serif; font-style: italic;
+  font-size: 16px; color: var(--c-deep); line-height: 1.3;
+}
+.emerald-native .ep-tl-when { font-size: 12px; color: rgba(31,58,43,0.8); margin-top: 2px; }
+.emerald-native .ep-tl-venue { font-size: 12px; color: rgba(31,58,43,0.75); margin-top: 1px; }
+.emerald-native .ep-tl-map {
+  display: inline-flex; align-items: center; gap: 4px; margin-top: 6px;
+  padding: 2px 8px; border: 1px solid var(--gold); border-radius: 999px;
+  font-family: 'Playfair Display', serif; font-size: 10px; color: var(--c-deep);
+  text-decoration: none; flex-shrink: 0; transition: background 0.2s;
+}
+.emerald-native .ep-tl-map:hover { background: rgba(185,138,74,0.1); }
+
+/* ── Verse ── */
+.emerald-native .ep-verse-arabic {
+  direction: rtl; font-family: 'Katibeh', serif; font-size: 1.8rem;
+  line-height: 1.6; color: var(--c-deep); text-align: center;
+}
+.emerald-native .ep-verse-translation {
+  font-family: 'Playfair Display', serif; font-style: italic;
+  font-size: 15px; line-height: 1.6; color: var(--c-mid);
+  margin-top: 12px; text-align: center;
+}
+.emerald-native .ep-verse-ref {
+  font-family: 'Playfair Display', serif; font-size: 10px; font-weight: 600;
+  text-transform: uppercase; letter-spacing: 0.25em; color: var(--c-light);
+  margin-top: 10px;
+}
+
+/* ── Gallery ── */
+.emerald-native .ep-gallery-grid {
+  display: grid; grid-template-columns: 1fr 1fr; gap: 10px; width: 100%;
+}
+.emerald-native .ep-gallery-img-wrap {
+  aspect-ratio: 4/5; overflow: hidden; position: relative;
+  clip-path: polygon(1.5% 3%, 7% 0.5%, 14% 3.5%, 22% 1%, 31% 4%, 40% 0.8%, 49% 3%, 58% 1.2%, 67% 3.8%, 76% 0.6%, 85% 3.2%, 93% 1%, 98.5% 4%, 100% 12%, 97% 22%, 100% 33%, 98% 44%, 100% 55%, 97.5% 66%, 100% 77%, 98% 88%, 96% 97%, 88% 99%, 79% 96.5%, 70% 99.5%, 61% 97%, 52% 100%, 43% 96.8%, 34% 99.2%, 25% 97%, 16% 99.5%, 8% 96.5%, 1% 99%, 0% 90%, 2.5% 78%, 0% 66%, 2% 54%, 0% 42%, 2.2% 30%, 0% 18%, 2% 8%);
+  background: #f7efd9;
+  box-shadow: 0 14px 28px -16px rgba(31,58,43,0.55);
+  cursor: pointer;
+}
+.emerald-native .ep-gallery-img-wrap img {
+  width: 100%; height: 100%; object-fit: cover;
+  filter: sepia(0.18) contrast(1.05);
+  transition: transform 0.4s ease;
+}
+.emerald-native .ep-gallery-img-wrap:hover img { transform: scale(1.04); }
+
+/* Gallery lightbox */
+.emerald-native .ep-lightbox {
+  position: fixed; inset: 0; z-index: 200;
+  background: rgba(0,0,0,0.9);
+  display: flex; align-items: center; justify-content: center; padding: 16px;
+  opacity: 0; pointer-events: none; transition: opacity 0.3s ease;
+}
+.emerald-native .ep-lightbox.open { opacity: 1; pointer-events: auto; }
+.emerald-native .ep-lightbox img {
+  max-width: 100%; max-height: 85svh; object-fit: contain;
+  clip-path: polygon(1.5% 3%, 7% 0.5%, 14% 3.5%, 22% 1%, 31% 4%, 40% 0.8%, 49% 3%, 58% 1.2%, 67% 3.8%, 76% 0.6%, 85% 3.2%, 93% 1%, 98.5% 4%, 100% 12%, 97% 22%, 100% 33%, 98% 44%, 100% 55%, 97.5% 66%, 100% 77%, 98% 88%, 96% 97%, 88% 99%, 79% 96.5%, 70% 99.5%, 61% 97%, 52% 100%, 43% 96.8%, 34% 99.2%, 25% 97%, 16% 99.5%, 8% 96.5%, 1% 99%, 0% 90%, 2.5% 78%, 0% 66%, 2% 54%, 0% 42%, 2.2% 30%, 0% 18%, 2% 8%);
+}
+.emerald-native .ep-lightbox-close {
+  position: absolute; top: 16px; right: 16px;
+  width: 36px; height: 36px; border-radius: 50%;
+  border: 1px solid rgba(255,255,255,0.3);
+  background: none; color: #fff; cursor: pointer;
+  display: flex; align-items: center; justify-content: center; font-size: 18px;
+}
+
+/* ── RSVP ── */
+.emerald-native .ep-rsvp-form {
+  width: 100%; display: flex; flex-direction: column; gap: 10px;
+}
+.emerald-native .ep-rsvp-input {
+  width: 100%; padding: 10px 14px;
+  border: 1px solid rgba(31,58,43,0.25); border-radius: 12px;
+  background: rgba(239,228,201,0.6);
+  font-family: 'Playfair Display', serif; font-style: italic;
+  font-size: 14px; color: var(--c-deep); outline: none;
+  transition: border-color 0.2s;
+}
+.emerald-native .ep-rsvp-input::placeholder { color: rgba(31,58,43,0.4); }
+.emerald-native .ep-rsvp-input:focus { border-color: rgba(185,138,74,0.55); }
+.emerald-native .ep-rsvp-btns { display: flex; gap: 8px; }
+.emerald-native .ep-rsvp-btn {
+  flex: 1; padding: 10px 0; border-radius: 12px;
+  font-family: 'Playfair Display', serif; font-style: italic; font-size: 14px;
+  cursor: pointer; transition: background 0.2s;
+}
+.emerald-native .ep-rsvp-btn-yes {
+  background: var(--c-deep); color: var(--parchment); border: none;
+}
+.emerald-native .ep-rsvp-btn-no {
+  background: transparent; color: var(--c-deep);
+  border: 1px solid rgba(31,58,43,0.3);
+}
+.emerald-native .ep-rsvp-success {
+  text-align: center; padding: 16px;
+  font-family: 'Playfair Display', serif; font-style: italic;
+  font-size: 15px; color: var(--c-deep); line-height: 1.6;
+}
+
+/* ── Ending / Close ── */
+.emerald-native .ep-ending-note {
+  font-family: 'Playfair Display', serif; font-style: italic;
+  font-size: 15px; line-height: 1.8; color: rgba(31,58,43,0.9);
+  text-align: center;
+}
+.emerald-native .ep-close-name {
+  font-family: 'Parisienne', cursive; font-size: clamp(2rem, 10vw, 3rem);
+  color: var(--c-deep); line-height: 1.1; text-align: center;
+}
+.emerald-native .ep-close-footer {
+  margin-top: 32px; text-align: center;
+  font-family: 'Playfair Display', serif; font-style: italic;
+  font-size: 11px; color: var(--c-light);
+}
+
+/* ── Reveal animations ── */
+.emerald-native .ep-reveal-item {
+  opacity: 0; transform: translateY(16px);
+  transition: opacity 0.7s ease, transform 0.7s ease;
+}
+.emerald-native .ep-page.active .ep-reveal-item { opacity: 1; transform: translateY(0); }
+.emerald-native .ep-reveal-item:nth-child(1) { transition-delay: 0s; }
+.emerald-native .ep-reveal-item:nth-child(2) { transition-delay: 0.12s; }
+.emerald-native .ep-reveal-item:nth-child(3) { transition-delay: 0.24s; }
+.emerald-native .ep-reveal-item:nth-child(4) { transition-delay: 0.36s; }
+.emerald-native .ep-reveal-item:nth-child(5) { transition-delay: 0.48s; }
+.emerald-native .ep-reveal-item:nth-child(6) { transition-delay: 0.60s; }
+.emerald-native .ep-reveal-item:nth-child(7) { transition-delay: 0.72s; }
+.emerald-native .ep-reveal-item:nth-child(8) { transition-delay: 0.84s; }
+
+/* ── Keyframes ── */
+@keyframes emerald-spin {
+  to { transform: rotate(360deg); }
+}
+@keyframes emerald-fade-in {
+  from { opacity: 0; } to { opacity: 1; }
+}
+@keyframes emerald-blink {
+  0%, 100% { opacity: 1; } 50% { opacity: 0; }
+}
+@keyframes emerald-pulse-ring {
+  0%, 100% { transform: scale(1); opacity: 0.9; }
+  50% { transform: scale(1.08); opacity: 1; }
+}
+@keyframes emerald-bounce-down {
+  0%, 100% { transform: translateY(0); }
+  50% { transform: translateY(6px); }
+}
+
+/* Touch sparkle keyframes */
+@keyframes ep-particle {
+  0%   { transform: translate(0, 0) scale(0.4); opacity: 0; }
+  25%  { transform: translate(calc(var(--dx)*.6), calc(var(--dy)*.6)) scale(1.15); opacity: 1; }
+  100% { transform: translate(var(--dx), var(--dy)) scale(0.3); opacity: 0; }
+}
+@keyframes ep-streak-out {
+  0%   { transform: translate(0, 0) rotate(var(--ra)) scaleY(0.3); opacity: 0; }
+  25%  { transform: translate(calc(var(--sx)*.5), calc(var(--sy)*.5)) rotate(var(--ra)) scaleY(1.2); opacity: 1; }
+  100% { transform: translate(var(--sx), var(--sy)) rotate(var(--ra)) scaleY(0.5); opacity: 0; }
+}
+@keyframes ep-center-glow {
+  0%   { transform: translate(-50%, -50%) scale(0.5); opacity: 0.95; }
+  100% { transform: translate(-50%, -50%) scale(4); opacity: 0; }
+}

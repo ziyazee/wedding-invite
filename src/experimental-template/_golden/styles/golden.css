@@ -1,0 +1,317 @@
+/* Golden — core styles. Prefix gd- / --gd-. Variables come from core/theme.ts via ThemeRoot.
+   No :root / html / body selectors. */
+
+.gd-page {
+  position: relative;
+  isolation: isolate;
+  min-height: 100vh;
+  overflow-x: clip;
+  background: var(--gd-bg);
+  color: var(--gd-text);
+  font-family: var(--gd-font-body);
+  font-weight: 300;
+  -webkit-font-smoothing: antialiased;
+}
+.gd-page *,
+.gd-page *::before,
+.gd-page *::after {
+  box-sizing: border-box;
+}
+
+/* ── Host: wrapper the renderer puts around every section ── */
+.gd-host {
+  position: relative;
+  overflow: hidden;
+}
+.gd-host > .gd-section,
+.gd-host > .gd-host__banner {
+  position: relative;
+  z-index: 2;
+}
+.gd-host.has-media > .gd-media--background {
+  position: absolute;
+  inset: 0;
+  z-index: 0;
+}
+.gd-host.has-media > .gd-section {
+  background: transparent;
+}
+.gd-host__banner {
+  padding: 56px 24px 0;
+}
+.gd-host__banner .gd-media {
+  max-width: 440px;
+  margin: 0 auto;
+  border: 1px solid var(--gd-line);
+  padding: 6px;
+  background: var(--gd-bg-deep);
+}
+
+/* ── Shared section frame ── */
+.gd-section {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 96px 24px;
+  text-align: center;
+}
+.gd-section__inner {
+  width: 100%;
+  max-width: 420px;
+}
+
+/* ── Shared type ── */
+.gd-eyebrow {
+  margin: 0 0 20px;
+  font-size: 11px;
+  font-weight: 400;
+  letter-spacing: 0.36em;
+  text-transform: uppercase;
+  color: var(--gd-gold);
+}
+.gd-title {
+  margin: 0;
+  font-family: var(--gd-font-display);
+  font-weight: 400;
+  font-size: clamp(34px, 9vw, 46px);
+  line-height: 1.1;
+  color: var(--gd-text);
+}
+.gd-lede {
+  margin: 20px 0 0;
+  font-family: var(--gd-font-display);
+  font-style: italic;
+  font-weight: 300;
+  font-size: 20px;
+  line-height: 1.5;
+  color: var(--gd-text-soft);
+}
+.gd-body {
+  margin: 0;
+  font-size: 15px;
+  line-height: 1.75;
+  color: var(--gd-text-muted);
+}
+.gd-word {
+  display: inline-block;
+  white-space: pre;
+}
+
+/* ── Divider frame + draw-on strokes ── */
+.gd-divider {
+  position: relative;
+  z-index: 4;
+  display: flex;
+  justify-content: center;
+  padding: 8px 0;
+  margin: -24px 0;
+  pointer-events: none;
+}
+.gd-divider svg {
+  display: block;
+  overflow: visible;
+}
+.gd-draw {
+  fill: none;
+  stroke: var(--gd-gold);
+  stroke-width: 1.2;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+  stroke-dasharray: 1;
+  stroke-dashoffset: 0;
+  vector-effect: non-scaling-stroke;
+}
+.gd-fill-gold {
+  fill: var(--gd-gold);
+}
+
+/* ── Media slot ── */
+.gd-media {
+  position: relative;
+  overflow: hidden;
+  background: var(--gd-bg-deep);
+}
+.gd-media--background {
+  width: 100%;
+  height: 100%;
+}
+.gd-media__inner {
+  position: absolute;
+  inset: 0;
+}
+.gd-media__inner.is-parallax {
+  inset: -8% 0;
+  will-change: transform;
+}
+.gd-media__el {
+  display: block;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+.gd-media--banner {
+  aspect-ratio: 4 / 5;
+}
+.gd-media__scrim {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+}
+.gd-media__scrim--soft {
+  background: linear-gradient(to bottom, rgba(8, 12, 20, 0.55), rgba(8, 12, 20, 0.35) 40%, rgba(8, 12, 20, 0.65));
+}
+.gd-media__scrim--strong {
+  background: linear-gradient(to bottom, rgba(8, 12, 20, 0.82), rgba(8, 12, 20, 0.7) 50%, rgba(8, 12, 20, 0.88));
+}
+
+/* ── Ambient particles ── */
+.gd-ambient {
+  position: absolute;
+  inset: 0;
+  z-index: 3;
+  overflow: hidden;
+  pointer-events: none;
+}
+.gd-particle {
+  position: absolute;
+  display: block;
+  pointer-events: none;
+}
+.gd-particle svg {
+  display: block;
+  width: 100%;
+  height: 100%;
+}
+
+/* ── Music button ── */
+.gd-music {
+  position: fixed;
+  top: 16px;
+  right: 16px;
+  z-index: 50;
+  width: 40px;
+  height: 40px;
+  display: grid;
+  place-items: center;
+  padding: 0;
+  border: 1px solid var(--gd-line-strong);
+  border-radius: 50%;
+  background: rgba(8, 12, 20, 0.55);
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
+  color: var(--gd-gold-bright);
+  cursor: pointer;
+  transition: border-color 0.3s, background 0.3s;
+}
+.gd-music:hover {
+  border-color: var(--gd-gold-bright);
+}
+.gd-music:focus-visible {
+  outline: 2px solid var(--gd-gold-bright);
+  outline-offset: 3px;
+}
+.gd-music__bars {
+  display: flex;
+  align-items: flex-end;
+  gap: 2px;
+  height: 14px;
+}
+.gd-music__bars i {
+  display: block;
+  width: 2px;
+  height: 5px;
+  background: currentColor;
+  transform-origin: bottom;
+}
+.gd-music.is-playing .gd-music__bars i {
+  animation: gd-bars 1s ease-in-out infinite;
+}
+.gd-music.is-playing .gd-music__bars i:nth-child(2) { animation-delay: 0.18s; }
+.gd-music.is-playing .gd-music__bars i:nth-child(3) { animation-delay: 0.36s; }
+@keyframes gd-bars {
+  0%, 100% { transform: scaleY(0.4); }
+  50% { transform: scaleY(2.4); }
+}
+
+/* ── Event card (shared rendering) ── */
+.gd-events {
+  display: flex;
+  flex-direction: column;
+  gap: 40px;
+}
+.gd-event {
+  position: relative;
+  display: grid;
+  grid-template-columns: 64px 1fr;
+  gap: 20px;
+  text-align: left;
+}
+.gd-event__badge {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  height: 72px;
+  border: 1px solid var(--gd-line-strong);
+  background: var(--gd-bg-deep);
+  z-index: 1;
+}
+.gd-event__day {
+  font-family: var(--gd-font-display);
+  font-size: 28px;
+  line-height: 1;
+  color: var(--gd-gold-bright);
+}
+.gd-event__month {
+  margin-top: 4px;
+  font-size: 9px;
+  letter-spacing: 0.24em;
+  color: var(--gd-text-muted);
+}
+.gd-event__title {
+  margin: 0;
+  font-family: var(--gd-font-display);
+  font-weight: 500;
+  font-size: 26px;
+  line-height: 1.15;
+  color: var(--gd-text);
+}
+.gd-event__when {
+  margin: 8px 0 0;
+  font-size: 13px;
+  letter-spacing: 0.04em;
+  color: var(--gd-gold);
+}
+.gd-event__sep {
+  margin: 0 8px;
+  opacity: 0.6;
+}
+.gd-event__venue {
+  margin: 12px 0 0;
+  font-family: var(--gd-font-display);
+  font-size: 18px;
+  color: var(--gd-text-soft);
+}
+.gd-event__address {
+  margin: 2px 0 0;
+  font-size: 13px;
+  line-height: 1.5;
+  color: var(--gd-text-dim);
+}
+.gd-event__desc {
+  margin: 10px 0 0;
+  font-size: 13px;
+  line-height: 1.6;
+  color: var(--gd-text-muted);
+}
+
+/* ── Reduced motion: no ambient CSS animation anywhere in the page ── */
+@media (prefers-reduced-motion: reduce) {
+  .gd-page *,
+  .gd-page *::before,
+  .gd-page *::after {
+    animation: none !important;
+    transition: none !important;
+  }
+}

@@ -1,0 +1,194 @@
+/* Celebrations — sehra toran header, flexible ivory slips, inlay rules between them. */
+
+.mr-celebrations {
+  padding-top: 0;
+  background: var(--mr-bg);
+}
+.mr-celebrations__toran {
+  display: block;
+  width: min(100%, 560px);
+  height: auto;
+  margin: 40px auto 28px;
+  -webkit-mask-image: linear-gradient(to right, transparent, #000 5%, #000 95%, transparent);
+  mask-image: linear-gradient(to right, transparent, #000 5%, #000 95%, transparent);
+}
+.mr-celebrations__head { margin-bottom: 44px; }
+.mr-celebrations .mr-title { color: var(--mr-emerald); font-style: italic; font-weight: 500; }
+.mr-celebrations__ar {
+  margin: 4px 0 0;
+  font-size: 24px;
+  color: var(--mr-gold);
+}
+.mr-celebrations__sub {
+  margin: 12px 0 0;
+  font-style: italic;
+  font-size: 17px;
+  color: var(--mr-text-muted);
+}
+
+.mr-slips {
+  width: 100%;
+  max-width: 420px;
+}
+.mr-slips__item {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+.mr-celebrations__rule {
+  margin: 22px 0;
+  overflow: visible;
+}
+.mr-celebrations__rule .mr-draw { stroke: var(--mr-gold); }
+
+.mr-slip {
+  position: relative;
+  width: 100%;
+  padding: 28px 26px 30px;
+  text-align: left;
+  background: var(--mr-bg-elevated);
+  border: 1px solid var(--mr-gold);
+  box-shadow: inset 0 0 0 4px var(--mr-bg-elevated), inset 0 0 0 5px var(--mr-emerald), 0 12px 26px -18px rgba(9, 58, 42, 0.45);
+  overflow: hidden;
+}
+.mr-slip__corner {
+  position: absolute;
+  bottom: -2px;
+  width: 64px;
+  height: auto;
+  pointer-events: none;
+  opacity: 0.9;
+}
+.mr-slip__corner--l { left: -2px; }
+.mr-slip__corner--r { right: -2px; transform: scaleX(-1); }
+
+.mr-slip__head {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  padding-right: 64px; /* room for the motif at top right */
+}
+.mr-slip__plaque {
+  position: relative;
+  flex: 0 0 76px;
+  width: 76px;
+  height: 76px;
+  display: grid;
+  place-items: center;
+  align-content: center;
+}
+.mr-slip__plaque img {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+}
+.mr-slip__day,
+.mr-slip__month { position: relative; line-height: 1; }
+.mr-slip__day {
+  font-family: var(--mr-font-display);
+  font-size: 26px;
+  font-weight: 600;
+  color: var(--mr-emerald);
+}
+.mr-slip__month {
+  margin-top: 3px;
+  font-family: var(--mr-font-caps);
+  font-size: 10px;
+  letter-spacing: 0.2em;
+  color: var(--mr-gold);
+}
+.mr-slip__titles { min-width: 0; }
+.mr-slip__title {
+  margin: 0;
+  font-family: var(--mr-font-display);
+  font-weight: 600;
+  font-size: clamp(21px, 6vw, 25px);
+  line-height: 1.18;
+  color: var(--mr-emerald);
+  overflow-wrap: anywhere;
+}
+.mr-slip__when {
+  margin: 6px 0 0;
+  font-size: 15px;
+  color: var(--mr-text-muted);
+}
+.mr-slip__time {
+  margin: 2px 0 0;
+  font-family: var(--mr-font-caps);
+  font-size: 12px;
+  letter-spacing: 0.16em;
+  color: var(--mr-ruby);
+}
+.mr-slip__motif {
+  position: absolute;
+  top: 18px;
+  right: 14px;
+  width: 64px;
+  height: auto;
+  pointer-events: none;
+}
+.mr-slip__venue {
+  margin: 22px 0 0;
+  font-family: var(--mr-font-caps);
+  font-size: 15px;
+  letter-spacing: 0.1em;
+  color: var(--mr-text);
+}
+.mr-slip__address {
+  margin: 4px 0 0;
+  font-size: 15px;
+  line-height: 1.55;
+  color: var(--mr-text-muted);
+  overflow-wrap: anywhere;
+}
+.mr-slip__desc {
+  margin: 12px 0 0;
+  font-style: italic;
+  font-size: 16px;
+  line-height: 1.55;
+  color: var(--mr-text-soft);
+}
+
+.mr-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin-top: 18px;
+  /* keep pills clear of the bottom corner sprays */
+  padding-bottom: 36px;
+}
+.mr-pill {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 9px 13px;
+  border: 1px solid var(--mr-line-strong);
+  border-radius: 999px;
+  background: var(--mr-bg-elevated);
+  color: var(--mr-text-soft);
+  font-family: var(--mr-font-caps);
+  font-size: 12px;
+  letter-spacing: 0.1em;
+  text-decoration: none;
+  cursor: pointer;
+  transition: background 0.3s, border-color 0.3s, color 0.3s;
+}
+.mr-pill:hover {
+  background: var(--mr-emerald);
+  border-color: var(--mr-emerald);
+  color: var(--mr-ivory);
+}
+.mr-pill:focus-visible {
+  outline: 2px solid var(--mr-emerald);
+  outline-offset: 2px;
+}
+.mr-pill svg {
+  width: 12px;
+  height: 12px;
+  fill: none;
+  stroke: currentColor;
+  stroke-width: 1.5;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+}

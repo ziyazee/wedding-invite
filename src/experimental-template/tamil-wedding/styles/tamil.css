@@ -1,0 +1,317 @@
+/* Tamil Wedding — core styles. Prefix tm- / --tm-. Variables come from core/theme.ts via ThemeRoot.
+   No :root / html / body selectors. */
+
+.tm-page {
+  position: relative;
+  isolation: isolate;
+  min-height: 100vh;
+  overflow-x: clip;
+  background: var(--tm-bg);
+  color: var(--tm-text);
+  font-family: var(--tm-font-body);
+  font-weight: 300;
+  -webkit-font-smoothing: antialiased;
+}
+.tm-page *,
+.tm-page *::before,
+.tm-page *::after {
+  box-sizing: border-box;
+}
+
+/* ── Host: wrapper the renderer puts around every section ── */
+.tm-host {
+  position: relative;
+  overflow: hidden;
+}
+.tm-host > .tm-section,
+.tm-host > .tm-host__banner {
+  position: relative;
+  z-index: 2;
+}
+.tm-host.has-media > .tm-media--background {
+  position: absolute;
+  inset: 0;
+  z-index: 0;
+}
+.tm-host.has-media > .tm-section {
+  background: transparent;
+}
+.tm-host__banner {
+  padding: 56px 24px 0;
+}
+.tm-host__banner .tm-media {
+  max-width: 440px;
+  margin: 0 auto;
+  border: 1px solid var(--tm-line);
+  padding: 6px;
+  background: var(--tm-bg-deep);
+}
+
+/* ── Shared section frame ── */
+.tm-section {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 96px 24px;
+  text-align: center;
+}
+.tm-section__inner {
+  width: 100%;
+  max-width: 420px;
+}
+
+/* ── Shared type ── */
+.tm-eyebrow {
+  margin: 0 0 20px;
+  font-size: 11px;
+  font-weight: 400;
+  letter-spacing: 0.36em;
+  text-transform: uppercase;
+  color: var(--tm-gold);
+}
+.tm-title {
+  margin: 0;
+  font-family: var(--tm-font-display);
+  font-weight: 400;
+  font-size: clamp(34px, 9vw, 46px);
+  line-height: 1.1;
+  color: var(--tm-text);
+}
+.tm-lede {
+  margin: 20px 0 0;
+  font-family: var(--tm-font-display);
+  font-style: italic;
+  font-weight: 300;
+  font-size: 20px;
+  line-height: 1.5;
+  color: var(--tm-text-soft);
+}
+.tm-body {
+  margin: 0;
+  font-size: 15px;
+  line-height: 1.75;
+  color: var(--tm-text-muted);
+}
+.tm-word {
+  display: inline-block;
+  white-space: pre;
+}
+
+/* ── Divider frame + draw-on strokes ── */
+.tm-divider {
+  position: relative;
+  z-index: 4;
+  display: flex;
+  justify-content: center;
+  padding: 8px 0;
+  margin: -24px 0;
+  pointer-events: none;
+}
+.tm-divider svg {
+  display: block;
+  overflow: visible;
+}
+.tm-draw {
+  fill: none;
+  stroke: var(--tm-gold);
+  stroke-width: 1.2;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+  stroke-dasharray: 1;
+  stroke-dashoffset: 0;
+  vector-effect: non-scaling-stroke;
+}
+.tm-fill-gold {
+  fill: var(--tm-gold);
+}
+
+/* ── Media slot ── */
+.tm-media {
+  position: relative;
+  overflow: hidden;
+  background: var(--tm-bg-deep);
+}
+.tm-media--background {
+  width: 100%;
+  height: 100%;
+}
+.tm-media__inner {
+  position: absolute;
+  inset: 0;
+}
+.tm-media__inner.is-parallax {
+  inset: -8% 0;
+  will-change: transform;
+}
+.tm-media__el {
+  display: block;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+.tm-media--banner {
+  aspect-ratio: 4 / 5;
+}
+.tm-media__scrim {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+}
+.tm-media__scrim--soft {
+  background: linear-gradient(to bottom, rgba(242, 234, 217, 0.5), rgba(242, 234, 217, 0.25) 40%, rgba(242, 234, 217, 0.6));
+}
+.tm-media__scrim--strong {
+  background: linear-gradient(to bottom, rgba(242, 234, 217, 0.85), rgba(242, 234, 217, 0.7) 50%, rgba(242, 234, 217, 0.9));
+}
+
+/* ── Ambient particles ── */
+.tm-ambient {
+  position: absolute;
+  inset: 0;
+  z-index: 3;
+  overflow: hidden;
+  pointer-events: none;
+}
+.tm-particle {
+  position: absolute;
+  display: block;
+  pointer-events: none;
+}
+.tm-particle svg {
+  display: block;
+  width: 100%;
+  height: 100%;
+}
+
+/* ── Music button ── */
+.tm-music {
+  position: fixed;
+  top: 16px;
+  right: 16px;
+  z-index: 50;
+  width: 40px;
+  height: 40px;
+  display: grid;
+  place-items: center;
+  padding: 0;
+  border: 1px solid var(--tm-line-strong);
+  border-radius: 50%;
+  background: rgba(250, 244, 230, 0.78);
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
+  color: var(--tm-gold);
+  cursor: pointer;
+  transition: border-color 0.3s, background 0.3s;
+}
+.tm-music:hover {
+  border-color: var(--tm-gold-bright);
+}
+.tm-music:focus-visible {
+  outline: 2px solid var(--tm-gold-bright);
+  outline-offset: 3px;
+}
+.tm-music__bars {
+  display: flex;
+  align-items: flex-end;
+  gap: 2px;
+  height: 14px;
+}
+.tm-music__bars i {
+  display: block;
+  width: 2px;
+  height: 5px;
+  background: currentColor;
+  transform-origin: bottom;
+}
+.tm-music.is-playing .tm-music__bars i {
+  animation: tm-bars 1s ease-in-out infinite;
+}
+.tm-music.is-playing .tm-music__bars i:nth-child(2) { animation-delay: 0.18s; }
+.tm-music.is-playing .tm-music__bars i:nth-child(3) { animation-delay: 0.36s; }
+@keyframes tm-bars {
+  0%, 100% { transform: scaleY(0.4); }
+  50% { transform: scaleY(2.4); }
+}
+
+/* ── Event card (shared rendering) ── */
+.tm-events {
+  display: flex;
+  flex-direction: column;
+  gap: 40px;
+}
+.tm-event {
+  position: relative;
+  display: grid;
+  grid-template-columns: 64px 1fr;
+  gap: 20px;
+  text-align: left;
+}
+.tm-event__badge {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  height: 72px;
+  border: 1px solid var(--tm-line-strong);
+  background: var(--tm-bg-deep);
+  z-index: 1;
+}
+.tm-event__day {
+  font-family: var(--tm-font-display);
+  font-size: 28px;
+  line-height: 1;
+  color: var(--tm-gold-bright);
+}
+.tm-event__month {
+  margin-top: 4px;
+  font-size: 9px;
+  letter-spacing: 0.24em;
+  color: var(--tm-text-muted);
+}
+.tm-event__title {
+  margin: 0;
+  font-family: var(--tm-font-display);
+  font-weight: 500;
+  font-size: 26px;
+  line-height: 1.15;
+  color: var(--tm-text);
+}
+.tm-event__when {
+  margin: 8px 0 0;
+  font-size: 13px;
+  letter-spacing: 0.04em;
+  color: var(--tm-gold);
+}
+.tm-event__sep {
+  margin: 0 8px;
+  opacity: 0.6;
+}
+.tm-event__venue {
+  margin: 12px 0 0;
+  font-family: var(--tm-font-display);
+  font-size: 18px;
+  color: var(--tm-text-soft);
+}
+.tm-event__address {
+  margin: 2px 0 0;
+  font-size: 13px;
+  line-height: 1.5;
+  color: var(--tm-text-dim);
+}
+.tm-event__desc {
+  margin: 10px 0 0;
+  font-size: 13px;
+  line-height: 1.6;
+  color: var(--tm-text-muted);
+}
+
+/* ── Reduced motion: no ambient CSS animation anywhere in the page ── */
+@media (prefers-reduced-motion: reduce) {
+  .tm-page *,
+  .tm-page *::before,
+  .tm-page *::after {
+    animation: none !important;
+    transition: none !important;
+  }
+}

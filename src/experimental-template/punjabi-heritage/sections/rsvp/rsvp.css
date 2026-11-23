@@ -1,0 +1,117 @@
+/* RSVP — painted tableau over a calm parchment reply card. */
+
+.ph-rsvp {
+  background: linear-gradient(to bottom, var(--ph-bg), var(--ph-bg-deep));
+}
+.ph-rsvp__tableau {
+  display: block;
+  width: min(100%, 360px);
+  height: auto;
+  margin: 0 auto 8px;
+}
+.ph-rsvp .ph-title { color: var(--ph-suha); }
+.ph-rsvp__lede {
+  margin: 14px 0 32px;
+}
+.ph-form {
+  display: grid;
+  gap: 24px;
+  padding: 30px 24px 28px;
+  text-align: left;
+  background: var(--ph-bg-elevated);
+  border: 1px solid var(--ph-gold);
+  box-shadow: inset 0 0 0 4px var(--ph-bg-elevated), inset 0 0 0 5px var(--ph-line-strong);
+}
+.ph-field {
+  display: grid;
+  gap: 8px;
+}
+.ph-field__label {
+  font-family: var(--ph-font-caps);
+  font-size: 12px;
+  letter-spacing: 0.22em;
+  text-transform: uppercase;
+  color: var(--ph-gold);
+}
+.ph-input {
+  width: 100%;
+  padding: 12px 0;
+  border: 0;
+  border-bottom: 1px solid var(--ph-line-strong);
+  border-radius: 0;
+  background: transparent;
+  color: var(--ph-text);
+  font: inherit;
+  font-size: 17px;
+  transition: border-color 0.3s;
+}
+.ph-input::placeholder { color: var(--ph-text-dim); }
+.ph-input:focus {
+  outline: none;
+  border-bottom-color: var(--ph-suha);
+}
+.ph-input:focus-visible { box-shadow: 0 1px 0 0 var(--ph-suha); }
+select.ph-input option {
+  background: var(--ph-bg-elevated);
+  color: var(--ph-text);
+}
+.ph-choice {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 12px;
+}
+.ph-btn {
+  padding: 14px 12px;
+  border: 1px solid var(--ph-gold);
+  border-radius: var(--ph-radius);
+  background: transparent;
+  color: var(--ph-text-soft);
+  font-family: var(--ph-font-caps);
+  font-size: 13px;
+  letter-spacing: 0.1em;
+  line-height: 1.3;
+  cursor: pointer;
+  transition: background 0.3s, color 0.3s, border-color 0.3s;
+}
+.ph-btn:hover:not(:disabled),
+.ph-btn.is-active {
+  background: var(--ph-suha);
+  border-color: var(--ph-suha);
+  color: var(--ph-ivory);
+}
+.ph-btn:focus-visible {
+  outline: 2px solid var(--ph-suha);
+  outline-offset: 3px;
+}
+.ph-btn:disabled {
+  opacity: 0.45;
+  cursor: not-allowed;
+}
+.ph-btn--solid {
+  background: var(--ph-gold);
+  border-color: var(--ph-gold);
+  color: var(--ph-ivory);
+  font-size: 14px;
+  letter-spacing: 0.18em;
+}
+.ph-form__error {
+  margin: 0;
+  font-size: 15px;
+  text-align: center;
+  color: var(--ph-error);
+}
+.ph-rsvp__thanks {
+  display: grid;
+  justify-items: center;
+  gap: 12px;
+  padding: 24px 12px;
+}
+.ph-rsvp__thanks-title { font-size: 32px; }
+.ph-rsvp__check {
+  width: 64px;
+  height: 64px;
+}
+.ph-rsvp__check .ph-draw {
+  stroke: var(--ph-suha);
+  stroke-width: 1.6;
+}

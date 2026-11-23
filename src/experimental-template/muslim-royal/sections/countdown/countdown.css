@@ -1,0 +1,131 @@
+/* Countdown — painted night courtyard; copy lives on the pale back wall between the pillars. */
+
+.mr-countdown {
+  width: 100%;
+  padding: 0;
+  aspect-ratio: 9 / 16;
+  justify-content: flex-start;
+  overflow: hidden;
+  background: var(--mr-bg-deep);
+}
+.mr-countdown__scene {
+  position: absolute;
+  left: 0;
+  top: -5%;
+  width: 100%;
+  height: 110%;
+  object-fit: cover;
+  z-index: 0;
+}
+/* Edge masks: the painting dissolves into the neighbouring parchment sections. */
+.mr-countdown::before,
+.mr-countdown::after {
+  content: '';
+  position: absolute;
+  left: 0;
+  right: 0;
+  z-index: 1;
+  height: 9%;
+  pointer-events: none;
+}
+.mr-countdown::before { top: 0; background: linear-gradient(to bottom, var(--mr-bg), rgba(246, 238, 220, 0)); }
+.mr-countdown::after { bottom: 0; background: linear-gradient(to top, var(--mr-bg), rgba(246, 238, 220, 0)); }
+
+.mr-countdown__inner {
+  position: relative;
+  z-index: 2;
+  width: 80%;
+  margin-top: 47%; /* % of width: the section is 9:16, so this is about 26.5% of its height */
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+}
+.mr-countdown__title {
+  margin: 0;
+  font-family: var(--mr-font-display);
+  font-weight: 500;
+  font-size: clamp(30px, 8.6vw, 38px);
+  font-style: italic;
+  line-height: 1.05;
+  color: var(--mr-emerald-deep);
+  font-weight: 700;
+}
+.mr-countdown__line {
+  margin: 0;
+  font-size: 22px;
+  line-height: 1.5;
+  font-weight: 700;
+  color: var(--mr-gold-deep);
+}
+.mr-countdown__grid {
+  display: grid;
+  grid-template-columns: repeat(4, 72px);
+  justify-content: center;
+  gap: 0 6px;
+  margin-top: 6px;
+}
+.mr-unit {
+  position: relative;
+  width: 72px;
+}
+.mr-unit__plaque {
+  display: block;
+  width: 100%;
+  height: auto;
+}
+/* Content sits in the niche, below the finial. */
+.mr-unit__body {
+  position: absolute;
+  inset: 33% 14% 12%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 3px;
+}
+.mr-unit__num {
+  display: block;
+  overflow: hidden;
+  font-family: var(--mr-font-display);
+  font-size: 24px;
+  font-weight: 600;
+  line-height: 1.1;
+  font-variant-numeric: tabular-nums;
+  color: var(--mr-emerald);
+}
+.mr-unit__stitch {
+  display: block;
+  width: 70%;
+  height: 2px;
+  background: repeating-linear-gradient(to right, var(--mr-line-strong) 0 3px, transparent 3px 5px);
+}
+.mr-unit__stitch i {
+  display: block;
+  height: 100%;
+  background: repeating-linear-gradient(to right, var(--mr-ruby) 0 3px, transparent 3px 5px);
+  transform-origin: left;
+  transition: transform 0.95s linear;
+}
+.mr-unit__label {
+  font-family: var(--mr-font-caps);
+  font-size: 8.5px;
+  font-weight: 600;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--mr-text-muted);
+}
+.mr-countdown__ended {
+  margin: 28px 0 0;
+  font-family: var(--mr-font-display);
+  font-size: 26px;
+  color: var(--mr-emerald);
+}
+.mr-countdown__rail {
+  margin-top: 8px;
+  overflow: visible;
+}
+.mr-countdown__rail .mr-draw { stroke: var(--mr-gold); }
+@media (prefers-reduced-motion: reduce) {
+  .mr-unit__stitch i { transition: none; }
+}

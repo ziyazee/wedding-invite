@@ -1,0 +1,140 @@
+/* Countdown — the marble hall (generated, 9:16, pinned to the bottom, top edge masked into the page).
+   The heading sits in the plain parchment above it; the four plaques sit in the hall's quiet arch
+   (about 22%-70% of the picture). The section is taller than the picture so nothing crosses the pillars. */
+
+.mw-countdown {
+  min-height: calc(100vw * 16 / 9 + 190px);
+  justify-content: flex-start;
+  padding-top: 84px;
+  background: transparent;
+  overflow: hidden;
+}
+@media (min-width: 480px) {
+  .mw-countdown { min-height: 900px; }
+}
+.mw-host.has-media[data-section='countdown'] > .mw-media--background {
+  inset: auto 0 0 0;
+  height: auto;
+  aspect-ratio: 9 / 16;
+  -webkit-mask-image: linear-gradient(to bottom, transparent 0, #000 16%, #000 94%, transparent 100%);
+  mask-image: linear-gradient(to bottom, transparent 0, #000 16%, #000 94%, transparent 100%);
+}
+.mw-host[data-section='countdown'] { background: linear-gradient(to bottom, var(--mw-bg) 0, var(--mw-bg-deep) 150px); }
+.mw-countdown .mw-section__inner {
+  position: relative;
+  z-index: 2;
+}
+.mw-countdown__grid {
+  position: relative;
+  display: grid;
+  grid-template-columns: repeat(2, 98px);
+  justify-content: center;
+  gap: 16px 16px;
+  margin-top: 150px;
+}
+/* The zari thread: a cross in the gutters, knotted with a khatam. */
+.mw-countdown__thread {
+  position: absolute;
+  inset: 0;
+  z-index: 0;
+  pointer-events: none;
+}
+.mw-countdown__thread i {
+  position: absolute;
+  background: var(--mw-gold);
+  opacity: 0.7;
+}
+.mw-countdown__thread-h { left: -26px; right: -26px; top: 50%; height: 1px; transform-origin: center; }
+.mw-countdown__thread-v { top: -26px; bottom: -26px; left: 50%; width: 1px; transform-origin: center; }
+.mw-countdown__knot {
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  width: 34px;
+  height: 34px;
+  margin: -17px 0 0 -17px;
+  overflow: visible;
+}
+.mw-countdown__knot .mw-draw {
+  fill: var(--mw-bg-elevated);
+  stroke: var(--mw-gold);
+  stroke-width: 1.2;
+  stroke-linejoin: round;
+}
+.mw-unit {
+  position: relative;
+  z-index: 1;
+  display: grid;
+  justify-items: center;
+}
+.mw-unit__plaque {
+  position: relative;
+  width: 98px;
+  aspect-ratio: 220 / 355;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding-top: 24%;
+  filter: drop-shadow(0 10px 14px rgba(78, 55, 16, 0.22));
+}
+.mw-unit__art {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: fill;
+  pointer-events: none;
+}
+.mw-unit__ring {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  overflow: visible;
+}
+.mw-unit__track {
+  fill: none;
+  stroke: var(--mw-line);
+  stroke-width: 1;
+  vector-effect: non-scaling-stroke;
+}
+.mw-unit__bar {
+  fill: none;
+  stroke: var(--mw-rose);
+  stroke-width: 1.6;
+  stroke-linecap: round;
+  stroke-dasharray: 1;
+  vector-effect: non-scaling-stroke;
+}
+.mw-unit__bar.is-sweeping {
+  transition: stroke-dashoffset 0.95s linear;
+}
+.mw-unit__num {
+  position: relative;
+  display: block;
+  overflow: hidden;
+  font-family: var(--mw-font-display);
+  font-weight: 500;
+  font-size: 32px;
+  line-height: 1.1;
+  font-variant-numeric: tabular-nums;
+  color: var(--mw-text);
+}
+.mw-unit__label {
+  position: relative;
+  margin-top: 6px;
+  font-size: 8px;
+  font-weight: 500;
+  letter-spacing: 0.2em;
+  padding-left: 0.2em;
+  text-transform: uppercase;
+  color: var(--mw-gold-dim);
+}
+.mw-countdown__ended {
+  margin: 150px 0 0;
+  font-family: var(--mw-font-display);
+  font-style: italic;
+  font-size: 28px;
+  color: var(--mw-gold-dim);
+}

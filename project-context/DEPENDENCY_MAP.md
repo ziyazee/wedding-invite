@@ -41,7 +41,8 @@
 ```
 model.ts ← templateData.ts, templateCatalog.ts, showcase.ts
 model.ts ← InvitationRenderer.tsx ← GeneratedInvitation.tsx
-model.ts ← AnimatedInvitation.tsx ← bloomRules.ts, cardContentFit.ts, personalizeBloom.ts, personalizeEG.ts
+model.ts ← AnimatedInvitation.tsx ← cardContentFit.ts, personalizeEG.ts  (template 6 only — Bloom removed)
+model.ts ← Bloom.tsx ← bloomRules.ts, cardContentFit.ts, useBloomCardFit, useBloomCardVideo, useBloomCountdown, useBloomGate, useBloomMusic, useBloomNameFit, useBloomReveal
 model.ts ← OrderFrameInvitation.tsx ← orderFrameAdapter.ts, newOrderTemplates.ts
 textLayout.ts ← TextLayoutLayer.tsx ← legacyTextAdapters.ts, textLayoutDom.ts
 context.tsx ← InvitationRenderer.tsx, template components
@@ -98,10 +99,14 @@ Every page/service that communicates with the backend: ClientDashboard, AdminDas
 - `Majestic.tsx`
 - `SecretGarden.tsx`
 - `MohadRahma.tsx` (Royal Grace)
-- Future native template migrations
+- `Bloom.tsx` (template 7 — migrated af6e8d7)
 
 ### What does `AnimatedInvitation.tsx` import?
-model, calendar, rsvp, editorDocument, cardContentFit, bloomRules, personalizeBloom, personalizeEG, installOpeningNamesFit, installRsvpForm
+model, calendar, rsvp, editorDocument, cardContentFit, personalizeEG, installOpeningNamesFit, installRsvpForm
+> **Note:** `bloomRules.ts` and `personalizeBloom.ts` are no longer imported by AnimatedInvitation — they now belong to `src/pages/bloom/Bloom.tsx` (or are superseded by native Bloom hooks).
+
+### What does `Bloom.tsx` import?
+model, context, InvitationLayoutProvider, InvitationSection, EditableText, InvitationMedia, InvitationRsvp, bloomRules (if still used), useBloomCardFit, useBloomCardVideo, useBloomCountdown, useBloomGate, useBloomMusic, useBloomNameFit, useBloomReveal
 
 ### What does `TextLayoutLayer.tsx` import?
 textLayout, textLayoutDom, legacyTextAdapters

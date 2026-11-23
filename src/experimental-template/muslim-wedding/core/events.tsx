@@ -1,0 +1,73 @@
+/* Golden — shared event rendering. Celebrations (or any section) composes these. */
+
+import type { ReactNode } from 'react'
+import type { CelebrationEvent } from './types'
+
+export function parseEventDate(date: string): Date {
+  const [y, m, d] = date.split('-').map(Number)
+  return new Date(y, (m || 1) - 1, d || 1)
+}
+
+export function formatEventDate(date: string): string {
+  return parseEventDate(date).toLocaleDateString('en-US', {
+    weekday: 'long',
+    month: 'long',
+    day: 'numeric',
+    year: 'numeric',
+  })
+}
+
+export function formatDayMonth(date: string): { day: string; month: string } {
+  const d = parseEventDate(date)
+  return {
+    day: String(d.getDate()).padStart(2, '0'),
+    month: d.toLocaleDateString('en-US', { month: 'short' }).toUpperCase(),
+  }
+}
+
+interface EventCardProps {
+  event: CelebrationEvent
+  /** Extra controls under the address (map links, calendar links, ...). */
+  actions?: ReactNode
+  className?: string
+}
+
+export function EventCard({ event, actions, className = '' }: EventCardProps) {
+  const { day, month } = formatDayMonth(event.date)
+  return (
+    <article className={`mw-event ${className}`} data-event-id={event.id}>
+      <div className="mw-event__badge" aria-hidden="true">
+        <span className="mw-event__day">{day}</span>
+        <span className="mw-event__month">{month}</span>
+      </div>
+      <div className="mw-event__body">
+        <h3 className="mw-event__title">{event.title}</h3>
+        <p className="mw-event__when">
+          {formatEventDate(event.date)}
+          <span className="mw-event__sep" aria-hidden="true">·</span>
+          {event.time}
+        </p>
+        <p className="mw-event__venue">{event.venue}</p>
+        <p className="mw-event__address">{event.address}</p>
+        {event.description ? <p className="mw-event__desc">{event.description}</p> : null}
+        {actions}
+      </div>
+    </article>
+  )
+}
+
+export function EventList({
+  events,
+  renderActions,
+}: {
+  events: CelebrationEvent[]
+  renderActions?: (event: CelebrationEvent) => ReactNode
+}) {
+  return (
+    <div className="mw-events">
+      {events.map((event) => (
+        <EventCard key={event.id} event={event} actions={renderActions?.(event)} />
+      ))}
+    </div>
+  )
+}

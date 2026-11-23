@@ -1,0 +1,172 @@
+/* Opening — full-bleed video or image on a sunlit alabaster stage.
+   Text sits in the quiet carved-arch band (about 11-37svh); the couple (48-82svh) stays clear.
+   The tap seal and scroll hint live on the quiet marble floor (83-95svh). */
+
+.mw-opening {
+  min-height: 100svh;
+  justify-content: flex-start;
+  padding: 11svh 24px 0;
+  overflow: hidden;
+}
+.mw-opening .mw-opening__media {
+  position: absolute;
+  inset: 0;
+  z-index: 0;
+}
+/* Only a soft ivory pool behind the title and a whisper at the foot; the artwork stays untouched. */
+.mw-opening__veil {
+  position: absolute;
+  inset: 0;
+  z-index: 1;
+  pointer-events: none;
+  background:
+    radial-gradient(ellipse 80% 22% at 50% 22%, rgba(246, 240, 230, 0.5) 0%, rgba(246, 240, 230, 0) 100%),
+    linear-gradient(to top, rgba(246, 240, 230, 0.35) 0%, rgba(246, 240, 230, 0) 14%);
+}
+.mw-opening__content {
+  position: relative;
+  z-index: 3;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  width: 100%;
+  max-width: 420px;
+}
+.mw-opening .mw-opening__eyebrow {
+  margin: 0 0 14px;
+  font-size: 10px;
+  letter-spacing: 0.34em;
+  color: var(--mw-gold-deep);
+  text-shadow: 0 0 14px rgba(246, 240, 230, 0.95), 0 0 4px rgba(246, 240, 230, 0.9);
+}
+.mw-opening__names {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  align-items: baseline;
+  gap: 0 14px;
+  margin: 0;
+  font-family: var(--mw-font-display);
+  font-weight: 400;
+  font-style: italic;
+  font-size: clamp(44px, 14vw, 62px);
+  line-height: 1.02;
+  color: var(--mw-text);
+  text-shadow: 0 0 22px rgba(246, 240, 230, 0.95), 0 0 6px rgba(246, 240, 230, 0.8);
+}
+.mw-opening__amp {
+  font-size: 0.5em;
+  font-style: normal;
+  color: var(--mw-gold-dim);
+}
+.mw-opening__orn {
+  margin: 16px 0 14px;
+  overflow: visible;
+}
+.mw-opening__orn .mw-draw {
+  stroke: var(--mw-gold-dim);
+}
+.mw-opening__date {
+  margin: 0;
+  font-size: 12px;
+  font-weight: 500;
+  letter-spacing: 0.4em;
+  text-transform: uppercase;
+  color: var(--mw-text);
+  text-shadow: 0 0 14px rgba(246, 240, 230, 0.95), 0 0 4px rgba(246, 240, 230, 0.9);
+}
+
+/* Tap to open: a brass khatam seal on the marble floor, below the couple. */
+.mw-opening__cta {
+  position: absolute;
+  inset: 0;
+  z-index: 4;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: flex-end;
+  gap: 10px;
+  padding: 0 0 6svh;
+  border: 0;
+  background: transparent;
+  color: var(--mw-text);
+  font: inherit;
+  cursor: pointer;
+}
+.mw-opening__cta:focus-visible {
+  outline: 2px solid var(--mw-gold-deep);
+  outline-offset: -8px;
+}
+.mw-opening__cta-ring {
+  position: relative;
+  width: 68px;
+  height: 68px;
+  display: grid;
+  place-items: center;
+  border-radius: 50%;
+  background: rgba(252, 249, 244, 0.7);
+  -webkit-backdrop-filter: blur(8px);
+  backdrop-filter: blur(8px);
+  box-shadow: 0 0 0 1px rgba(168, 124, 45, 0.35);
+  color: var(--mw-gold-deep);
+  animation: mw-cta-pulse 2.6s ease-in-out infinite;
+}
+.mw-opening__seal {
+  position: absolute;
+  inset: 2px;
+  width: calc(100% - 4px);
+  height: calc(100% - 4px);
+  fill: none;
+  stroke: var(--mw-gold);
+  stroke-width: 1.2;
+  stroke-linejoin: round;
+}
+.mw-opening__play {
+  position: relative;
+  width: 18px;
+  height: 18px;
+  margin-left: 2px;
+}
+.mw-opening__cta-text {
+  font-size: 10px;
+  font-weight: 500;
+  letter-spacing: 0.4em;
+  text-transform: uppercase;
+  color: var(--mw-text);
+  text-shadow: 0 0 12px rgba(246, 240, 230, 0.95);
+}
+@keyframes mw-cta-pulse {
+  0%, 100% { box-shadow: 0 0 0 1px rgba(168, 124, 45, 0.35), 0 0 0 0 rgba(201, 158, 72, 0.4); transform: scale(1); }
+  50% { box-shadow: 0 0 0 1px rgba(168, 124, 45, 0.35), 0 0 0 14px rgba(201, 158, 72, 0); transform: scale(1.05); }
+}
+
+.mw-opening__hint {
+  position: absolute;
+  left: 50%;
+  bottom: 18px;
+  z-index: 3;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 8px;
+  transform: translateX(-50%);
+  font-size: 10px;
+  font-weight: 500;
+  letter-spacing: 0.4em;
+  text-transform: uppercase;
+  color: var(--mw-text);
+  text-shadow: 0 0 12px rgba(246, 240, 230, 0.95);
+}
+.mw-opening__hint i {
+  display: block;
+  width: 1px;
+  height: 30px;
+  background: linear-gradient(to bottom, var(--mw-gold-deep), transparent);
+  transform-origin: top;
+  animation: mw-hint 2s ease-in-out infinite;
+}
+@keyframes mw-hint {
+  0% { transform: scaleY(0); opacity: 1; }
+  60% { transform: scaleY(1); opacity: 1; }
+  100% { transform: scaleY(1); opacity: 0; }
+}

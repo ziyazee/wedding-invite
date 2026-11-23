@@ -1,0 +1,245 @@
+/* Muslim Wedding — core styles. Prefix mw- / --mw-. Variables come from core/theme.ts via ThemeRoot.
+   No :root / html / body selectors. */
+
+.mw-page {
+  position: relative;
+  isolation: isolate;
+  min-height: 100vh;
+  overflow-x: clip;
+  background: var(--mw-bg);
+  color: var(--mw-text);
+  font-family: var(--mw-font-body);
+  font-weight: 300;
+  -webkit-font-smoothing: antialiased;
+}
+.mw-page *,
+.mw-page *::before,
+.mw-page *::after {
+  box-sizing: border-box;
+}
+
+/* ── Host: wrapper the renderer puts around every section ── */
+.mw-host {
+  position: relative;
+  overflow: hidden;
+}
+.mw-host > .mw-section,
+.mw-host > .mw-host__banner {
+  position: relative;
+  z-index: 2;
+}
+.mw-host.has-media > .mw-media--background {
+  position: absolute;
+  inset: 0;
+  z-index: 0;
+}
+.mw-host.has-media > .mw-section {
+  background: transparent;
+}
+.mw-host__banner {
+  padding: 56px 24px 0;
+}
+.mw-host__banner .mw-media {
+  max-width: 440px;
+  margin: 0 auto;
+  border: 1px solid var(--mw-line);
+  padding: 6px;
+  background: var(--mw-bg-deep);
+}
+
+/* ── Shared section frame ── */
+.mw-section {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 96px 24px;
+  text-align: center;
+}
+.mw-section__inner {
+  width: 100%;
+  max-width: 420px;
+}
+
+/* ── Shared type ── */
+.mw-eyebrow {
+  margin: 0 0 20px;
+  font-size: 11px;
+  font-weight: 400;
+  letter-spacing: 0.36em;
+  text-transform: uppercase;
+  color: var(--mw-gold-dim);
+}
+.mw-title {
+  margin: 0;
+  font-family: var(--mw-font-display);
+  font-weight: 400;
+  font-size: clamp(34px, 9vw, 46px);
+  line-height: 1.1;
+  color: var(--mw-text);
+}
+.mw-lede {
+  margin: 20px 0 0;
+  font-family: var(--mw-font-display);
+  font-style: italic;
+  font-weight: 300;
+  font-size: 20px;
+  line-height: 1.5;
+  color: var(--mw-text-soft);
+}
+.mw-body {
+  margin: 0;
+  font-size: 15px;
+  line-height: 1.75;
+  color: var(--mw-text-muted);
+}
+.mw-word {
+  display: inline-block;
+  white-space: pre;
+}
+
+/* ── Divider frame + draw-on strokes ── */
+.mw-divider {
+  position: relative;
+  z-index: 4;
+  display: flex;
+  justify-content: center;
+  padding: 8px 0;
+  margin: -36px 0;
+  pointer-events: none;
+}
+.mw-divider svg {
+  display: block;
+  overflow: visible;
+}
+.mw-draw {
+  fill: none;
+  stroke: var(--mw-gold);
+  stroke-width: 1.2;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+  stroke-dasharray: 1;
+  stroke-dashoffset: 0;
+  vector-effect: non-scaling-stroke;
+}
+.mw-fill-gold {
+  fill: var(--mw-gold);
+}
+
+/* ── Media slot ── */
+.mw-media {
+  position: relative;
+  overflow: hidden;
+  background: var(--mw-bg-deep);
+}
+.mw-media--background {
+  width: 100%;
+  height: 100%;
+}
+.mw-media__inner {
+  position: absolute;
+  inset: 0;
+}
+.mw-media__inner.is-parallax {
+  inset: -8% 0;
+  will-change: transform;
+}
+.mw-media__el {
+  display: block;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+.mw-media--banner {
+  aspect-ratio: 4 / 5;
+}
+.mw-media__scrim {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+}
+.mw-media__scrim--soft {
+  background: linear-gradient(to bottom, rgba(246, 240, 230, 0.55), rgba(246, 240, 230, 0.3) 40%, rgba(246, 240, 230, 0.6));
+}
+.mw-media__scrim--strong {
+  background: linear-gradient(to bottom, rgba(246, 240, 230, 0.8), rgba(246, 240, 230, 0.65) 50%, rgba(246, 240, 230, 0.85));
+}
+
+/* ── Ambient particles ── */
+.mw-ambient {
+  position: absolute;
+  inset: 0;
+  z-index: 3;
+  overflow: hidden;
+  pointer-events: none;
+}
+.mw-particle {
+  position: absolute;
+  display: block;
+  pointer-events: none;
+}
+.mw-particle svg {
+  display: block;
+  width: 100%;
+  height: 100%;
+}
+
+/* ── Music button ── */
+.mw-music {
+  position: fixed;
+  top: 16px;
+  right: 16px;
+  z-index: 50;
+  width: 40px;
+  height: 40px;
+  display: grid;
+  place-items: center;
+  padding: 0;
+  border: 1px solid var(--mw-line-strong);
+  border-radius: 50%;
+  background: rgba(252, 249, 244, 0.7);
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
+  color: var(--mw-gold-dim);
+  cursor: pointer;
+  transition: border-color 0.3s, background 0.3s;
+}
+.mw-music:hover {
+  border-color: var(--mw-gold);
+}
+.mw-music:focus-visible {
+  outline: 2px solid var(--mw-gold-deep);
+  outline-offset: 3px;
+}
+.mw-music__bars {
+  display: flex;
+  align-items: flex-end;
+  gap: 2px;
+  height: 14px;
+}
+.mw-music__bars i {
+  display: block;
+  width: 2px;
+  height: 5px;
+  background: currentColor;
+  transform-origin: bottom;
+}
+.mw-music.is-playing .mw-music__bars i {
+  animation: mw-bars 1s ease-in-out infinite;
+}
+.mw-music.is-playing .mw-music__bars i:nth-child(2) { animation-delay: 0.18s; }
+.mw-music.is-playing .mw-music__bars i:nth-child(3) { animation-delay: 0.36s; }
+@keyframes mw-bars {
+  0%, 100% { transform: scaleY(0.4); }
+  50% { transform: scaleY(2.4); }
+}
+
+/* ── Reduced motion: no ambient CSS animation anywhere in the page ── */
+@media (prefers-reduced-motion: reduce) {
+  .mw-page *,
+  .mw-page *::before,
+  .mw-page *::after {
+    animation: none !important;
+    transition: none !important;
+  }
+}

@@ -11,6 +11,10 @@ Templates that use shared components from `src/invitations/components/`:
 | 1 | Royal Grace | `src/pages/MohadRahma.tsx` | Migrated, verification pending |
 | 2 | Majestic | `src/pages/majestic/Majestic.tsx` | Migrated, verification pending |
 | 5 | Secret Garden | `src/pages/secret-garden/SecretGarden.tsx` | Migrated |
+| 7 | Bloom | `src/pages/bloom/Bloom.tsx` | Migrated (commit af6e8d7) |
+
+**Bloom native hooks** (all in `src/pages/bloom/`):
+`useBloomCardFit`, `useBloomCardVideo`, `useBloomCountdown`, `useBloomGate`, `useBloomMusic`, `useBloomNameFit`, `useBloomReveal`
 
 **Component contract:**
 ```tsx
@@ -31,9 +35,10 @@ Templates loaded as HTML and personalized via JavaScript DOM manipulation:
 | ID | Template | HTML Source |
 |----|----------|------------|
 | 6 | Embroidered Garden | `public/templates/embroidered-garden/index.html` |
-| 7 | Bloom | `public/templates/bloom/index.html` |
 
 **Flow:** Fetch HTML → DOMParser → Replace names/dates → Inject into iframe → `TextLayoutLayer` for editing
+
+> **Note:** Template 7 (Bloom) was migrated from AnimatedInvitation to native React. `public/templates/bloom/` assets are kept for reference but the iframe path is no longer used.
 
 ### 3. OrderFrameInvitation Templates (Iframe Adapters)
 
@@ -116,8 +121,7 @@ public/templates/
 ├── secret-garden/assets/  # Template 5 assets
 ├── embroidered-garden/    # Template 6 (HTML + assets)
 │   └── index.html         # AnimatedInvitation source
-├── bloom/                 # Template 7 (HTML + assets)
-│   └── index.html         # AnimatedInvitation source
+├── bloom/                 # Template 7 (legacy HTML assets — native React now in src/pages/bloom/)
 ├── the-artful-love-story/ # Template 8 assets
 ├── maroon-letter/         # Template 9 (HTML + assets)
 ├── emerald-parchment/     # Template 10 (HTML + assets)
@@ -141,9 +145,35 @@ public/templates/
 9. **Text adapters**: If iframe-based, add mappings in `legacyTextAdapters.ts`
 10. **Apply design rules**: Implement Names Fit, Card Content Fit, etc. as needed
 
+## Edge Functions (Translation)
+
+### `openai-translate-invitation`
+
+`supabase/functions/openai-translate-invitation/index.ts`
+
+Translates invitation field text using OpenAI. Authenticated endpoint (requires Supabase JWT).
+
+**Supported languages:** Hindi, Kannada, Malayalam
+
+**Request:**
+```json
+{
+  "targetLanguage": "Hindi",
+  "fields": [{ "path": "groom", "text": "..." }, ...]
+}
+```
+
+**Path allowlist:** `groom`, `bride`, `groomFamily`, `brideFamily`, `message`, `dressCode`, `giftNote`, `venue`, `address`, `label.*`, `events.N.(title|venue|address|schedule.N.(title|description|location))`
+
+**Limits:** 1–600 fields, combined text ≤ 18 000 chars. Returns `{ translations, usage, estimatedCostUsd }`.
+
+**Model:** `gpt-5.5` with `reasoning_effort: "low"`, JSON response format.
+
+---
+
 ## Migration Strategy (iframe → Native React)
 
-Status: Royal Grace and Majestic migrated; 9 templates remain.
+Status: Royal Grace (1), Majestic (2), Bloom (7) migrated; 8 templates remain.
 
 Migration checklist per template:
 - Create `src/pages/{name}/` directory

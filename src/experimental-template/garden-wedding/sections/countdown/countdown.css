@@ -1,0 +1,160 @@
+/* Countdown — a painted miniature pavilion with four cusped garden niches. */
+
+.gw-countdown {
+  isolation: isolate;
+  overflow: hidden;
+  background:
+    radial-gradient(ellipse at 50% 34%, rgba(255, 255, 255, 0.88) 0%, transparent 56%),
+    linear-gradient(to bottom, var(--gw-bg-deep), #f8ecdc 72%, var(--gw-bg));
+}
+.gw-countdown::before {
+  content: '';
+  position: absolute;
+  z-index: -1;
+  inset: 0;
+  background-image:
+    linear-gradient(45deg, transparent 47%, rgba(184, 132, 42, 0.08) 48%, rgba(184, 132, 42, 0.08) 52%, transparent 53%),
+    linear-gradient(-45deg, transparent 47%, rgba(184, 132, 42, 0.08) 48%, rgba(184, 132, 42, 0.08) 52%, transparent 53%);
+  background-size: 26px 26px;
+  opacity: 0.52;
+  pointer-events: none;
+  -webkit-mask-image: radial-gradient(ellipse 74% 66% at 50% 56%, #000, transparent);
+  mask-image: radial-gradient(ellipse 74% 66% at 50% 56%, #000, transparent);
+}
+.gw-countdown .gw-section__inner {
+  position: relative;
+  z-index: 1;
+}
+.gw-countdown__canopy {
+  display: block;
+  width: min(320px, 100%);
+  height: auto;
+  margin: 30px auto -8px;
+  overflow: visible;
+}
+.gw-countdown__canopy .gw-draw {
+  stroke: var(--gw-gold);
+  stroke-width: 1.15;
+}
+.gw-countdown__jasmine {
+  fill: var(--gw-bg-elevated);
+  stroke: var(--gw-gold-dim);
+  stroke-width: 0.8;
+}
+.gw-countdown__bud {
+  fill: var(--gw-rose);
+  stroke: #bc5273;
+  stroke-width: 0.8;
+}
+.gw-countdown__grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 22px 14px;
+  margin-top: 0;
+}
+.gw-unit {
+  --unit-wash: rgba(255, 255, 255, 0.74);
+  position: relative;
+  display: grid;
+  justify-items: center;
+}
+.gw-unit--sage {
+  --unit-wash: rgba(226, 236, 216, 0.86);
+}
+.gw-unit--blush {
+  --unit-wash: rgba(250, 226, 228, 0.9);
+}
+.gw-unit__ring {
+  position: relative;
+  width: 132px;
+  height: 174px;
+  display: grid;
+  place-items: center;
+  filter: drop-shadow(0 7px 12px rgba(122, 86, 34, 0.08));
+}
+.gw-unit__ring svg {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  overflow: visible;
+}
+.gw-unit__track {
+  fill: var(--unit-wash);
+  stroke: var(--gw-gold);
+  stroke-width: 1.15;
+}
+.gw-unit__track--inner {
+  fill: none;
+  stroke: var(--gw-gold-dim);
+  stroke-width: 0.9;
+}
+.gw-unit__carving {
+  fill: none;
+  stroke: var(--gw-gold);
+  stroke-width: 0.9;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+}
+.gw-unit__bar {
+  fill: none;
+  stroke: var(--gw-gold-bright);
+  stroke-width: 1.8;
+  stroke-linecap: round;
+  stroke-dasharray: 1;
+}
+.gw-unit__bar.is-sweeping {
+  transition: stroke-dashoffset 0.95s linear;
+}
+.gw-unit__num {
+  position: absolute;
+  top: 71px;
+  left: 0;
+  z-index: 1;
+  display: block;
+  width: 100%;
+  overflow: hidden;
+  font-family: var(--gw-font-display);
+  font-size: 42px;
+  line-height: 1;
+  font-variant-numeric: tabular-nums;
+  color: var(--gw-text);
+}
+.gw-unit__label {
+  position: absolute;
+  right: 0;
+  bottom: 27px;
+  left: 0;
+  z-index: 1;
+  font-size: 9px;
+  font-weight: 400;
+  letter-spacing: 0.27em;
+  text-transform: uppercase;
+  color: var(--gw-gold-bright);
+}
+.gw-countdown__ended {
+  margin: 36px 0 0;
+  font-family: var(--gw-font-display);
+  font-style: italic;
+  font-size: 28px;
+  color: var(--gw-gold-bright);
+}
+
+@media (min-width: 720px) {
+  .gw-countdown__grid {
+    grid-template-columns: repeat(4, 1fr);
+    gap: 10px;
+  }
+  .gw-unit__ring {
+    width: 96px;
+    height: 128px;
+  }
+  .gw-unit__num {
+    top: 53px;
+    font-size: 31px;
+  }
+  .gw-unit__label {
+    bottom: 19px;
+    font-size: 8px;
+  }
+}

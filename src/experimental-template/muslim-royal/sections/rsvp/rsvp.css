@@ -1,0 +1,123 @@
+/* RSVP — painted takht tableau over a calm ivory reply card. */
+
+.mr-rsvp {
+  background: linear-gradient(to bottom, var(--mr-bg), var(--mr-bg-deep));
+}
+.mr-rsvp__tableau {
+  display: block;
+  width: min(100%, 360px);
+  height: auto;
+  margin: 0 auto 8px;
+}
+.mr-rsvp .mr-title { color: var(--mr-emerald); font-style: italic; font-weight: 500; }
+.mr-rsvp__ar {
+  margin: 0 0 4px;
+  font-size: 26px;
+  line-height: 1.5;
+  color: var(--mr-gold);
+}
+.mr-rsvp__lede {
+  margin: 14px 0 32px;
+}
+.mr-form {
+  display: grid;
+  gap: 24px;
+  padding: 30px 24px 28px;
+  text-align: left;
+  background: var(--mr-bg-elevated);
+  border: 1px solid var(--mr-gold);
+  box-shadow: inset 0 0 0 4px var(--mr-bg-elevated), inset 0 0 0 5px var(--mr-emerald), 0 14px 30px -20px rgba(9, 58, 42, 0.45);
+}
+.mr-field {
+  display: grid;
+  gap: 8px;
+}
+.mr-field__label {
+  font-family: var(--mr-font-caps);
+  font-size: 12px;
+  letter-spacing: 0.22em;
+  text-transform: uppercase;
+  color: var(--mr-gold);
+}
+.mr-input {
+  width: 100%;
+  padding: 12px 0;
+  border: 0;
+  border-bottom: 1px solid var(--mr-line-strong);
+  border-radius: 0;
+  background: transparent;
+  color: var(--mr-text);
+  font: inherit;
+  font-size: 17px;
+  transition: border-color 0.3s;
+}
+.mr-input::placeholder { color: var(--mr-text-dim); }
+.mr-input:focus {
+  outline: none;
+  border-bottom-color: var(--mr-emerald);
+}
+.mr-input:focus-visible { box-shadow: 0 1px 0 0 var(--mr-emerald); }
+select.mr-input option {
+  background: var(--mr-bg-elevated);
+  color: var(--mr-text);
+}
+.mr-choice {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 12px;
+}
+.mr-btn {
+  padding: 14px 12px;
+  border: 1px solid var(--mr-gold);
+  border-radius: var(--mr-radius);
+  background: transparent;
+  color: var(--mr-text-soft);
+  font-family: var(--mr-font-caps);
+  font-size: 13px;
+  letter-spacing: 0.1em;
+  line-height: 1.3;
+  cursor: pointer;
+  transition: background 0.3s, color 0.3s, border-color 0.3s;
+}
+.mr-btn:hover:not(:disabled),
+.mr-btn.is-active {
+  background: var(--mr-emerald);
+  border-color: var(--mr-emerald);
+  color: var(--mr-ivory);
+}
+.mr-btn:focus-visible {
+  outline: 2px solid var(--mr-emerald);
+  outline-offset: 3px;
+}
+.mr-btn:disabled {
+  opacity: 0.45;
+  cursor: not-allowed;
+}
+.mr-btn--solid {
+  background: var(--mr-emerald);
+  border-color: var(--mr-gold);
+  color: var(--mr-gold-dim);
+  font-size: 14px;
+  letter-spacing: 0.18em;
+}
+.mr-form__error {
+  margin: 0;
+  font-size: 15px;
+  text-align: center;
+  color: var(--mr-error);
+}
+.mr-rsvp__thanks {
+  display: grid;
+  justify-items: center;
+  gap: 12px;
+  padding: 24px 12px;
+}
+.mr-rsvp__thanks-title { font-size: 32px; }
+.mr-rsvp__check {
+  width: 64px;
+  height: 64px;
+}
+.mr-rsvp__check .mr-draw {
+  stroke: var(--mr-emerald);
+  stroke-width: 1.6;
+}

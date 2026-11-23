@@ -21,7 +21,7 @@ graph TB
     subgraph "Supabase"
         AUTH[Auth<br>email/password]
         DB[(PostgreSQL<br>+ RLS)]
-        EF[Edge Functions<br>WhatsApp, PDF]
+        EF[Edge Functions<br>WhatsApp, PDF, Translation, Places, etc.]
         RT[Realtime<br>order updates]
     end
 
@@ -48,7 +48,7 @@ graph TB
 
 ### Route-Level Code Splitting
 
-All pages and templates use `lazy()` imports via `lazySitePage()` wrapper. The wrapper bundles `SiteFonts` with legacy pages automatically. Native templates (Royal Grace, Majestic, Secret Garden) manage their own fonts.
+All pages and templates use `lazy()` imports via `lazySitePage()` wrapper. The wrapper bundles `SiteFonts` with legacy pages automatically. Native templates (Royal Grace, Majestic, Secret Garden, Bloom) manage their own fonts.
 
 ```mermaid
 graph LR
@@ -62,7 +62,7 @@ graph LR
     
     GeneratedInvitation --> InvitationRenderer
     InvitationRenderer -->|lazy| NativeTemplates["Native Templates<br>(Majestic, SecretGarden)"]
-    InvitationRenderer -->|lazy| AnimatedInvitation["AnimatedInvitation<br>(EG, Bloom)"]
+    InvitationRenderer -->|lazy| AnimatedInvitation["AnimatedInvitation<br>(EG only — template 6)"]
     InvitationRenderer -->|lazy| OrderFrameInvitation["OrderFrameInvitation<br>(9-14)"]
     InvitationRenderer -->|lazy| PageComponents["Page Components<br>(ATU, MandapAtDusk)"]
 ```
@@ -91,9 +91,9 @@ sequenceDiagram
 
 ### Three Template Implementation Types
 
-1. **Native React** (Royal Grace, Majestic, Secret Garden) — Full React components using shared `InvitationLayoutProvider`, `InvitationSection`, `EditableText`, `InvitationMedia`. Own CSS/fonts. Dashboard text editor works natively.
+1. **Native React** (Royal Grace, Majestic, Secret Garden, Bloom) — Full React components using shared `InvitationLayoutProvider`, `InvitationSection`, `EditableText`, `InvitationMedia`. Own CSS/fonts. Dashboard text editor works natively.
 
-2. **AnimatedInvitation** (Embroidered Garden, Bloom) — Fetches HTML from `public/templates/{name}/index.html`, personalizes DOM via JavaScript, renders in same-origin iframe. Uses `TextLayoutLayer` for text editing.
+2. **AnimatedInvitation** (Embroidered Garden only) — Fetches HTML from `public/templates/{name}/index.html`, personalizes DOM via JavaScript, renders in same-origin iframe. Uses `TextLayoutLayer` for text editing. Bloom was migrated out of this category (commit `af6e8d7`).
 
 3. **OrderFrameInvitation** (templates 9–14) — Same-origin iframe loading standalone HTML. Personalized via `orderFrameAdapter.ts`. Uses `TextLayoutLayer` + `legacyTextAdapters.ts` for text editing.
 
@@ -111,12 +111,29 @@ InvitationLayoutProvider (validates textOverrides)
 ```
 template === 2         → Majestic (native)
 template === 5         → SecretGarden (native)
+template === 7         → Bloom (native, migrated af6e8d7)
 template === 1         → MohadRahma (standalone)
 template in [9..14]    → TextLayoutLayer > OrderFrameInvitation
 template in [3,4,8]    → SiteFonts > TextLayoutLayer > PageComponent
-template in [6,7]      → SiteFonts > TextLayoutLayer > AnimatedInvitation
+template === 6         → SiteFonts > TextLayoutLayer > AnimatedInvitation
 template in [101..117] → SiteFonts > TextLayoutLayer > DeprecatedComponent
 ```
+
+## Supabase Edge Functions
+
+All located in `supabase/functions/`. Each runs on Deno and requires a Supabase JWT unless noted.
+
+| Function | Auth | Purpose |
+|----------|------|---------|
+| `send-whatsapp` | Authenticated | Send WhatsApp message (order notification) |
+| `extract-pdf` | Authenticated | Extract text from uploaded PDF |
+| `card-image` | Authenticated | Generate invitation card image/thumbnail |
+| `generate-illustration` | Authenticated | AI-generated couple illustration |
+| `google-places` | Authenticated | Venue autocomplete / place details |
+| `onboard-store` | Admin | Set up a new store (branding, templates, slug) |
+| `openai-extract` | Authenticated | Extract structured data from text with OpenAI |
+| `openai-translate-invitation` | Authenticated | Translate invitation fields to Hindi / Kannada / Malayalam |
+| `_shared` | — | Shared utilities (CORS headers, Supabase client helpers) |
 
 ## Authentication & Authorization
 

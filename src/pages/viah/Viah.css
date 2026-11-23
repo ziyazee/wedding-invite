@@ -1,0 +1,1427 @@
+/* ============================================================================
+   Viah — Native React scoped styles
+   Ported from public/templates/viah/styles.css and scoped under .viah-native.
+   ========================================================================= */
+
+.viah-native {
+  --marigold:   #FFD700;
+  --marigold-d: #B8960F;
+  --maroon:     #FF1493;
+  --maroon-d:   #B30E68;
+  --rose:       #FF69B4;
+  --ink:        #FFF5F9;
+  --ink-soft:   rgba(255, 245, 249, .78);
+  --ink-faint:  rgba(255, 245, 249, .58);
+  --night:      #1A0510;
+  --serif: "Cormorant Garamond", Georgia, "Times New Roman", serif;
+  --sans:  "Jost", -apple-system, "Segoe UI", sans-serif;
+  --ease:  cubic-bezier(.22, .61, .36, 1);
+  --pad-x: 8vw;
+
+  background: var(--night);
+  color: var(--ink);
+  font-family: var(--serif);
+  -webkit-font-smoothing: antialiased;
+  text-rendering: optimizeLegibility;
+  min-height: 100svh;
+  overflow: hidden;
+}
+
+.viah-native * { margin: 0; padding: 0; box-sizing: border-box; }
+.viah-native :where(h1,h2,h3,h4,h5,h6,p) { margin: 0; font-weight: 400; }
+.viah-native [hidden] { display: none !important; }
+.viah-native img { max-width: 100%; display: block; }
+
+/* ── Scroller ──────────────────────────────────────────────────────────── */
+.viah-native .scroller {
+  height: 100svh;
+  overflow-y: scroll;
+  overflow-x: hidden;
+  -webkit-overflow-scrolling: touch;
+  scrollbar-width: none;
+}
+.viah-native .scroller::-webkit-scrollbar { width: 0; height: 0; }
+.viah-native.is-gated .scroller { overflow: hidden; }
+
+/* ── Panels ────────────────────────────────────────────────────────────── */
+.viah-native .panel {
+  position: relative;
+  min-height: 100svh;
+  overflow: hidden;
+  display: grid;
+  place-items: end start;
+  isolation: isolate;
+}
+.viah-native .panel[data-text="top-left"]     { place-items: start start; }
+.viah-native .panel[data-text="top-right"]    { place-items: start end; }
+.viah-native .panel[data-text="center"]       { place-items: center; }
+.viah-native .panel[data-text="center-left"]  { place-items: center start; }
+.viah-native .panel[data-text="bottom-left"]  { place-items: end start; }
+.viah-native .panel[data-text="bottom-right"] { place-items: end end; }
+.viah-native .panel--tall { min-height: auto; padding: 14svh var(--pad-x); place-items: start; }
+
+/* Panel scrim */
+.viah-native .panel::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  z-index: 30;
+  pointer-events: none;
+}
+.viah-native .panel[data-text$="left"]::after {
+  background-image:
+    radial-gradient(80% 80% at 20% 50%, rgba(26, 5, 16, .62) 0%, transparent 100%),
+    linear-gradient(180deg, rgba(26, 5, 16, .48) 0%, transparent 30%),
+    linear-gradient(0deg,   rgba(26, 5, 16, .48) 0%, transparent 28%);
+}
+.viah-native .panel[data-text$="right"]::after {
+  background-image:
+    radial-gradient(80% 80% at 80% 50%, rgba(26, 5, 16, .62) 0%, transparent 100%),
+    linear-gradient(180deg, rgba(26, 5, 16, .48) 0%, transparent 30%),
+    linear-gradient(0deg,   rgba(26, 5, 16, .48) 0%, transparent 28%);
+}
+.viah-native .panel[data-text="center"]::after {
+  background-image:
+    radial-gradient(70% 70% at 50% 50%, rgba(26, 5, 16, .56) 0%, transparent 100%),
+    linear-gradient(180deg, rgba(26, 5, 16, .44) 0%, transparent 30%),
+    linear-gradient(0deg,   rgba(26, 5, 16, .44) 0%, transparent 28%);
+}
+
+/* ── Layers ─────────────────────────────────────────────────────────────── */
+.viah-native .layer {
+  position: absolute;
+  inset: -3%;
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
+  opacity: 0;
+  transition: opacity .7s var(--ease);
+}
+.viah-native .layer.is-ready { opacity: 1; }
+.viah-native .layer.bg { inset: 0; z-index: 1; }
+.viah-native .layer.bg.is-ready { opacity: 1; }
+.viah-native .layer.el { z-index: 10; }
+.viah-native .layer.el.fill { inset: 0; background-size: cover; z-index: 5; }
+.viah-native .layer.el.fill.glow { mix-blend-mode: screen; opacity: 0; }
+.viah-native .layer.el.fill.glow.is-ready { opacity: .44; }
+.viah-native .layer.el.fig-left,
+.viah-native .layer.el.fig-right,
+.viah-native .layer.el.fig-center,
+.viah-native .layer.el.fig-seated {
+  background-size: contain;
+  background-repeat: no-repeat;
+}
+.viah-native .layer.el.fig-left  { left: 0; right: 50%; bottom: 0; top: auto; height: 95%; background-position: left bottom; z-index: 20; }
+.viah-native .layer.el.fig-right { right: 0; left: 50%; bottom: 0; top: auto; height: 95%; background-position: right bottom; z-index: 20; }
+.viah-native .layer.el.fig-center { left: 26%; right: 26%; bottom: 0; top: auto; height: 82%; background-position: center bottom; z-index: 20; }
+.viah-native .layer.el.fig-seated { left: 12%; right: 12%; bottom: 0; top: auto; height: 64%; background-position: center bottom; z-index: 20; }
+.viah-native .layer.el.toplights {
+  inset: 0 0 auto 0;
+  height: 34%;
+  background-size: 110% auto;
+  background-position: center top;
+  -webkit-mask-image: linear-gradient(180deg, #000 0%, #000 58%, transparent 100%);
+          mask-image: linear-gradient(180deg, #000 0%, #000 58%, transparent 100%);
+  z-index: 15;
+}
+.viah-native .layer.el.toplights--row2 { display: none; }
+.viah-native .layer.el.branch {
+  background-size: contain;
+  background-repeat: no-repeat;
+  z-index: 22;
+}
+.viah-native .layer.el.branch--left { inset: 0 auto auto 0; width: 38%; height: 80%; background-position: left top; }
+.viah-native .layer.el.branch--right { inset: 0 0 auto auto; width: 38%; height: 78%; background-position: right top; }
+.viah-native .layer.el.hands {
+  background-size: contain;
+  background-position: center;
+  background-repeat: no-repeat;
+  z-index: 18;
+}
+
+/* Scene-specific layer overrides */
+.viah-native .panel[data-scene="1"] .layer.el.fig-left  { height: 108%; width: auto; left: -5%; right: auto; }
+.viah-native .panel[data-scene="1"] .layer.el.fig-right { height: 108%; width: auto; right: -5%; left: auto; }
+.viah-native .panel[data-scene="2"] .layer.el.toplights { z-index: 15; }
+.viah-native .panel[data-scene="3"] .layer.el.fig-center { left: 26%; right: 26%; height: 72%; }
+.viah-native .panel[data-scene="3"] .layer.el.branch { z-index: 22; }
+.viah-native .panel[data-scene="4"] .layer.el.fig-center { width: 76%; height: 82%; left: auto; right: 2%; top: auto; bottom: 0; background-position: right bottom; z-index: 18; }
+.viah-native .panel[data-scene="5"] .layer.el.hands { inset: 18% -6% 22% -6%; z-index: 18; }
+.viah-native .panel[data-scene="6"] .layer.el.fig-center { left: 14%; right: 14%; height: 78%; }
+.viah-native .panel[data-scene="7"] .layer.el.fig-center { left: 12%; right: 16%; height: 86%; background-position: left bottom; z-index: 20; }
+.viah-native .panel[data-scene="8"] .layer.el.fill { bottom: 0; top: auto; height: 28%; z-index: 8; }
+.viah-native .panel--finale .layer.el.fig-seated { height: 52%; left: 16%; right: 16%; }
+
+/* ── Panel inner ───────────────────────────────────────────────────────── */
+.viah-native .panel__inner {
+  position: relative;
+  z-index: 40;
+  margin: 6svh var(--pad-x);
+  max-width: 42ch;
+  text-align: left;
+}
+.viah-native .panel__inner--wide { max-width: 60ch; }
+.viah-native .panel[data-text$="right"] .panel__inner { text-align: right; }
+.viah-native .panel[data-text="center"] .panel__inner { text-align: center; margin-inline: auto; }
+
+/* ── Typography ────────────────────────────────────────────────────────── */
+.viah-native .eyebrow {
+  font-family: var(--sans);
+  font-size: clamp(.72rem, 1.6vw, 1rem);
+  font-weight: 400;
+  letter-spacing: .26em;
+  text-transform: uppercase;
+  color: var(--ink-faint);
+  margin-bottom: .6rem;
+}
+.viah-native .names {
+  font-family: var(--serif);
+  font-size: clamp(2.4rem, 7vw, 5.6rem);
+  font-weight: 600;
+  line-height: 1.05;
+  color: var(--ink);
+}
+.viah-native .amp {
+  display: block;
+  font-size: .52em;
+  font-weight: 400;
+  font-style: italic;
+  color: var(--marigold);
+  margin: .15em 0;
+}
+.viah-native .scene-title {
+  font-family: var(--serif);
+  font-size: clamp(1.6rem, 4.4vw, 3.2rem);
+  font-weight: 600;
+  line-height: 1.15;
+  margin-bottom: .4rem;
+}
+.viah-native .date-big {
+  font-family: var(--serif);
+  font-size: clamp(1.4rem, 4vw, 2.6rem);
+  font-weight: 600;
+  margin-bottom: .3rem;
+}
+.viah-native .lede {
+  font-family: var(--serif);
+  font-size: clamp(1rem, 2.6vw, 1.5rem);
+  font-weight: 400;
+  line-height: 1.55;
+  color: var(--ink-soft);
+}
+.viah-native .lede--story {
+  margin-top: 1.4rem;
+  font-style: italic;
+  max-width: 52ch;
+}
+
+/* nikah-style details block */
+.viah-native .nikah-note { margin-top: .8rem; max-width: 38ch; }
+.viah-native .nikah-details { margin-top: 1.2rem; }
+.viah-native .nikah-venue { font-weight: 600; font-size: clamp(1.1rem, 2.8vw, 1.6rem); }
+.viah-native .nikah-address { color: var(--ink-soft); }
+.viah-native .nikah-date-time { display: flex; gap: 1.6rem; margin-top: .5rem; flex-wrap: wrap; }
+.viah-native .nikah-date { font-weight: 600; }
+
+/* ── Families ──────────────────────────────────────────────────────────── */
+.viah-native .families {
+  display: flex;
+  gap: 2.4rem;
+  flex-wrap: wrap;
+  justify-content: center;
+  margin: 1.4rem 0;
+}
+.viah-native .family { text-align: center; }
+.viah-native .family__label {
+  font-family: var(--sans);
+  font-size: clamp(.72rem, 1.5vw, .95rem);
+  font-weight: 500;
+  letter-spacing: .22em;
+  text-transform: uppercase;
+  color: var(--marigold);
+  margin-bottom: .3rem;
+}
+.viah-native .family__person-name { letter-spacing: .14em; }
+.viah-native .family__name {
+  font-family: var(--serif);
+  font-size: clamp(1.2rem, 3vw, 1.7rem);
+  font-weight: 600;
+  line-height: 1.3;
+}
+.viah-native .family__note {
+  font-size: clamp(.88rem, 2vw, 1.1rem);
+  color: var(--ink-soft);
+  margin-top: .2rem;
+}
+.viah-native .family__sep { display: flex; align-items: center; padding: 0 .5rem; }
+.viah-native .family__sep img { width: 48px; opacity: .8; }
+.viah-native .blessing {
+  font-family: var(--sans);
+  font-size: clamp(.72rem, 1.6vw, 1rem);
+  font-weight: 500;
+  letter-spacing: .2em;
+  text-transform: uppercase;
+  color: var(--marigold);
+  margin-bottom: .6rem;
+}
+.viah-native .blessing__names {
+  font-family: var(--serif);
+  font-size: clamp(1.4rem, 4vw, 2.6rem);
+  font-weight: 600;
+}
+
+/* ── Countdown ─────────────────────────────────────────────────────────── */
+.viah-native .countdown {
+  display: flex;
+  gap: 1.6rem;
+  margin-top: 1.2rem;
+}
+.viah-native .countdown__unit { text-align: center; }
+.viah-native .countdown__n {
+  display: block;
+  font-family: var(--serif);
+  font-size: clamp(1.6rem, 4.5vw, 3rem);
+  font-weight: 700;
+  line-height: 1;
+  color: var(--marigold);
+}
+.viah-native .countdown__l {
+  font-family: var(--sans);
+  font-size: .72rem;
+  font-weight: 400;
+  letter-spacing: .14em;
+  text-transform: uppercase;
+  color: var(--ink-faint);
+}
+
+/* ── Celebrations / functions ──────────────────────────────────────────── */
+.viah-native .functions {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+  gap: 1.4rem;
+  margin-top: 1.2rem;
+}
+.viah-native .fn {
+  background: rgba(26, 5, 16, .42);
+  border: 1px solid rgba(255, 215, 0, .16);
+  border-radius: 14px;
+  padding: 1.3rem 1.4rem;
+  backdrop-filter: blur(6px);
+  -webkit-backdrop-filter: blur(6px);
+}
+.viah-native .fn__name {
+  font-family: var(--serif);
+  font-size: clamp(1.2rem, 3vw, 1.65rem);
+  font-weight: 600;
+  color: var(--marigold);
+  margin-bottom: .45rem;
+}
+.viah-native .fn__when {
+  display: flex;
+  flex-wrap: wrap;
+  gap: .4rem .9rem;
+  margin-bottom: .5rem;
+}
+.viah-native .fn__date {
+  font-family: var(--sans);
+  font-size: clamp(.82rem, 1.8vw, 1rem);
+  font-weight: 400;
+  color: var(--ink-soft);
+}
+.viah-native .fn__time {
+  font-family: var(--sans);
+  font-size: clamp(.82rem, 1.8vw, 1rem);
+  font-weight: 400;
+  color: var(--ink-faint);
+}
+.viah-native .fn__venue {
+  font-family: var(--serif);
+  font-size: clamp(.95rem, 2.2vw, 1.2rem);
+  font-weight: 600;
+  line-height: 1.4;
+}
+.viah-native .fn__addr {
+  display: block;
+  font-weight: 400;
+  font-size: .92em;
+  color: var(--ink-soft);
+  margin-top: .15rem;
+}
+.viah-native .fn__meta {
+  font-family: var(--sans);
+  font-size: clamp(.72rem, 1.5vw, .88rem);
+  color: var(--ink-faint);
+  margin-top: .5rem;
+}
+.viah-native .fn__meta span {
+  font-weight: 500;
+  text-transform: uppercase;
+  letter-spacing: .12em;
+}
+.viah-native .fn__meta--note { font-style: italic; }
+.viah-native .fn__map {
+  display: inline-block;
+  font-family: var(--sans);
+  font-size: clamp(.78rem, 1.6vw, .92rem);
+  font-weight: 500;
+  color: var(--marigold);
+  text-decoration: none;
+  border-bottom: 1px solid rgba(255, 215, 0, .3);
+  margin-top: .65rem;
+  padding-bottom: .1rem;
+  transition: border-color .25s;
+}
+.viah-native .fn__map:hover { border-color: var(--marigold); }
+
+/* ── Buttons ───────────────────────────────────────────────────────────── */
+.viah-native .btn {
+  display: inline-block;
+  font-family: var(--sans);
+  font-size: clamp(.82rem, 1.8vw, 1rem);
+  font-weight: 500;
+  letter-spacing: .06em;
+  padding: .7em 2em;
+  border-radius: 100px;
+  border: 1px solid var(--marigold);
+  color: var(--marigold);
+  background: transparent;
+  cursor: pointer;
+  transition: background .3s, color .3s;
+}
+.viah-native .btn:hover { background: var(--marigold); color: var(--night); }
+.viah-native .btn--solid { background: var(--marigold); color: var(--night); border-color: var(--marigold); }
+.viah-native .btn--solid:hover { background: var(--marigold-d); border-color: var(--marigold-d); }
+
+/* ── Cards ─────────────────────────────────────────────────────────────── */
+.viah-native .card {
+  background: rgba(26, 5, 16, .42);
+  border: 1px solid rgba(255, 215, 0, .14);
+  border-radius: 16px;
+  padding: 1.6rem 1.4rem;
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
+}
+.viah-native .card--rsvp { max-width: 420px; }
+
+/* ── Forms / RSVP ──────────────────────────────────────────────────────── */
+.viah-native .form { display: flex; flex-direction: column; gap: .9rem; }
+.viah-native .field { display: flex; flex-direction: column; gap: .3rem; }
+.viah-native .field label {
+  font-family: var(--sans);
+  font-size: .82rem;
+  font-weight: 400;
+  letter-spacing: .1em;
+  text-transform: uppercase;
+  color: var(--ink-faint);
+}
+.viah-native input, .viah-native select, .viah-native textarea {
+  font-family: var(--sans);
+  font-size: 1rem;
+  color: var(--ink);
+  background: rgba(255, 245, 249, .08);
+  border: 1px solid rgba(255, 215, 0, .2);
+  border-radius: 8px;
+  padding: .6em .8em;
+  outline: none;
+  transition: border-color .25s;
+}
+.viah-native input:focus, .viah-native select:focus, .viah-native textarea:focus {
+  border-color: var(--marigold);
+}
+.viah-native textarea { resize: vertical; }
+.viah-native .status {
+  font-family: var(--sans);
+  font-size: .88rem;
+  color: var(--ink-soft);
+  min-height: 1.2em;
+}
+.viah-native .field-row { display: grid; grid-template-columns: 1fr 1fr; gap: .9rem; }
+
+/* RSVP specific */
+.viah-native .rsvp-heading { font-size: clamp(1.3rem, 3.6vw, 2rem); margin-bottom: .5rem; }
+.viah-native .rsvp-heading em { font-style: italic; color: var(--marigold); }
+.viah-native .rsvp-line-input {
+  background: transparent;
+  border: none;
+  border-bottom: 1px solid rgba(255, 215, 0, .3);
+  border-radius: 0;
+  padding: .5em 0;
+  font-size: 1.1rem;
+  color: var(--ink);
+}
+.viah-native .rsvp-line-input:focus { border-bottom-color: var(--marigold); }
+.viah-native .rsvp-line-input::placeholder { color: var(--ink-faint); }
+.viah-native .rsvp-count-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  font-family: var(--sans);
+  font-size: .92rem;
+  color: var(--ink-soft);
+}
+.viah-native .rsvp-count-controls {
+  display: flex;
+  align-items: center;
+  gap: .2rem;
+}
+.viah-native .rsvp-count-controls button {
+  width: 2rem;
+  height: 2rem;
+  border-radius: 50%;
+  border: 1px solid rgba(255, 215, 0, .28);
+  background: transparent;
+  color: var(--marigold);
+  font-size: 1.1rem;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+.viah-native .rsvp-count-controls input {
+  width: 3rem;
+  text-align: center;
+  background: transparent;
+  border: none;
+  font-size: 1.1rem;
+  color: var(--ink);
+  -moz-appearance: textfield;
+}
+.viah-native .rsvp-count-controls input::-webkit-inner-spin-button,
+.viah-native .rsvp-count-controls input::-webkit-outer-spin-button { -webkit-appearance: none; }
+.viah-native .rsvp-message {
+  background: transparent;
+  border: none;
+  border-bottom: 1px solid rgba(255, 215, 0, .2);
+  border-radius: 0;
+  padding: .5em 0;
+  font-size: .95rem;
+  color: var(--ink);
+  resize: none;
+}
+.viah-native .rsvp-message:focus { border-bottom-color: var(--marigold); }
+.viah-native .rsvp-message::placeholder { color: var(--ink-faint); }
+.viah-native .rsvp-submit { margin-top: .5rem; }
+.viah-native .rsvp-back, .viah-native .rsvp-miss-sub {
+  font-family: var(--sans);
+  font-size: .85rem;
+  color: var(--ink-faint);
+  background: none;
+  border: none;
+  cursor: pointer;
+  text-decoration: underline;
+  text-underline-offset: 3px;
+}
+
+/* ── Wish wall ─────────────────────────────────────────────────────────── */
+.viah-native .wishwall { margin-top: 1rem; }
+.viah-native .wish-viewall {
+  font-family: var(--sans);
+  font-size: .85rem;
+  color: var(--marigold);
+  background: none;
+  border: none;
+  cursor: pointer;
+  text-decoration: underline;
+  text-underline-offset: 3px;
+  margin-top: .6rem;
+}
+
+/* ── Wish modal ────────────────────────────────────────────────────────── */
+.viah-native .wishmodal {
+  position: fixed;
+  inset: 0;
+  z-index: 9999;
+  display: flex;
+  align-items: flex-end;
+  justify-content: center;
+}
+.viah-native .wishmodal__scrim {
+  position: absolute;
+  inset: 0;
+  background: rgba(26, 5, 16, .7);
+  backdrop-filter: blur(4px);
+  -webkit-backdrop-filter: blur(4px);
+}
+.viah-native .wishmodal__panel {
+  position: relative;
+  background: var(--night);
+  border: 1px solid rgba(255, 215, 0, .16);
+  border-radius: 18px 18px 0 0;
+  width: 100%;
+  max-width: 540px;
+  max-height: 72vh;
+  overflow-y: auto;
+  padding: 1.6rem;
+}
+.viah-native .wishmodal__head {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 1rem;
+}
+.viah-native .wishmodal__title {
+  font-family: var(--serif);
+  font-size: 1.3rem;
+  font-weight: 600;
+}
+.viah-native .wishmodal__close {
+  font-size: 1.5rem;
+  background: none;
+  border: none;
+  color: var(--ink-soft);
+  cursor: pointer;
+}
+
+/* ── Footer ────────────────────────────────────────────────────────────── */
+.viah-native .footer {
+  text-align: center;
+  margin-top: 2.4rem;
+}
+.viah-native .footer__orn {
+  width: 80px;
+  margin: 0 auto 1rem;
+  opacity: .7;
+}
+.viah-native .footer__names {
+  font-family: var(--serif);
+  font-size: clamp(1.4rem, 3.6vw, 2.2rem);
+  font-weight: 600;
+}
+.viah-native .footer__date {
+  font-family: var(--sans);
+  font-size: clamp(.78rem, 1.6vw, .95rem);
+  letter-spacing: .18em;
+  text-transform: uppercase;
+  color: var(--ink-faint);
+  margin-top: .3rem;
+}
+.viah-native .footer__mark {
+  font-family: var(--sans);
+  font-size: .72rem;
+  color: var(--ink-faint);
+  margin-top: 1.4rem;
+  letter-spacing: .08em;
+}
+
+/* ── Scroll cue ────────────────────────────────────────────────────────── */
+.viah-native .cue {
+  position: absolute;
+  bottom: 2svh;
+  left: 50%;
+  transform: translateX(-50%);
+  z-index: 60;
+  font-family: var(--sans);
+  font-size: .68rem;
+  letter-spacing: .3em;
+  text-transform: uppercase;
+  color: var(--ink-faint);
+  writing-mode: vertical-rl;
+}
+.viah-native .cue::after {
+  content: "";
+  display: block;
+  width: 1px;
+  height: 2.4rem;
+  background: var(--ink-faint);
+  margin-top: .5rem;
+  animation: viah-cue-pulse 1.8s ease-in-out infinite;
+}
+
+@keyframes viah-cue-pulse {
+  0%, 100% { opacity: .4; transform: scaleY(1); }
+  50%      { opacity: 1;  transform: scaleY(1.3); }
+}
+
+/* ── Gate ───────────────────────────────────────────────────────────────── */
+.viah-native .gate {
+  position: fixed;
+  inset: 0;
+  z-index: 1000;
+  display: grid;
+  place-items: center;
+  padding: 8vw;
+  background: var(--night);
+  transition: opacity 1.4s var(--ease), visibility 1.4s;
+}
+.viah-native .gate.is-open {
+  opacity: 0;
+  visibility: hidden;
+  pointer-events: none;
+}
+.viah-native .gate__art {
+  position: absolute;
+  inset: 0;
+  background-size: contain;
+  background-position: center;
+  background-repeat: no-repeat;
+  z-index: 1;
+}
+.viah-native .gate__art::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background-size: contain;
+  background-position: center;
+  background-repeat: no-repeat;
+}
+.viah-native .gate::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  z-index: 2;
+  background:
+    radial-gradient(70% 50% at 50% 50%, rgba(26, 5, 16, .72) 0%, rgba(26, 5, 16, .32) 60%, transparent 100%),
+    linear-gradient(180deg, rgba(26, 5, 16, .4) 0%, transparent 22%),
+    linear-gradient(0deg,   rgba(26, 5, 16, .4) 0%, transparent 24%);
+}
+.viah-native .gate__inner {
+  position: relative;
+  z-index: 10;
+  text-align: center;
+}
+.viah-native .gate__eyebrow {
+  font-family: var(--sans);
+  font-size: clamp(.72rem, 1.6vw, .95rem);
+  font-weight: 400;
+  letter-spacing: .24em;
+  text-transform: uppercase;
+  color: var(--ink-soft);
+  margin-bottom: .8rem;
+}
+.viah-native .gate__names {
+  font-family: var(--serif);
+  font-size: clamp(2.2rem, 7vw, 5rem);
+  font-weight: 600;
+  line-height: 1.05;
+}
+.viah-native .gate__amp {
+  display: block;
+  font-size: .48em;
+  font-weight: 400;
+  font-style: italic;
+  color: var(--marigold);
+  margin: .15em 0;
+}
+.viah-native .gate__date {
+  font-family: var(--serif);
+  font-size: clamp(.92rem, 2.2vw, 1.3rem);
+  font-weight: 400;
+  color: var(--ink-soft);
+  margin-top: .6rem;
+}
+.viah-native .gate__mark { width: 52px; margin: 1.2rem auto; opacity: .7; }
+.viah-native .gate__btn {
+  display: inline-block;
+  font-family: var(--sans);
+  font-size: clamp(.82rem, 1.8vw, 1rem);
+  font-weight: 500;
+  letter-spacing: .08em;
+  padding: .75em 2.4em;
+  border-radius: 100px;
+  border: 1px solid var(--marigold);
+  color: var(--night);
+  background: var(--marigold);
+  cursor: pointer;
+  margin-top: 1.8rem;
+  transition: background .3s, border-color .3s;
+}
+.viah-native .gate__btn:hover { background: var(--marigold-d); border-color: var(--marigold-d); }
+
+/* ── Music toggle ──────────────────────────────────────────────────────── */
+.viah-native .music {
+  position: fixed;
+  right: 3vw;
+  bottom: 3svh;
+  z-index: 900;
+  display: flex;
+  align-items: center;
+  gap: .4rem;
+  background: rgba(26, 5, 16, .6);
+  border: 1px solid rgba(255, 215, 0, .2);
+  border-radius: 100px;
+  padding: .5rem .7rem;
+  color: var(--marigold);
+  cursor: pointer;
+  backdrop-filter: blur(6px);
+  -webkit-backdrop-filter: blur(6px);
+}
+.viah-native .music__on { width: 22px; height: 22px; }
+.viah-native .music__bars {
+  display: flex;
+  align-items: flex-end;
+  gap: 2px;
+  height: 14px;
+}
+.viah-native .music__bars i {
+  display: block;
+  width: 2px;
+  background: var(--marigold);
+  border-radius: 1px;
+  animation: viah-bar 0.8s ease-in-out infinite alternate;
+}
+.viah-native .music__bars i:nth-child(1) { height: 6px; animation-delay: 0s; }
+.viah-native .music__bars i:nth-child(2) { height: 10px; animation-delay: 0.15s; }
+.viah-native .music__bars i:nth-child(3) { height: 4px; animation-delay: 0.3s; }
+.viah-native .music[aria-pressed="false"] .music__bars i { animation: none; height: 3px; }
+
+@keyframes viah-bar {
+  0%   { height: 3px; }
+  100% { height: 14px; }
+}
+
+/* ── Crest ──────────────────────────────────────────────────────────────── */
+.viah-native .crest { width: 64px; margin-bottom: .8rem; opacity: .85; }
+.viah-native .crest--sm { width: 48px; }
+.viah-native .panel[data-text$="right"] .crest { margin-left: auto; }
+.viah-native .panel[data-text="center"] .crest { margin-inline: auto; }
+
+/* ── Know rows ─────────────────────────────────────────────────────────── */
+.viah-native .know__row {
+  display: grid;
+  grid-template-columns: auto 1fr;
+  gap: .3rem .9rem;
+  margin-top: .5rem;
+}
+.viah-native .know__k {
+  font-family: var(--sans);
+  font-size: .78rem;
+  font-weight: 500;
+  letter-spacing: .14em;
+  text-transform: uppercase;
+  color: var(--ink-faint);
+}
+.viah-native .know__v {
+  font-family: var(--serif);
+  font-size: 1rem;
+  color: var(--ink-soft);
+}
+.viah-native .know__label {
+  font-family: var(--serif);
+  font-size: 1rem;
+}
+
+/* ── Film / hashtag section ────────────────────────────────────────────── */
+.viah-native .film { margin-top: 1.2rem; }
+.viah-native .film__label {
+  font-family: var(--sans);
+  font-size: .78rem;
+  letter-spacing: .14em;
+  text-transform: uppercase;
+  color: var(--ink-faint);
+  margin-bottom: .4rem;
+}
+.viah-native .hashtag {
+  font-family: var(--serif);
+  font-size: clamp(1.3rem, 3.4vw, 2.2rem);
+  font-weight: 600;
+  color: var(--marigold);
+}
+.viah-native .film__frame {
+  margin-top: .8rem;
+  border-radius: 10px;
+  overflow: hidden;
+  border: 1px solid rgba(255, 215, 0, .12);
+}
+
+/* ══════════════════════════════════════════════════════════════════════════
+   TABLET LANDSCAPE — (max-width: 1024px)
+   ══════════════════════════════════════════════════════════════════════════ */
+@media (max-width: 1024px) {
+  .viah-native .layer { inset: -4%; }
+  .viah-native .panel__inner { max-width: 38ch; }
+  .viah-native .panel__inner--wide { max-width: 54ch; }
+  .viah-native .panel[data-scene="1"] .layer.el.fig-left  { height: 104%; left: -3%; }
+  .viah-native .panel[data-scene="1"] .layer.el.fig-right { height: 104%; right: -3%; }
+  .viah-native .panel[data-scene="4"] .layer.el.fig-center { width: 82%; height: 88%; }
+}
+
+/* ══════════════════════════════════════════════════════════════════════════
+   TABLET PORTRAIT — (min-width: 721px) and (max-width: 1024px) portrait
+   ══════════════════════════════════════════════════════════════════════════ */
+@media (min-width: 721px) and (max-width: 1024px) and (orientation: portrait) {
+  .viah-native .panel[data-scene="1"] .layer.el.fig-left  { left: -2%; height: 112%; }
+  .viah-native .panel[data-scene="1"] .layer.el.fig-right { right: -2%; height: 110%; }
+  .viah-native .panel[data-scene="3"] .layer.el.fig-center { left: 18%; right: 18%; height: 66%; }
+  .viah-native .panel[data-scene="4"] .layer.el.fig-center { width: 88%; height: 90%; }
+  .viah-native .panel[data-scene="6"] .layer.el.fig-center { left: 8%; right: 8%; height: 80%; }
+  .viah-native .panel--finale .layer.el.fig-seated { left: 6%; right: 6%; height: 56%; }
+}
+
+/* ══════════════════════════════════════════════════════════════════════════
+   MOBILE — (max-width: 720px)
+   ══════════════════════════════════════════════════════════════════════════ */
+@media (max-width: 720px) {
+  .viah-native { --pad-x: 5.5vw; }
+
+  .viah-native .panel { place-items: start center; }
+  .viah-native .panel__inner {
+    text-align: center;
+    max-width: 100%;
+    margin: 4svh var(--pad-x) 0;
+  }
+  .viah-native .panel__inner--wide { max-width: 100%; }
+  .viah-native .panel[data-text$="right"] .panel__inner,
+  .viah-native .panel[data-text$="left"]  .panel__inner { text-align: center; }
+  .viah-native .panel[data-text$="right"] .know__row,
+  .viah-native .panel[data-text$="left"]  .know__row { justify-items: center; text-align: center; }
+  .viah-native .panel[data-text$="right"] .countdown,
+  .viah-native .panel[data-text$="left"]  .countdown { justify-content: center; }
+  .viah-native .panel[data-text$="right"] .crest,
+  .viah-native .panel[data-text$="left"]  .crest { margin-inline: auto; }
+
+  .viah-native .panel--tall { place-items: start center; padding: 6svh var(--pad-x); }
+  .viah-native .panel--tall .panel__inner { margin-top: 0; }
+
+  .viah-native .panel[data-scene="7"] .panel__inner {
+    max-height: none;
+    overflow: visible;
+  }
+  .viah-native .panel[data-scene="7"] .film { margin-top: .9rem; }
+  .viah-native .panel[data-scene="7"] .film__frame { max-width: 230px; }
+
+  /* Layers on mobile */
+  .viah-native .layer { inset: -6%; }
+
+  .viah-native .layer.el.fig-left {
+    inset: auto; left: -11.3%; right: auto; bottom: -1svh;
+    width: 200%; height: 52svh;
+    background-size: contain;
+    background-position: left bottom;
+    z-index: 45;
+  }
+  .viah-native .layer.el.fig-right {
+    inset: auto; left: -89.4%; right: auto; bottom: -1svh;
+    width: 200%; height: 52svh;
+    background-size: contain;
+    background-position: left bottom;
+    z-index: 45;
+  }
+  .viah-native .layer.el.fig-center { left: -16%; right: -16%; height: 120%; }
+
+  .viah-native .panel[data-scene="3"] .layer.el.fig-center {
+    inset: auto; left: -14%; right: -14%; bottom: 0;
+    height: 46%;
+    background-size: contain;
+    background-position: center bottom;
+    z-index: 45;
+  }
+  .viah-native .panel[data-scene="3"] .layer.el.branch {
+    width: 48vw; height: 56svh;
+    background-size: contain;
+    -webkit-mask-image: none;
+            mask-image: none;
+    z-index: 46;
+    opacity: 0.92;
+  }
+  .viah-native .panel[data-scene="3"] .layer.el.branch--left {
+    inset: -3svh auto auto -2vw;
+    background-position: left top;
+  }
+  .viah-native .panel[data-scene="3"] .layer.el.branch--right {
+    inset: -9svh -2vw auto auto;
+    background-position: right top;
+  }
+  .viah-native .panel[data-scene="3"] .layer.el.branch.is-ready {
+    opacity: 0.92;
+    transition: opacity 0.5s ease;
+  }
+
+  .viah-native .layer.el.toplights {
+    inset: -4svh 0 auto 0;
+    height: 34svh;
+    background-size: 132% auto;
+    background-position: center top;
+    -webkit-mask-image: linear-gradient(180deg, #000 0%, #000 72%, transparent 98%);
+            mask-image: linear-gradient(180deg, #000 0%, #000 72%, transparent 98%);
+  }
+
+  .viah-native .panel--tall .layer.el.fig-center {
+    top: auto; bottom: 0;
+    left: 5%; right: 5%;
+    width: auto;
+    height: 65%;
+    background-size: contain;
+    background-position: center bottom;
+  }
+
+  .viah-native .panel[data-scene="4"] { padding-bottom: 14svh; }
+  .viah-native .panel[data-scene="4"] .layer.el.fig-center {
+    inset: auto; left: 5%; right: 5%; bottom: 0;
+    width: auto; height: 65%;
+    background-size: contain;
+    background-position: center bottom;
+    z-index: 50;
+  }
+
+  .viah-native .layer.el.fig-seated { left: -4%; right: -4%; height: 76%; }
+
+  .viah-native .panel--tall .layer.el.is-ready { opacity: .9; }
+  .viah-native .panel--tall .layer.el.fig-seated.is-ready { opacity: .72; }
+  .viah-native .panel--tall .layer.el.fig-center.is-ready { opacity: .9; }
+  .viah-native .panel--tall .layer.el.toplights.is-ready,
+  .viah-native .panel--tall .layer.el.branch.is-ready { opacity: 1; }
+  .viah-native .panel--tall .layer.el.glow.is-ready { opacity: .6; }
+
+  .viah-native .panel--tall .layer.el.glow {
+    inset: 0;
+    background-size: 100% 46svh;
+    background-repeat: repeat-y;
+    background-position: center top;
+  }
+
+  .viah-native .panel--tall .panel__inner {
+    background: linear-gradient(180deg, rgba(26, 5, 16, .34) 0%, rgba(26, 5, 16, .5) 100%);
+    padding: 1.4rem 1.1rem;
+    border-radius: 14px;
+    backdrop-filter: blur(2px);
+    -webkit-backdrop-filter: blur(2px);
+  }
+
+  .viah-native .panel[data-scene="7"] .layer.el.fig-center {
+    top: auto; bottom: -1svh;
+    left: -32.5%; right: auto;
+    width: 170%;
+    height: 48svh;
+    background-size: contain;
+    background-position: left bottom;
+    -webkit-mask-image: linear-gradient(180deg, #000 0%, #000 90%, transparent 100%);
+            mask-image: linear-gradient(180deg, #000 0%, #000 90%, transparent 100%);
+    z-index: 45;
+  }
+  .viah-native .panel[data-scene="7"] .layer.el.branch { z-index: 46; }
+
+  /* Mobile scrims */
+  .viah-native .panel::after,
+  .viah-native .panel[data-text$="left"]::after,
+  .viah-native .panel[data-text$="right"]::after,
+  .viah-native .panel[data-text="center"]::after {
+    background-image:
+      radial-gradient(120% 90% at 50% 50%, transparent 0%, rgba(26, 5, 16, .40) 100%),
+      linear-gradient(180deg, rgba(26, 5, 16, .62) 0%, rgba(26, 5, 16, .18) 38%,
+                              rgba(26, 5, 16, .30) 68%, rgba(26, 5, 16, .72) 100%);
+  }
+  .viah-native .panel--tall::after,
+  .viah-native .panel--tall[data-text$="left"]::after,
+  .viah-native .panel--tall[data-text$="right"]::after {
+    background-image:
+      radial-gradient(130% 100% at 50% 42%, transparent 0%, rgba(26, 5, 16, .26) 100%),
+      linear-gradient(180deg, rgba(26, 5, 16, .5) 0%, rgba(26, 5, 16, .06) 34%,
+                              rgba(26, 5, 16, .14) 62%, rgba(26, 5, 16, .58) 100%);
+  }
+
+  /* Scene 2 mobile overrides */
+  .viah-native .panel[data-scene="2"] .panel__inner {
+    background: none;
+    border: 0;
+    border-radius: 0;
+    box-shadow: none;
+    backdrop-filter: none;
+    -webkit-backdrop-filter: none;
+    padding: 1.4rem .9rem;
+  }
+  .viah-native .panel[data-scene="2"]::after,
+  .viah-native .panel[data-scene="2"][data-text="center"]::after {
+    background-image:
+      radial-gradient(118% 82% at 50% 46%, rgba(26, 5, 16, .68) 0%,
+                                           rgba(26, 5, 16, .46) 58%,
+                                           rgba(26, 5, 16, .30) 100%),
+      linear-gradient(180deg, rgba(26, 5, 16, .26) 0%, rgba(26, 5, 16, .34) 34%,
+                              rgba(26, 5, 16, .46) 70%, rgba(26, 5, 16, .70) 100%);
+  }
+  .viah-native .panel[data-scene="2"] .eyebrow {
+    color: #F6EFE2;
+    font-weight: 500;
+    letter-spacing: .24em;
+    text-shadow: 0 1px 2px rgba(0, 0, 0, .95), 0 2px 12px rgba(0, 0, 0, .92);
+  }
+  .viah-native .panel[data-scene="2"] .blessing {
+    color: #F3C978;
+    font-weight: 600;
+    letter-spacing: .18em;
+    text-shadow: 0 1px 2px rgba(0, 0, 0, .95), 0 2px 12px rgba(0, 0, 0, .92);
+  }
+  .viah-native .panel[data-scene="2"] .family__label {
+    color: #F3C978;
+    font-weight: 600;
+    letter-spacing: .22em;
+    text-shadow: 0 1px 2px rgba(0, 0, 0, .95), 0 2px 12px rgba(0, 0, 0, .92);
+  }
+  .viah-native .panel[data-scene="2"] .family__person-name { font-weight: 400; letter-spacing: 0; }
+  .viah-native .panel[data-scene="2"] .family__name {
+    color: #FFFFFF;
+    font-weight: 600;
+    text-shadow: 0 1px 2px rgba(0, 0, 0, .95), 0 2px 14px rgba(0, 0, 0, .94);
+  }
+  .viah-native .panel[data-scene="2"] .family__note {
+    color: #F6EFE2;
+    font-weight: 500;
+    text-shadow: 0 1px 2px rgba(0, 0, 0, .95), 0 2px 12px rgba(0, 0, 0, .92);
+  }
+  .viah-native .panel[data-scene="2"] .lede--story {
+    color: #FFFFFF;
+    font-style: italic;
+    text-shadow: 0 1px 2px rgba(0, 0, 0, .95), 0 2px 14px rgba(0, 0, 0, .92);
+  }
+
+  /* Mobile layout simplifications */
+  .viah-native .functions { text-align: center; grid-template-columns: 1fr; }
+  .viah-native .fn__when  { justify-content: center; }
+  .viah-native .fn__meta span { display: block; margin: 0 0 .2rem; }
+  .viah-native .fn__map { margin-inline: auto; }
+  .viah-native .families { gap: 0; }
+  .viah-native .family__sep { align-self: center; }
+  .viah-native .family__sep img { width: 34px; }
+  .viah-native .countdown { gap: 1.1rem; }
+  .viah-native .field-row { grid-template-columns: 1fr; }
+
+  /* Gate mobile */
+  .viah-native .gate { padding: 6vw; align-content: center; --gate-shift: 0%; }
+  .viah-native .gate__inner { transform: translateY(-4svh); margin-bottom: 0; }
+  .viah-native .gate__art::after { background-size: cover; background-position: center; }
+  .viah-native .gate::before {
+    background:
+      radial-gradient(86% 46% at 50% 50%, rgba(26, 5, 16, .78) 0%, rgba(26, 5, 16, .36) 64%, transparent 100%),
+      linear-gradient(180deg, rgba(26, 5, 16, .5) 0%, transparent 24%),
+      linear-gradient(0deg,   rgba(26, 5, 16, .5) 0%, transparent 26%);
+  }
+  .viah-native .gate__eyebrow { font-size: .74rem; letter-spacing: .2em; max-width: 26ch; margin-inline: auto; }
+  .viah-native .gate__mark { width: 44px; margin-bottom: 1.1rem; }
+  .viah-native .gate__btn { margin-top: 1.8rem; }
+
+  .viah-native .cue { left: 50%; right: auto; }
+  .viah-native .music { right: 5vw; bottom: 2.6svh; }
+
+  /* Finale couple mobile */
+  .viah-native .panel--finale .layer.el.fig-seated {
+    inset: auto; left: -30%; right: -30%; bottom: 4svh;
+    width: auto;
+    height: 42svh;
+    background-size: contain;
+    background-position: center bottom;
+    z-index: 45;
+  }
+  .viah-native .panel--finale .layer.el.fig-seated.is-ready { opacity: 1; }
+
+  /* Small text legibility */
+  .viah-native {
+    --ink-soft:  rgba(246, 239, 226, .92);
+    --ink-faint: rgba(246, 239, 226, .82);
+  }
+  .viah-native .eyebrow,
+  .viah-native .know__k,
+  .viah-native .fn__time,
+  .viah-native .fn__meta span,
+  .viah-native .film__label,
+  .viah-native .footer__date,
+  .viah-native .footer__mark,
+  .viah-native .gate__eyebrow {
+    text-shadow: 0 1px 10px rgba(26, 5, 16, .75);
+  }
+  .viah-native .fn__meta span,
+  .viah-native .know__k { letter-spacing: .14em; }
+
+  /* Scene 8 mobile padding */
+  .viah-native .panel[data-scene="8"] { padding-bottom: calc(14svh + 34svh); }
+  .viah-native .panel[data-scene="8"] .layer.el.fill:not(.glow) { display: none; }
+}
+
+/* Very short landscape phones */
+@media (max-height: 520px) and (orientation: landscape) {
+  .viah-native .panel { min-height: 640px; }
+  .viah-native .panel__inner { margin: 6svh var(--pad-x); }
+}
+
+/* ── Reduced motion ────────────────────────────────────────────────────── */
+@media (prefers-reduced-motion: reduce) {
+  .viah-native .cue::after { animation: none; }
+  .viah-native .music__bars i { animation: none; }
+  .viah-native .layer { transition: none; }
+}
+
+/* ── Print ─────────────────────────────────────────────────────────────── */
+@media print {
+  .viah-native { overflow: visible; background: #fff; color: #1a1a1a; }
+  .viah-native .scroller { height: auto; overflow: visible; }
+  .viah-native .gate, .viah-native .music, .viah-native .cue, .viah-native .layer, .viah-native .panel::after, .viah-native .film { display: none !important; }
+  .viah-native .panel { min-height: auto; page-break-inside: avoid; padding: 1.5rem 0; background: none !important; }
+  .viah-native .panel__inner { margin: 0; max-width: 100%; filter: none; }
+  .viah-native .eyebrow, .viah-native .family__label, .viah-native .know__k, .viah-native .fn__name, .viah-native .amp, .viah-native .hashtag { color: #8a5a12; }
+  .viah-native .lede, .viah-native .know__v, .viah-native .fn__addr, .viah-native .family__note { color: #444; }
+  .viah-native .card, .viah-native .fn { border-color: #ccc; background: none; backdrop-filter: none; }
+  .viah-native .form, .viah-native .status, .viah-native .btn { display: none !important; }
+}
+
+/* ══════════════════════════════════════════════════════════════════════════
+   TABLET PORTRAIT — TEXT PLACEMENT (appended at end for source-order win)
+   ══════════════════════════════════════════════════════════════════════════ */
+@media (min-width: 721px) and (max-width: 1024px) and (orientation: portrait) {
+  .viah-native .panel[data-text="top-left"],
+  .viah-native .panel[data-text="top-right"],
+  .viah-native .panel[data-text="center-left"],
+  .viah-native .panel[data-text="bottom-left"],
+  .viah-native .panel[data-text="bottom-right"] { place-items: center; }
+
+  .viah-native .panel__inner {
+    text-align: center;
+    max-width: min(60ch, 82vw);
+    margin-inline: auto;
+  }
+  .viah-native .panel[data-text$="right"] .panel__inner,
+  .viah-native .panel[data-text$="left"]  .panel__inner { text-align: center; }
+  .viah-native .panel[data-text$="right"] .know__row,
+  .viah-native .panel[data-text$="left"]  .know__row { justify-items: center; text-align: center; }
+  .viah-native .panel[data-text$="right"] .countdown,
+  .viah-native .panel[data-text$="left"]  .countdown { justify-content: center; }
+  .viah-native .panel[data-text$="right"] .crest,
+  .viah-native .panel[data-text$="left"]  .crest { margin-inline: auto; }
+
+  .viah-native .panel--tall { place-items: start center; }
+  .viah-native .panel--tall .panel__inner { margin-top: 4svh; margin-bottom: 0; }
+  .viah-native .panel[data-scene="4"] .panel__inner,
+  .viah-native .panel[data-scene="8"] .panel__inner { max-width: min(680px, 86vw); }
+  .viah-native .panel[data-scene="1"] .panel__inner { margin-top: 0; }
+
+  .viah-native .panel::after,
+  .viah-native .panel[data-text$="left"]::after,
+  .viah-native .panel[data-text$="right"]::after,
+  .viah-native .panel[data-text="center"]::after {
+    background-image:
+      radial-gradient(78% 52% at 50% 46%, rgba(26, 5, 16, .58) 0%,
+                                          rgba(26, 5, 16, .34) 58%, transparent 100%),
+      linear-gradient(180deg, rgba(26, 5, 16, .52) 0%, transparent 30%),
+      linear-gradient(0deg,   rgba(26, 5, 16, .50) 0%, transparent 28%);
+  }
+  .viah-native .panel--tall::after {
+    background-image:
+      radial-gradient(90% 60% at 50% 40%, rgba(26, 5, 16, .40) 0%,
+                                          rgba(26, 5, 16, .22) 62%, transparent 100%),
+      linear-gradient(180deg, rgba(26, 5, 16, .46) 0%, transparent 26%);
+  }
+}
+
+/* ══════════════════════════════════════════════════════════════════════════
+   SCENE 1 — drop balustrade on tablets
+   ══════════════════════════════════════════════════════════════════════════ */
+@media (max-width: 1024px) {
+  .viah-native .panel[data-scene="1"] .layer.el.fill:not(.glow) { display: none; }
+}
+@media (min-width: 1025px) and (max-width: 1400px) and (orientation: landscape) and (pointer: coarse) {
+  .viah-native .panel[data-scene="1"] .layer.el.fill:not(.glow) { display: none; }
+}
+
+/* ══════════════════════════════════════════════════════════════════════════
+   IPAD PORTRAIT — FIGURE SCALE
+   ══════════════════════════════════════════════════════════════════════════ */
+@media (min-width: 721px) and (max-width: 1024px) and (orientation: portrait) {
+  .viah-native .layer.el.fig-left  { left: -10%; width: 104%; height: 132%; }
+  .viah-native .layer.el.fig-right { right: -12%; width: 102%; height: 130%; }
+
+  .viah-native .panel[data-scene="3"] .layer.el.fig-center {
+    inset: auto; left: -11%; right: -11%; bottom: 0;
+    height: 58%;
+    background-size: contain;
+    background-position: center bottom;
+    z-index: 45;
+  }
+  .viah-native .panel[data-scene="6"] .layer.el.fig-center {
+    inset: auto; left: -14%; right: -14%; bottom: 0;
+    height: 62%;
+    background-size: contain;
+    background-position: center bottom;
+    z-index: 45;
+  }
+  .viah-native .panel[data-scene="4"] .layer.el.fig-center {
+    inset: auto; left: 5%; right: 5%; bottom: 0;
+    width: auto; height: 65%;
+    background-size: contain;
+    background-position: center bottom;
+    z-index: 50;
+  }
+  .viah-native .panel[data-scene="7"] .layer.el.fig-center {
+    inset: auto; bottom: 0;
+    left: -22%; right: auto;
+    width: 144%; height: 66%;
+    background-size: contain;
+    background-position: center bottom;
+    z-index: 45;
+  }
+  .viah-native .panel--finale .layer.el.fig-seated {
+    inset: auto; left: 2%; right: 2%; bottom: 0;
+    width: auto; height: 46%;
+    background-size: contain;
+    background-position: center bottom;
+    z-index: 45;
+  }
+  .viah-native .panel[data-scene="8"] .layer.el.fill:not(.glow) { height: 22%; }
+
+  .viah-native .panel[data-scene="1"],
+  .viah-native .panel[data-scene="3"],
+  .viah-native .panel[data-scene="5"],
+  .viah-native .panel[data-scene="6"] { place-items: start center; }
+  .viah-native .panel[data-scene="1"] .panel__inner,
+  .viah-native .panel[data-scene="3"] .panel__inner,
+  .viah-native .panel[data-scene="5"] .panel__inner,
+  .viah-native .panel[data-scene="6"] .panel__inner {
+    margin-top: 7svh;
+    margin-bottom: 0;
+  }
+
+  .viah-native .panel[data-scene="7"] .layer.el.fig-center {
+    inset: auto; bottom: 0;
+    left: 1%; right: auto;
+    width: 126%; height: 58%;
+    background-size: contain;
+    background-position: center bottom;
+    z-index: 45;
+  }
+  .viah-native .panel[data-scene="7"] .panel__inner {
+    margin-top: 3svh;
+    margin-bottom: 0;
+    margin-left: var(--pad-x);
+    margin-right: auto;
+    max-width: min(44ch, 56vw);
+  }
+  .viah-native .panel[data-scene="7"] .panel__inner,
+  .viah-native .panel[data-scene="7"] .know__row { text-align: left; }
+  .viah-native .panel[data-scene="7"] .btn { margin-inline: 0; }
+}
+
+/* ══════════════════════════════════════════════════════════════════════════
+   MOBILE-ONLY REFINEMENTS
+   ══════════════════════════════════════════════════════════════════════════ */
+@media (max-width: 720px) {
+  .viah-native .panel[data-scene="1"] .layer.el.fig-left  { left: 0; }
+  .viah-native .panel[data-scene="1"] .layer.el.fig-right { right: 0; }
+  .viah-native .panel[data-scene="8"] { padding-bottom: calc(14svh + 34svh); }
+  .viah-native .panel[data-scene="8"] .layer.el.fill:not(.glow) { display: none; }
+}
+
+/* ══════════════════════════════════════════════════════════════════════════
+   iPad PORTRAIT — type scale + scene 5's drum
+   ══════════════════════════════════════════════════════════════════════════ */
+@media (min-width: 721px) and (max-width: 1024px) and (orientation: portrait) {
+  .viah-native .panel { container-type: inline-size; }
+
+  .viah-native .eyebrow          { font-size: clamp(17px, 2.5cqw, 30px); }
+  .viah-native .blessing         { font-size: clamp(17px, 2.5cqw, 30px); }
+  .viah-native .blessing__names  { font-size: clamp(21px, 3.3cqw, 40px); }
+  .viah-native .family__label    { font-size: clamp(16px, 2.3cqw, 28px); }
+  .viah-native .family__name     { font-size: clamp(21px, 3.2cqw, 38px); }
+  .viah-native .family__note     { font-size: clamp(17px, 2.5cqw, 30px); }
+  .viah-native .lede             { font-size: clamp(19px, 2.9cqw, 34px); }
+  .viah-native .know__row        { font-size: clamp(18px, 2.7cqw, 32px); }
+  .viah-native .know__label      { font-size: clamp(16px, 2.3cqw, 28px); }
+  .viah-native .fn__name         { font-size: clamp(20px, 3.0cqw, 36px); }
+  .viah-native .fn__when,
+  .viah-native .fn__where,
+  .viah-native .fn__time         { font-size: clamp(17px, 2.5cqw, 30px); }
+  .viah-native .fn__addr,
+  .viah-native .fn__meta,
+  .viah-native .fn__map,
+  .viah-native .fn__meta span,
+  .viah-native .fn__meta--note   { font-size: clamp(16px, 2.3cqw, 28px); }
+  .viah-native .countdown__l     { font-size: clamp(14px, 2.0cqw, 24px); }
+  .viah-native .countdown__n     { font-size: clamp(26px, 4.0cqw, 48px); }
+  .viah-native .know__k          { font-size: clamp(16px, 2.3cqw, 28px); }
+  .viah-native .film__label      { font-size: clamp(16px, 2.3cqw, 28px); }
+  .viah-native .btn              { font-size: clamp(17px, 2.4cqw, 28px); }
+  .viah-native .field label,
+  .viah-native .field--functions label { font-size: clamp(16px, 2.2cqw, 26px); }
+  .viah-native .rsvp-back,
+  .viah-native .rsvp-miss-sub,
+  .viah-native .wish-viewall     { font-size: clamp(16px, 2.2cqw, 26px); }
+  .viah-native .footer__date     { font-size: clamp(16px, 2.3cqw, 28px); }
+  .viah-native .footer__mark     { font-size: clamp(15px, 2.1cqw, 24px); }
+
+  .viah-native input, .viah-native select, .viah-native textarea { font-size: clamp(16px, 2.2cqw, 26px); }
+
+  .viah-native .panel[data-scene="5"] .layer.el.hands {
+    inset: 4% 0 auto 0;
+    height: 40%;
+  }
+  .viah-native .panel[data-scene="5"] { place-items: center center; }
+  .viah-native .panel[data-scene="5"] .panel__inner {
+    margin-top: 18svh;
+    margin-bottom: 0;
+  }
+
+  .viah-native .panel[data-scene="3"] .layer.el.fig-center {
+    left: -32%; right: -32%;
+  }
+  .viah-native .panel--finale .layer.el.fig-seated {
+    left: -30%; right: -30%;
+  }
+  .viah-native .panel[data-scene="8"] { padding-bottom: 46svh; }
+}
+
+/* ══════════════════════════════════════════════════════════════════════════
+   SCENE 3's couple on DESKTOP and LANDSCAPE
+   ══════════════════════════════════════════════════════════════════════════ */
+@media (min-width: 1025px),
+       (orientation: landscape) and (min-width: 721px) and (min-height: 521px) {
+  .viah-native .panel[data-scene="3"] .layer.el.fig-center {
+    left: -4%; right: 24%;
+    height: min(70%, 780px);
+  }
+}
+
+/* ══════════════════════════════════════════════════════════════════════════
+   Scene 1 on PHONES — reflecting pool without balustrade
+   ══════════════════════════════════════════════════════════════════════════ */
+@media (max-width: 720px) {
+  .viah-native .panel[data-scene="1"] .layer.el.fill:not(.glow) {
+    display: block;
+    inset: auto -8vw -10vw -8vw;
+    height: 40vw;
+    background-size: 430vw auto;
+    background-position: center bottom;
+    background-repeat: no-repeat;
+    z-index: 42;
+  }
+}
+
+/* ══════════════════════════════════════════════════════════════════════════
+   Sacred Mandap figure overrides (per-scene !important positioning)
+   ══════════════════════════════════════════════════════════════════════════ */
+.viah-native .panel[data-scene="1"] .layer.el.fig-left {
+  inset: auto !important; left: -5% !important; right: 50% !important; bottom: 0 !important;
+  height: 65% !important; width: auto !important;
+  background-size: contain !important; background-position: center bottom !important;
+  z-index: 50 !important;
+}
+.viah-native .panel[data-scene="1"] .layer.el.fig-right {
+  inset: auto !important; left: 36% !important; right: 2% !important; bottom: 0 !important;
+  height: 80% !important; width: auto !important;
+  background-size: contain !important; background-position: center bottom !important;
+  z-index: 50 !important;
+}
+.viah-native .panel[data-scene="3"] .layer.el.fig-center {
+  inset: auto !important; left: 20% !important; right: 20% !important; bottom: 0 !important;
+  height: 55% !important; width: auto !important;
+  background-size: contain !important; background-position: center bottom !important;
+  z-index: 50 !important;
+}
+.viah-native .panel--tall.panel[data-scene="4"] .layer.el.fig-center {
+  inset: auto !important; left: 5% !important; right: 5% !important; bottom: 0 !important;
+  height: 65% !important; width: auto !important;
+  background-size: contain !important; background-position: center bottom !important;
+  z-index: 50 !important;
+}
+.viah-native .panel[data-scene="6"] .layer.el.fig-center {
+  inset: auto !important; left: 10% !important; right: 20% !important; bottom: 0 !important;
+  height: 65% !important; width: auto !important;
+  background-size: contain !important; background-position: center bottom !important;
+  z-index: 50 !important;
+}
+.viah-native .panel--tall.panel[data-scene="7"] .layer.el.fig-center {
+  inset: auto !important; left: 20% !important; right: 5% !important; bottom: 0 !important;
+  height: 70% !important; width: auto !important;
+  background-size: contain !important; background-position: center bottom !important;
+  z-index: 50 !important;
+}
+.viah-native .panel--tall.panel--finale .layer.el.fig-seated {
+  inset: auto !important; left: 18% !important; right: 18% !important; bottom: 0 !important;
+  height: 55% !important; width: auto !important;
+  background-size: contain !important; background-position: center bottom !important;
+  z-index: 50 !important;
+}

@@ -1,0 +1,1568 @@
+/* ============================================
+   Kerala Dawn — Complete Design System
+   Prefix: kd-   |   Isolation: isolate
+   ============================================ */
+
+/* ---- Google Fonts ---- */
+@import url('https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;0,600;0,700;1,300;1,400;1,600&family=Outfit:wght@200;300;400;500;600&display=swap');
+
+/* ============================================
+   Design Tokens
+   ============================================ */
+:root {
+  /* Core Palette */
+  --kd-night: #050D0B;
+  --kd-teal-black: #0A1F1C;
+  --kd-deep-teal: #0F2A24;
+  --kd-paddy: #2D5A27;
+  --kd-paddy-dark: #1A3418;
+  --kd-lamp-gold: #D4A236;
+  --kd-kasavu: #E8D5A3;
+  --kd-kasavu-light: #F0E4C1;
+  --kd-slate: #2A3D4E;
+  --kd-ivory: #F5EFE0;
+  --kd-warm-white: #FFF8ED;
+
+  /* Extended */
+  --kd-night-green: #071410;
+  --kd-moss: #1E4A2A;
+  --kd-deep-moss: #0D2318;
+  --kd-gold-bright: #E8B84A;
+  --kd-gold-dim: #A67E28;
+  --kd-gold-pale: #C4A86C;
+  --kd-ember: #D4763A;
+  --kd-dawn-pink: #E8A076;
+  --kd-water-blue: #1A3040;
+  --kd-charcoal: #2A2A2A;
+
+  /* Typography */
+  --kd-font-display: 'Cormorant Garamond', 'Georgia', serif;
+  --kd-font-body: 'Outfit', 'system-ui', sans-serif;
+
+  /* Spacing */
+  --kd-space-1: 4px;
+  --kd-space-2: 8px;
+  --kd-space-3: 12px;
+  --kd-space-4: 16px;
+  --kd-space-5: 20px;
+  --kd-space-6: 24px;
+  --kd-space-8: 32px;
+  --kd-space-10: 40px;
+  --kd-space-12: 48px;
+  --kd-space-16: 64px;
+  --kd-space-20: 80px;
+  --kd-space-24: 96px;
+
+  /* Opacity */
+  --kd-opacity-veil: 0.85;
+  --kd-opacity-smoke: 0.60;
+  --kd-opacity-mist: 0.40;
+  --kd-opacity-breath: 0.20;
+  --kd-opacity-whisper: 0.08;
+
+  /* Glows */
+  --kd-glow-lamp: 0 0 20px rgba(212,162,54,0.25), 0 0 40px rgba(212,162,54,0.10), 0 0 80px rgba(212,162,54,0.05);
+  --kd-glow-text: 0 0 30px rgba(212,162,54,0.20), 0 0 60px rgba(212,162,54,0.08);
+  --kd-glow-button: 0 0 12px rgba(212,162,54,0.20), 0 2px 8px rgba(0,0,0,0.30);
+
+  /* Shadows */
+  --kd-shadow-card: 0 4px 24px rgba(0,0,0,0.40), 0 1px 4px rgba(0,0,0,0.20);
+  --kd-shadow-inset: inset 0 1px 3px rgba(0,0,0,0.30);
+
+  /* Easings */
+  --kd-ease-reveal: cubic-bezier(0.22, 1, 0.36, 1);
+  --kd-duration-reveal: 600ms;
+  --kd-stagger-delay: 120ms;
+}
+
+/* ============================================
+   Page Root
+   ============================================ */
+.kd-page {
+  isolation: isolate;
+  min-height: 100vh;
+  background: var(--kd-night);
+  color: var(--kd-kasavu-light);
+  font-family: var(--kd-font-body);
+  font-weight: 300;
+  overflow-x: hidden;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+/* ============================================
+   Shared Section Base
+   ============================================ */
+.kd-section {
+  position: relative;
+  width: 100%;
+  overflow: hidden;
+}
+
+/* Film grain overlay for sections 2-6 */
+.kd-section--grain::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.65' numOctaves='1' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+  background-size: 200px 200px;
+  opacity: 0.03;
+  mix-blend-mode: overlay;
+  pointer-events: none;
+  z-index: 2;
+}
+
+.kd-section__content {
+  position: relative;
+  max-width: 340px;
+  margin: 0 auto;
+  z-index: 1;
+}
+
+/* Atmospheric haze layer */
+.kd-section__haze {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  z-index: 0;
+}
+
+/* ============================================
+   S1: Opening
+   ============================================ */
+.kd-music {
+  position: fixed;
+  z-index: 20;
+  right: max(24px, env(safe-area-inset-right));
+  bottom: max(24px, env(safe-area-inset-bottom));
+  width: 48px;
+  height: 48px;
+  border: 1px solid rgba(238, 211, 145, 0.7);
+  border-radius: 50%;
+  background: rgba(20, 31, 26, 0.72);
+  color: #eed391;
+  font-size: 20px;
+  cursor: pointer;
+}
+
+.kd-opening {
+  position: relative;
+  width: 100%;
+  height: 100svh;
+  overflow: hidden;
+  background: var(--kd-night);
+}
+
+.kd-opening__video {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  object-position: center 60%;
+  z-index: 1;
+}
+
+/* Gradient overlay — always present over video */
+.kd-opening__overlay {
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(
+    180deg,
+    rgba(5, 13, 11, 0.3) 0%,
+    transparent 30%,
+    transparent 70%,
+    rgba(5, 13, 11, 0.5) 100%
+  );
+  z-index: 2;
+  pointer-events: none;
+}
+
+/* Vignette */
+.kd-opening__vignette {
+  position: absolute;
+  inset: 0;
+  background: radial-gradient(
+    ellipse 70% 70% at 50% 50%,
+    transparent 40%,
+    rgba(5, 13, 11, 0.6) 100%
+  );
+  z-index: 2;
+  pointer-events: none;
+}
+
+/* Touch CTA container */
+.kd-opening__cta {
+  position: absolute;
+  bottom: 60px;
+  left: 50%;
+  transform: translateX(-50%);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 12px;
+  z-index: 10;
+  cursor: pointer;
+  padding: 20px 40px;
+  /* Large tap target */
+}
+
+.kd-opening__cta-text {
+  font-family: var(--kd-font-body);
+  font-weight: 300;
+  font-size: 13px;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  color: var(--kd-kasavu-light);
+}
+
+/* Name reveal container */
+.kd-opening__names {
+  position: absolute;
+  top: 18%;
+  left: 0;
+  right: 0;
+  text-align: center;
+  padding: 0 var(--kd-space-8);
+  z-index: 10;
+  pointer-events: none;
+  opacity: 0;
+  visibility: hidden;
+}
+
+.kd-opening__groom,
+.kd-opening__bride {
+  font-family: var(--kd-font-display);
+  font-weight: 300;
+  font-size: 52px;
+  line-height: 1.1;
+  letter-spacing: 0.04em;
+  color: var(--kd-kasavu);
+  text-shadow: var(--kd-glow-text);
+  margin: 0;
+}
+
+.kd-opening__ampersand {
+  display: block;
+  font-family: var(--kd-font-display);
+  font-weight: 300;
+  font-style: italic;
+  font-size: 36px;
+  line-height: 1;
+  letter-spacing: 0.06em;
+  color: var(--kd-lamp-gold);
+  margin: 8px 0;
+}
+
+.kd-opening__date {
+  font-family: var(--kd-font-body);
+  font-weight: 300;
+  font-size: 16px;
+  line-height: 1.4;
+  letter-spacing: 0.20em;
+  text-transform: uppercase;
+  color: var(--kd-kasavu-light);
+  margin-top: 20px;
+  opacity: 0.85;
+}
+
+/* Water transition at bottom of Opening */
+.kd-water-transition {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  height: 40px;
+  background: linear-gradient(
+    180deg,
+    transparent 0%,
+    rgba(26, 48, 64, 0.3) 50%,
+    var(--kd-teal-black) 100%
+  );
+  z-index: 3;
+  pointer-events: none;
+}
+
+/* ============================================
+   S2: Couple & Family
+   ============================================ */
+.kd-couple {
+  padding: var(--kd-space-16) var(--kd-space-8);
+  background:
+    radial-gradient(ellipse 100% 60% at 50% 20%, rgba(212,162,54,0.04) 0%, transparent 70%),
+    linear-gradient(180deg, #0A1F1C 0%, #0F2A24 40%, #142E1F 80%, #1A3418 100%);
+}
+
+/* Kasavu frame */
+.kd-kasavu-frame {
+  position: relative;
+  border: 1px solid rgba(212, 162, 54, 0.30);
+  padding: 40px 24px;
+}
+
+.kd-kasavu-frame::before {
+  content: '';
+  position: absolute;
+  inset: 8px;
+  border: 1px solid rgba(212, 162, 54, 0.50);
+  pointer-events: none;
+}
+
+/* Corner elephants */
+.kd-kasavu-frame__elephant {
+  position: absolute;
+  opacity: 0.15;
+  z-index: 1;
+}
+.kd-kasavu-frame__elephant--tl { top: -8px; left: -4px; }
+.kd-kasavu-frame__elephant--tr { top: -8px; right: -4px; }
+.kd-kasavu-frame__elephant--bl { bottom: -8px; left: -4px; }
+.kd-kasavu-frame__elephant--br { bottom: -8px; right: -4px; }
+
+/* Gopuram watermark */
+.kd-couple__gopuram {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  opacity: 0.05;
+  z-index: 0;
+  pointer-events: none;
+}
+
+.kd-couple__garland {
+  display: block;
+  margin: 0 auto;
+}
+
+.kd-couple__heading {
+  font-family: var(--kd-font-body);
+  font-weight: 300;
+  font-size: 13px;
+  line-height: 1.5;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: var(--kd-kasavu-light);
+  text-align: center;
+  margin-bottom: var(--kd-space-10);
+}
+
+/* Family block */
+.kd-family {
+  text-align: center;
+  margin-bottom: var(--kd-space-3);
+}
+
+.kd-family__label {
+  font-family: var(--kd-font-body);
+  font-weight: 500;
+  font-size: 11px;
+  line-height: 1.3;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--kd-gold-pale);
+  margin: 0 0 var(--kd-space-2);
+}
+
+.kd-family__parent {
+  font-family: var(--kd-font-display);
+  font-weight: 500;
+  font-size: 22px;
+  line-height: 1.25;
+  letter-spacing: 0.02em;
+  color: var(--kd-kasavu);
+  margin: 0;
+}
+
+.kd-family__amp {
+  font-family: var(--kd-font-display);
+  font-weight: 400;
+  font-style: italic;
+  font-size: 18px;
+  color: var(--kd-gold-pale);
+  margin: 4px 0;
+}
+
+.kd-family__name {
+  font-family: var(--kd-font-display);
+  font-weight: 600;
+  font-size: 28px;
+  line-height: 1.15;
+  letter-spacing: 0.02em;
+  color: var(--kd-kasavu);
+  text-shadow: var(--kd-glow-text);
+  margin: var(--kd-space-4) 0 0;
+}
+
+/* Nilavilakku divider */
+.kd-lamp-divider {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: var(--kd-space-2);
+  margin: var(--kd-space-8) auto;
+  width: 200px;
+}
+
+.kd-lamp-divider__line {
+  flex: 1;
+  height: 1px;
+  background: var(--kd-lamp-gold);
+  opacity: 0.3;
+}
+
+/* ============================================
+   S3: Countdown
+   ============================================ */
+.kd-countdown {
+  padding: var(--kd-space-20) var(--kd-space-8);
+  min-height: 70svh;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  background:
+    radial-gradient(ellipse 50% 40% at 50% 35%, rgba(212,162,54,0.05) 0%, transparent 60%),
+    radial-gradient(ellipse 80% 80% at 50% 50%, #0F1A14 0%, #0A1510 100%);
+}
+
+/* Vignette for countdown */
+.kd-countdown__vignette {
+  position: absolute;
+  inset: 0;
+  background: radial-gradient(
+    ellipse 70% 70% at 50% 50%,
+    transparent 30%,
+    rgba(5, 13, 11, 0.5) 100%
+  );
+  pointer-events: none;
+  z-index: 0;
+}
+
+.kd-countdown__lamp-wrap {
+  position: relative;
+  display: flex;
+  justify-content: center;
+  margin-bottom: var(--kd-space-6);
+}
+
+/* Lamp silhouette behind the hero lamp */
+.kd-countdown__lamp-shadow {
+  position: absolute;
+  top: 8px;
+  opacity: 0.08;
+  pointer-events: none;
+}
+
+.kd-countdown__subtitle {
+  font-family: var(--kd-font-body);
+  font-weight: 300;
+  font-size: 13px;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: var(--kd-kasavu-light);
+  text-align: center;
+  margin-bottom: var(--kd-space-10);
+}
+
+.kd-countdown__grid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: var(--kd-space-4);
+  width: 280px;
+  text-align: center;
+}
+
+.kd-countdown__cell {
+  position: relative;
+}
+
+/* Separator lines between cells */
+.kd-countdown__cell + .kd-countdown__cell::before {
+  content: '';
+  position: absolute;
+  left: calc(var(--kd-space-4) / -2 - 0.5px);
+  top: 50%;
+  transform: translateY(-50%);
+  width: 1px;
+  height: 36px;
+  background: rgba(212, 162, 54, 0.12);
+}
+
+.kd-countdown__number {
+  font-family: var(--kd-font-display);
+  font-weight: 300;
+  font-size: 48px;
+  line-height: 1;
+  letter-spacing: 0.02em;
+  color: var(--kd-lamp-gold);
+  text-shadow: var(--kd-glow-text);
+  font-variant-numeric: tabular-nums;
+}
+
+.kd-countdown__label {
+  font-family: var(--kd-font-body);
+  font-weight: 400;
+  font-size: 10px;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  color: var(--kd-gold-pale);
+  margin-top: var(--kd-space-1);
+}
+
+.kd-countdown__ended {
+  font-family: var(--kd-font-display);
+  font-weight: 400;
+  font-style: italic;
+  font-size: 20px;
+  line-height: 1.5;
+  color: var(--kd-kasavu);
+  text-align: center;
+}
+
+/* ============================================
+   S4: Celebrations
+   ============================================ */
+.kd-celebrations {
+  padding: var(--kd-space-16) var(--kd-space-8);
+  background:
+    radial-gradient(ellipse 100% 50% at 50% 30%, rgba(212,162,54,0.07) 0%, transparent 70%),
+    linear-gradient(180deg, #1A3418 0%, #1E4A2A 35%, #245A2E 65%, #2D5A27 100%);
+}
+
+/* Threshold line at top */
+.kd-celebrations__threshold {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 1px;
+  background: var(--kd-lamp-gold);
+  opacity: 0.10;
+}
+
+.kd-celebrations__title {
+  font-family: var(--kd-font-display);
+  font-weight: 600;
+  font-size: 32px;
+  line-height: 1.15;
+  letter-spacing: 0.03em;
+  color: var(--kd-lamp-gold);
+  text-shadow: var(--kd-glow-text);
+  text-align: center;
+  margin: 0 0 var(--kd-space-2);
+}
+
+.kd-celebrations__subtitle {
+  font-family: var(--kd-font-body);
+  font-weight: 300;
+  font-size: 13px;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: var(--kd-kasavu-light);
+  text-align: center;
+  margin: 0 0 var(--kd-space-10);
+}
+
+/* Palm watermarks */
+.kd-celebrations__palm {
+  position: absolute;
+  opacity: 0.06;
+  pointer-events: none;
+  z-index: 0;
+}
+.kd-celebrations__palm--left {
+  left: -20px;
+  top: 15%;
+}
+.kd-celebrations__palm--right {
+  right: -15px;
+  top: 55%;
+  transform: scaleX(-1);
+}
+
+/* Event cards list */
+.kd-celebrations__list {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0;
+}
+
+/* Banana Leaf event card */
+.kd-leaf {
+  position: relative;
+  width: 100%;
+  max-width: 300px;
+  box-shadow: var(--kd-shadow-card);
+  transition: transform 0.3s var(--kd-ease-reveal),
+              box-shadow 0.3s var(--kd-ease-reveal);
+}
+
+.kd-leaf:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.50);
+}
+
+.kd-leaf__bg {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  z-index: 0;
+}
+
+.kd-leaf__content {
+  position: relative;
+  z-index: 1;
+  padding: 48px 28px 40px;
+  text-align: center;
+}
+
+/* Event card typography */
+.kd-event__date {
+  font-family: var(--kd-font-body);
+  font-weight: 300;
+  font-size: 12px;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--kd-gold-pale);
+  margin: 0 0 var(--kd-space-2);
+}
+
+.kd-event__title {
+  font-family: var(--kd-font-display);
+  font-weight: 600;
+  font-size: 22px;
+  line-height: 1.2;
+  letter-spacing: 0.02em;
+  color: var(--kd-lamp-gold);
+  margin: 0 0 var(--kd-space-4);
+}
+
+.kd-event__line {
+  width: 40px;
+  height: 1px;
+  background: var(--kd-lamp-gold);
+  opacity: 0.25;
+  margin: 0 auto var(--kd-space-4);
+}
+
+.kd-event__time,
+.kd-event__venue {
+  font-family: var(--kd-font-body);
+  font-weight: 400;
+  font-size: 14px;
+  line-height: 1.5;
+  letter-spacing: 0.01em;
+  color: var(--kd-kasavu-light);
+  margin: 0;
+}
+
+.kd-event__venue {
+  margin-top: var(--kd-space-2);
+}
+
+.kd-event__address {
+  font-family: var(--kd-font-body);
+  font-weight: 300;
+  font-size: 13px;
+  line-height: 1.5;
+  color: var(--kd-kasavu-light);
+  opacity: 0.7;
+  margin: var(--kd-space-1) 0 0;
+}
+
+/* Lotus corners on event cards */
+.kd-event__lotus-tl {
+  position: absolute;
+  top: 32px;
+  left: 20px;
+  opacity: 0.2;
+}
+.kd-event__lotus-br {
+  position: absolute;
+  bottom: 28px;
+  right: 20px;
+  opacity: 0.2;
+}
+
+/* Elephant divider between cards */
+.kd-elephant-divider {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  margin: var(--kd-space-6) auto;
+  width: 56px;
+}
+
+.kd-elephant-divider__diamond {
+  width: 4px;
+  height: 4px;
+  background: var(--kd-lamp-gold);
+  opacity: 0.2;
+  transform: rotate(45deg);
+}
+
+/* ============================================
+   S5: RSVP
+   ============================================ */
+.kd-rsvp {
+  padding: var(--kd-space-16) var(--kd-space-8);
+  background:
+    radial-gradient(ellipse 80% 60% at 50% 40%, rgba(212,162,54,0.06) 0%, transparent 70%),
+    linear-gradient(180deg, #0D1B16 0%, #0F2218 50%, #142E1F 100%);
+}
+
+.kd-rsvp__title {
+  font-family: var(--kd-font-display);
+  font-weight: 600;
+  font-size: 32px;
+  line-height: 1.15;
+  letter-spacing: 0.03em;
+  color: var(--kd-lamp-gold);
+  text-align: center;
+  margin: 0 0 var(--kd-space-2);
+}
+
+.kd-rsvp__subtitle {
+  font-family: var(--kd-font-body);
+  font-weight: 300;
+  font-size: 13px;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: var(--kd-kasavu-light);
+  text-align: center;
+  margin: 0 0 var(--kd-space-10);
+}
+
+.kd-rsvp__form {
+  display: flex;
+  flex-direction: column;
+  gap: var(--kd-space-5);
+  width: 100%;
+}
+
+.kd-rsvp__field {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.kd-rsvp__label {
+  font-family: var(--kd-font-body);
+  font-weight: 500;
+  font-size: 12px;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--kd-gold-pale);
+}
+
+.kd-rsvp__label-optional {
+  color: var(--kd-gold-pale);
+  opacity: 0.5;
+  font-weight: 300;
+  text-transform: none;
+  letter-spacing: 0;
+}
+
+/* Shared input styles */
+.kd-input {
+  font-family: var(--kd-font-body);
+  font-weight: 400;
+  font-size: 16px;
+  line-height: 1.4;
+  color: var(--kd-kasavu);
+  background: rgba(42, 42, 42, 0.50);
+  border: 1px solid rgba(212, 162, 54, 0.20);
+  border-radius: 4px;
+  padding: 0 16px;
+  height: 48px;
+  box-shadow: var(--kd-shadow-inset);
+  transition: border-color 0.2s ease, box-shadow 0.2s ease;
+  outline: none;
+}
+
+.kd-input::placeholder {
+  font-weight: 300;
+  font-size: 15px;
+  color: var(--kd-kasavu);
+  opacity: 0.4;
+}
+
+.kd-input:focus {
+  border-color: rgba(212, 162, 54, 0.50);
+  box-shadow: var(--kd-shadow-inset), 0 0 0 2px rgba(212, 162, 54, 0.10);
+}
+
+.kd-textarea {
+  font-family: var(--kd-font-body);
+  font-weight: 400;
+  font-size: 16px;
+  line-height: 1.4;
+  color: var(--kd-kasavu);
+  background: rgba(42, 42, 42, 0.50);
+  border: 1px solid rgba(212, 162, 54, 0.20);
+  border-radius: 4px;
+  padding: 12px 16px;
+  min-height: 80px;
+  resize: vertical;
+  box-shadow: var(--kd-shadow-inset);
+  transition: border-color 0.2s ease, box-shadow 0.2s ease;
+  outline: none;
+}
+
+.kd-textarea::placeholder {
+  font-weight: 300;
+  font-size: 15px;
+  color: var(--kd-kasavu);
+  opacity: 0.4;
+}
+
+.kd-textarea:focus {
+  border-color: rgba(212, 162, 54, 0.50);
+  box-shadow: var(--kd-shadow-inset), 0 0 0 2px rgba(212, 162, 54, 0.10);
+}
+
+/* Stepper input for guest count */
+.kd-stepper {
+  display: flex;
+  align-items: center;
+  height: 48px;
+  background: rgba(42, 42, 42, 0.50);
+  border: 1px solid rgba(212, 162, 54, 0.20);
+  border-radius: 4px;
+  box-shadow: var(--kd-shadow-inset);
+  overflow: hidden;
+}
+
+.kd-stepper__btn {
+  width: 48px;
+  height: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: transparent;
+  border: none;
+  color: var(--kd-kasavu-light);
+  font-size: 20px;
+  cursor: pointer;
+  transition: background 0.15s ease;
+  user-select: none;
+}
+
+.kd-stepper__btn:hover {
+  background: rgba(212, 162, 54, 0.08);
+}
+
+.kd-stepper__btn:active {
+  transform: scale(0.92);
+  transition: transform 0.08s ease;
+}
+
+.kd-stepper__btn--minus {
+  border-right: 1px solid rgba(212, 162, 54, 0.15);
+}
+
+.kd-stepper__btn--plus {
+  border-left: 1px solid rgba(212, 162, 54, 0.15);
+}
+
+.kd-stepper__value {
+  flex: 1;
+  text-align: center;
+  font-family: var(--kd-font-body);
+  font-weight: 400;
+  font-size: 16px;
+  color: var(--kd-kasavu);
+  font-variant-numeric: tabular-nums;
+}
+
+/* Button row */
+.kd-rsvp__buttons {
+  display: flex;
+  gap: var(--kd-space-3);
+  margin-top: var(--kd-space-2);
+}
+
+/* Primary button */
+.kd-btn-primary {
+  flex: 1;
+  height: 48px;
+  border-radius: 4px;
+  border: none;
+  background: var(--kd-lamp-gold);
+  color: var(--kd-teal-black);
+  font-family: var(--kd-font-body);
+  font-weight: 500;
+  font-size: 14px;
+  letter-spacing: 0.10em;
+  text-transform: uppercase;
+  box-shadow: var(--kd-glow-button);
+  cursor: pointer;
+  transition: background 0.2s ease, box-shadow 0.25s ease, transform 0.15s ease;
+}
+
+.kd-btn-primary:hover {
+  background: var(--kd-gold-bright);
+  box-shadow: 0 0 16px rgba(212, 162, 54, 0.30), 0 2px 8px rgba(0, 0, 0, 0.30);
+  transform: translateY(-1px);
+}
+
+.kd-btn-primary:active {
+  background: var(--kd-gold-dim);
+  transform: translateY(0);
+  transition-duration: 0.05s;
+}
+
+.kd-btn-primary:focus-visible {
+  outline: 2px solid var(--kd-lamp-gold);
+  outline-offset: 4px;
+}
+
+/* Secondary button */
+.kd-btn-secondary {
+  flex: 1;
+  height: 48px;
+  border-radius: 4px;
+  background: transparent;
+  border: 1px solid rgba(212, 162, 54, 0.30);
+  color: var(--kd-kasavu-light);
+  font-family: var(--kd-font-body);
+  font-weight: 500;
+  font-size: 14px;
+  letter-spacing: 0.10em;
+  text-transform: uppercase;
+  cursor: pointer;
+  transition: border-color 0.2s ease, background 0.2s ease, transform 0.15s ease;
+}
+
+.kd-btn-secondary:hover {
+  border-color: rgba(212, 162, 54, 0.50);
+  background: rgba(212, 162, 54, 0.06);
+}
+
+.kd-btn-secondary:active {
+  background: rgba(212, 162, 54, 0.10);
+}
+
+.kd-btn-secondary:focus-visible {
+  outline: 2px solid var(--kd-lamp-gold);
+  outline-offset: 4px;
+}
+
+/* Success state */
+.kd-btn-primary--success {
+  background: var(--kd-paddy);
+  color: var(--kd-kasavu-light);
+}
+
+/* Thank you state */
+.kd-rsvp__thanks {
+  text-align: center;
+  padding: var(--kd-space-10) 0;
+}
+
+.kd-rsvp__thanks-title {
+  font-family: var(--kd-font-display);
+  font-weight: 600;
+  font-size: 28px;
+  color: var(--kd-kasavu);
+  margin: 0 0 var(--kd-space-3);
+}
+
+.kd-rsvp__thanks-text {
+  font-family: var(--kd-font-body);
+  font-weight: 300;
+  font-size: 15px;
+  color: var(--kd-kasavu-light);
+  opacity: 0.7;
+  line-height: 1.5;
+}
+
+/* ============================================
+   S6: Closing
+   ============================================ */
+.kd-closing {
+  padding: var(--kd-space-20) var(--kd-space-8);
+  min-height: 80svh;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  background:
+    radial-gradient(ellipse 90% 50% at 50% 20%, rgba(212,162,54,0.20) 0%, rgba(212,118,58,0.06) 50%, transparent 100%),
+    radial-gradient(ellipse 60% 30% at 50% 10%, rgba(232,160,118,0.08) 0%, transparent 100%),
+    linear-gradient(180deg, #2D5A27 0%, #3A6830 40%, #4A7838 70%, #3A6830 100%);
+}
+
+/* Kasavu frame warm variant */
+.kd-kasavu-frame--warm {
+  border-color: rgba(212, 162, 54, 0.40);
+  padding: 48px 28px;
+}
+
+.kd-kasavu-frame--warm::before {
+  border-color: rgba(212, 162, 54, 0.60);
+}
+
+/* Lotus divider */
+.kd-lotus-divider {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: var(--kd-space-2);
+  margin: 0 auto;
+  width: 200px;
+}
+
+.kd-lotus-divider__line {
+  flex: 1;
+  max-width: 60px;
+  height: 1px;
+  background: var(--kd-lamp-gold);
+  opacity: 0.3;
+}
+
+.kd-closing__subtitle {
+  font-family: var(--kd-font-body);
+  font-weight: 300;
+  font-size: 13px;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: var(--kd-kasavu-light);
+  text-align: center;
+  margin: var(--kd-space-6) 0 var(--kd-space-8);
+}
+
+.kd-closing__blessing-wrap {
+  position: relative;
+  text-align: center;
+  margin-bottom: var(--kd-space-8);
+}
+
+.kd-closing__lotus-watermark {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  opacity: 0.08;
+  z-index: 0;
+  pointer-events: none;
+}
+
+.kd-closing__blessing {
+  font-family: var(--kd-font-display);
+  font-weight: 400;
+  font-style: italic;
+  font-size: 20px;
+  line-height: 1.5;
+  letter-spacing: 0.02em;
+  color: var(--kd-kasavu);
+  max-width: 280px;
+  margin: 0 auto;
+  position: relative;
+  z-index: 1;
+  text-shadow: 0 0 40px rgba(212, 162, 54, 0.12);
+}
+
+.kd-closing__names {
+  font-family: var(--kd-font-display);
+  font-weight: 500;
+  font-size: 20px;
+  color: var(--kd-kasavu);
+  text-align: center;
+  margin: 0 0 var(--kd-space-2);
+}
+
+.kd-closing__names-amp {
+  font-family: var(--kd-font-display);
+  font-weight: 400;
+  font-style: italic;
+  font-size: 16px;
+  color: var(--kd-lamp-gold);
+}
+
+.kd-closing__date {
+  font-family: var(--kd-font-body);
+  font-weight: 300;
+  font-size: 14px;
+  letter-spacing: 0.20em;
+  text-transform: uppercase;
+  color: var(--kd-kasavu-light);
+  opacity: 0.8;
+  text-align: center;
+  margin-bottom: var(--kd-space-10);
+}
+
+.kd-closing__lamp-wrap {
+  position: relative;
+  display: flex;
+  justify-content: center;
+  margin-bottom: var(--kd-space-10);
+}
+
+.kd-closing__lamp-glow {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  width: 120px;
+  height: 120px;
+  border-radius: 50%;
+  background: radial-gradient(circle, rgba(212,162,54,0.10) 0%, transparent 70%);
+  pointer-events: none;
+}
+
+.kd-closing__attribution {
+  font-family: var(--kd-font-body);
+  font-weight: 300;
+  font-size: 10px;
+  letter-spacing: 0.06em;
+  color: var(--kd-gold-pale);
+  opacity: 0.4;
+  text-align: center;
+  margin-top: var(--kd-space-6);
+}
+
+/* ============================================
+   Kasavu Strip (standalone horizontal)
+   ============================================ */
+.kd-kasavu-strip {
+  display: flex;
+  justify-content: center;
+}
+
+/* ============================================
+   Fireflies — Ambient Layer
+   ============================================ */
+.kd-fireflies {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  pointer-events: none;
+  z-index: 1;
+}
+
+/* Page-level fireflies layer */
+.kd-fireflies-layer {
+  position: fixed;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  pointer-events: none;
+  z-index: 3;
+  opacity: 0.8;
+}
+
+/* ============================================
+   Backwater Waves — Section Dividers
+   ============================================ */
+.kd-backwater-divider {
+  position: relative;
+  width: 100%;
+  height: 50px;
+  margin: -1px 0;
+  z-index: 2;
+  overflow: hidden;
+}
+
+.kd-backwater-divider .kd-backwater {
+  width: 100%;
+  height: 100%;
+  display: block;
+}
+
+/* ============================================
+   Elephant Procession — Section Divider
+   ============================================ */
+.kd-procession-divider {
+  position: relative;
+  width: 100%;
+  max-width: 340px;
+  margin: 0 auto;
+  padding: var(--kd-space-8) 0;
+  z-index: 2;
+}
+
+.kd-procession {
+  width: 100%;
+  display: block;
+}
+
+/* GSAP walk-in: left elephant from left, right from right */
+.kd-procession__left {
+  opacity: 0;
+}
+.kd-procession__right {
+  opacity: 0;
+}
+.kd-procession__center {
+  opacity: 0;
+}
+
+/* ============================================
+   Section Transitions — Light Bleeds
+   ============================================ */
+.kd-light-bleed {
+  position: relative;
+  width: 100%;
+  height: 40px;
+  margin: -1px 0;
+  pointer-events: none;
+  z-index: 2;
+}
+
+.kd-light-bleed--gold {
+  background: radial-gradient(
+    ellipse 60% 100% at 50% 50%,
+    rgba(212, 162, 54, 0.06) 0%,
+    transparent 70%
+  );
+}
+
+.kd-light-bleed--warm {
+  background: radial-gradient(
+    ellipse 80% 100% at 50% 0%,
+    rgba(212, 162, 54, 0.10) 0%,
+    rgba(212, 118, 58, 0.03) 50%,
+    transparent 100%
+  );
+}
+
+/* ============================================
+   Water Ripple Divider
+   ============================================ */
+.kd-water-ripple-divider {
+  position: relative;
+  width: 100%;
+  height: 60px;
+  overflow: hidden;
+  margin: -1px 0;
+  background: linear-gradient(
+    180deg,
+    transparent 0%,
+    rgba(26, 48, 64, 0.08) 30%,
+    rgba(26, 48, 64, 0.12) 50%,
+    rgba(26, 48, 64, 0.08) 70%,
+    transparent 100%
+  );
+}
+
+/* ============================================
+   Enhanced Palm Parallax
+   ============================================ */
+.kd-celebrations__palm {
+  will-change: transform;
+  transition: transform 0.1s linear;
+}
+
+/* ============================================
+   Banana Leaf Sway
+   ============================================ */
+.kd-leaf--sway {
+  animation: kd-leaf-sway 6s ease-in-out infinite;
+  transform-origin: 50% 0%;
+}
+
+/* ============================================
+   Elephant Divider Walk-In Classes
+   ============================================ */
+.kd-elephant-divider--left .kd-elephant-divider__elephant-left {
+  opacity: 0;
+}
+.kd-elephant-divider--right .kd-elephant-divider__elephant-right {
+  opacity: 0;
+}
+
+/* ============================================
+   Countdown Number Roll Container
+   ============================================ */
+.kd-countdown__number-wrap {
+  overflow: hidden;
+  height: 1.1em;
+  position: relative;
+}
+
+.kd-countdown__number {
+  display: block;
+}
+
+/* ============================================
+   Kasavu Border Shimmer on ScrollTrigger
+   ============================================ */
+.kd-kasavu-shimmer-trigger .kd-kasavu-pattern {
+  mask-image: linear-gradient(
+    90deg,
+    rgba(0, 0, 0, 1) 0%,
+    rgba(0, 0, 0, 1) 35%,
+    rgba(0, 0, 0, 0.4) 45%,
+    rgba(0, 0, 0, 0.2) 50%,
+    rgba(0, 0, 0, 0.4) 55%,
+    rgba(0, 0, 0, 1) 65%,
+    rgba(0, 0, 0, 1) 100%
+  );
+  -webkit-mask-image: linear-gradient(
+    90deg,
+    rgba(0, 0, 0, 1) 0%,
+    rgba(0, 0, 0, 1) 35%,
+    rgba(0, 0, 0, 0.4) 45%,
+    rgba(0, 0, 0, 0.2) 50%,
+    rgba(0, 0, 0, 0.4) 55%,
+    rgba(0, 0, 0, 1) 65%,
+    rgba(0, 0, 0, 1) 100%
+  );
+  mask-size: 200% 100%;
+  -webkit-mask-size: 200% 100%;
+  animation: kd-kasavu-shimmer 5s ease-in-out infinite;
+}
+
+/* ============================================
+   @keyframes — Ambient Animations
+   ============================================ */
+
+/* Lamp flame breathing (subtle glow pulse, 6s period) */
+@keyframes kd-lamp-breathing {
+  0%, 100% {
+    filter: drop-shadow(0 0 16px rgba(212, 162, 54, 0.28));
+    opacity: 1;
+  }
+  50% {
+    filter: drop-shadow(0 0 22px rgba(212, 162, 54, 0.38));
+    opacity: 0.95;
+  }
+}
+
+.kd-lamp-breathing {
+  animation: kd-lamp-breathing 6s ease-in-out infinite;
+  will-change: filter, opacity;
+}
+
+/* Kasavu shimmer — traveling light sweep */
+@keyframes kd-kasavu-shimmer {
+  0% {
+    mask-position: -200% 0;
+    -webkit-mask-position: -200% 0;
+  }
+  100% {
+    mask-position: 200% 0;
+    -webkit-mask-position: 200% 0;
+  }
+}
+
+.kd-kasavu-active .kd-kasavu-pattern {
+  mask-image: linear-gradient(
+    90deg,
+    rgba(0, 0, 0, 1) 0%,
+    rgba(0, 0, 0, 1) 35%,
+    rgba(0, 0, 0, 0.4) 45%,
+    rgba(0, 0, 0, 0.2) 50%,
+    rgba(0, 0, 0, 0.4) 55%,
+    rgba(0, 0, 0, 1) 65%,
+    rgba(0, 0, 0, 1) 100%
+  );
+  -webkit-mask-image: linear-gradient(
+    90deg,
+    rgba(0, 0, 0, 1) 0%,
+    rgba(0, 0, 0, 1) 35%,
+    rgba(0, 0, 0, 0.4) 45%,
+    rgba(0, 0, 0, 0.2) 50%,
+    rgba(0, 0, 0, 0.4) 55%,
+    rgba(0, 0, 0, 1) 65%,
+    rgba(0, 0, 0, 1) 100%
+  );
+  mask-size: 200% 100%;
+  -webkit-mask-size: 200% 100%;
+  animation: kd-kasavu-shimmer 5s ease-in-out infinite;
+  animation-delay: 1s;
+}
+
+/* Touch prompt pulse glow (3s period) */
+@keyframes kd-pulse-glow {
+  0%, 100% {
+    opacity: 0.7;
+    filter: drop-shadow(0 0 8px rgba(212, 162, 54, 0.15))
+            drop-shadow(0 0 16px rgba(212, 162, 54, 0.06));
+  }
+  50% {
+    opacity: 1;
+    filter: drop-shadow(0 0 12px rgba(212, 162, 54, 0.30))
+            drop-shadow(0 0 24px rgba(212, 162, 54, 0.12));
+  }
+}
+
+.kd-cta-pulse {
+  animation: kd-pulse-glow 3s ease-in-out infinite;
+  will-change: opacity, filter;
+}
+
+/* Final lamp intense glow (5s asymmetric rhythm) */
+@keyframes kd-lamp-final-glow {
+  0%, 100% {
+    filter: drop-shadow(0 0 20px rgba(212, 162, 54, 0.30))
+            drop-shadow(0 0 40px rgba(212, 162, 54, 0.10));
+  }
+  35% {
+    filter: drop-shadow(0 0 26px rgba(212, 162, 54, 0.40))
+            drop-shadow(0 0 50px rgba(212, 162, 54, 0.15));
+  }
+  70% {
+    filter: drop-shadow(0 0 22px rgba(212, 162, 54, 0.34))
+            drop-shadow(0 0 44px rgba(212, 162, 54, 0.12));
+  }
+}
+
+.kd-lamp-final {
+  animation: kd-lamp-final-glow 5s ease-in-out infinite;
+  will-change: filter;
+}
+
+/* Standard reveal (CSS fallback, usually driven by GSAP) */
+@keyframes kd-reveal {
+  from {
+    opacity: 0;
+    transform: translateY(16px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* Banana leaf sway — gentle oscillation */
+@keyframes kd-leaf-sway {
+  0%, 100% {
+    transform: rotate(0deg);
+  }
+  25% {
+    transform: rotate(0.5deg);
+  }
+  75% {
+    transform: rotate(-0.5deg);
+  }
+}
+
+/* Elephant walk-in from left */
+@keyframes kd-walk-in-left {
+  from {
+    opacity: 0;
+    transform: translateX(-12px);
+  }
+  to {
+    opacity: 0.25;
+    transform: translateX(0);
+  }
+}
+
+/* Elephant walk-in from right */
+@keyframes kd-walk-in-right {
+  from {
+    opacity: 0;
+    transform: translateX(12px);
+  }
+  to {
+    opacity: 0.25;
+    transform: translateX(0);
+  }
+}
+
+/* Countdown number roll-in */
+@keyframes kd-number-roll {
+  from {
+    opacity: 0;
+    transform: translateY(100%);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* ============================================
+   Reduced Motion
+   ============================================ */
+@media (prefers-reduced-motion: reduce) {
+  .kd-cta-pulse,
+  .kd-lamp-breathing,
+  .kd-lamp-final,
+  .kd-kasavu-active .kd-kasavu-pattern,
+  .kd-kasavu-shimmer-trigger .kd-kasavu-pattern,
+  .kd-leaf--sway {
+    animation: none !important;
+  }
+
+  .kd-cta-pulse {
+    opacity: 1;
+    filter: drop-shadow(0 0 12px rgba(212, 162, 54, 0.20));
+  }
+
+  .kd-lamp-breathing,
+  .kd-lamp-final {
+    filter: drop-shadow(0 0 20px rgba(212, 162, 54, 0.30));
+  }
+
+  /* Disable SVG animate elements in fireflies and waves */
+  .kd-fireflies,
+  .kd-fireflies-layer {
+    display: none !important;
+  }
+
+  .kd-backwater animate {
+    display: none;
+  }
+
+  /* Show procession elements at final state */
+  .kd-procession__left,
+  .kd-procession__right,
+  .kd-procession__center {
+    opacity: 1 !important;
+  }
+}
+
+/* ============================================
+   Responsive — Narrow Phones
+   ============================================ */
+@media (max-width: 360px) {
+  :root {
+    --kd-space-8: 24px;
+  }
+
+  .kd-opening__groom,
+  .kd-opening__bride {
+    font-size: 44px;
+  }
+
+  .kd-countdown__number {
+    font-size: 42px;
+  }
+
+  .kd-countdown__grid {
+    width: 240px;
+    gap: var(--kd-space-3);
+  }
+}
+
+@media (max-width: 320px) {
+  .kd-opening__groom,
+  .kd-opening__bride {
+    font-size: 38px;
+  }
+
+  .kd-countdown__number {
+    font-size: 40px;
+  }
+}
+
+/* ============================================
+   Safe Areas
+   ============================================ */
+@supports (padding-top: env(safe-area-inset-top)) {
+  .kd-opening {
+    padding-top: env(safe-area-inset-top, 0px);
+  }
+  .kd-closing {
+    padding-bottom: max(var(--kd-space-10), env(safe-area-inset-bottom, 34px));
+  }
+}

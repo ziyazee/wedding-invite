@@ -1,0 +1,162 @@
+/* Opening — the film fills the screen. Text sits in the quiet parchment band (about 20–45% of the
+   height) between the jasmine toran and the banana trees; the seal sits in the clear column below. */
+
+.tm-opening {
+  min-height: 100svh;
+  justify-content: flex-start;
+  padding: 21svh 24px 0;
+  overflow: hidden;
+}
+.tm-opening .tm-opening__media {
+  position: absolute;
+  inset: 0;
+  z-index: 0;
+}
+.tm-opening__veil {
+  position: absolute;
+  inset: 0;
+  z-index: 1;
+  pointer-events: none;
+  /* the artwork is already calm: only a breath of ivory behind the title */
+  background: radial-gradient(ellipse 62% 22% at 50% 33%, rgba(242, 234, 217, 0.55), rgba(242, 234, 217, 0) 100%);
+}
+.tm-opening__content {
+  position: relative;
+  z-index: 3;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+.tm-opening .tm-opening__eyebrow {
+  margin: 0 0 14px;
+  font-family: var(--tm-font-tamil);
+  font-size: 15px;
+  font-weight: 600;
+  letter-spacing: 0.08em;
+  text-transform: none;
+  color: #8c5a22;
+}
+.tm-opening__names {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  margin: 0;
+  font-family: var(--tm-font-display);
+  font-weight: 500;
+  font-style: italic;
+  font-size: clamp(50px, 16vw, 78px);
+  line-height: 1;
+  color: #6e1916;
+  text-shadow: 0 0 22px rgba(242, 234, 217, 0.95), 0 0 6px rgba(242, 234, 217, 0.8);
+}
+.tm-opening__amp {
+  margin: 2px 0;
+  font-size: 0.4em;
+  font-style: normal;
+  color: #8c5a22;
+}
+.tm-opening__orn {
+  margin: 20px 0 16px;
+  overflow: visible;
+}
+.tm-opening__orn .tm-draw {
+  stroke: #8c5a22;
+}
+.tm-opening__orn + .tm-opening__date {
+  margin-top: 0;
+}
+.tm-opening__date {
+  margin: 0;
+  font-size: 13px;
+  font-weight: 500;
+  letter-spacing: 0.42em;
+  text-indent: 0.42em;
+  text-transform: uppercase;
+  color: #8c5a22;
+  text-shadow: 0 0 12px rgba(242, 234, 217, 0.95);
+}
+
+/* the seal: an arakku lacquer disc with a zari rim, centred in the clear column at ~59% */
+.tm-opening__cta {
+  position: absolute;
+  inset: 0;
+  z-index: 4;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: flex-start;
+  gap: 12px;
+  padding: 55svh 0 0;
+  border: 0;
+  background: transparent;
+  color: var(--tm-text);
+  font: inherit;
+  cursor: pointer;
+}
+.tm-opening__cta:focus-visible {
+  outline: 2px solid var(--tm-gold);
+  outline-offset: -8px;
+}
+.tm-opening__cta-ring {
+  width: 78px;
+  height: 78px;
+  display: grid;
+  place-items: center;
+  border: 2px solid #c9a24b;
+  border-radius: 50%;
+  background: radial-gradient(circle at 38% 30%, #b8202e 0%, #8e1b1b 55%, #6a1313 100%);
+  box-shadow: inset 0 0 0 3px #6a1313, inset 0 0 0 4px rgba(247, 241, 227, 0.4), 0 6px 14px -6px rgba(74, 24, 21, 0.6);
+  color: #f7f1e3;
+  animation: tm-cta-pulse 2.4s ease-in-out infinite;
+}
+.tm-opening__cta-ring svg {
+  width: 20px;
+  height: 20px;
+  margin-left: 3px;
+}
+.tm-opening__cta-text {
+  font-size: 11px;
+  font-weight: 500;
+  letter-spacing: 0.4em;
+  text-indent: 0.4em;
+  text-transform: uppercase;
+  color: #6e1916;
+  text-shadow: 0 0 10px rgba(242, 234, 217, 1), 0 0 4px rgba(242, 234, 217, 0.9);
+}
+@keyframes tm-cta-pulse {
+  0%, 100% { box-shadow: inset 0 0 0 3px #6a1313, inset 0 0 0 4px rgba(247, 241, 227, 0.4), 0 6px 14px -6px rgba(74, 24, 21, 0.6), 0 0 0 0 rgba(184, 32, 46, 0.35); transform: scale(1); }
+  50% { box-shadow: inset 0 0 0 3px #6a1313, inset 0 0 0 4px rgba(247, 241, 227, 0.4), 0 6px 14px -6px rgba(74, 24, 21, 0.6), 0 0 0 14px rgba(184, 32, 46, 0); transform: scale(1.05); }
+}
+
+/* the scroll hint sits in the same quiet column, not over the lotus foreground */
+.tm-opening__hint {
+  position: absolute;
+  left: 50%;
+  top: 53svh;
+  z-index: 3;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 8px;
+  transform: translateX(-50%);
+  font-size: 10px;
+  font-weight: 500;
+  letter-spacing: 0.4em;
+  text-indent: 0.4em;
+  text-transform: uppercase;
+  color: #8c5a22;
+  text-shadow: 0 0 10px rgba(242, 234, 217, 1);
+}
+.tm-opening__hint i {
+  display: block;
+  width: 1px;
+  height: 36px;
+  background: linear-gradient(to bottom, #8c5a22, transparent);
+  transform-origin: top;
+  animation: tm-hint 2s ease-in-out infinite;
+}
+@keyframes tm-hint {
+  0% { transform: scaleY(0); opacity: 1; }
+  60% { transform: scaleY(1); opacity: 1; }
+  100% { transform: scaleY(1); opacity: 0; }
+}

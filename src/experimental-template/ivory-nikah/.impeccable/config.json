@@ -1,0 +1,17 @@
+{
+  "detector": {
+    "ignoreRules": [],
+    "ignoreFiles": [],
+    "ignoreValues": [
+      {
+        "rule": "gradient-text",
+        "value": "*",
+        "files": [
+          "/Users/mziya/new/wedding-invite/src/experimental-template/ivory-nikah/styles/main.css"
+        ],
+        "createdAt": "2026-11-13T18:53:14.887Z",
+        "reason": "Design bible section 8.2 specifies gold gradient text on countdown numbers to simulate burnished metallic finish"
+      }
+    ]
+  }
+}

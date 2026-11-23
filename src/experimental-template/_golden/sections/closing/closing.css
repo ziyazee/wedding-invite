@@ -1,0 +1,50 @@
+/* Closing — blessing, note, sign-off. */
+
+.gd-closing {
+  min-height: 80svh;
+  justify-content: center;
+  padding-bottom: 120px;
+  background: linear-gradient(to bottom, var(--gd-bg-deep) 0%, #1a1626 60%, #2a1c1c 100%);
+}
+.gd-closing__lotus {
+  width: 96px;
+  height: 64px;
+  margin: 0 auto 36px;
+  overflow: visible;
+}
+.gd-closing__blessing {
+  margin: 0 0 28px;
+  font-family: var(--gd-font-display);
+  font-style: italic;
+  font-weight: 300;
+  font-size: clamp(24px, 7vw, 30px);
+  line-height: 1.45;
+  color: var(--gd-text);
+}
+.gd-closing__note {
+  margin-bottom: 56px;
+}
+.gd-closing__sign {
+  margin: 0;
+  font-family: var(--gd-font-display);
+  font-weight: 300;
+  font-style: italic;
+  font-size: 44px;
+  line-height: 1.1;
+  color: var(--gd-gold-bright);
+  text-shadow: 0 0 24px rgba(212, 168, 67, 0.35);
+}
+.gd-closing__date {
+  margin: 20px 0 0;
+  font-size: 11px;
+  letter-spacing: 0.4em;
+  text-transform: uppercase;
+  color: var(--gd-text-muted);
+}
+.gd-closing__foot {
+  margin: 72px 0 0;
+  font-size: 10px;
+  letter-spacing: 0.3em;
+  text-transform: uppercase;
+  color: var(--gd-text-dim);
+}

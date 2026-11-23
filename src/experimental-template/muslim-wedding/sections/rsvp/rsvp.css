@@ -1,0 +1,141 @@
+/* RSVP — shared useRsvp state, this section's form. */
+
+.mw-rsvp {
+  padding-top: 72px;
+  background: linear-gradient(to bottom, var(--mw-bg), var(--mw-bg-deep));
+}
+/* The still life spans the column and sits on its carved ledge just above the heading. */
+.mw-rsvp__arch {
+  display: block;
+  width: 100%;
+  max-width: 372px;
+  height: auto;
+  margin: 0 auto 12px;
+  pointer-events: none;
+}
+.mw-rsvp__still {
+  position: relative;
+  max-width: 372px;
+  margin: 0 auto;
+}
+/* Candle bloom inside each lantern: a warm radial that breathes slowly. */
+.mw-rsvp__lantern-glow {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  background:
+    radial-gradient(circle at 21% 55%, rgba(243, 199, 122, 0.55), transparent 9%),
+    radial-gradient(circle at 79.5% 55%, rgba(243, 199, 122, 0.55), transparent 9%);
+  animation: mw-rsvp-glow 4.6s ease-in-out infinite alternate;
+}
+@keyframes mw-rsvp-glow {
+  from { opacity: 0.55; }
+  to { opacity: 1; }
+}
+@media (prefers-reduced-motion: reduce) {
+  .mw-rsvp__lantern-glow { animation: none; }
+}
+.mw-rsvp__head {
+  position: relative;
+}
+.mw-rsvp__lede {
+  margin: 16px 0 40px;
+}
+.mw-form {
+  display: grid;
+  gap: 24px;
+  text-align: left;
+}
+.mw-field {
+  display: grid;
+  gap: 8px;
+}
+.mw-field__label {
+  font-size: 10px;
+  letter-spacing: 0.3em;
+  text-transform: uppercase;
+  color: var(--mw-gold-dim);
+}
+.mw-input {
+  width: 100%;
+  padding: 12px 0;
+  border: 0;
+  border-bottom: 1px solid var(--mw-line-strong);
+  border-radius: 0;
+  background: transparent;
+  color: var(--mw-text);
+  font: inherit;
+  font-size: 16px;
+  transition: border-color 0.3s;
+}
+.mw-input::placeholder {
+  color: var(--mw-text-dim);
+}
+.mw-input:focus {
+  outline: none;
+  border-bottom-color: var(--mw-gold-dim);
+}
+.mw-input:focus-visible {
+  box-shadow: 0 1px 0 0 var(--mw-gold-dim);
+}
+select.mw-input option {
+  background: var(--mw-bg-elevated);
+  color: var(--mw-text);
+}
+.mw-choice {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 12px;
+}
+.mw-btn {
+  padding: 14px 16px;
+  border: 1px solid var(--mw-gold-dim);
+  border-radius: var(--mw-radius);
+  background: transparent;
+  color: var(--mw-text-soft);
+  font: inherit;
+  font-size: 12px;
+  font-weight: 400;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  cursor: pointer;
+  transition: background 0.3s, color 0.3s, opacity 0.3s;
+}
+.mw-btn:hover:not(:disabled),
+.mw-btn.is-active {
+  background: var(--mw-gold-deep);
+  border-color: var(--mw-gold-deep);
+  color: var(--mw-bg-elevated);
+}
+.mw-btn:focus-visible {
+  outline: 2px solid var(--mw-gold-deep);
+  outline-offset: 3px;
+}
+.mw-btn:disabled {
+  opacity: 0.4;
+  cursor: not-allowed;
+}
+.mw-btn--solid {
+  background: var(--mw-gold-deep);
+  border-color: var(--mw-gold-deep);
+  color: var(--mw-bg-elevated);
+}
+.mw-form__error {
+  margin: 0;
+  font-size: 13px;
+  text-align: center;
+  color: var(--mw-error);
+}
+.mw-rsvp__thanks {
+  display: grid;
+  justify-items: center;
+  gap: 12px;
+}
+.mw-rsvp__check {
+  width: 64px;
+  height: 64px;
+}
+.mw-rsvp__check .mw-draw {
+  stroke: var(--mw-gold);
+  stroke-width: 1.6;
+}

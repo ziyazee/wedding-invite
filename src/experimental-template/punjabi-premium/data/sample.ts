@@ -1,0 +1,60 @@
+import type { WeddingData } from '../types'
+
+export const sampleWedding: WeddingData = {
+  couple: {
+    groomName: 'Arjun Singh',
+    brideName: 'Simran Kaur',
+    groomParents: 'S. Harpreet Singh & Smt. Gurpreet Kaur',
+    brideParents: 'S. Maninder Singh & Smt. Rajwinder Kaur',
+    groomFamily: 'Son of S. Harpreet Singh & Smt. Gurpreet Kaur, Amritsar',
+    brideFamily: 'Daughter of S. Maninder Singh & Smt. Rajwinder Kaur, Jalandhar',
+    tagline: 'Two souls, one journey',
+  },
+  weddingDate: '2027-02-14T10:00:00',
+  celebrations: [
+    {
+      id: 'mehendi',
+      name: 'Mehendi',
+      date: '2027-02-12',
+      time: '4:00 PM onwards',
+      venue: 'Kaur Residence',
+      address: 'Model Town, Jalandhar, Punjab',
+      description: 'An afternoon of colours, music and celebration as we begin the wedding festivities.',
+    },
+    {
+      id: 'sangeet',
+      name: 'Sangeet & Cocktail',
+      date: '2027-02-13',
+      time: '7:00 PM onwards',
+      venue: 'Royal Orchid Banquets',
+      address: 'GT Road, Amritsar, Punjab',
+      description: 'An evening of dance, laughter and togetherness under the stars.',
+    },
+    {
+      id: 'anand-karaj',
+      name: 'Anand Karaj',
+      date: '2027-02-14',
+      time: '10:00 AM',
+      venue: 'Gurudwara Sri Guru Ram Das Ji',
+      address: 'Golden Temple Complex, Amritsar, Punjab',
+      description: 'The sacred union in the presence of Guru Granth Sahib Ji.',
+    },
+    {
+      id: 'reception',
+      name: 'Reception',
+      date: '2027-02-14',
+      time: '7:00 PM onwards',
+      venue: 'The Grand Imperial',
+      address: 'Queens Road, Amritsar, Punjab',
+      description: 'Join us for an evening of joy, blessings and celebration.',
+    },
+  ],
+  gallery: [
+    { src: '/templates/punjabi-premium/gallery/1.jpg', alt: 'Couple portrait', aspect: 'portrait' },
+    { src: '/templates/punjabi-premium/gallery/2.jpg', alt: 'Together', aspect: 'landscape' },
+    { src: '/templates/punjabi-premium/gallery/3.jpg', alt: 'Candid moment', aspect: 'square' },
+    { src: '/templates/punjabi-premium/gallery/4.jpg', alt: 'Pre-wedding', aspect: 'portrait' },
+    { src: '/templates/punjabi-premium/gallery/5.jpg', alt: 'Golden hour', aspect: 'landscape' },
+    { src: '/templates/punjabi-premium/gallery/6.jpg', alt: 'Celebration', aspect: 'square' },
+  ],
+}

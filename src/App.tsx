@@ -48,6 +48,18 @@ const Design15 = lazySitePage(() => import('./pages/Design15'))
 const Design16 = lazySitePage(() => import('./pages/Design16'))
 const Design17 = lazySitePage(() => import('./pages/Design17'))
 const RoyalGrace = lazy(() => import('./pages/RoyalGrace'))
+const AmritGlow = lazy(() => import('./experimental-template/amrit-glow'))
+const KeralaDawn = lazy(() => import('./experimental-template/kerala-dawn'))
+const Golden = lazy(() => import('./experimental-template/_golden'))
+const GardenWedding = lazy(() => import('./experimental-template/garden-wedding'))
+const PunjabiWedding = lazy(() => import('./experimental-template/punjabi-wedding'))
+const TamilWedding = lazy(() => import('./experimental-template/tamil-wedding'))
+const MuslimWedding = lazy(() => import('./experimental-template/muslim-wedding'))
+const ParallaxLab = lazy(() => import('./experimental-template/parallax-lab'))
+const PunjabiJourney = lazy(() => import('./experimental-template/punjabi-journey'))
+const PunjabiStory = lazy(() => import('./experimental-template/punjabi-story'))
+const PunjabiHeritage = lazy(() => import('./experimental-template/punjabi-heritage'))
+const MuslimRoyal = lazy(() => import('./experimental-template/muslim-royal'))
 const GeneratedInvitation = lazy(() => import('./pages/GeneratedInvitation'))
 const StoreLanding = lazy(() => import('./pages/StoreLanding'))
 const CompanyPreview = lazy(() => import('./pages/CompanyPreview'))
@@ -66,7 +78,7 @@ const ClientDashboard = lazySitePage(() => import('./pages/ClientDashboard'))
 const ClientDashboardTesting = lazySitePage(() => import('./pages/ClientDashboard').then(m => ({ default: m.ClientDashboardTesting })))
 const Edits = lazySitePage(() => import('./pages/Edits'))
 const ClientLivePreview = lazy(() => import('./pages/ClientLivePreview'))
-const AdminDashboard = lazySitePage(() => import('./pages/AdminDashboard'))
+const AdminDashboard = lazySitePage(() => import('./admin/AdminDashboard'))
 const OrderManagement = lazySitePage(() => import('./pages/OrderManagement'))
 
 function SingleSegmentRoute() {
@@ -172,6 +184,18 @@ export default function App() {
       <Route path="/mangal" element={<Design16 />} />
       <Route path="/gulabi-mandap" element={<Design17 />} />
       <Route path="/royal-grace" element={<RoyalGrace />} />
+      <Route path="/experimental/amrit-glow" element={<AmritGlow />} />
+      <Route path="/experimental/kerala-dawn" element={<KeralaDawn />} />
+      <Route path="/experimental/golden" element={<Golden />} />
+      <Route path="/experimental/garden-wedding" element={<GardenWedding />} />
+      <Route path="/experimental/punjabi-wedding" element={<PunjabiWedding />} />
+      <Route path="/experimental/tamil-wedding" element={<TamilWedding />} />
+      <Route path="/experimental/muslim-wedding" element={<MuslimWedding />} />
+      <Route path="/experimental/parallax-lab" element={<ParallaxLab />} />
+      <Route path="/experimental/punjabi-journey" element={<PunjabiJourney />} />
+      <Route path="/experimental/punjabi-story" element={<PunjabiStory />} />
+      <Route path="/experimental/punjabi-heritage" element={<PunjabiHeritage />} />
+      <Route path="/experimental/muslim-royal" element={<MuslimRoyal />} />
       {/* Resolves both legacy orderId/names and fallback names/orderId by the full path. */}
       <Route path="/:orderNumber/:slug" element={<GeneratedInvitation />} />
       <Route path="/:slug" element={<SingleSegmentRoute />} />

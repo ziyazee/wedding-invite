@@ -1,0 +1,209 @@
+/* Couple — two family cards under cusped Mughal arches, opened with a curtain wipe. */
+
+.gw-couple {
+  isolation: isolate;
+  background: linear-gradient(to bottom, var(--gw-bg) 0%, var(--gw-bg-elevated) 50%, var(--gw-bg) 100%);
+}
+.gw-couple::before {
+  content: '';
+  position: absolute;
+  z-index: -1;
+  inset: 0 0 auto;
+  height: 620px;
+  background: url('../../assets/generated/family-garland-frame.png') top center / 100% auto no-repeat;
+  opacity: 0.68;
+  pointer-events: none;
+}
+.gw-couple__heading,
+.gw-family,
+.gw-couple__join {
+  position: relative;
+  z-index: 1;
+}
+.gw-couple__heading {
+  margin: 0 0 48px;
+  font-family: var(--gw-font-display);
+  font-style: italic;
+  font-weight: 300;
+  font-size: 24px;
+  line-height: 1.4;
+  color: var(--gw-text-soft);
+}
+.gw-family {
+  position: relative;
+  --fam-tint: rgba(255, 255, 255, 0.6);
+  padding: 100px 28px 64px;
+}
+.gw-family--groom { --fam-tint: rgba(232, 239, 221, 0.85); }
+.gw-family--bride { --fam-tint: rgba(250, 229, 230, 0.9); }
+.gw-arch__cap {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 106px;
+  overflow: visible;
+}
+.gw-arch__fill {
+  fill: var(--fam-tint);
+}
+.gw-arch__fill--jaali {
+  fill: url(#gw-jaali);
+}
+.gw-arch__line {
+  fill: none;
+  stroke: var(--gw-gold);
+  stroke-width: 1.2;
+  stroke-linejoin: round;
+  vector-effect: non-scaling-stroke;
+}
+.gw-arch__line--soft {
+  stroke: var(--gw-gold-dim);
+  stroke-width: 1;
+}
+/* body below the cap: outer line, inner line, parchment fill */
+.gw-family::before {
+  content: '';
+  position: absolute;
+  top: 106px;
+  right: 0;
+  bottom: 0;
+  left: 0;
+  border: 1px solid var(--gw-gold);
+  border-top: 0;
+  background:
+    url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='14' height='14'%3E%3Cpath d='M7 0 14 7 7 14 0 7Z' fill='none' stroke='%23b8842a' stroke-opacity='.22' stroke-width='.6'/%3E%3Ccircle cx='7' cy='7' r='.9' fill='%23b8842a' fill-opacity='.3'/%3E%3C/svg%3E"),
+    var(--fam-tint);
+}
+.gw-family::after {
+  content: '';
+  position: absolute;
+  top: 106px;
+  right: 3%;
+  bottom: 8px;
+  left: 3%;
+  border: 1px solid var(--gw-gold-dim);
+  border-top: 0;
+  pointer-events: none;
+}
+.gw-family > :not(.gw-arch__cap) {
+  position: relative;
+  z-index: 1;
+}
+.gw-family__deva {
+  margin: 0;
+  font-family: var(--gw-font-deva);
+  font-size: 17px;
+  line-height: 1.2;
+  color: var(--gw-gold-bright);
+}
+.gw-family__label {
+  margin: 2px 0 18px;
+  font-size: 10px;
+  letter-spacing: 0.36em;
+  text-transform: uppercase;
+  color: var(--gw-gold);
+}
+.gw-family__parent {
+  margin: 0;
+  font-size: 14px;
+  line-height: 1.8;
+  color: var(--gw-text-muted);
+}
+.gw-family__amp {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  margin: 8px 0;
+}
+.gw-family__amp i {
+  display: block;
+  width: 28px;
+  height: 1px;
+  background: var(--gw-gold-dim);
+}
+.gw-family__amp b {
+  display: block;
+  width: 7px;
+  height: 7px;
+  background: var(--gw-gold);
+  transform: rotate(45deg);
+}
+.gw-family__name {
+  margin: 24px 0 0;
+  font-family: var(--gw-font-display);
+  font-weight: 500;
+  font-size: 36px;
+  line-height: 1.12;
+  color: var(--gw-text);
+}
+.gw-couple__join {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  margin: 28px 0;
+  color: var(--gw-gold);
+}
+.gw-couple__join i {
+  display: block;
+  flex: 1;
+  height: 1px;
+  background: var(--gw-line-strong);
+  transform-origin: center;
+}
+.gw-couple__join span {
+  font-family: var(--gw-font-display);
+  font-style: italic;
+  font-size: 34px;
+  line-height: 1;
+}
+
+/* ── Family card ornaments ── */
+.gw-arch__medallion {
+  position: absolute !important;
+  top: 30px;
+  left: 50%;
+  width: 56px;
+  height: 56px;
+  margin-left: -28px;
+  overflow: visible;
+}
+.gw-arch__medallion .gw-arch__line { vector-effect: none; stroke-width: 1; }
+.gw-arch__initial {
+  font-family: var(--gw-font-display);
+  font-style: italic;
+  font-size: 21px;
+  fill: var(--gw-gold-bright);
+}
+.gw-arch__dot { fill: var(--gw-gold); }
+.gw-arch__flourish {
+  display: block;
+  width: 150px;
+  height: 15px;
+  margin: 14px auto 0;
+  overflow: visible;
+}
+.gw-arch__flourish .gw-arch__line { vector-effect: none; }
+.gw-arch__sprig {
+  position: absolute !important;
+  bottom: 14px;
+  width: 44px;
+  height: 44px;
+  overflow: visible;
+  opacity: 0.85;
+}
+.gw-arch__sprig .gw-arch__line { vector-effect: none; }
+.gw-arch__sprig--l { left: 14px; }
+.gw-arch__sprig--r { right: 14px; transform: scaleX(-1); }
+.gw-arch__lotus {
+  position: absolute !important;
+  left: 50%;
+  bottom: -14px;
+  width: 64px;
+  height: 28px;
+  margin-left: -32px;
+  overflow: visible;
+}
+.gw-arch__lotus .gw-arch__line { vector-effect: none; fill: var(--gw-bg); }
+.gw-arch__lotus-bg { display: none; }

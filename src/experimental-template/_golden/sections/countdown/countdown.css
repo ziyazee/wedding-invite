@@ -1,0 +1,75 @@
+/* Countdown — four rings. Seconds ring sweeps; digits roll on change. */
+
+.gd-countdown {
+  background: radial-gradient(ellipse at 50% 40%, rgba(255, 228, 160, 0.09) 0%, transparent 60%), var(--gd-bg-deep);
+}
+.gd-countdown__grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 28px 16px;
+  margin-top: 44px;
+}
+@media (min-width: 440px) {
+  .gd-countdown__grid {
+    grid-template-columns: repeat(4, 1fr);
+    gap: 12px;
+  }
+}
+.gd-unit {
+  position: relative;
+  display: grid;
+  justify-items: center;
+}
+.gd-unit__ring {
+  position: relative;
+  width: 84px;
+  height: 84px;
+  display: grid;
+  place-items: center;
+}
+.gd-unit__ring svg {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  transform: rotate(-90deg);
+}
+.gd-unit__track {
+  fill: none;
+  stroke: var(--gd-line);
+  stroke-width: 1;
+}
+.gd-unit__bar {
+  fill: none;
+  stroke: var(--gd-gold-bright);
+  stroke-width: 1.6;
+  stroke-linecap: round;
+  stroke-dasharray: 1;
+  filter: drop-shadow(0 0 4px rgba(232, 198, 90, 0.55));
+}
+.gd-unit__bar.is-sweeping {
+  transition: stroke-dashoffset 0.95s linear;
+}
+.gd-unit__num {
+  display: block;
+  overflow: hidden;
+  font-family: var(--gd-font-display);
+  font-size: 32px;
+  line-height: 1.1;
+  font-variant-numeric: tabular-nums;
+  color: var(--gd-text);
+}
+.gd-unit__label {
+  margin-top: 12px;
+  font-size: 10px;
+  letter-spacing: 0.3em;
+  text-transform: uppercase;
+  color: var(--gd-text-muted);
+}
+.gd-countdown__ended {
+  margin: 40px 0 0;
+  font-family: var(--gd-font-display);
+  font-style: italic;
+  font-size: 28px;
+  color: var(--gd-gold-bright);
+}

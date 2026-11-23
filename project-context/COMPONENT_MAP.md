@@ -39,7 +39,12 @@ InvitationRenderer
 │   ├── MohadRahma (template=1, standalone)
 │   ├── OrderFrameInvitation (templates 9-14)
 │   │   └── TextLayoutLayer (legacy text adapters)
-│   ├── AnimatedInvitation (templates 6-7)
+│   ├── Bloom (template=7, native — migrated af6e8d7)
+│   │   ├── useBloomGate / useBloomReveal / useBloomCountdown
+│   │   ├── useBloomNameFit / useBloomCardFit / useBloomCardVideo
+│   │   ├── useBloomMusic
+│   │   └── InvitationLayoutProvider > InvitationSection > EditableText
+│   ├── AnimatedInvitation (template=6 only)
 │   │   └── TextLayoutLayer (text overlays)
 │   ├── PageComponent (templates 3,4,8)
 │   │   └── TextLayoutLayer + SiteFonts
@@ -90,6 +95,20 @@ InvitationRenderer
 | `SecretGarden.css` | Scoped styles |
 | `PearlClock.tsx` | Analog clock countdown with pearl border |
 | `useSecretGardenFit.ts` | Names fitting |
+
+### Bloom (`src/pages/bloom/`)
+
+| Component | Purpose |
+|-----------|---------|
+| `Bloom.tsx` | Full native React implementation (template 7) |
+| `Bloom.css` | Scoped styles |
+| `useBloomGate.ts` | Opening gate/overlay animation |
+| `useBloomReveal.ts` | Scroll-driven section reveal |
+| `useBloomCountdown.ts` | Countdown timer |
+| `useBloomNameFit.ts` | Couple names fitting |
+| `useBloomCardFit.ts` | Card content fitting |
+| `useBloomCardVideo.ts` | Background video management |
+| `useBloomMusic.ts` | Music playback |
 
 ## Legacy Components (`src/components/`)
 

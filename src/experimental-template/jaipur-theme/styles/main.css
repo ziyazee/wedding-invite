@@ -1,0 +1,910 @@
+/* Jaipur Theme — Design Tokens & Base Styles
+   Prefix: jt-
+   Palette: Warm rosewood + blush sandstone + rose gold + deep navy */
+
+@import url('https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;0,600;0,700;1,300;1,400&family=Josefin+Sans:wght@300;400&family=Noto+Serif+Devanagari:wght@400;500;600&display=swap');
+
+:root {
+  /* Core palette */
+  --jt-navy: #0B1026;
+  --jt-navy-deep: #060914;
+  --jt-sandstone: #C4956A;
+  --jt-sandstone-light: #D4B08C;
+  --jt-rose-gold: #B76E79;
+  --jt-rose-gold-light: #D4929B;
+  --jt-blush: #E8C4B8;
+  --jt-blush-light: #F2DDD5;
+  --jt-cream: #FAF0E6;
+  --jt-cream-warm: #F5E6D3;
+  --jt-terracotta: #C67B5C;
+  --jt-terracotta-deep: #8B4513;
+  --jt-gold: #D4A853;
+  --jt-gold-warm: #C5964A;
+  --jt-pink-stone: #D4A5A5;
+
+  /* Typography */
+  --jt-font-display: 'Cormorant Garamond', serif;
+  --jt-font-body: 'Josefin Sans', sans-serif;
+  --jt-font-devanagari: 'Noto Serif Devanagari', serif;
+
+  /* Spacing */
+  --jt-section-py: 100px;
+  --jt-content-max: 420px;
+}
+
+/* ─── Page Root ─── */
+
+.jt-page {
+  isolation: isolate;
+  position: relative;
+  width: 100%;
+  min-height: 100vh;
+  overflow-x: hidden;
+  background: var(--jt-navy-deep);
+  color: var(--jt-cream);
+  font-family: var(--jt-font-body);
+  font-weight: 300;
+  line-height: 1.6;
+  -webkit-font-smoothing: antialiased;
+}
+
+/* ─── Section: Opening ─── */
+
+.jt-opening {
+  position: relative;
+  z-index: 1;
+  width: 100%;
+  height: 100vh;
+  height: 100dvh;
+  overflow: hidden;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.jt-opening__video {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.jt-opening__overlay {
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(
+    to bottom,
+    rgba(11, 16, 38, 0.3) 0%,
+    rgba(11, 16, 38, 0.1) 40%,
+    rgba(11, 16, 38, 0.1) 60%,
+    rgba(11, 16, 38, 0.45) 100%
+  );
+  pointer-events: none;
+}
+
+.jt-opening__names {
+  position: absolute;
+  bottom: 12%;
+  left: 50%;
+  transform: translateX(-50%);
+  text-align: center;
+  z-index: 2;
+  width: 90%;
+  max-width: var(--jt-content-max);
+  will-change: transform, opacity, filter;
+}
+
+.jt-opening__groom,
+.jt-opening__bride,
+.jt-opening__ampersand,
+.jt-opening__date {
+  will-change: transform, opacity, filter;
+}
+
+.jt-opening__groom,
+.jt-opening__bride {
+  font-family: var(--jt-font-display);
+  font-weight: 300;
+  font-size: clamp(2.4rem, 8vw, 3.6rem);
+  letter-spacing: 0.08em;
+  color: var(--jt-cream);
+  margin: 0;
+  text-shadow: 0 2px 20px rgba(0, 0, 0, 0.5);
+}
+
+.jt-opening__ampersand {
+  display: block;
+  font-family: var(--jt-font-display);
+  font-style: italic;
+  font-weight: 300;
+  font-size: 1.6rem;
+  color: var(--jt-rose-gold-light);
+  margin: 4px 0;
+  text-shadow: 0 2px 16px rgba(0, 0, 0, 0.4);
+}
+
+.jt-opening__date {
+  font-family: var(--jt-font-body);
+  font-weight: 300;
+  font-size: 0.85rem;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  color: var(--jt-blush-light);
+  margin-top: 12px;
+  text-shadow: 0 1px 12px rgba(0, 0, 0, 0.4);
+}
+
+.jt-opening__cta {
+  position: absolute;
+  bottom: 8%;
+  left: 50%;
+  transform: translateX(-50%);
+  z-index: 3;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 8px;
+  cursor: pointer;
+}
+
+.jt-opening__cta-text {
+  font-family: var(--jt-font-body);
+  font-weight: 300;
+  font-size: 0.75rem;
+  letter-spacing: 0.25em;
+  text-transform: uppercase;
+  color: var(--jt-cream);
+  opacity: 0.8;
+}
+
+.jt-cta-pulse {
+  animation: jt-pulse 2s ease-in-out infinite;
+}
+
+@keyframes jt-pulse {
+  0%, 100% { opacity: 0.6; }
+  50% { opacity: 1; }
+}
+
+/* ─── Section: Couple ─── */
+
+.jt-couple {
+  position: relative;
+  z-index: 1;
+  padding: var(--jt-section-py) 24px;
+  text-align: center;
+  background: var(--jt-navy);
+  overflow: hidden;
+}
+
+.jt-couple__jali-bg {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  color: var(--jt-rose-gold);
+  opacity: 0.03;
+}
+
+.jt-couple__heading {
+  font-family: var(--jt-font-body);
+  font-weight: 300;
+  font-size: 0.7rem;
+  letter-spacing: 0.3em;
+  text-transform: uppercase;
+  color: var(--jt-sandstone-light);
+  margin-bottom: 40px;
+}
+
+.jt-couple__names {
+  margin-bottom: 32px;
+}
+
+.jt-couple__name {
+  font-family: var(--jt-font-display);
+  font-weight: 400;
+  font-size: clamp(2rem, 7vw, 3rem);
+  letter-spacing: 0.06em;
+  color: var(--jt-cream);
+  margin: 0;
+}
+
+.jt-couple__amp {
+  display: block;
+  font-family: var(--jt-font-display);
+  font-style: italic;
+  font-weight: 300;
+  font-size: 1.4rem;
+  color: var(--jt-rose-gold);
+  margin: 8px 0;
+}
+
+.jt-couple__parents {
+  max-width: var(--jt-content-max);
+  margin: 0 auto;
+}
+
+.jt-couple__parent-block {
+  margin-bottom: 24px;
+}
+
+.jt-couple__parent-label {
+  font-family: var(--jt-font-body);
+  font-weight: 300;
+  font-size: 0.65rem;
+  letter-spacing: 0.25em;
+  text-transform: uppercase;
+  color: var(--jt-sandstone);
+  margin-bottom: 4px;
+}
+
+.jt-couple__parent-names {
+  font-family: var(--jt-font-display);
+  font-weight: 400;
+  font-size: 1rem;
+  color: var(--jt-blush);
+}
+
+/* ─── Section: Shloka ─── */
+
+.jt-shloka {
+  position: relative;
+  z-index: 1;
+  padding: 80px 24px;
+  text-align: center;
+  background: linear-gradient(
+    to bottom,
+    var(--jt-navy) 0%,
+    rgba(183, 110, 121, 0.06) 30%,
+    rgba(183, 110, 121, 0.10) 50%,
+    rgba(183, 110, 121, 0.06) 70%,
+    var(--jt-navy) 100%
+  );
+}
+
+.jt-shloka__lotus {
+  display: block;
+  width: 60px;
+  height: 60px;
+  margin: 0 auto 24px;
+  color: var(--jt-rose-gold);
+  opacity: 0.35;
+}
+
+.jt-shloka__sanskrit {
+  font-family: var(--jt-font-devanagari);
+  font-weight: 500;
+  font-size: clamp(1.1rem, 4vw, 1.5rem);
+  line-height: 2;
+  color: var(--jt-gold);
+  max-width: 360px;
+  margin: 0 auto 20px;
+}
+
+.jt-shloka__translation {
+  font-family: var(--jt-font-display);
+  font-style: italic;
+  font-weight: 300;
+  font-size: 0.95rem;
+  line-height: 1.8;
+  color: var(--jt-blush);
+  max-width: 340px;
+  margin: 0 auto;
+  opacity: 0.85;
+}
+
+/* ─── Section: Countdown ─── */
+
+.jt-countdown {
+  position: relative;
+  z-index: 1;
+  padding: var(--jt-section-py) 24px;
+  text-align: center;
+  background: var(--jt-navy-deep);
+}
+
+.jt-countdown__label {
+  font-family: var(--jt-font-body);
+  font-weight: 300;
+  font-size: 0.7rem;
+  letter-spacing: 0.3em;
+  text-transform: uppercase;
+  color: var(--jt-sandstone-light);
+  margin-bottom: 32px;
+}
+
+.jt-countdown__timer {
+  display: flex;
+  justify-content: center;
+  gap: 24px;
+  max-width: var(--jt-content-max);
+  margin: 0 auto;
+}
+
+.jt-countdown__unit {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  min-width: 64px;
+}
+
+.jt-countdown__unit + .jt-countdown__unit {
+  border-left: 1px solid rgba(183, 110, 121, 0.08);
+  padding-left: 24px;
+}
+
+.jt-countdown__lamps {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 16px;
+  margin-bottom: 24px;
+}
+
+.jt-countdown__lamp {
+  width: 20px;
+  height: 28px;
+  color: var(--jt-gold);
+  opacity: 0.35;
+}
+
+.jt-countdown__number {
+  font-family: var(--jt-font-display);
+  font-weight: 300;
+  font-size: clamp(2rem, 8vw, 3.2rem);
+  color: var(--jt-cream);
+  line-height: 1;
+}
+
+.jt-countdown__unit-label {
+  font-family: var(--jt-font-body);
+  font-weight: 300;
+  font-size: 0.6rem;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  color: var(--jt-sandstone);
+  margin-top: 8px;
+}
+
+/* ─── Section: Celebrations ─── */
+
+.jt-celebrations {
+  position: relative;
+  z-index: 1;
+  padding: var(--jt-section-py) 24px;
+  background: var(--jt-navy);
+}
+
+.jt-celebrations__title {
+  font-family: var(--jt-font-body);
+  font-weight: 300;
+  font-size: 0.7rem;
+  letter-spacing: 0.3em;
+  text-transform: uppercase;
+  color: var(--jt-sandstone-light);
+  text-align: center;
+  margin-bottom: 48px;
+}
+
+.jt-celebrations__list {
+  max-width: var(--jt-content-max);
+  margin: 0 auto;
+  display: flex;
+  flex-direction: column;
+  gap: 48px;
+}
+
+.jt-event {
+  position: relative;
+  text-align: center;
+  padding: 48px 28px 40px;
+  background:
+    linear-gradient(
+      160deg,
+      rgba(183, 110, 121, 0.06) 0%,
+      rgba(11, 16, 38, 0) 40%,
+      rgba(212, 168, 83, 0.03) 100%
+    );
+}
+
+/* SVG border that draws itself on scroll */
+.jt-event__border-svg {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  pointer-events: none;
+}
+
+.jt-event__border {
+  fill: none;
+  stroke: var(--jt-event-accent, var(--jt-rose-gold));
+  stroke-width: 1;
+  stroke-opacity: 0.3;
+  stroke-dasharray: 1600;
+  stroke-dashoffset: 1600;
+}
+
+/* Accent color line at top of card — unique per event */
+.jt-event__accent-line {
+  position: absolute;
+  top: 0;
+  left: 20%;
+  right: 20%;
+  height: 1px;
+  background: linear-gradient(
+    to right,
+    transparent,
+    var(--jt-event-accent, var(--jt-rose-gold)),
+    transparent
+  );
+  opacity: 0.5;
+}
+
+/* Floral corner ornaments — all 4 corners */
+.jt-event__corner {
+  position: absolute;
+  width: 50px;
+  height: 50px;
+  color: var(--jt-event-accent, var(--jt-rose-gold));
+  pointer-events: none;
+  opacity: 0;
+}
+
+.jt-event__corner--tl { top: 6px; left: 6px; }
+.jt-event__corner--tr { top: 6px; right: 6px; transform: scaleX(-1); }
+.jt-event__corner--bl { bottom: 6px; left: 6px; transform: scaleY(-1); }
+.jt-event__corner--br { bottom: 6px; right: 6px; transform: scale(-1, -1); }
+
+/* Event title — uses per-event accent */
+.jt-event__title {
+  font-family: var(--jt-font-display);
+  font-weight: 500;
+  font-size: 1.6rem;
+  letter-spacing: 0.06em;
+  color: var(--jt-cream);
+  margin-bottom: 14px;
+}
+
+/* Star separator between title and details */
+.jt-event__separator {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  margin-bottom: 20px;
+  color: var(--jt-event-accent, var(--jt-gold));
+}
+
+.jt-event__sep-line {
+  display: block;
+  width: 40px;
+  height: 1px;
+  background: linear-gradient(
+    to right,
+    transparent,
+    var(--jt-event-accent, var(--jt-rose-gold)),
+    transparent
+  );
+  opacity: 0.35;
+  transform-origin: center;
+}
+
+/* When group — date + time */
+.jt-event__when {
+  margin-bottom: 22px;
+}
+
+.jt-event__date {
+  font-family: var(--jt-font-body);
+  font-weight: 300;
+  font-size: 0.8rem;
+  letter-spacing: 0.15em;
+  color: var(--jt-cream);
+  margin-bottom: 5px;
+}
+
+.jt-event__time {
+  font-family: var(--jt-font-body);
+  font-weight: 300;
+  font-size: 0.75rem;
+  letter-spacing: 0.12em;
+  color: var(--jt-sandstone-light);
+}
+
+/* Where group — venue + address */
+.jt-event__where {
+  padding-top: 20px;
+  border-top: 1px solid rgba(183, 110, 121, 0.07);
+}
+
+.jt-event__venue {
+  font-family: var(--jt-font-display);
+  font-weight: 500;
+  font-size: 1.1rem;
+  letter-spacing: 0.02em;
+  color: var(--jt-blush);
+  margin-bottom: 6px;
+}
+
+.jt-event__address {
+  font-family: var(--jt-font-body);
+  font-weight: 300;
+  font-size: 0.7rem;
+  letter-spacing: 0.1em;
+  color: var(--jt-sandstone);
+  line-height: 1.7;
+}
+
+/* ─── Section: RSVP ─── */
+
+.jt-rsvp {
+  position: relative;
+  z-index: 1;
+  padding: var(--jt-section-py) 24px;
+  text-align: center;
+  background: var(--jt-navy-deep);
+}
+
+.jt-rsvp__title {
+  font-family: var(--jt-font-body);
+  font-weight: 300;
+  font-size: 0.7rem;
+  letter-spacing: 0.3em;
+  text-transform: uppercase;
+  color: var(--jt-sandstone-light);
+  margin-bottom: 32px;
+}
+
+.jt-rsvp__form {
+  max-width: 360px;
+  margin: 0 auto;
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+.jt-rsvp__field {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  text-align: left;
+}
+
+.jt-rsvp__label {
+  font-family: var(--jt-font-body);
+  font-weight: 300;
+  font-size: 0.65rem;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  color: var(--jt-sandstone);
+}
+
+.jt-rsvp__input,
+.jt-rsvp__select {
+  background: rgba(255, 255, 255, 0.05);
+  border: 1px solid rgba(183, 110, 121, 0.2);
+  border-radius: 2px;
+  padding: 12px 16px;
+  font-family: var(--jt-font-body);
+  font-weight: 300;
+  font-size: 0.85rem;
+  color: var(--jt-cream);
+  outline: none;
+  transition: border-color 0.3s ease;
+}
+
+.jt-rsvp__input:focus,
+.jt-rsvp__select:focus {
+  border-color: var(--jt-rose-gold);
+}
+
+.jt-rsvp__input::placeholder {
+  color: rgba(250, 240, 230, 0.3);
+}
+
+.jt-rsvp__attendance {
+  display: flex;
+  gap: 12px;
+  margin-top: 4px;
+}
+
+.jt-rsvp__attendance-btn {
+  flex: 1;
+  padding: 12px;
+  background: transparent;
+  border: 1px solid rgba(183, 110, 121, 0.2);
+  border-radius: 2px;
+  font-family: var(--jt-font-body);
+  font-weight: 300;
+  font-size: 0.8rem;
+  letter-spacing: 0.1em;
+  color: var(--jt-cream);
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+
+.jt-rsvp__attendance-btn--active {
+  background: rgba(183, 110, 121, 0.15);
+  border-color: var(--jt-rose-gold);
+  color: var(--jt-rose-gold-light);
+}
+
+.jt-rsvp__submit {
+  padding: 14px 32px;
+  background: var(--jt-rose-gold);
+  border: none;
+  border-radius: 2px;
+  font-family: var(--jt-font-body);
+  font-weight: 400;
+  font-size: 0.75rem;
+  letter-spacing: 0.25em;
+  text-transform: uppercase;
+  color: var(--jt-cream);
+  cursor: pointer;
+  transition: background 0.3s ease;
+  margin-top: 8px;
+}
+
+.jt-rsvp__submit:hover {
+  background: var(--jt-rose-gold-light);
+}
+
+.jt-rsvp__thank-you {
+  padding: 40px 24px;
+}
+
+.jt-rsvp__thank-you h3 {
+  font-family: var(--jt-font-display);
+  font-weight: 400;
+  font-size: 1.5rem;
+  color: var(--jt-rose-gold-light);
+  margin-bottom: 12px;
+}
+
+.jt-rsvp__thank-you p {
+  font-family: var(--jt-font-body);
+  font-weight: 300;
+  font-size: 0.85rem;
+  color: var(--jt-blush);
+}
+
+/* ─── Section: Gallery ─── */
+
+.jt-gallery {
+  position: relative;
+  z-index: 1;
+  padding: var(--jt-section-py) 24px;
+  background: var(--jt-navy);
+}
+
+.jt-gallery__title {
+  font-family: var(--jt-font-body);
+  font-weight: 300;
+  font-size: 0.7rem;
+  letter-spacing: 0.3em;
+  text-transform: uppercase;
+  color: var(--jt-sandstone-light);
+  text-align: center;
+  margin-bottom: 40px;
+}
+
+.jt-gallery__grid {
+  max-width: var(--jt-content-max);
+  margin: 0 auto;
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 12px;
+}
+
+.jt-gallery__item {
+  aspect-ratio: 1;
+  border-radius: 2px;
+  overflow: hidden;
+  background: rgba(183, 110, 121, 0.08);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.jt-gallery__placeholder {
+  font-family: var(--jt-font-body);
+  font-weight: 300;
+  font-size: 0.6rem;
+  letter-spacing: 0.15em;
+  text-transform: uppercase;
+  color: var(--jt-sandstone);
+  opacity: 0.5;
+}
+
+/* ─── Section: Closing ─── */
+
+.jt-closing {
+  position: relative;
+  z-index: 1;
+  padding: var(--jt-section-py) 24px 60px;
+  text-align: center;
+  background: var(--jt-navy-deep);
+  overflow: hidden;
+}
+
+.jt-closing::after {
+  content: '';
+  position: absolute;
+  bottom: 0;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 300px;
+  height: 200px;
+  background: radial-gradient(ellipse, rgba(183, 110, 121, 0.03) 0%, transparent 70%);
+  pointer-events: none;
+}
+
+.jt-closing__blessing {
+  font-family: var(--jt-font-display);
+  font-style: italic;
+  font-weight: 300;
+  font-size: 1.1rem;
+  line-height: 1.8;
+  color: var(--jt-blush);
+  max-width: 340px;
+  margin: 0 auto 32px;
+}
+
+.jt-closing__names {
+  font-family: var(--jt-font-display);
+  font-weight: 400;
+  font-size: 1.6rem;
+  letter-spacing: 0.06em;
+  color: var(--jt-cream);
+  margin-bottom: 8px;
+}
+
+.jt-closing__date {
+  font-family: var(--jt-font-body);
+  font-weight: 300;
+  font-size: 0.7rem;
+  letter-spacing: 0.25em;
+  text-transform: uppercase;
+  color: var(--jt-sandstone);
+}
+
+/* ─── Dividers ─── */
+
+.jt-divider {
+  position: relative;
+  z-index: 1;
+  width: 100%;
+  padding: 24px 0;
+  display: flex;
+  justify-content: center;
+  background: var(--jt-navy);
+}
+
+.jt-divider--glow {
+  height: 2px;
+  background: linear-gradient(
+    to right,
+    transparent,
+    var(--jt-rose-gold) 30%,
+    var(--jt-gold) 50%,
+    var(--jt-rose-gold) 70%,
+    transparent
+  );
+  opacity: 0.4;
+  max-width: 200px;
+  width: 60%;
+  transform-origin: center;
+}
+
+/* ─── MehrabFrame section header ─── */
+
+.jt-mehrab-frame {
+  display: flex;
+  justify-content: center;
+  margin-bottom: 8px;
+  color: var(--jt-rose-gold);
+}
+
+/* ─── Jali lattice overlay ─── */
+
+.jt-jali-overlay {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  opacity: 0.03;
+  background-repeat: repeat;
+  background-size: 60px 60px;
+}
+
+/* ─── Mobile adjustments ─── */
+
+@media (max-width: 380px) {
+  :root {
+    --jt-section-py: 80px;
+  }
+
+  .jt-countdown__timer {
+    gap: 16px;
+  }
+
+  .jt-countdown__unit {
+    min-width: 54px;
+  }
+
+  .jt-countdown__unit + .jt-countdown__unit {
+    padding-left: 16px;
+  }
+
+  .jt-event {
+    padding: 24px 16px;
+  }
+
+  .jt-rsvp__attendance {
+    flex-direction: column;
+    gap: 8px;
+  }
+}
+
+/* ─── Lanterns ─── */
+
+.jt-lanterns {
+  position: fixed;
+  inset: 0;
+  pointer-events: none;
+  z-index: 0;
+  overflow: hidden;
+}
+
+.jt-lantern {
+  position: absolute;
+  bottom: -18%;
+  animation: jt-lantern-rise linear infinite;
+  will-change: transform;
+  opacity: var(--jt-lantern-opacity, 0.45);
+}
+
+.jt-lantern__svg {
+  width: 100%;
+  height: auto;
+  display: block;
+  animation: jt-lantern-sway var(--jt-lantern-sway, 4s) ease-in-out infinite alternate;
+}
+
+@keyframes jt-lantern-rise {
+  0% {
+    transform: translateY(0) translateX(0);
+    opacity: 0;
+  }
+  3% {
+    opacity: var(--jt-lantern-opacity, 0.45);
+  }
+  50% {
+    transform: translateY(-58vh) translateX(var(--jt-lantern-drift, 10px));
+  }
+  94% {
+    opacity: calc(var(--jt-lantern-opacity, 0.45) * 0.6);
+  }
+  100% {
+    transform: translateY(-122vh) translateX(calc(var(--jt-lantern-drift, 10px) * 1.4));
+    opacity: 0;
+  }
+}
+
+@keyframes jt-lantern-sway {
+  0% { transform: rotate(-2.5deg); }
+  100% { transform: rotate(2.5deg); }
+}
+
+/* ─── Reduced motion ─── */
+
+@media (prefers-reduced-motion: reduce) {
+  .jt-cta-pulse,
+  .jt-lantern {
+    animation: none;
+  }
+
+  .jt-lanterns {
+    display: none;
+  }
+}

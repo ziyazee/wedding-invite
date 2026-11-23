@@ -15,15 +15,19 @@ Source: `src/App.tsx`
 | `/` | `Landing` | Public | Template showcase landing page |
 | `/privacy` | `Privacy` | Public | Privacy policy |
 | `/login` | `Login` | Public | Email/password authentication |
+| `/account/setup` | `AccountSetup` | Auth | New account onboarding |
 | `/client/dashboard` | `ClientDashboard` | Client | Client workspace |
 | `/testing567` | `ClientDashboardTesting` | Client | Testing dashboard (shows hidden templates) |
 | `/edits` | `Edits` | Auth | Invitation editor |
 | `/client/live-preview` | `ClientLivePreview` | — | Live preview iframe (no auth shell) |
 | `/admin/dashboard` | `AdminDashboard` | Admin | Admin order management |
 | `/dashboard` | Redirect → `/` | — | Legacy redirect |
+| `/newDesign` | Redirect → `/dashboard` | — | Legacy redirect |
 | `/create` | `Create` | Public | Original creation flow |
 | `/preview/:id` | `Preview` | Public | Invitation preview |
 | `/invite/:slug` | `PublicInvite` | Public | Public invite wrapper |
+
+**Note:** `?invite=slug` query param (any route) also serves `CompanyPreview` when the path matches `/preview`. `CompanyPreview` is a standalone component, not a registered `<Route>`.
 
 ## Active Template Preview Routes
 
@@ -32,23 +36,46 @@ Source: `src/App.tsx`
 | `/embroidered-garden` | `EmbroideredGardenPreview` | Embroidered Garden |
 | `/secret-garden` | `SecretGardenPreview` | Secret Garden |
 | `/majestic` | `MajesticPreview` | Majestic |
-| `/bloom` | `BloomPreview` | Bloom |
+| `/bloom` | `BloomPreview` | Bloom (native React) |
 | `/the-artful-love-story` | `ArtfulLoveStoryPreview` | The Artful Love Story |
 | `/a-timeless-union` | `ATimelessUnionPreview` | A Timeless Union |
 | `/arjunbhavana` | `ATimelessUnion` | A Timeless Union (named) |
 | `/mandap-at-dusk` | `MandapAtDuskPreview` | Mandap at Dusk |
+| `/mahal` | `Mahal` | Mahal |
+| `/tajmahal` | `Tajmahal` | Taj Mahal |
+| `/kerala` | `Kerala` | Kerala |
+| `/royal-grace` | `RoyalGrace` | Royal Grace (standalone preview) |
 | `/templates/a-timeless-union/celebrations` | `CelebrationsEmbed` | Celebrations carousel |
 
-## Testing Template Routes
+## Experimental Template Routes
+
+Development previews only — not production templates. Components in `src/experimental-template/`.
 
 | Route | Component |
 |-------|-----------|
-| `/maroon-letter` | `MaroonLetter` |
-| `/emerald-parchment` | `EmeraldParchment` |
-| `/royal-jodhpur` | `ShaadiPathT02` |
-| `/destination-wedding` | `DestinationWedding` |
-| `/raabta` | `Raabta` |
-| `/qubool` | `Qubool` |
+| `/experimental/punjabi-premium` | `PunjabiPremium` |
+| `/experimental/kerala-dawn` | `KeralaDawn` |
+| `/experimental/taj` | `Taj` |
+| `/experimental/jaipur-theme` | `JaipurTheme` |
+| `/experimental/amrit-glow` | `AmritGlow` |
+| `/experimental/nikah-noor` | `NikahNoor` |
+| `/experimental/ivory-nikah` | `IvoryNikah` |
+| `/experimental/couple` | `Couple` |
+| `/experimental/hawa-mahal` | `HawaMahal` |
+| `/experimental/muslim-couple` | `MuslimCouple` |
+
+## Testing Template Routes
+
+| Route | Component | Notes |
+|-------|-----------|-------|
+| `/maroon-letter` | `MaroonLetter` | |
+| `/emerald-parchment` | `EmeraldParchment` | |
+| `/royal-jodhpur` | `RoyalJodhpur` | (was `ShaadiPathT02`) |
+| `/destination-wedding` | `DestinationWedding` | |
+| `/raabta` | `Raabta` | |
+| `/qubool` | `Qubool` | |
+| `/mangal` | `Mangal` | `src/pages/mangal/` |
+| `/viah` | `Viah` | `src/pages/viah/` |
 
 ## Future Routes
 
@@ -70,9 +97,11 @@ Source: `src/App.tsx`
 | `/ivory-arch` | `Design15` | Design 15 |
 | `/sacred-mandap` | `Design16` | Design 16 |
 | `/gulabi-mandap` | `Design17` | Design 17 |
-| `/royal-grace` | `MohadRahma` | Royal Grace alias |
+| `/gulabi-mandap` | `Design17` | Design 17 |
 | `/mohadrahma` | `MohadRahma` | Royal Grace named |
 | `/mohadrahm` | Redirect → `/mohadrahma` | Typo redirect |
+
+> **Note:** `/royal-grace` is now a standalone preview (`RoyalGrace` component), not the deprecated alias. `/sacred-mandap` (Design16) was in the doc but is not in the current App.tsx routes — may have been removed.
 
 ## Dynamic Routes
 

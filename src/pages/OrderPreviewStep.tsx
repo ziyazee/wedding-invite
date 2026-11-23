@@ -83,8 +83,32 @@ function UploadIllustrationModal({ companyId, onClose, onUse }: { companyId: num
         img.onerror = () => { URL.revokeObjectURL(url); reject(new Error('Could not load image')) }
         img.src = url
       })
-      const storagePath = `${companyId}/${Date.now()}-${name.trim().toLowerCase().replace(/\s+/g, '-')}.webp`
-      const { error: uploadError } = await supabase.storage.from('venue-images').upload(storagePath, webpBlob, { contentType: 'image/webp', upsert: false })
+      const imageBase64 = await new Promise<string>((resolve, reject) => {
+        const reader = new FileReader()
+        reader.onload = () => resolve(String(reader.result).split(',')[1] ?? '')
+        reader.onerror = () => reject(new Error('Could not read the selected image.'))
+        reader.readAsDataURL(webpBlob)
+      })
+      const { data: generated, error: generationError } = await supabase.functions.invoke('generate-illustration', {
+        body: { image: imageBase64, mimeType: 'image/webp', name: name.trim() },
+      })
+      if (generationError || !generated?.image) {
+        let message = generated?.error ?? generationError?.message ?? 'Could not generate the illustration.'
+        if (generationError && 'context' in generationError && generationError.context instanceof Response) {
+          try {
+            const details = await generationError.context.clone().json()
+            message = details?.error ?? details?.message ?? message
+          } catch {
+            // Keep the function error message when the response is not JSON.
+          }
+        }
+        setError(message)
+        return
+      }
+      const pngBytes = Uint8Array.from(atob(generated.image), char => char.charCodeAt(0))
+      const illustrationBlob = new Blob([pngBytes], { type: 'image/png' })
+      const storagePath = `${companyId}/${Date.now()}-${name.trim().toLowerCase().replace(/\s+/g, '-')}.png`
+      const { error: uploadError } = await supabase.storage.from('venue-images').upload(storagePath, illustrationBlob, { contentType: 'image/png', upsert: false })
       if (uploadError) { setError(uploadError.message); return }
       const { data: insertData, error: insertError } = await supabase.from('venue_images').insert({ company_id: companyId, name: name.trim(), storage_path: storagePath }).select('id,name,storage_path').single()
       if (insertError || !insertData) { setError(insertError?.message ?? 'Failed to save record.'); return }
@@ -108,7 +132,7 @@ function UploadIllustrationModal({ companyId, onClose, onUse }: { companyId: num
       {error && <p className="illustration-modal-error">{error}</p>}
       <div className="illustration-modal-actions">
         <button type="button" className="back-action" onClick={onClose}>Cancel</button>
-        <button type="button" className="primary-action" disabled={!file || !name.trim() || uploading} onClick={() => void handleUse()}>{uploading ? 'Uploading…' : 'Use this illustration'}</button>
+        <button type="button" className="primary-action" disabled={!file || !name.trim() || uploading} onClick={() => void handleUse()}>{uploading ? 'Creating illustration…' : 'Generate & use'}</button>
       </div>
     </div>
   </div>

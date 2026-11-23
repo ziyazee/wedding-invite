@@ -1,0 +1,122 @@
+/* RSVP — shared useRsvp state, this section's form. */
+
+.gw-rsvp {
+  isolation: isolate;
+  background: linear-gradient(to bottom, var(--gw-bg), var(--gw-bg-deep));
+}
+.gw-rsvp::before {
+  content: '';
+  position: absolute;
+  z-index: -1;
+  inset: 0 0 auto;
+  height: 780px;
+  background: url('../../assets/generated/rsvp-drape-frame.png') top center / 138% auto no-repeat;
+  opacity: 0.56;
+  pointer-events: none;
+}
+.gw-rsvp__head,
+.gw-form,
+.gw-rsvp__thanks {
+  position: relative;
+  z-index: 1;
+}
+.gw-rsvp__lede {
+  margin: 16px 0 40px;
+}
+.gw-form {
+  display: grid;
+  gap: 24px;
+  text-align: left;
+}
+.gw-field {
+  display: grid;
+  gap: 8px;
+}
+.gw-field__label {
+  font-size: 10px;
+  letter-spacing: 0.3em;
+  text-transform: uppercase;
+  color: var(--gw-gold);
+}
+.gw-input {
+  width: 100%;
+  padding: 12px 0;
+  border: 0;
+  border-bottom: 1px solid var(--gw-line-strong);
+  border-radius: 0;
+  background: transparent;
+  color: var(--gw-text);
+  font: inherit;
+  font-size: 16px;
+  transition: border-color 0.3s;
+}
+.gw-input::placeholder {
+  color: var(--gw-text-dim);
+}
+.gw-input:focus {
+  outline: none;
+  border-bottom-color: var(--gw-gold-bright);
+}
+.gw-input:focus-visible {
+  box-shadow: 0 1px 0 0 var(--gw-gold-bright);
+}
+select.gw-input option {
+  background: var(--gw-bg-elevated);
+  color: var(--gw-text);
+}
+.gw-choice {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 12px;
+}
+.gw-btn {
+  padding: 14px 16px;
+  border: 1px solid var(--gw-gold);
+  /* a paan-leaf cut: two opposite corners rounded */
+  border-radius: 0 22px 0 22px;
+  background: transparent;
+  color: var(--gw-text-soft);
+  font: inherit;
+  font-size: 12px;
+  font-weight: 400;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  cursor: pointer;
+  transition: background 0.3s, color 0.3s, opacity 0.3s;
+}
+.gw-btn:hover:not(:disabled),
+.gw-btn.is-active {
+  background: var(--gw-gold);
+  color: var(--gw-bg-elevated);
+}
+.gw-btn:focus-visible {
+  outline: 2px solid var(--gw-gold-bright);
+  outline-offset: 3px;
+}
+.gw-btn:disabled {
+  opacity: 0.4;
+  cursor: not-allowed;
+}
+.gw-btn--solid {
+  background: var(--gw-gold);
+  color: var(--gw-bg-elevated);
+}
+.gw-form__error {
+  margin: 0;
+  font-size: 13px;
+  text-align: center;
+  color: var(--gw-error);
+}
+.gw-rsvp__thanks {
+  display: grid;
+  justify-items: center;
+  gap: 12px;
+}
+.gw-rsvp__check {
+  width: 64px;
+  height: 64px;
+}
+.gw-rsvp__check .gw-draw {
+  stroke: var(--gw-gold-bright);
+  stroke-width: 1.6;
+}

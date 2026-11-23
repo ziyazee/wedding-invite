@@ -88,8 +88,7 @@ body.is-gated .scroller { overflow: hidden; }
 /* Scenes carrying long content (functions, RSVP) grow past one screen. */
 /* Content-carrying scenes grow past one screen when they need to — but they
    must never shrink below it, or the next scene's background bleeds in above
-   the fold (hit this for real on scene 7 at 390px, where the Instagram +
-   film block came to only 0.87 screens). min-height keeps the floor; the
+   the fold (hit this for real on scene 7 at 390px). min-height keeps the floor; the
    content pushes past it on its own. */
 .panel--tall { min-height: 100svh; padding: 14svh 0; }
 
@@ -965,7 +964,7 @@ button.fn__map:hover, button.fn__map:focus-visible { color: var(--ink); border-c
 .know__v { font-size: 1.14rem; line-height: 1.45; color: var(--ink-soft); }
 .know__v a { color: var(--ink); text-decoration: none; border-bottom: 1px solid rgba(251,240,228,.35); }
 
-/* ── Hashtag / Instagram / film (scene 7) ───────────────────────────── */
+/* ── Scene 7 layout ─────────────────────────────────────────────────── */
 /* A wedding hashtag is one unbreakable token, and couples pick long ones.
    `word-break: break-word` shattered a long tag into three lines mid-word.
    Keep it on one line and let it scale down instead: cqi units size it
@@ -993,24 +992,6 @@ button.fn__map:hover, button.fn__map:focus-visible { color: var(--ink); border-c
    text, so the fit measurement always reads 1 and the tag overruns instead.) */
 .panel[data-scene="7"] .panel__inner { max-width: min(46ch, 82vw); }
 .panel[data-scene="7"] .panel__inner { top: 4rem; }
-.film { margin-top: 1.6rem; }
-.film__label {
-  font-family: var(--sans);
-  font-size: .94rem;
-  letter-spacing: .18em;
-  text-transform: uppercase;
-  color: var(--ink-faint);
-  margin-bottom: .7rem;
-}
-.film__frame {
-  position: relative;
-  aspect-ratio: 16 / 9;
-  border: 1px solid rgba(232, 163, 61, .3);
-  border-radius: 3px;
-  overflow: hidden;
-  background: rgba(0, 0, 0, .45);
-}
-.film__frame iframe { position: absolute; inset: 0; width: 100%; height: 100%; border: 0; }
 
 /* ── Buttons ────────────────────────────────────────────────────────── */
 .btn {
@@ -1828,11 +1809,7 @@ body.is-modal .scroller { overflow: hidden; }
 
   /* On a narrow screen a right-aligned column reads badly — everything
      goes left, except the deliberately centred family scene. */
-  /* justify-items is for the know__row GRID only. On .panel__inner (a block)
-     it used to do nothing, but current Chrome applies it to block layout too:
-     every child shrank to its content, so the film frame (no content width of
-     its own) collapsed to ~65px and the hashtag to 0px, which also switched
-     off its fit-to-width. */
+  /* Keep the right-aligned text columns readable on narrow screens. */
   .panel[data-text$="right"] .panel__inner,
   .panel[data-text$="right"] .know__row { text-align: left; }
   .panel[data-text$="right"] .know__row { justify-items: start; }
@@ -1881,7 +1858,6 @@ body.is-modal .scroller { overflow: hidden; }
   .panel[data-scene="4"] .lede,
   .panel[data-scene="7"] .lede { font-size: .84rem; }
   .panel[data-scene="7"] .btn { margin-top: 1rem; padding: .66rem 1.1rem; font-size: .78rem; }
-  .panel[data-scene="7"] .film__label { font-size: .72rem; margin-bottom: .45rem; }
 
   /* The function cards themselves — the bulk of scene 4's height. */
   .panel[data-scene="4"] .functions { gap: .8rem; }
@@ -1891,22 +1867,12 @@ body.is-modal .scroller { overflow: hidden; }
   .panel[data-scene="4"] .fn__meta span,
   .panel[data-scene="4"] .fn__map { font-size: .68rem; }
 
-  /* The film frame is the whole problem here. At `aspect-ratio: 16/9` across a
-     full-width phone column it renders ~190px tall — and it is the LAST thing
-     in the card, so it drags the card's bottom edge straight down over the
-     couple. (A headless screenshot hides this: the embed never loads and the
-     frame collapses to ~42px, which is why this looked fixed when it wasn't.)
-     Constraining the video's width caps the card height at a known value and
-     keeps it clear of the art below. */
   /* Show the complete RSVP form, including submit and status, in the main
      page flow instead of hiding its bottom inside a capped scroll area. */
   .panel[data-scene="7"] .panel__inner {
     max-height: none;
     overflow: visible;
   }
-  .panel[data-scene="7"] .film { margin-top: .9rem; }
-  /* Keep the optional demo video compact. */
-  .panel[data-scene="7"] .film__frame { max-width: 230px; }
 
   /* MEASURED: 02-couple-close.webp is 1536x1024 with the pair CENTRED in the
      middle ~40% — so `contain` fits all that empty canvas and renders them
@@ -1935,10 +1901,7 @@ body.is-modal .scroller { overflow: hidden; }
        The card still sits at the top on mobile, so the art starts below it.
          box width 170%, couple centre 48.5% -> left = 50 - .485*170 = -32.5%
        Widening past the frame is what makes them read at phone size. */
-    /* MEASURED ON DEVICE: with the real YouTube embed loaded the card runs
-       lower than a headless test shows (the iframe collapses there), so a
-       52svh figure put their heads behind it. Held to 42svh so the couple
-       sits fully below the card on a real phone. */
+    /* Keep the couple below the RSVP card on phones. */
     top: auto; bottom: -1svh;
     left: -32.5%; right: auto;
     width: 170%;
@@ -2379,7 +2342,6 @@ body.is-modal .scroller { overflow: hidden; }
   .know__k,
   .fn__time,
   .fn__meta span,
-  .film__label,
   .footer__date,
   .footer__mark,
   .gate__eyebrow {
@@ -2414,7 +2376,7 @@ body.is-modal .scroller { overflow: hidden; }
 @media print {
   body { overflow: visible; background: #fff; color: #1a1a1a; }
   .scroller { height: auto; overflow: visible; }
-  .gate, .music, .cue, .layer, .panel::after, .film { display: none !important; }
+  .gate, .music, .cue, .layer, .panel::after { display: none !important; }
   .panel { min-height: auto; page-break-inside: avoid; padding: 1.5rem 0; background: none !important; }
   .panel__inner { margin: 0; max-width: 100%; filter: none; }
   .eyebrow, .family__label, .know__k, .fn__name, .amp, .hashtag { color: #8a5a12; }
@@ -2666,7 +2628,7 @@ body.is-modal .scroller { overflow: hidden; }
 
   /* Scene 7 — the couple is centred in their own canvas (x 32-65%), so the
      box has to be much wider than the frame for them to read at size. The
-     film embed sits above them, so they are anchored to the bottom. */
+     RSVP card sits above them, so they are anchored to the bottom. */
   .panel--tall .panel[data-scene="7"] .layer.el.fig-center,
   .panel[data-scene="7"] .layer.el.fig-center {
     inset: auto; bottom: 0;
@@ -2714,14 +2676,8 @@ body.is-modal .scroller { overflow: hidden; }
     margin-bottom: 0;
   }
 
-  /* Scene 7 — the film block (hashtag + caption + button + a 16:9 iframe) is
-     tall, so the couple cannot share the vertical centre with it: enlarging
-     them put the video straight across their faces. Moving the copy up was
-     not enough either — the block is simply too tall.
-
-     MEASURED on 02-couple-close.webp: the couple sits at x 32-65% of the
-     plate, i.e. centred. Offsetting the box to the RIGHT slides them out from
-     under the film, the same solution scene 4 uses for its card stack:
+  /* Scene 7 — the couple sits at x 32-65% of its image. Offset the box
+     to the right to clear the RSVP card:
        couple centre 48.5% of the plate; box 126% wide
        left = 62 - 0.485*126 = 0.9%  ->  couple centre lands at ~62% of frame
      Anchored to the bottom so their feet stay on the path. */
@@ -2901,7 +2857,6 @@ body.is-modal .scroller { overflow: hidden; }
   .countdown__l     { font-size: clamp(14px, 2.0cqw, 24px); }
   .countdown__n     { font-size: clamp(26px, 4.0cqw, 48px); }
   .know__k          { font-size: clamp(16px, 2.3cqw, 28px); }
-  .film__label      { font-size: clamp(16px, 2.3cqw, 28px); }
   .btn              { font-size: clamp(17px, 2.4cqw, 28px); }
   /* `.field label` (class + element) is what sets these at .82rem, so a bare
      `form label` loses to it. Matched here rather than reached for

@@ -1,0 +1,265 @@
+/* Celebrations — pearl-string timeline, octagonal date plaques, rasam motifs. */
+
+.pb-celebrations {
+  position: relative;
+  overflow: hidden;
+  padding-top: 180px;
+  background: var(--pb-bg);
+}
+.pb-celebrations__rose {
+  position: absolute;
+  top: 30px;
+  z-index: 0;
+  width: 150px;
+  height: auto;
+  pointer-events: none;
+}
+.pb-celebrations__rose--l {
+  left: 0;
+}
+.pb-celebrations__rose--r {
+  right: 0;
+  transform: scaleX(-1);
+}
+.pb-celebrations__head {
+  position: relative;
+  z-index: 1;
+  margin-bottom: 56px;
+}
+.pb-timeline {
+  position: relative;
+  z-index: 1;
+  width: 100%;
+  max-width: 420px;
+}
+/* the pearl ladi: a string of pearls that grows with the scroll */
+.pb-timeline__line {
+  position: absolute;
+  top: 130px;
+  bottom: 70px;
+  left: 32px;
+  width: 8px;
+  margin-left: -4px;
+  background-image: radial-gradient(circle at 50% 50%, #fffdf8 0 2px, #cdb98f 2.5px 3.1px, transparent 3.4px);
+  background-size: 8px 9px;
+  background-repeat: repeat-y;
+  transform-origin: top;
+}
+.pb-events {
+  display: flex;
+  flex-direction: column;
+  gap: 52px;
+}
+.pb-event {
+  position: relative;
+  display: grid;
+  grid-template-columns: 64px 1fr;
+  gap: 12px;
+  text-align: left;
+}
+
+/* ── Date plaque ── */
+.pb-plaque {
+  position: relative;
+  z-index: 1;
+  margin-top: 112px;
+  width: 64px;
+  height: 64px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  filter: drop-shadow(0 4px 6px rgba(61, 24, 34, 0.18));
+}
+.pb-plaque svg {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+}
+.pb-plaque__outer {
+  fill: #fffbfa;
+  stroke: var(--pb-gold);
+  stroke-width: 2.2;
+  stroke-linejoin: round;
+}
+.pb-plaque__inner {
+  fill: #fbeceb;
+  stroke: var(--pb-gold-bright);
+  stroke-width: 0.8;
+  stroke-linejoin: round;
+}
+.pb-plaque__stitch {
+  fill: none;
+  stroke: var(--pb-ember);
+  stroke-width: 0.6;
+  stroke-dasharray: 2 2;
+  opacity: 0.55;
+}
+.pb-plaque__day {
+  position: relative;
+  font-family: var(--pb-font-display);
+  font-weight: 600;
+  font-size: 25px;
+  line-height: 1;
+  color: var(--pb-text);
+}
+.pb-plaque__month {
+  position: relative;
+  margin-top: 3px;
+  font-size: 8px;
+  font-weight: 500;
+  letter-spacing: 0.22em;
+  text-indent: 0.22em;
+  color: var(--pb-ember);
+}
+
+/* ── Event card: grows with its content; toran on the top edge, blooms in the lower corners ── */
+.pb-event__card {
+  position: relative;
+  min-width: 0;
+  padding: 98px 18px 84px;
+  border: 1px solid rgba(181, 128, 36, 0.4);
+  border-radius: 14px;
+  background: linear-gradient(180deg, #fffbfa 0%, #fcefed 100%);
+  box-shadow:
+    inset 0 0 0 5px #fffbfa,
+    inset 0 0 0 6px rgba(181, 128, 36, 0.22),
+    0 12px 26px -18px rgba(120, 40, 60, 0.35);
+}
+.pb-event__toran {
+  position: absolute;
+  top: -6px;
+  left: 6px;
+  z-index: 2;
+  width: calc(100% - 12px);
+  height: auto;
+  pointer-events: none;
+}
+.pb-event__bloom {
+  position: absolute;
+  bottom: -6px;
+  z-index: 0;
+  width: 112px;
+  height: auto;
+  pointer-events: none;
+}
+.pb-event__bloom--r {
+  right: -6px;
+}
+.pb-event__bloom--l {
+  left: -6px;
+  transform: scaleX(-1);
+}
+.pb-event__body {
+  position: relative;
+  z-index: 1;
+}
+
+/* ── Event body ── */
+.pb-event__top {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 12px;
+}
+.pb-event__title {
+  margin: 0;
+  font-family: var(--pb-font-display);
+  font-weight: 500;
+  font-size: 24px;
+  line-height: 1.15;
+  color: var(--pb-text);
+}
+.pb-event__motif {
+  flex: none;
+  width: 30px;
+  height: 30px;
+  margin-top: 2px;
+  color: var(--pb-gold);
+}
+.pb-event__motif svg {
+  width: 100%;
+  height: 100%;
+  fill: none;
+  stroke: currentColor;
+  stroke-width: 1.3;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+}
+.pb-event__when {
+  margin: 8px 0 0;
+  font-size: 13px;
+  letter-spacing: 0.03em;
+  color: var(--pb-gold);
+}
+.pb-event__date,
+.pb-event__time {
+  display: block;
+}
+.pb-event__time {
+  margin-top: 2px;
+  font-weight: 500;
+  color: var(--pb-ember);
+}
+.pb-event__venue {
+  margin: 12px 0 0;
+  font-family: var(--pb-font-display);
+  font-size: 19px;
+  color: var(--pb-text-soft);
+}
+.pb-event__address {
+  margin: 2px 0 0;
+  font-size: 13px;
+  line-height: 1.5;
+  color: var(--pb-text-muted);
+}
+.pb-event__desc {
+  margin: 10px 0 0;
+  font-size: 13px;
+  line-height: 1.6;
+  color: var(--pb-text-muted);
+}
+
+.pb-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin-top: 16px;
+}
+.pb-pill {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 8px 12px;
+  border: 1px solid var(--pb-line-strong);
+  border-radius: 999px;
+  background: transparent;
+  color: var(--pb-text-soft);
+  font: inherit;
+  font-size: 11px;
+  font-weight: 400;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  text-decoration: none;
+  cursor: pointer;
+  transition: background 0.3s, border-color 0.3s, color 0.3s;
+}
+.pb-pill:hover {
+  background: rgba(181, 128, 36, 0.12);
+  border-color: var(--pb-gold);
+  color: var(--pb-gold);
+}
+.pb-pill:focus-visible {
+  outline: 2px solid var(--pb-gold);
+  outline-offset: 2px;
+}
+.pb-pill svg {
+  width: 12px;
+  height: 12px;
+  fill: none;
+  stroke: currentColor;
+  stroke-width: 1.5;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+}

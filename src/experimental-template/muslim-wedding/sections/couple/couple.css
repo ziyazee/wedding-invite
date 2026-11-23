@@ -1,0 +1,166 @@
+/* Couple — a carved-lintel valance across the top, then two family folios. Each folio is a flexible CSS
+   panel (silk gradient + double hairline) with a mihrab crest overhanging its top edge and four mirrored
+   rose corners. The art never sets the card size. A khatam thread joins the two cards. */
+
+.mw-couple {
+  padding-top: 282px;
+  background: linear-gradient(to bottom, var(--mw-bg) 0%, var(--mw-bg-elevated) 50%, var(--mw-bg) 100%);
+}
+/* Signature top-edge piece: full bleed, hangs past the section top into the previous divider. */
+.mw-couple__valance {
+  position: absolute;
+  top: 46px;
+  left: 50%;
+  z-index: 1;
+  width: 100%;
+  max-width: 520px;
+  height: auto;
+  transform: translateX(-50%);
+  pointer-events: none;
+}
+.mw-couple .mw-section__inner {
+  position: relative;
+  z-index: 2;
+}
+.mw-couple__heading {
+  margin: 0 0 56px;
+  font-family: var(--mw-font-display);
+  font-style: italic;
+  font-weight: 400;
+  font-size: 24px;
+  line-height: 1.4;
+  color: var(--mw-text-soft);
+}
+.mw-family {
+  position: relative;
+  margin-top: 112px;
+  padding: 78px 36px 112px;
+  border: 1px solid var(--mw-line-strong);
+  background:
+    linear-gradient(180deg, rgba(252, 249, 244, 0.96), rgba(246, 238, 224, 0.92)),
+    var(--mw-bg-elevated);
+  box-shadow:
+    inset 0 0 0 5px var(--mw-bg-elevated),
+    inset 0 0 0 6px var(--mw-line),
+    0 18px 36px -24px rgba(78, 55, 16, 0.35);
+}
+.mw-couple__heading + .mw-family { margin-top: 112px; }
+.mw-family__crest {
+  position: absolute;
+  top: -104px;
+  left: 0;
+  right: 0;
+  z-index: 2;
+  width: 80%;
+  margin: 0 auto;
+  pointer-events: none;
+}
+.mw-family__crest img {
+  display: block;
+  width: 100%;
+  height: auto;
+}
+/* The generated apex star reads as six/seven points at this size; an eight-pointed khatam sits over it. */
+.mw-family__crest-star {
+  position: absolute;
+  left: 50%;
+  top: 21.9%;
+  width: 6%;
+  aspect-ratio: 1;
+  transform: translate(-50%, -50%);
+  overflow: visible;
+}
+.mw-family__crest-star circle { fill: #e9e0cf; }
+.mw-family__crest-star path { fill: var(--mw-gold-bright); stroke: var(--mw-gold-dim); stroke-width: 0.6; stroke-linejoin: round; }
+/* One drawn corner, mirrored to all four. The top pair starts below the crest's sprays. */
+.mw-family__corner {
+  position: absolute;
+  z-index: 1;
+  width: 84px;
+  height: auto;
+  pointer-events: none;
+}
+.mw-family__corner--tl { top: 30px; left: 3px; }
+.mw-family__corner--tr { top: 30px; right: 3px; transform: scaleX(-1); }
+.mw-family__corner--bl { bottom: 3px; left: 3px; transform: scaleY(-1); }
+.mw-family__corner--br { bottom: 3px; right: 3px; transform: scale(-1, -1); }
+.mw-family__label,
+.mw-family__parent,
+.mw-family__amp,
+.mw-family__rule,
+.mw-family__name {
+  position: relative;
+  z-index: 3;
+}
+.mw-family__label {
+  margin: 0 0 14px;
+  font-size: 10px;
+  letter-spacing: 0.36em;
+  text-transform: uppercase;
+  color: var(--mw-gold-dim);
+}
+.mw-family__parent {
+  margin: 0;
+  font-size: 14px;
+  line-height: 1.8;
+  color: var(--mw-text-muted);
+}
+.mw-family__amp {
+  margin: 2px 0;
+  font-family: var(--mw-font-display);
+  font-style: italic;
+  font-size: 18px;
+  color: var(--mw-rose);
+}
+.mw-family__rule {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin: 22px 0 0;
+}
+.mw-family__rule i {
+  display: block;
+  flex: 1;
+  height: 1px;
+  background: var(--mw-line-strong);
+}
+.mw-family__rule i:first-child { transform-origin: right center; }
+.mw-family__rule i:last-child { transform-origin: left center; }
+.mw-family__rule svg {
+  width: 20px;
+  height: 20px;
+  fill: none;
+  stroke: var(--mw-gold);
+  stroke-width: 1.1;
+  stroke-linejoin: round;
+}
+.mw-family__name {
+  margin: 20px 0 0;
+  font-family: var(--mw-font-display);
+  font-weight: 500;
+  font-size: 30px;
+  line-height: 1.15;
+  color: var(--mw-text);
+  overflow-wrap: anywhere;
+}
+/* The thread: ends exactly where the next card's crest begins (crest overhang is 104px). */
+.mw-couple__thread {
+  display: block;
+  width: 60px;
+  height: 150px;
+  margin: 10px auto 104px;
+  overflow: visible;
+}
+.mw-couple__thread .mw-draw {
+  fill: none;
+  stroke: var(--mw-gold);
+  stroke-width: 1.1;
+  stroke-linejoin: round;
+}
+.mw-couple__thread-amp {
+  font-family: var(--mw-font-display);
+  font-style: italic;
+  font-size: 20px;
+  fill: var(--mw-rose);
+}
+.mw-couple__thread + .mw-family { margin-top: 0; }

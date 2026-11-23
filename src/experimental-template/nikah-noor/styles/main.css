@@ -1,0 +1,1036 @@
+/* ══════════════════════════════════════════════════════════
+   Nikah Noor — Premium Islamic Wedding Invitation
+   Prefix: nn-
+   ══════════════════════════════════════════════════════════ */
+
+.nn-page ~ *, .nn-page { background-color: var(--nn-bg); }
+html:has(.nn-page) { background: var(--nn-bg); }
+html:has(.nn-page) body { background: var(--nn-bg); }
+
+@import url('https://fonts.googleapis.com/css2?family=EB+Garamond:ital,wght@0,400;0,500;0,600;1,400;1,500&family=Alegreya+Sans:wght@300;400;500&family=Scheherazade+New:wght@400;700&display=swap');
+
+:root {
+  --nn-bg: #F4F2ED;
+  --nn-surface: #ECEAE4;
+  --nn-card: #FAFAF7;
+  --nn-elevated: #E4E1DA;
+
+  --nn-teal: #1A3D35;
+  --nn-teal-hover: #142F29;
+  --nn-teal-muted: #2B5C50;
+  --nn-teal-wash: rgba(26, 61, 53, 0.06);
+
+  --nn-gold: #9B7B3C;
+  --nn-gold-muted: #86703E;
+  --nn-gold-light: #B8964E;
+
+  --nn-on-teal: #F4F2ED;
+  --nn-on-teal-muted: rgba(244, 242, 237, 0.6);
+  --nn-on-teal-gold: #D4B06A;
+
+  --nn-ink: #1C1810;
+  --nn-ink-secondary: #4A4238;
+  --nn-ink-muted: #7A7068;
+  --nn-ink-faint: #A09688;
+
+  --nn-rule: rgba(155, 123, 60, 0.16);
+  --nn-rule-strong: rgba(155, 123, 60, 0.30);
+  --nn-shadow-subtle: 0 1px 4px rgba(28, 24, 16, 0.04);
+  --nn-shadow-card: 0 2px 16px rgba(28, 24, 16, 0.06), 0 0 0 1px var(--nn-rule);
+
+  --nn-serif: 'EB Garamond', Georgia, serif;
+  --nn-sans: 'Alegreya Sans', system-ui, sans-serif;
+  --nn-arabic: 'Scheherazade New', serif;
+
+  --nn-sp-2xs: 4px;
+  --nn-sp-xs: 8px;
+  --nn-sp-sm: 12px;
+  --nn-sp-md: 16px;
+  --nn-sp-lg: 24px;
+  --nn-sp-xl: 32px;
+  --nn-sp-2xl: 48px;
+  --nn-sp-3xl: 72px;
+  --nn-sp-4xl: 96px;
+  --nn-sp-5xl: 120px;
+
+  --nn-radius: 8px;
+  --nn-radius-lg: 16px;
+  --nn-radius-xl: 24px;
+  --nn-radius-pill: 100px;
+
+  --nn-ease: cubic-bezier(0.25, 0.46, 0.45, 0.94);
+  --nn-ease-out: cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+/* ─── Base ─── */
+.nn-page {
+  font-family: var(--nn-sans);
+  color: var(--nn-ink);
+  background: var(--nn-bg);
+  line-height: 1.6;
+  overflow-x: hidden;
+  -webkit-font-smoothing: antialiased;
+  scroll-behavior: smooth;
+}
+
+.nn-page *, .nn-page *::before, .nn-page *::after {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+/* Browser surfaces */
+.nn-page ::selection {
+  background: var(--nn-teal);
+  color: var(--nn-on-teal);
+}
+
+.nn-page :focus-visible {
+  outline: 2px solid var(--nn-gold);
+  outline-offset: 2px;
+}
+
+.nn-page::-webkit-scrollbar { width: 6px; }
+.nn-page::-webkit-scrollbar-track { background: var(--nn-bg); }
+.nn-page::-webkit-scrollbar-thumb {
+  background: var(--nn-rule-strong);
+  border-radius: 3px;
+}
+
+/* ─── Section base ─── */
+.nn-section {
+  position: relative;
+  padding: var(--nn-sp-4xl) var(--nn-sp-lg);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+}
+
+.nn-section-inner {
+  max-width: 460px;
+  width: 100%;
+}
+
+/* ─── Shared ─── */
+.nn-gold-text { color: var(--nn-gold); }
+
+.nn-rule {
+  width: 56px;
+  height: 1px;
+  background: var(--nn-rule-strong);
+  border: none;
+  margin: var(--nn-sp-xl) auto;
+}
+
+.nn-rule--wide { width: 80px; }
+
+.nn-ornament {
+  color: var(--nn-gold);
+  margin: var(--nn-sp-xl) auto;
+  display: flex;
+  justify-content: center;
+}
+
+/* ═══ Ambient keyframes ═══ */
+@keyframes nn-breathe {
+  0%, 100% { opacity: 0.04; }
+  50% { opacity: 0.09; }
+}
+
+@keyframes nn-float-gentle {
+  0%, 100% { transform: translateY(0); }
+  50% { transform: translateY(-6px); }
+}
+
+/* ═══ Floating gold particles ═══ */
+.nn-particles {
+  position: fixed;
+  inset: 0;
+  pointer-events: none;
+  z-index: 1;
+  overflow: hidden;
+}
+
+.nn-particle {
+  position: absolute;
+  border-radius: 50%;
+  background: radial-gradient(circle, rgba(184, 150, 78, 0.7), rgba(184, 150, 78, 0.15) 50%, transparent 100%);
+  opacity: 0;
+  will-change: transform, opacity;
+}
+
+/* ═══ Section dividers ═══ */
+.nn-section-divider {
+  display: flex;
+  justify-content: center;
+  padding: var(--nn-sp-2xs) 0;
+  color: var(--nn-gold);
+  position: relative;
+  z-index: 2;
+}
+
+/* ═══ Hero golden glow (revealed on door open) ═══ */
+.nn-hero-glow {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  width: 360px;
+  height: 360px;
+  background: radial-gradient(circle, rgba(155, 123, 60, 0.12) 0%, rgba(155, 123, 60, 0.03) 40%, transparent 70%);
+  pointer-events: none;
+  z-index: 1;
+  opacity: 0;
+}
+
+/* ════════════════════════════════
+   HERO
+   ════════════════════════════════ */
+.nn-hero {
+  position: relative;
+  height: 100dvh;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: var(--nn-sp-3xl) var(--nn-sp-lg);
+  background: radial-gradient(ellipse at center 40%, rgba(155, 123, 60, 0.035) 0%, var(--nn-bg) 55%);
+  overflow: hidden;
+}
+
+.nn-hero-pattern {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  pointer-events: none;
+  z-index: 0;
+}
+
+.nn-hero-pattern svg { opacity: 0.04; }
+
+.nn-hero-lantern {
+  position: absolute;
+  color: var(--nn-gold-muted);
+  z-index: 1;
+  opacity: 0;
+}
+
+.nn-hero-lantern--left { top: 8%; left: 5%; }
+.nn-hero-lantern--right { top: 12%; right: 5%; transform: scaleX(-1); }
+
+/* Doors */
+.nn-door-wrap {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  perspective: 2000px;
+  z-index: 10;
+  cursor: pointer;
+}
+
+.nn-door-frame {
+  display: none;
+}
+
+.nn-door-left,
+.nn-door-right {
+  position: absolute;
+  top: 0;
+  width: 50%;
+  height: 100%;
+  box-shadow: 0 4px 24px rgba(28, 24, 16, 0.10);
+  transition: transform 1.4s var(--nn-ease-out), opacity 0.6s ease 0.8s;
+  backface-visibility: hidden;
+  overflow: hidden;
+}
+
+.nn-door-left {
+  left: 0;
+  border-radius: 0;
+  transform-origin: left center;
+  border-right: 0.5px solid rgba(155, 123, 60, 0.18);
+  background-color: #EDE9E0;
+  background-image: url('/templates/nikah-noor/door.png');
+  background-size: 200% 100%;
+  background-position: left center;
+  background-repeat: no-repeat;
+}
+
+.nn-door-right {
+  right: 0;
+  border-radius: 0;
+  transform-origin: right center;
+  border-left: 0.5px solid rgba(155, 123, 60, 0.18);
+  background-color: #EDE9E0;
+  background-image: url('/templates/nikah-noor/door.png');
+  background-size: 200% 100%;
+  background-position: right center;
+  background-repeat: no-repeat;
+}
+
+.nn-doors-open { pointer-events: none; }
+.nn-doors-open .nn-door-left { transform: rotateY(-110deg); opacity: 0; }
+.nn-doors-open .nn-door-right { transform: rotateY(110deg); opacity: 0; }
+
+
+.nn-door-knocker {
+  display: none;
+}
+
+.nn-door-hint {
+  position: absolute;
+  bottom: 12%;
+  left: 50%;
+  transform: translateX(-50%);
+  z-index: 2;
+  font-family: var(--nn-serif);
+  font-weight: 500;
+  font-style: italic;
+  font-size: 0.9rem;
+  color: var(--nn-ink-secondary);
+  white-space: nowrap;
+  opacity: 0;
+  text-shadow: 0 1px 8px rgba(244, 242, 237, 0.8);
+  letter-spacing: 0.06em;
+}
+
+.nn-behind-doors {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: var(--nn-sp-lg);
+  z-index: 0;
+  background: var(--nn-bg);
+  border-radius: 6px;
+}
+
+.nn-bismillah-hero {
+  font-family: var(--nn-arabic);
+  font-size: clamp(1.5rem, 4vw, 2.4rem);
+  color: var(--nn-gold);
+  direction: rtl;
+  opacity: 0;
+  line-height: 1.8;
+  margin-bottom: var(--nn-sp-md);
+  text-shadow: 0 0 40px rgba(155, 123, 60, 0.2), 0 0 80px rgba(155, 123, 60, 0.06);
+}
+
+/* Hero content */
+.nn-hero-content {
+  position: relative;
+  z-index: 2;
+  text-align: center;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: var(--nn-sp-xs);
+}
+
+.nn-hero-subtitle {
+  font-family: var(--nn-serif);
+  font-weight: 400;
+  font-style: italic;
+  font-size: 0.95rem;
+  color: var(--nn-ink-muted);
+  opacity: 0;
+}
+
+.nn-hero-names {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 2px;
+  opacity: 0;
+}
+
+.nn-hero-name {
+  font-family: var(--nn-serif);
+  font-weight: 400;
+  font-size: clamp(2.6rem, 10vw, 4rem);
+  letter-spacing: 0.01em;
+  color: var(--nn-ink);
+  line-height: 1.1;
+  text-shadow: 0 0 60px rgba(155, 123, 60, 0.1);
+}
+
+.nn-hero-ampersand {
+  font-family: var(--nn-serif);
+  font-weight: 400;
+  font-style: italic;
+  font-size: clamp(1.8rem, 5vw, 2.4rem);
+  color: var(--nn-gold);
+  line-height: 1.3;
+  text-shadow: 0 0 30px rgba(155, 123, 60, 0.25);
+}
+
+.nn-hero-date {
+  font-family: var(--nn-sans);
+  font-weight: 300;
+  font-size: 0.85rem;
+  letter-spacing: 0.18em;
+  color: var(--nn-ink-secondary);
+  opacity: 0;
+  margin-top: var(--nn-sp-xs);
+}
+
+.nn-hero-hashtag {
+  font-family: var(--nn-serif);
+  font-weight: 500;
+  font-style: italic;
+  font-size: 0.9rem;
+  color: var(--nn-gold);
+  margin-top: var(--nn-sp-2xs);
+  opacity: 0;
+}
+
+/* Scroll hint */
+.nn-scroll-hint {
+  position: absolute;
+  bottom: var(--nn-sp-xl);
+  left: 50%;
+  transform: translateX(-50%);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: var(--nn-sp-xs);
+  opacity: 0;
+  z-index: 3;
+}
+
+.nn-scroll-hint__text {
+  font-family: var(--nn-serif);
+  font-weight: 400;
+  font-style: italic;
+  font-size: 0.7rem;
+  color: var(--nn-ink-faint);
+}
+
+.nn-scroll-hint svg { color: var(--nn-gold-muted); }
+
+@keyframes nn-bob {
+  0%, 100% { transform: translateY(0); }
+  50% { transform: translateY(4px); }
+}
+
+.nn-scroll-dot { animation: nn-bob 2.4s ease-in-out infinite; }
+
+/* ════════════════════════════════
+   INVITATION
+   ════════════════════════════════ */
+.nn-section-invitation {
+  background: var(--nn-surface);
+  padding: var(--nn-sp-5xl) var(--nn-sp-lg) var(--nn-sp-4xl);
+}
+
+.nn-bismillah {
+  font-family: var(--nn-arabic);
+  font-size: clamp(1.6rem, 5vw, 2rem);
+  color: var(--nn-gold);
+  direction: rtl;
+  margin-bottom: var(--nn-sp-xs);
+  line-height: 1.8;
+}
+
+.nn-bismillah-sub {
+  font-family: var(--nn-serif);
+  font-size: 0.82rem;
+  font-style: italic;
+  color: var(--nn-ink-muted);
+  font-weight: 400;
+  margin-bottom: var(--nn-sp-2xl);
+}
+
+.nn-invitation-text {
+  font-family: var(--nn-serif);
+  font-size: 1.1rem;
+  font-weight: 400;
+  font-style: italic;
+  color: var(--nn-ink-secondary);
+  line-height: 1.75;
+  margin-bottom: var(--nn-sp-2xl);
+  max-width: 380px;
+}
+
+.nn-family-block {
+  margin-bottom: var(--nn-sp-xl);
+}
+
+.nn-family-label {
+  font-family: var(--nn-serif);
+  font-size: 0.82rem;
+  font-style: italic;
+  color: var(--nn-ink-faint);
+  font-weight: 400;
+  margin-bottom: var(--nn-sp-2xs);
+}
+
+.nn-family-parents {
+  font-family: var(--nn-serif);
+  font-size: 1.1rem;
+  font-weight: 500;
+  color: var(--nn-ink-secondary);
+  line-height: 1.5;
+}
+
+.nn-family-grandparent {
+  font-family: var(--nn-sans);
+  font-size: 0.75rem;
+  color: var(--nn-ink-muted);
+  font-weight: 300;
+  margin-top: var(--nn-sp-2xs);
+}
+
+.nn-couple-intro {
+  margin-top: var(--nn-sp-3xl);
+}
+
+.nn-couple-label {
+  font-family: var(--nn-serif);
+  font-size: 0.9rem;
+  font-style: italic;
+  color: var(--nn-ink-muted);
+  font-weight: 400;
+  margin-bottom: var(--nn-sp-md);
+}
+
+.nn-couple-display {
+  font-family: var(--nn-serif);
+  font-size: clamp(1.5rem, 5.5vw, 2.2rem);
+  font-weight: 400;
+  color: var(--nn-ink);
+  line-height: 1.15;
+}
+
+.nn-couple-amp {
+  font-family: var(--nn-serif);
+  font-style: italic;
+  font-weight: 400;
+  font-size: 1.4rem;
+  color: var(--nn-gold);
+  margin: var(--nn-sp-xs) 0;
+  display: block;
+}
+
+/* ════════════════════════════════
+   CEREMONY
+   ════════════════════════════════ */
+.nn-section-ceremony {
+  background: var(--nn-bg);
+  padding: var(--nn-sp-4xl) var(--nn-sp-lg);
+}
+
+.nn-section-ceremony .nn-gold-text {
+  margin-bottom: var(--nn-sp-md);
+}
+
+.nn-ceremony-title {
+  font-family: var(--nn-serif);
+  font-size: clamp(2.6rem, 9vw, 3.8rem);
+  font-weight: 400;
+  color: var(--nn-ink);
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  margin-bottom: var(--nn-sp-2xl);
+}
+
+.nn-ceremony-card {
+  background: var(--nn-card);
+  border: 1px solid var(--nn-rule);
+  border-radius: var(--nn-radius-lg);
+  padding: var(--nn-sp-2xl);
+  box-shadow: var(--nn-shadow-card);
+  max-width: 380px;
+  width: 100%;
+}
+
+.nn-ceremony-row {
+  padding: var(--nn-sp-md) 0;
+}
+
+.nn-ceremony-row + .nn-ceremony-row {
+  border-top: 0.5px solid var(--nn-rule);
+}
+
+.nn-ceremony-field {
+  font-family: var(--nn-serif);
+  font-size: 0.78rem;
+  font-style: italic;
+  color: var(--nn-ink-faint);
+  font-weight: 400;
+  margin-bottom: var(--nn-sp-2xs);
+}
+
+.nn-ceremony-value {
+  font-family: var(--nn-serif);
+  font-size: 1.1rem;
+  font-weight: 500;
+  color: var(--nn-ink);
+  line-height: 1.4;
+}
+
+.nn-ceremony-secondary {
+  font-family: var(--nn-sans);
+  font-size: 0.75rem;
+  color: var(--nn-ink-muted);
+  font-weight: 300;
+  margin-top: 3px;
+}
+
+.nn-ceremony-note {
+  font-family: var(--nn-serif);
+  font-size: 0.92rem;
+  font-style: italic;
+  color: var(--nn-gold);
+  margin-top: var(--nn-sp-lg);
+  padding-top: var(--nn-sp-md);
+  border-top: 0.5px solid var(--nn-rule);
+}
+
+/* ════════════════════════════════
+   COUNTDOWN
+   ════════════════════════════════ */
+.nn-section-countdown {
+  background: var(--nn-surface);
+  padding: var(--nn-sp-3xl) var(--nn-sp-lg);
+}
+
+.nn-countdown-arabic {
+  font-family: var(--nn-arabic);
+  font-size: 1.7rem;
+  color: var(--nn-gold);
+  direction: rtl;
+  margin-bottom: var(--nn-sp-xs);
+}
+
+.nn-countdown-sub {
+  font-family: var(--nn-serif);
+  font-size: 0.88rem;
+  font-style: italic;
+  color: var(--nn-ink-muted);
+  font-weight: 400;
+  margin-bottom: var(--nn-sp-2xl);
+}
+
+.nn-countdown-grid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: var(--nn-sp-md);
+  max-width: 340px;
+  width: 100%;
+}
+
+.nn-countdown-unit {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 6px;
+}
+
+.nn-countdown-num {
+  font-family: var(--nn-serif);
+  font-size: clamp(2.2rem, 9vw, 3rem);
+  font-weight: 400;
+  color: var(--nn-ink);
+  line-height: 1;
+  font-variant-numeric: tabular-nums;
+  min-width: 52px;
+  text-shadow: 0 2px 24px rgba(155, 123, 60, 0.1);
+}
+
+.nn-countdown-label {
+  font-family: var(--nn-sans);
+  font-size: 0.68rem;
+  color: var(--nn-ink-faint);
+  font-weight: 400;
+  letter-spacing: 0.04em;
+}
+
+/* ════════════════════════════════
+   QURANIC VERSE — committed teal
+   ════════════════════════════════ */
+.nn-section-verse {
+  background: var(--nn-teal);
+  padding: var(--nn-sp-5xl) var(--nn-sp-lg);
+}
+
+.nn-section-verse .nn-section-inner {
+  max-width: 480px;
+}
+
+.nn-section-verse .nn-ornament {
+  color: var(--nn-on-teal-gold);
+}
+
+.nn-verse-ref {
+  font-family: var(--nn-serif);
+  font-size: 0.82rem;
+  font-style: italic;
+  color: var(--nn-on-teal-muted);
+  font-weight: 400;
+  margin-bottom: var(--nn-sp-2xl);
+}
+
+.nn-verse-arabic {
+  font-family: var(--nn-arabic);
+  font-size: clamp(1.3rem, 4.5vw, 1.8rem);
+  color: var(--nn-on-teal);
+  direction: rtl;
+  line-height: 2.2;
+  margin-bottom: var(--nn-sp-2xl);
+}
+
+.nn-verse-translation {
+  font-family: var(--nn-serif);
+  font-size: 1.02rem;
+  font-style: italic;
+  font-weight: 400;
+  color: var(--nn-on-teal-muted);
+  line-height: 1.85;
+  max-width: 400px;
+}
+
+.nn-section-verse ::selection {
+  background: var(--nn-on-teal-gold);
+  color: var(--nn-teal);
+}
+
+/* ════════════════════════════════
+   VENUE
+   ════════════════════════════════ */
+.nn-section-venue {
+  background: var(--nn-bg);
+  padding: var(--nn-sp-4xl) var(--nn-sp-lg);
+}
+
+.nn-venue-card {
+  background: var(--nn-card);
+  border: 1px solid var(--nn-rule);
+  border-radius: var(--nn-radius-lg);
+  padding: var(--nn-sp-2xl);
+  box-shadow: var(--nn-shadow-card);
+  max-width: 380px;
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+}
+
+.nn-venue-icon {
+  color: var(--nn-gold);
+  margin-bottom: var(--nn-sp-lg);
+}
+
+.nn-venue-name {
+  font-family: var(--nn-serif);
+  font-size: 1.3rem;
+  font-weight: 500;
+  color: var(--nn-ink);
+  margin-bottom: var(--nn-sp-xs);
+}
+
+.nn-venue-address {
+  font-family: var(--nn-sans);
+  font-size: 0.82rem;
+  font-weight: 300;
+  color: var(--nn-ink-muted);
+  line-height: 1.5;
+  margin-bottom: var(--nn-sp-xl);
+}
+
+.nn-venue-link {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--nn-sp-xs);
+  font-family: var(--nn-sans);
+  font-size: 0.78rem;
+  font-weight: 400;
+  color: var(--nn-teal);
+  text-decoration: none;
+  padding: var(--nn-sp-sm) var(--nn-sp-lg);
+  border: 1px solid var(--nn-teal-muted);
+  border-radius: var(--nn-radius-pill);
+  transition: background 0.3s var(--nn-ease), color 0.3s var(--nn-ease);
+}
+
+.nn-venue-link:hover {
+  background: var(--nn-teal);
+  color: var(--nn-on-teal);
+  border-color: var(--nn-teal);
+}
+
+/* ════════════════════════════════
+   CONTACTS
+   ════════════════════════════════ */
+.nn-section-contacts {
+  background: var(--nn-surface);
+  padding: var(--nn-sp-3xl) var(--nn-sp-lg);
+}
+
+.nn-contacts-list {
+  display: flex;
+  flex-direction: column;
+  gap: var(--nn-sp-lg);
+  max-width: 380px;
+  width: 100%;
+}
+
+.nn-contact {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: var(--nn-sp-xs);
+  padding: var(--nn-sp-lg);
+  background: var(--nn-card);
+  border: 1px solid var(--nn-rule);
+  border-radius: var(--nn-radius);
+}
+
+.nn-contact-name {
+  font-family: var(--nn-serif);
+  font-size: 1.05rem;
+  font-weight: 500;
+  color: var(--nn-ink);
+}
+
+.nn-contact-relation {
+  font-family: var(--nn-serif);
+  font-size: 0.78rem;
+  font-style: italic;
+  color: var(--nn-ink-faint);
+  font-weight: 400;
+}
+
+.nn-contact-actions {
+  display: flex;
+  gap: var(--nn-sp-sm);
+  margin-top: var(--nn-sp-xs);
+}
+
+.nn-contact-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  font-family: var(--nn-sans);
+  font-size: 0.72rem;
+  font-weight: 400;
+  text-decoration: none;
+  padding: 8px 18px;
+  border-radius: var(--nn-radius-pill);
+  transition: background 0.3s var(--nn-ease), color 0.3s var(--nn-ease), border-color 0.3s var(--nn-ease);
+}
+
+.nn-contact-btn--call {
+  color: var(--nn-gold);
+  border: 1px solid var(--nn-rule-strong);
+  background: transparent;
+}
+
+.nn-contact-btn--call:hover {
+  background: var(--nn-gold);
+  color: #fff;
+  border-color: var(--nn-gold);
+}
+
+.nn-contact-btn--wa {
+  color: #1A7567;
+  border: 1px solid rgba(26, 117, 103, 0.22);
+  background: transparent;
+}
+
+.nn-contact-btn--wa:hover {
+  background: #1A7567;
+  color: #fff;
+  border-color: #1A7567;
+}
+
+/* ════════════════════════════════
+   CLOSING
+   ════════════════════════════════ */
+.nn-section-closing {
+  background: var(--nn-bg);
+  padding: var(--nn-sp-5xl) var(--nn-sp-lg) var(--nn-sp-3xl);
+}
+
+.nn-closing-arabic {
+  font-family: var(--nn-arabic);
+  font-size: clamp(1.1rem, 3.5vw, 1.4rem);
+  color: var(--nn-gold);
+  direction: rtl;
+  line-height: 2;
+  margin-bottom: var(--nn-sp-md);
+  max-width: 400px;
+}
+
+.nn-closing-translation {
+  font-family: var(--nn-serif);
+  font-size: 0.92rem;
+  font-style: italic;
+  font-weight: 400;
+  color: var(--nn-ink-secondary);
+  line-height: 1.75;
+  margin-bottom: var(--nn-sp-3xl);
+  max-width: 360px;
+}
+
+.nn-closing-names {
+  font-family: var(--nn-serif);
+  font-size: clamp(1.8rem, 6vw, 2.6rem);
+  font-weight: 400;
+  color: var(--nn-ink);
+  line-height: 1.25;
+}
+
+.nn-closing-amp {
+  font-family: var(--nn-serif);
+  font-style: italic;
+  font-weight: 400;
+  font-size: 1.3rem;
+  color: var(--nn-gold);
+  display: block;
+  margin: var(--nn-sp-xs) 0;
+}
+
+.nn-footer {
+  margin-top: var(--nn-sp-4xl);
+  font-family: var(--nn-serif);
+  font-size: 0.72rem;
+  font-style: italic;
+  color: var(--nn-ink-faint);
+  font-weight: 400;
+}
+
+/* ═══ Card corner ornaments ═══ */
+.nn-ceremony-card::before,
+.nn-ceremony-card::after {
+  content: '';
+  position: absolute;
+  width: 20px;
+  height: 20px;
+  border-color: var(--nn-gold);
+  border-style: solid;
+  opacity: 0.2;
+  pointer-events: none;
+}
+
+.nn-ceremony-card::before {
+  top: 10px;
+  left: 10px;
+  border-width: 1px 0 0 1px;
+}
+
+.nn-ceremony-card::after {
+  bottom: 10px;
+  right: 10px;
+  border-width: 0 1px 1px 0;
+}
+
+.nn-venue-card::before,
+.nn-venue-card::after {
+  content: '';
+  position: absolute;
+  width: 20px;
+  height: 20px;
+  border-color: var(--nn-gold);
+  border-style: solid;
+  opacity: 0.2;
+  pointer-events: none;
+}
+
+.nn-venue-card::before {
+  top: 10px;
+  left: 10px;
+  border-width: 1px 0 0 1px;
+}
+
+.nn-venue-card::after {
+  bottom: 10px;
+  right: 10px;
+  border-width: 0 1px 1px 0;
+}
+
+/* ═══ Section ambient glows ═══ */
+.nn-section-ceremony::before {
+  content: '';
+  position: absolute;
+  top: -80px;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 500px;
+  height: 500px;
+  background: radial-gradient(ellipse, rgba(155, 123, 60, 0.045) 0%, transparent 70%);
+  pointer-events: none;
+  z-index: 0;
+  animation: nn-breathe 8s ease-in-out infinite;
+}
+
+.nn-section-verse::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: radial-gradient(ellipse at center 30%, rgba(212, 176, 106, 0.06) 0%, transparent 55%);
+  pointer-events: none;
+  z-index: 0;
+}
+
+.nn-section-closing::before {
+  content: '';
+  position: absolute;
+  bottom: 0;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 400px;
+  height: 400px;
+  background: radial-gradient(ellipse, rgba(155, 123, 60, 0.04) 0%, transparent 70%);
+  pointer-events: none;
+  z-index: 0;
+}
+
+/* ═══ Interactive polish ═══ */
+.nn-contact-btn:active {
+  transform: scale(0.96);
+}
+
+.nn-venue-link:active {
+  transform: scale(0.96);
+}
+
+/* ════════════════════════════════
+   RESPONSIVE
+   ════════════════════════════════ */
+@media (max-width: 380px) {
+  .nn-section {
+    padding-left: var(--nn-sp-md);
+    padding-right: var(--nn-sp-md);
+  }
+
+
+  .nn-countdown-grid { gap: var(--nn-sp-sm); }
+}
+
+@media (min-width: 768px) {
+  .nn-section {
+    padding-left: var(--nn-sp-xl);
+    padding-right: var(--nn-sp-xl);
+  }
+
+
+  .nn-contacts-list {
+    flex-direction: row;
+    max-width: 600px;
+  }
+
+  .nn-contact { flex: 1; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .nn-scroll-dot { animation: none; }
+  .nn-door-left, .nn-door-right { transition-duration: 0.01ms; }
+}

@@ -1,0 +1,1105 @@
+/* ============================================================
+   Ivory Nikah — Master Stylesheet
+   CSS prefix: in-
+   ============================================================ */
+
+/* --- 1. Custom Property Tokens --- */
+.in-page {
+  /* Palette Core */
+  --in-ivory:              #F5EDD6;
+  --in-cream:              #FAF7F0;
+  --in-gold:               #C9A84C;
+  --in-sage:               #8A9A7B;
+  --in-brown-deep:         #3D2B1F;
+  --in-brown-warm:         #6B5B4E;
+  --in-gold-light:         #E0CFA0;
+
+  /* Extended Palette */
+  --in-champagne:          #D5BD91;
+  --in-cream-bright:       #FFFDF7;
+  --in-petal-white:        #EDE5D5;
+  --in-shadow:             #2A1D14;
+  --in-gold-gradient-start:#C9A84C;
+  --in-gold-gradient-end:  #D5BD91;
+
+  /* Functional Aliases */
+  --in-bg-page:            var(--in-cream);
+  --in-bg-section:         var(--in-ivory);
+  --in-bg-card:            var(--in-cream-bright);
+  --in-text-primary:       var(--in-brown-deep);
+  --in-text-secondary:     var(--in-brown-warm);
+  --in-accent:             var(--in-gold);
+  --in-border:             var(--in-gold-light);
+  --in-border-subtle:      rgba(201, 168, 76, 0.15);
+
+  /* Font Families */
+  --in-font-display:       'Playfair Display', Georgia, 'Times New Roman', serif;
+  --in-font-heading:       'Cormorant Garamond', Garamond, 'Times New Roman', serif;
+  --in-font-body:          'Lato', 'Helvetica Neue', Helvetica, Arial, sans-serif;
+  --in-font-arabic:        'Amiri', 'Traditional Arabic', 'Noto Naskh Arabic', serif;
+
+  /* Font Sizes (fluid: 402px min -> 768px max) */
+  --in-size-names:         clamp(2.25rem, 5.5vw, 3.25rem);
+  --in-size-bismillah:     clamp(1.75rem, 4.2vw, 2.5rem);
+  --in-size-section-title: clamp(1.5rem, 3.5vw, 2rem);
+  --in-size-subtitle:      clamp(1.125rem, 2.5vw, 1.375rem);
+  --in-size-body:          clamp(0.9375rem, 2vw, 1.0625rem);
+  --in-size-small:         clamp(0.8125rem, 1.8vw, 0.9375rem);
+  --in-size-label:         clamp(0.6875rem, 1.5vw, 0.8125rem);
+  --in-size-arabic-verse:  clamp(1.625rem, 4vw, 2.25rem);
+  --in-size-arabic-small:  clamp(1.125rem, 2.8vw, 1.5rem);
+
+  /* Font Weights */
+  --in-weight-display:     700;
+  --in-weight-heading:     600;
+  --in-weight-body:        400;
+  --in-weight-body-light:  300;
+  --in-weight-arabic:      400;
+
+  /* Letter Spacing */
+  --in-tracking-display:   0.06em;
+  --in-tracking-heading:   0.04em;
+  --in-tracking-body:      0.01em;
+  --in-tracking-label:     0.08em;
+  --in-tracking-arabic:    0;
+
+  /* Line Heights */
+  --in-leading-display:    1.15;
+  --in-leading-heading:    1.3;
+  --in-leading-body:       1.65;
+  --in-leading-arabic:     1.8;
+  --in-leading-label:      1.4;
+
+  /* Spacing */
+  --in-space-2xs:          4px;
+  --in-space-xs:           8px;
+  --in-space-sm:           12px;
+  --in-space-md:           16px;
+  --in-space-lg:           24px;
+  --in-space-xl:           32px;
+  --in-space-2xl:          48px;
+  --in-space-3xl:          64px;
+  --in-space-4xl:          80px;
+  --in-space-5xl:          96px;
+  --in-space-6xl:          120px;
+
+  --in-section-gap:        clamp(80px, 12vw, 120px);
+  --in-section-padding-y:  clamp(48px, 8vw, 80px);
+  --in-section-padding-x:  clamp(24px, 5vw, 40px);
+
+  --in-content-max-width:  420px;
+  --in-content-wide-max:   520px;
+  --in-container-max:      600px;
+
+  /* Border Radii */
+  --in-radius-none:        0;
+  --in-radius-sm:          4px;
+  --in-radius-md:          8px;
+  --in-radius-lg:          16px;
+  --in-radius-arch:        50% 50% 0 0;
+
+  /* Shadows */
+  --in-shadow-carved:      inset 0 1px 3px rgba(61, 43, 31, 0.08);
+  --in-shadow-raised:      0 2px 8px rgba(61, 43, 31, 0.06);
+  --in-shadow-gold-glow:   0 0 20px rgba(201, 168, 76, 0.15);
+  --in-shadow-deep:        0 4px 24px rgba(42, 29, 20, 0.12);
+
+  /* Transitions */
+  --in-ease-elegant:       cubic-bezier(0.25, 0.1, 0.25, 1);
+  --in-ease-door-open:     cubic-bezier(0.16, 1, 0.3, 1);
+  --in-duration-fast:      200ms;
+  --in-duration-normal:    400ms;
+  --in-duration-slow:      800ms;
+  --in-duration-cinematic: 2000ms;
+
+  /* Opacity */
+  --in-opacity-jali-bg:    0.04;
+  --in-opacity-marble-bg:  0.18;
+  --in-opacity-vine-border:0.5;
+  --in-opacity-petal:      0.7;
+}
+
+/* --- 2. Root Container --- */
+.in-page {
+  isolation: isolate;
+  position: relative;
+  width: 100%;
+  min-height: 100vh;
+  min-height: 100dvh;
+  overflow-x: hidden;
+  background-color: var(--in-bg-page);
+  color: var(--in-text-primary);
+  font-family: var(--in-font-body);
+  font-weight: var(--in-weight-body);
+  line-height: var(--in-leading-body);
+  letter-spacing: var(--in-tracking-body);
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  text-align: center;
+}
+
+/* Marble page background */
+.in-page__bg {
+  position: fixed;
+  inset: 0;
+  background-color: var(--in-cream);
+  background-image: url('../assets/images/backgrounds/marble-texture.jpg');
+  background-size: cover;
+  background-position: center;
+  background-blend-mode: soft-light;
+  z-index: 0;
+  pointer-events: none;
+}
+
+/* --- 3. Section System --- */
+.in-section {
+  position: relative;
+  width: 100%;
+  max-width: var(--in-container-max);
+  margin-left: auto;
+  margin-right: auto;
+  padding: var(--in-section-padding-y) var(--in-section-padding-x);
+  overflow: hidden;
+  z-index: 1;
+}
+
+.in-section__content {
+  position: relative;
+  max-width: var(--in-content-max-width);
+  margin-left: auto;
+  margin-right: auto;
+  z-index: 2;
+}
+
+/* Section background type A — Ivory Surface */
+.in-section--ivory {
+  background: linear-gradient(
+    180deg,
+    rgba(245, 237, 214, 0.0) 0%,
+    rgba(245, 237, 214, 0.6) 8%,
+    rgba(245, 237, 214, 0.6) 92%,
+    rgba(245, 237, 214, 0.0) 100%
+  );
+}
+
+/* Section background type B — Warm Glow */
+.in-section--warm-glow {
+  background: radial-gradient(
+    ellipse 80% 60% at 50% 40%,
+    rgba(213, 189, 145, 0.12) 0%,
+    rgba(245, 237, 214, 0.4) 50%,
+    rgba(250, 247, 240, 0.0) 100%
+  );
+}
+
+/* Section background type C — Clear */
+.in-section--clear {
+  background: transparent;
+}
+
+/* Background layer for warm-light animation */
+.in-section__bg {
+  position: absolute;
+  inset: 0;
+  z-index: 0;
+  pointer-events: none;
+}
+
+/* Jali lattice overlay */
+.in-section--jali::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background-image: url('../assets/images/decorative/jali-lattice.png');
+  background-size: 200px 200px;
+  background-repeat: repeat;
+  opacity: var(--in-opacity-jali-bg);
+  pointer-events: none;
+  z-index: 0;
+  animation: in-jali-drift 120s linear infinite;
+}
+
+/* Section gap (between sections) */
+.in-section-gap {
+  height: var(--in-section-gap);
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 1;
+}
+
+/* --- 4. Typography Classes --- */
+.in-text-display {
+  font-family: var(--in-font-display);
+  font-weight: var(--in-weight-display);
+  font-size: var(--in-size-names);
+  letter-spacing: var(--in-tracking-display);
+  line-height: var(--in-leading-display);
+  color: var(--in-text-primary);
+}
+
+.in-text-heading {
+  font-family: var(--in-font-heading);
+  font-weight: var(--in-weight-heading);
+  font-size: var(--in-size-section-title);
+  letter-spacing: var(--in-tracking-heading);
+  line-height: var(--in-leading-heading);
+  color: var(--in-text-primary);
+}
+
+.in-text-subtitle {
+  font-family: var(--in-font-heading);
+  font-weight: var(--in-weight-heading);
+  font-size: var(--in-size-subtitle);
+  letter-spacing: var(--in-tracking-heading);
+  line-height: var(--in-leading-heading);
+  color: var(--in-text-primary);
+}
+
+.in-text-body {
+  font-family: var(--in-font-body);
+  font-weight: var(--in-weight-body);
+  font-size: var(--in-size-body);
+  letter-spacing: var(--in-tracking-body);
+  line-height: var(--in-leading-body);
+  color: var(--in-text-secondary);
+}
+
+.in-text-body--light {
+  font-weight: var(--in-weight-body-light);
+}
+
+.in-text-small {
+  font-family: var(--in-font-body);
+  font-weight: var(--in-weight-body);
+  font-size: var(--in-size-small);
+  letter-spacing: var(--in-tracking-body);
+  line-height: var(--in-leading-body);
+  color: var(--in-text-secondary);
+}
+
+.in-text-label {
+  font-family: var(--in-font-body);
+  font-weight: var(--in-weight-body);
+  font-size: var(--in-size-label);
+  letter-spacing: var(--in-tracking-label);
+  line-height: var(--in-leading-label);
+  color: var(--in-text-secondary);
+  text-transform: uppercase;
+}
+
+.in-text-arabic {
+  font-family: var(--in-font-arabic);
+  font-weight: var(--in-weight-arabic);
+  font-size: var(--in-size-arabic-verse);
+  letter-spacing: var(--in-tracking-arabic);
+  line-height: var(--in-leading-arabic);
+  color: var(--in-text-primary);
+  direction: rtl;
+  text-align: center;
+}
+
+.in-text-gold {
+  color: var(--in-gold);
+}
+
+/* --- 5. Opening Section --- */
+.in-opening {
+  position: relative;
+  width: 100%;
+  min-height: 100vh;
+  min-height: 100dvh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  overflow: hidden;
+  background-color: var(--in-ivory);
+  z-index: 1;
+}
+
+.in-opening__arch {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  pointer-events: none;
+  z-index: 2;
+}
+
+.in-opening__arch img {
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+}
+
+.in-opening__content {
+  position: relative;
+  z-index: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0;
+  padding: 0 var(--in-space-xl);
+  max-width: var(--in-content-max-width);
+}
+
+.in-opening__bismillah {
+  font-family: var(--in-font-arabic);
+  font-weight: var(--in-weight-arabic);
+  font-size: var(--in-size-bismillah);
+  line-height: var(--in-leading-arabic);
+  color: var(--in-text-primary);
+  direction: rtl;
+  text-align: center;
+  opacity: 0;
+  margin-bottom: var(--in-space-xl);
+}
+
+.in-opening__divider {
+  opacity: 0;
+  margin-bottom: var(--in-space-xl);
+}
+
+.in-opening__bride-name,
+.in-opening__groom-name {
+  font-family: var(--in-font-display);
+  font-weight: var(--in-weight-display);
+  font-size: var(--in-size-names);
+  letter-spacing: var(--in-tracking-display);
+  line-height: var(--in-leading-display);
+  color: var(--in-text-primary);
+  opacity: 0;
+}
+
+.in-opening__ampersand {
+  font-family: var(--in-font-heading);
+  font-weight: 400;
+  font-size: var(--in-size-section-title);
+  letter-spacing: var(--in-tracking-heading);
+  color: var(--in-gold);
+  opacity: 0;
+  margin: var(--in-space-xs) 0;
+}
+
+.in-opening__date {
+  font-family: var(--in-font-body);
+  font-weight: var(--in-weight-body);
+  font-size: var(--in-size-small);
+  letter-spacing: var(--in-tracking-label);
+  color: var(--in-text-secondary);
+  text-transform: uppercase;
+  opacity: 0;
+  margin-top: var(--in-space-lg);
+}
+
+/* Door panels — covers opening section */
+.in-door-wrap {
+  position: absolute;
+  inset: 0;
+  z-index: 20;
+  cursor: pointer;
+  background: var(--in-ivory);
+  overflow: hidden;
+}
+
+.in-door {
+  position: absolute;
+  top: 0;
+  width: 55%;
+  height: 100%;
+  background-size: 100% 100%;
+  background-repeat: no-repeat;
+  pointer-events: none;
+}
+
+.in-door--left {
+  left: 0;
+  transform-origin: left center;
+}
+
+.in-door--right {
+  right: 0;
+  transform: scaleX(-1);
+}
+
+.in-door-cta {
+  position: absolute;
+  bottom: 8%;
+  left: 50%;
+  transform: translateX(-50%);
+  z-index: 30;
+  font-family: var(--in-font-heading);
+  font-size: var(--in-size-small);
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: var(--in-gold);
+  pointer-events: none;
+  animation: in-cta-pulse 2s ease-in-out infinite;
+}
+
+@keyframes in-cta-pulse {
+  0%, 100% { opacity: 0.6; }
+  50% { opacity: 1; }
+}
+
+/* --- 6. Couple Section --- */
+.in-section--couple .in-text-body--light {
+  margin-bottom: var(--in-space-lg);
+}
+
+.in-couple__bride-name,
+.in-couple__groom-name {
+  font-family: var(--in-font-display);
+  font-weight: var(--in-weight-display);
+  font-size: clamp(1.5rem, 3.8vw, 2.25rem);
+  letter-spacing: var(--in-tracking-display);
+  line-height: var(--in-leading-display);
+  color: var(--in-text-primary);
+}
+
+.in-couple__connector {
+  font-family: var(--in-font-heading);
+  font-weight: 400;
+  font-size: var(--in-size-body);
+  letter-spacing: var(--in-tracking-heading);
+  color: var(--in-gold);
+  margin: var(--in-space-sm) 0;
+}
+
+/* --- 7. Dua Section --- */
+.in-dua__label {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: var(--in-space-sm);
+  margin-bottom: 40px;
+}
+
+.in-dua__verse {
+  font-family: var(--in-font-arabic);
+  font-weight: var(--in-weight-arabic);
+  font-size: var(--in-size-arabic-verse);
+  letter-spacing: var(--in-tracking-arabic);
+  line-height: var(--in-leading-arabic);
+  color: var(--in-text-primary);
+  direction: rtl;
+  text-align: center;
+  margin-bottom: var(--in-space-xl);
+}
+
+.in-dua__translation {
+  font-family: var(--in-font-body);
+  font-weight: var(--in-weight-body-light);
+  font-size: var(--in-size-body);
+  letter-spacing: var(--in-tracking-body);
+  line-height: var(--in-leading-body);
+  color: var(--in-text-secondary);
+  font-style: italic;
+  max-width: 340px;
+  margin: 0 auto var(--in-space-md);
+}
+
+.in-dua__source {
+  font-family: var(--in-font-body);
+  font-weight: var(--in-weight-body);
+  font-size: var(--in-size-small);
+  letter-spacing: 0.02em;
+  color: var(--in-text-secondary);
+  margin-bottom: var(--in-space-xl);
+}
+
+/* --- 8. Celebration Cards --- */
+.in-celebration-card {
+  background: var(--in-cream-bright);
+  border: 1px solid var(--in-gold-light);
+  border-radius: var(--in-radius-md);
+  box-shadow: var(--in-shadow-raised);
+  padding: 40px 28px;
+  max-width: 380px;
+  margin: 0 auto;
+  position: relative;
+  overflow: visible;
+}
+
+.in-celebration-card--nikah {
+  border-color: var(--in-gold);
+}
+
+.in-celebration-card__name {
+  font-family: var(--in-font-heading);
+  font-weight: var(--in-weight-heading);
+  font-size: var(--in-size-subtitle);
+  letter-spacing: var(--in-tracking-heading);
+  line-height: var(--in-leading-heading);
+  color: var(--in-text-primary);
+  margin-bottom: var(--in-space-md);
+}
+
+.in-celebration-card__divider {
+  margin-bottom: 20px;
+}
+
+.in-celebration-card__date {
+  font-family: var(--in-font-body);
+  font-weight: var(--in-weight-body);
+  font-size: var(--in-size-body);
+  letter-spacing: var(--in-tracking-body);
+  color: var(--in-text-primary);
+  margin-bottom: 6px;
+}
+
+.in-celebration-card__time {
+  font-family: var(--in-font-body);
+  font-weight: var(--in-weight-body-light);
+  font-size: var(--in-size-body);
+  letter-spacing: var(--in-tracking-body);
+  color: var(--in-text-secondary);
+  margin-bottom: var(--in-space-md);
+}
+
+.in-celebration-card__venue {
+  font-family: var(--in-font-body);
+  font-weight: var(--in-weight-body);
+  font-size: var(--in-size-body);
+  letter-spacing: var(--in-tracking-body);
+  color: var(--in-text-primary);
+  margin-bottom: var(--in-space-2xs);
+}
+
+.in-celebration-card__address {
+  font-family: var(--in-font-body);
+  font-weight: var(--in-weight-body-light);
+  font-size: var(--in-size-small);
+  letter-spacing: var(--in-tracking-body);
+  color: var(--in-text-secondary);
+}
+
+.in-celebration-card__desc {
+  font-family: var(--in-font-body);
+  font-weight: var(--in-weight-body-light);
+  font-size: var(--in-size-small);
+  color: var(--in-text-secondary);
+  font-style: italic;
+  margin-top: var(--in-space-sm);
+}
+
+/* Card corner ornaments */
+.in-floral-corner {
+  position: absolute;
+  width: clamp(80px, 18vw, 120px);
+  height: auto;
+  pointer-events: none;
+  opacity: 0.25;
+  z-index: 0;
+  animation: in-ornament-breathe 16s ease-in-out infinite;
+  transform-origin: center center;
+}
+
+.in-floral-corner--tl {
+  top: -8px;
+  left: -8px;
+}
+
+.in-floral-corner--tr {
+  top: -8px;
+  right: -8px;
+  transform: scaleX(-1);
+}
+
+.in-floral-corner--bl {
+  bottom: -8px;
+  left: -8px;
+  transform: scaleY(-1);
+}
+
+.in-floral-corner--br {
+  bottom: -8px;
+  right: -8px;
+  transform: scale(-1, -1);
+}
+
+/* Diamond separator between cards */
+.in-card-separator {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  height: 32px;
+  margin: var(--in-space-md) 0;
+}
+
+/* --- 9. Countdown --- */
+.in-countdown {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: var(--in-space-md);
+  max-width: 360px;
+  margin: 0 auto;
+}
+
+.in-countdown__unit {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  flex: 1;
+  max-width: 80px;
+}
+
+.in-countdown__number {
+  font-family: var(--in-font-display);
+  font-weight: var(--in-weight-display);
+  font-size: clamp(2.5rem, 6vw, 3.5rem);
+  letter-spacing: 0.02em;
+  line-height: 1.1;
+  background: linear-gradient(180deg, #C9A84C 0%, #D5BD91 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
+.in-countdown__label {
+  font-family: var(--in-font-body);
+  font-weight: var(--in-weight-body);
+  font-size: var(--in-size-label);
+  letter-spacing: 0.1em;
+  line-height: var(--in-leading-label);
+  color: var(--in-text-secondary);
+  text-transform: uppercase;
+  margin-top: var(--in-space-2xs);
+}
+
+.in-countdown__target-date {
+  font-family: var(--in-font-body);
+  font-weight: var(--in-weight-body);
+  font-size: var(--in-size-body);
+  letter-spacing: var(--in-tracking-heading);
+  color: var(--in-text-primary);
+  margin-top: var(--in-space-xl);
+}
+
+/* --- 10. RSVP --- */
+.in-rsvp-card {
+  background: rgba(255, 253, 247, 0.85);
+  border: 1px solid var(--in-gold-light);
+  border-radius: var(--in-radius-md);
+  box-shadow: var(--in-shadow-deep);
+  padding: 40px 28px;
+  max-width: 400px;
+  margin: 0 auto;
+  position: relative;
+  backdrop-filter: blur(4px);
+  -webkit-backdrop-filter: blur(4px);
+}
+
+/* RSVP card corners — smaller */
+.in-rsvp-card .in-floral-corner {
+  width: clamp(60px, 14vw, 90px);
+  opacity: 0.2;
+}
+
+.in-rsvp-form {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+.in-field-group {
+  display: flex;
+  flex-direction: column;
+  text-align: left;
+}
+
+.in-field-label {
+  font-family: var(--in-font-body);
+  font-weight: var(--in-weight-body);
+  font-size: var(--in-size-small);
+  color: var(--in-text-secondary);
+  margin-bottom: var(--in-space-xs);
+}
+
+.in-input {
+  width: 100%;
+  padding: 12px 16px;
+  border: 1px solid var(--in-gold-light);
+  border-radius: var(--in-radius-sm);
+  background: var(--in-cream-bright);
+  font-family: var(--in-font-body);
+  font-size: var(--in-size-body);
+  font-weight: var(--in-weight-body);
+  color: var(--in-text-primary);
+  outline: none;
+  transition:
+    border-color var(--in-duration-fast) var(--in-ease-elegant),
+    box-shadow var(--in-duration-fast) var(--in-ease-elegant);
+  box-sizing: border-box;
+}
+
+.in-input:focus {
+  border-color: var(--in-gold);
+  box-shadow: 0 0 0 3px rgba(201, 168, 76, 0.12);
+}
+
+.in-input::placeholder {
+  color: rgba(107, 91, 78, 0.5);
+}
+
+.in-textarea {
+  resize: vertical;
+  min-height: 80px;
+}
+
+.in-textarea:focus {
+  box-shadow: 0 0 0 4px rgba(201, 168, 76, 0.10);
+}
+
+/* Toggle buttons */
+.in-toggle-group {
+  display: flex;
+}
+
+.in-toggle-option {
+  flex: 1;
+  padding: 12px 16px;
+  border: 1px solid var(--in-gold-light);
+  background: transparent;
+  font-family: var(--in-font-body);
+  font-size: var(--in-size-small);
+  font-weight: var(--in-weight-body);
+  color: var(--in-text-secondary);
+  cursor: pointer;
+  transition:
+    background-color 250ms var(--in-ease-elegant),
+    color 250ms var(--in-ease-elegant),
+    border-color 250ms var(--in-ease-elegant);
+  min-height: 44px;
+  text-align: center;
+}
+
+.in-toggle-option:first-child {
+  border-radius: var(--in-radius-sm) 0 0 var(--in-radius-sm);
+  border-right: none;
+}
+
+.in-toggle-option:last-child {
+  border-radius: 0 var(--in-radius-sm) var(--in-radius-sm) 0;
+}
+
+.in-toggle-option--selected {
+  background: var(--in-gold);
+  color: var(--in-cream-bright);
+  border-color: var(--in-gold);
+}
+
+.in-toggle-option:not(.in-toggle-option--selected):hover {
+  background-color: rgba(201, 168, 76, 0.06);
+}
+
+/* Submit button */
+.in-button {
+  display: inline-block;
+  padding: 14px 40px;
+  background: var(--in-gold);
+  color: var(--in-cream-bright);
+  font-family: var(--in-font-heading);
+  font-size: var(--in-size-subtitle);
+  font-weight: var(--in-weight-heading);
+  letter-spacing: 0.06em;
+  border: none;
+  border-radius: var(--in-radius-sm);
+  cursor: pointer;
+  transition:
+    background-color var(--in-duration-fast) var(--in-ease-elegant),
+    box-shadow var(--in-duration-fast) var(--in-ease-elegant),
+    transform 100ms var(--in-ease-elegant);
+  min-height: 48px;
+  min-width: 180px;
+}
+
+.in-button:hover {
+  background: #B8953F;
+  box-shadow: var(--in-shadow-gold-glow);
+}
+
+.in-button:active {
+  background: #A88535;
+  box-shadow: 0 0 12px rgba(201, 168, 76, 0.1);
+  transform: scale(0.98);
+}
+
+.in-button:focus-visible {
+  outline: 2px solid var(--in-gold);
+  outline-offset: 3px;
+  box-shadow: 0 0 0 5px rgba(201, 168, 76, 0.15);
+}
+
+/* --- 11. Closing Section --- */
+.in-closing__love {
+  font-family: var(--in-font-heading);
+  font-weight: var(--in-weight-heading);
+  font-size: var(--in-size-subtitle);
+  letter-spacing: var(--in-tracking-heading);
+  color: var(--in-text-secondary);
+  margin-bottom: 20px;
+}
+
+.in-closing__names {
+  font-family: var(--in-font-display);
+  font-weight: var(--in-weight-display);
+  font-size: clamp(1.375rem, 3.2vw, 1.75rem);
+  letter-spacing: var(--in-tracking-display);
+  line-height: var(--in-leading-display);
+  color: var(--in-text-primary);
+  margin-bottom: var(--in-space-lg);
+}
+
+.in-closing__message {
+  font-family: var(--in-font-body);
+  font-weight: var(--in-weight-body-light);
+  font-size: var(--in-size-body);
+  letter-spacing: var(--in-tracking-body);
+  color: var(--in-text-secondary);
+  margin-bottom: 20px;
+}
+
+.in-closing__hashtag {
+  font-family: var(--in-font-body);
+  font-weight: var(--in-weight-body);
+  font-size: var(--in-size-small);
+  letter-spacing: 0.02em;
+  color: var(--in-gold);
+}
+
+/* Footer */
+.in-footer {
+  font-family: var(--in-font-body);
+  font-weight: var(--in-weight-body-light);
+  font-size: var(--in-size-label);
+  letter-spacing: 0.02em;
+  color: var(--in-text-secondary);
+  opacity: 0.6;
+  margin-top: var(--in-space-3xl);
+  padding-bottom: var(--in-space-xl);
+  text-align: center;
+}
+
+/* --- 12. Vine Borders --- */
+.in-vine-border {
+  position: absolute;
+  top: 50%;
+  transform: translateY(-50%);
+  width: clamp(40px, 8vw, 60px);
+  height: auto;
+  pointer-events: none;
+  z-index: 2;
+  -webkit-mask-image: linear-gradient(180deg, transparent 0%, black 15%, black 85%, transparent 100%);
+  mask-image: linear-gradient(180deg, transparent 0%, black 15%, black 85%, transparent 100%);
+}
+
+.in-vine-border img {
+  width: 100%;
+  height: auto;
+  display: block;
+  animation: in-ornament-breathe 20s ease-in-out infinite;
+  transform-origin: center center;
+}
+
+.in-vine-border--left {
+  left: 0;
+  opacity: var(--in-opacity-vine-border);
+}
+
+.in-vine-border--right {
+  right: 0;
+  opacity: var(--in-opacity-vine-border);
+}
+
+.in-vine-border--right img {
+  transform: scaleX(-1);
+}
+
+/* Section 7 vine borders: quieter */
+.in-section--closing .in-vine-border {
+  opacity: 0.4;
+}
+
+/* Hide vine borders on small screens */
+@media (max-width: 767px) {
+  .in-vine-border {
+    display: none;
+  }
+}
+
+/* --- 13. Floating Petals --- */
+.in-petal {
+  position: absolute;
+  pointer-events: none;
+  z-index: 5;
+  will-change: transform, opacity;
+  opacity: 0;
+}
+
+/* Ambient layer container */
+.in-ambient-layer {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  overflow: hidden;
+  z-index: 5;
+}
+
+/* --- 14. Dividers --- */
+.in-divider {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+/* Gold rule (simple) */
+.in-gold-rule {
+  height: 1px;
+  background: linear-gradient(
+    90deg,
+    rgba(201, 168, 76, 0) 0%,
+    rgba(201, 168, 76, 0.6) 20%,
+    var(--in-gold) 50%,
+    rgba(201, 168, 76, 0.6) 80%,
+    rgba(201, 168, 76, 0) 100%
+  );
+  max-width: 280px;
+  width: 100%;
+  margin: 0 auto;
+  animation: in-gold-shimmer 8s ease-in-out infinite;
+}
+
+/* --- 15. CSS Ambient Animations --- */
+@keyframes in-warm-light {
+  0%   { filter: brightness(1.0); }
+  50%  { filter: brightness(1.02); }
+  100% { filter: brightness(1.0); }
+}
+
+@keyframes in-gold-shimmer {
+  0%   { opacity: 1; }
+  40%  { opacity: 0.85; }
+  60%  { opacity: 1; }
+  100% { opacity: 1; }
+}
+
+@keyframes in-ornament-breathe {
+  0%   { transform: scale(1.0); }
+  50%  { transform: scale(1.008); }
+  100% { transform: scale(1.0); }
+}
+
+/* Mirror variants keep their base transform */
+.in-floral-corner--tr {
+  animation-name: in-ornament-breathe-tr;
+}
+.in-floral-corner--bl {
+  animation-name: in-ornament-breathe-bl;
+}
+.in-floral-corner--br {
+  animation-name: in-ornament-breathe-br;
+}
+
+@keyframes in-ornament-breathe-tr {
+  0%   { transform: scaleX(-1) scale(1.0); }
+  50%  { transform: scaleX(-1) scale(1.008); }
+  100% { transform: scaleX(-1) scale(1.0); }
+}
+
+@keyframes in-ornament-breathe-bl {
+  0%   { transform: scaleY(-1) scale(1.0); }
+  50%  { transform: scaleY(-1) scale(1.008); }
+  100% { transform: scaleY(-1) scale(1.0); }
+}
+
+@keyframes in-ornament-breathe-br {
+  0%   { transform: scale(-1, -1) scale(1.0); }
+  50%  { transform: scale(-1, -1) scale(1.008); }
+  100% { transform: scale(-1, -1) scale(1.0); }
+}
+
+@keyframes in-jali-drift {
+  0%   { background-position: 0px 0px; }
+  100% { background-position: 200px 200px; }
+}
+
+/* Warm light applied to bg layers */
+.in-section--couple .in-section__bg,
+.in-section--dua .in-section__bg,
+.in-section--closing .in-section__bg {
+  animation: in-warm-light 12s ease-in-out infinite;
+}
+
+/* --- 16. Desktop Card Hover --- */
+@media (min-width: 768px) and (hover: hover) {
+  .in-celebration-card {
+    transition:
+      box-shadow 300ms var(--in-ease-elegant),
+      transform 300ms var(--in-ease-elegant);
+  }
+
+  .in-celebration-card:hover {
+    box-shadow: var(--in-shadow-deep);
+    transform: translateY(-2px);
+  }
+}
+
+/* --- 17. Reduced Motion --- */
+@media (prefers-reduced-motion: reduce) {
+  .in-page *,
+  .in-page *::before,
+  .in-page *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+  }
+
+  .in-petal,
+  .in-ambient-layer {
+    display: none !important;
+  }
+
+  .in-door-wrap {
+    display: none !important;
+  }
+
+  .in-opening__bismillah,
+  .in-opening__divider,
+  .in-opening__bride-name,
+  .in-opening__ampersand,
+  .in-opening__groom-name,
+  .in-opening__date,
+  .in-section__content,
+  .in-reveal-child,
+  .in-celebration-card,
+  .in-rsvp-card,
+  .in-vine-border,
+  .in-divider {
+    opacity: 1 !important;
+  }
+}
+
+/* --- 18. RSVP Success State --- */
+.in-rsvp-success {
+  text-align: center;
+  padding: var(--in-space-2xl) 0;
+}
+
+.in-rsvp-success__title {
+  font-family: var(--in-font-heading);
+  font-weight: var(--in-weight-heading);
+  font-size: var(--in-size-section-title);
+  color: var(--in-text-primary);
+  margin-bottom: var(--in-space-xs);
+}
+
+.in-rsvp-success__message {
+  font-family: var(--in-font-body);
+  font-weight: var(--in-weight-body-light);
+  font-size: var(--in-size-body);
+  color: var(--in-text-secondary);
+}

@@ -1,0 +1,112 @@
+/* Celebrations — timeline of events with map and calendar actions. */
+
+.gw-celebrations {
+  isolation: isolate;
+  background: var(--gw-bg);
+}
+.gw-celebrations::before {
+  content: '';
+  position: absolute;
+  z-index: -1;
+  top: -170px;
+  right: 0;
+  left: 0;
+  height: 520px;
+  background: url('../../assets/generated/celebrations-arcade.jpg') top center / 100% auto no-repeat;
+  opacity: 0.28;
+  pointer-events: none;
+  -webkit-mask-image: linear-gradient(to bottom, #000 0%, #000 58%, transparent 100%);
+  mask-image: linear-gradient(to bottom, #000 0%, #000 58%, transparent 100%);
+}
+.gw-host.has-media .gw-celebrations {
+  background: transparent;
+}
+.gw-celebrations__head {
+  margin-bottom: 56px;
+}
+.gw-timeline {
+  position: relative;
+  width: 100%;
+  max-width: 420px;
+}
+.gw-timeline__line {
+  position: absolute;
+  top: 60px;
+  bottom: 60px;
+  left: 45px;
+  width: 1px;
+  background: linear-gradient(to bottom, transparent, var(--gw-gold) 8%, var(--gw-gold) 92%, transparent);
+  transform-origin: top;
+}
+.gw-timeline .gw-events {
+  gap: 64px;
+}
+.gw-timeline .gw-event__body::before {
+  content: '';
+  position: absolute;
+  top: -2px;
+  right: -2px;
+  width: 48px;
+  height: 48px;
+  background-position: center;
+  background-repeat: no-repeat;
+  background-size: contain;
+  pointer-events: none;
+}
+.gw-timeline .gw-event[data-event-id='mehendi'] .gw-event__body::before {
+  background-image: url('../../assets/generated/event-mehendi.png');
+}
+.gw-timeline .gw-event[data-event-id='haldi'] .gw-event__body::before {
+  background-image: url('../../assets/generated/event-haldi.png');
+}
+.gw-timeline .gw-event[data-event-id='sangeet'] .gw-event__body::before {
+  background-image: url('../../assets/generated/event-sangeet.png');
+}
+.gw-timeline .gw-event[data-event-id='wedding'] .gw-event__body::before {
+  background-image: url('../../assets/generated/event-wedding.png');
+}
+.gw-timeline .gw-event[data-event-id='reception'] .gw-event__body::before {
+  background-image: url('../../assets/generated/event-reception.png');
+}
+.gw-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px 22px;
+  margin-top: 18px;
+}
+.gw-pill {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 6px 2px 5px;
+  border: 0;
+  border-bottom: 1px solid var(--gw-gold-dim);
+  border-radius: 0;
+  background: transparent;
+  color: var(--gw-text-soft);
+  font: inherit;
+  font-size: 11px;
+  font-weight: 400;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  text-decoration: none;
+  cursor: pointer;
+  transition: background 0.3s, border-color 0.3s, color 0.3s;
+}
+.gw-pill:hover {
+  border-bottom-color: var(--gw-gold-bright);
+  color: var(--gw-gold-bright);
+}
+.gw-pill:focus-visible {
+  outline: 2px solid var(--gw-gold-bright);
+  outline-offset: 2px;
+}
+.gw-pill svg {
+  width: 12px;
+  height: 12px;
+  fill: none;
+  stroke: currentColor;
+  stroke-width: 1.5;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+}

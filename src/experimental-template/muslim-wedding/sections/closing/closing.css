@@ -1,0 +1,78 @@
+/* Closing — the carved arch at golden hour (generated, 9:16, pinned to the bottom, top edge masked into
+   the RSVP). The rosette, dua and note sit in the plain parchment above the picture; the names and date sit
+   inside the arch's plain interior (about 18%-55% of the picture). The section is taller than the picture
+   so no text reaches the lanterns, pillars or garlands. */
+
+.mw-closing {
+  min-height: calc(100vw * 16 / 9 + 272px);
+  justify-content: flex-start;
+  padding: 72px 24px 0;
+  overflow: hidden;
+  background: transparent;
+}
+@media (min-width: 480px) {
+  .mw-closing { min-height: 965px; }
+}
+.mw-host[data-section='closing'] { background: linear-gradient(to bottom, var(--mw-bg-deep), #f3e7d5 50%, #f3e7d5); }
+.mw-host.has-media[data-section='closing'] > .mw-media--background {
+  inset: auto 0 0 0;
+  height: auto;
+  aspect-ratio: 9 / 16;
+  -webkit-mask-image: linear-gradient(to bottom, transparent 0, #000 22%);
+  mask-image: linear-gradient(to bottom, transparent 0, #000 22%);
+}
+.mw-closing .mw-section__inner {
+  position: relative;
+  z-index: 2;
+  text-shadow: 0 0 16px rgba(246, 240, 230, 0.9), 0 0 4px rgba(246, 240, 230, 0.7);
+}
+.mw-closing__lotus {
+  width: 64px;
+  height: 64px;
+  margin: 0 auto 26px;
+  overflow: visible;
+}
+.mw-closing__lotus .mw-draw {
+  stroke: var(--mw-gold-dim);
+}
+.mw-closing__blessing {
+  margin: 0 0 20px;
+  font-family: var(--mw-font-display);
+  font-style: italic;
+  font-weight: 400;
+  font-size: clamp(22px, 6.4vw, 28px);
+  line-height: 1.42;
+  color: var(--mw-text);
+}
+.mw-closing__note {
+  margin-bottom: 94px;
+  font-size: 14px;
+  line-height: 1.7;
+  color: var(--mw-text-soft);
+}
+.mw-closing__sign {
+  margin: 0;
+  font-family: var(--mw-font-display);
+  font-weight: 500;
+  font-style: italic;
+  font-size: 42px;
+  line-height: 1.1;
+  color: var(--mw-rose);
+}
+.mw-closing__date {
+  margin: 14px 0 0;
+  font-size: 11px;
+  font-weight: 500;
+  letter-spacing: 0.4em;
+  text-indent: 0.4em;
+  text-transform: uppercase;
+  color: var(--mw-text-muted);
+}
+.mw-closing__foot {
+  margin: 10px 0 0;
+  font-size: 10px;
+  letter-spacing: 0.3em;
+  text-indent: 0.3em;
+  text-transform: uppercase;
+  color: var(--mw-text-muted);
+}

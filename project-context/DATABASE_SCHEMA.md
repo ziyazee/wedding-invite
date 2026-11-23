@@ -180,3 +180,176 @@ The `orders.form_data` column stores an `InvitationData` object:
 ## Realtime
 
 The `orders` table is published to `supabase_realtime`. The admin dashboard subscribes to `postgres_changes` on `public.orders` for live updates.
+
+---
+
+## Additional Tables (Post-October 2024 Migrations)
+
+### `company_pdf_uploads` (`202611010001`)
+
+Logs PDF uploads per company for admin activity tracking.
+
+| Column | Type |
+|--------|------|
+| `id` | bigint PK |
+| `company_id` | bigint FK → companies |
+| `uploaded_by` | uuid FK → auth.users |
+| `filename` | text NOT NULL |
+| `created_at` | timestamptz |
+
+**RLS:** Clients insert own; admins select all.
+
+### `company_template_access` (`202611030003`)
+
+Restricts which templates a company can offer (when `catalog_restricted = true`).
+
+| Column | Type |
+|--------|------|
+| `company_id` | bigint FK → companies |
+| `template_id` | integer FK → invitation_templates |
+
+PK: `(company_id, template_id)`. **RLS:** Members read own; admins read all.
+
+### `store_onboarding_requests` (`202611030003`)
+
+One-time onboarding form submitted by admin for a new store.
+
+| Column | Type |
+|--------|------|
+| `id` | uuid PK |
+| `company_id` | bigint FK → companies (unique) |
+| `created_by` | uuid FK → auth.users |
+| `details` | jsonb |
+| `templates` | jsonb |
+| `logo_uploaded` | boolean |
+| `banner_uploaded` | boolean |
+| `completed_at` | timestamptz nullable |
+| `created_at` | timestamptz |
+
+**RLS:** Admins read only. Writes via service_role.
+
+### `music_tracks` (`202611070006`)
+
+Curated music catalogue (global) and per-company uploaded tracks.
+
+| Column | Type | Notes |
+|--------|------|-------|
+| `id` | uuid PK |
+| `name` | text NOT NULL | 1–120 chars, trimmed |
+| `category` | text | `Classic`, `Hindu`, `Muslim` |
+| `storage_path` | text unique nullable | `tracks/{id}.mp3` (global) or `companies/{company_id}/{id}.mp3` |
+| `local_path` | text unique nullable | `/audios/…` (bundled tracks) |
+| `company_id` | bigint nullable FK → companies | NULL = global; non-NULL = store-owned |
+| `created_at` | timestamptz |
+
+**Constraint:** Exactly one of `storage_path` / `local_path` must be set.
+
+**RLS:** Anon reads global (company_id IS NULL); authenticated reads global + own company. Admins read all.
+
+**Storage bucket:** `invitation-music` (public, 20 MB limit, MP3 only).
+
+### `company_music_tags` (`202611100003`)
+
+Per-company tag labels for organizing music tracks.
+
+| Column | Type |
+|--------|------|
+| `id` | uuid PK |
+| `company_id` | bigint FK → companies |
+| `name` | text NOT NULL | 1–40 chars, trimmed |
+| `created_at` | timestamptz |
+
+Unique index: `(company_id, lower(name))`. **RLS:** Members read own.
+
+### `couple_orders` (`202611100001`)
+
+Parent record grouping one or more invitation variants for a couple.
+
+| Column | Type | Notes |
+|--------|------|-------|
+| `id` | bigint PK |
+| `legacy_order_id` | bigint FK → orders unique nullable | Links to migrated original order |
+| `company_id` | bigint FK → companies |
+| `created_by` | uuid FK → auth.users |
+| `groom_name` | text NOT NULL |
+| `bride_name` | text NOT NULL |
+| `bride_first` | boolean default false |
+| `phone_number` | text NOT NULL |
+| `status` | text | CREATED / IN_PROGRESS / READY / REJECTED |
+| `price` | numeric nullable |
+| `management_id` | text NOT NULL unique | Couple's shared RSVP management link |
+| `shared_form_data` | jsonb nullable | Shared overrides across invitations |
+| `created_at` | timestamptz |
+| `updated_at` | timestamptz |
+
+### `invitations` (`202611100001`)
+
+Individual invitation variant within a couple order.
+
+| Column | Type | Notes |
+|--------|------|-------|
+| `id` | bigint PK |
+| `couple_order_id` | bigint FK → couple_orders |
+| `legacy_order_id` | bigint FK → orders unique nullable |
+| `template_code` | text NOT NULL |
+| `form_data` | jsonb NOT NULL |
+| `invitation_name` | text default 'Wedding' | e.g. "Nikah", "Reception" |
+| `selected_event_ids` | text[] default '{}' | Which events from couple's pool |
+| `uses_snapshot` | boolean default false |
+| `status` | text | CREATED / IN_PROGRESS / READY / REJECTED |
+| `published_path` | text unique nullable |
+| `published_url` | text nullable |
+| `management_id` | text unique nullable |
+| `published_at` | timestamptz nullable |
+| `expires_at` | timestamptz nullable |
+| `rejection_reason` | text nullable |
+| `admin_notes` | text nullable |
+| `price` | numeric nullable |
+
+### `venue_images` (`202611100001`)
+
+Per-company library of hall/venue photos (used as footer illustrations in Embroidered Garden).
+
+**Storage bucket:** `venue-images` (private, 10 MB, webp/jpeg/png). Path format: `{company_id}/filename`.
+
+No separate table — references are via storage bucket with RLS scoped to company folder.
+
+---
+
+## Companies Table Additions (Post-October 2024)
+
+Additional columns added to `companies` via migrations:
+
+| Column | Migration | Purpose |
+|--------|-----------|---------|
+| `is_active` | `202611010001` | Enable/disable company |
+| `branding_base_url` | `202611030003` | CDN base for store branding assets |
+| `storefront_enabled` | `202611030003` | Toggle public store page |
+| `catalog_restricted` | `202611030003` | If true, only `company_template_access` rows are shown |
+
+---
+
+## Additional RPC Functions (Post-October 2024)
+
+| Function | Migration | Access | Purpose |
+|----------|-----------|--------|---------|
+| `admin_company_activity(start, end)` | `202611010001` | Admin | Monthly company activity report |
+| `store_slug_reserved(slug)` | `202611030003` | — | Check if store slug is taken |
+| `publish_company_order_with_candidates(order_id, paths[])` | `202611030005` | Authenticated | Publish order, path-based URL format |
+| `update_company_order(order_id, form_data, phone)` | `202611030006` | Authenticated | Update CREATED order (client) |
+| `reserve_company_order_path(order_id, paths[])` | `202611070002` | Authenticated | Reserve URL path pre-publish |
+| `register_music_track(id, name, category)` | `202611070006` | Admin/service_role | Add global music track |
+| `register_company_music_track(…)` | `202611100002` | Authenticated | Add per-company music track |
+| `create_company_music_tag(name)` | `202611100003` | Authenticated | Create music tag for own company |
+| `configure_order_invitations(order_id, plans)` | `202611100003` | Authenticated | Set named invitation variants (1–10) |
+| `publish_couple_order_with_candidates(order_id, candidates, expires_at, admin_notes)` | `202611110001` | Admin | Publish couple order invitations |
+
+---
+
+## Storage Buckets
+
+| Bucket | Public | Max Size | Types | Migration |
+|--------|--------|----------|-------|-----------|
+| `invitation-music` | Yes | 20 MB | MP3 | `202611070006` |
+| `store-branding` | Yes | 5 MB | PNG | `202611030003` |
+| `venue-images` | No | 10 MB | webp/jpeg/png | `202611100001` |

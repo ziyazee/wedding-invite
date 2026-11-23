@@ -1,0 +1,260 @@
+/* Celebrations — pulli-kolam timeline, gopuram-tier date plaques, korvai event cards. */
+
+.tm-celebrations {
+  position: relative;
+  overflow: hidden;
+  padding-top: 130px;
+  background: var(--tm-bg);
+}
+.tm-celebrations__head {
+  position: relative;
+  z-index: 1;
+  margin-bottom: 40px;
+}
+.tm-timeline {
+  position: relative;
+  z-index: 1;
+  width: 100%;
+  max-width: 420px;
+}
+/* a thread of pulli dots that grows with the scroll */
+.tm-timeline__line {
+  position: absolute;
+  top: 70px;
+  bottom: 70px;
+  left: 32px;
+  width: 10px;
+  margin-left: -5px;
+  background:
+    linear-gradient(var(--tm-gold-dim), var(--tm-gold-dim)) 50% 0 / 1px 100% no-repeat,
+    radial-gradient(circle at 50% 50%, var(--tm-gold) 0 2px, transparent 2.6px) 50% 0 / 10px 20px repeat-y;
+  transform-origin: top;
+}
+.tm-events {
+  display: flex;
+  flex-direction: column;
+  gap: 40px;
+}
+.tm-event {
+  position: relative;
+  display: grid;
+  grid-template-columns: 64px 1fr;
+  gap: 12px;
+  text-align: left;
+}
+
+/* ── Date plaque: a gopuram-tier crown over an arakku face ── */
+.tm-plaque {
+  position: relative;
+  z-index: 1;
+  margin-top: 96px;
+  width: 64px;
+  height: 76px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: flex-end;
+  padding-bottom: 12px;
+  filter: drop-shadow(0 4px 6px rgba(74, 24, 21, 0.28));
+}
+.tm-plaque svg {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+}
+.tm-plaque__outer {
+  fill: #8e1b1b;
+  stroke: #c9a24b;
+  stroke-width: 1.8;
+  stroke-linejoin: miter;
+}
+.tm-plaque__inner {
+  fill: none;
+  stroke: #e4cfa3;
+  stroke-width: 0.7;
+  opacity: 0.8;
+}
+.tm-plaque__kalasam {
+  fill: #c9a24b;
+}
+.tm-plaque__day {
+  position: relative;
+  font-family: var(--tm-font-display);
+  font-weight: 600;
+  font-size: 25px;
+  line-height: 1;
+  color: #f7f1e3;
+}
+.tm-plaque__month {
+  position: relative;
+  margin-top: 3px;
+  font-size: 8px;
+  font-weight: 500;
+  letter-spacing: 0.22em;
+  text-indent: 0.22em;
+  color: #e4cfa3;
+}
+
+/* ── Event card: grows with its content; mavilai toran on the top edge, blooms in the lower corners ── */
+.tm-event__card {
+  position: relative;
+  min-width: 0;
+  padding: 80px 18px 82px;
+  border: 1px solid rgba(158, 111, 36, 0.5);
+  border-radius: 6px;
+  background: linear-gradient(180deg, #faf4e6 0%, #f4ebd6 100%);
+  box-shadow:
+    inset 0 0 0 5px #faf4e6,
+    inset 0 0 0 6px rgba(158, 111, 36, 0.28),
+    0 12px 26px -18px rgba(74, 24, 21, 0.4);
+}
+/* the korvai band along the foot of the card */
+.tm-event__card::after {
+  content: '';
+  position: absolute;
+  left: 18px;
+  right: 18px;
+  bottom: 16px;
+  height: 14px;
+  background: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='20' height='14' viewBox='0 0 20 14'%3E%3Crect width='20' height='14' fill='%238e1b1b'/%3E%3Cpath d='M1 14 L10 3 L19 14Z' fill='%23c9a24b'/%3E%3Cpath d='M5 14 L10 8 L15 14Z' fill='%238e1b1b'/%3E%3Crect y='0' width='20' height='1.4' fill='%23c9a24b'/%3E%3C/svg%3E") repeat-x center / 20px 14px;
+  opacity: 0.92;
+  pointer-events: none;
+}
+.tm-event__toran {
+  position: absolute;
+  top: -6px;
+  left: 6px;
+  z-index: 2;
+  width: calc(100% - 12px);
+  height: auto;
+  pointer-events: none;
+}
+.tm-event__bloom {
+  position: absolute;
+  bottom: -6px;
+  z-index: 2;
+  width: 76px;
+  height: auto;
+  pointer-events: none;
+}
+.tm-event__bloom--r {
+  right: -6px;
+  transform: scale(-1, -1);
+}
+.tm-event__bloom--l {
+  left: -6px;
+  transform: scaleY(-1);
+}
+.tm-event__body {
+  position: relative;
+  z-index: 1;
+}
+
+/* ── Event body ── */
+.tm-event__top {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 12px;
+}
+.tm-event__title {
+  margin: 0;
+  font-family: var(--tm-font-display);
+  font-weight: 500;
+  font-size: 24px;
+  line-height: 1.15;
+  color: var(--tm-text);
+}
+.tm-event__motif {
+  flex: none;
+  width: 30px;
+  height: 30px;
+  margin-top: 2px;
+  color: var(--tm-gold);
+}
+.tm-event__motif svg {
+  width: 100%;
+  height: 100%;
+  fill: none;
+  stroke: currentColor;
+  stroke-width: 1.3;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+}
+.tm-event__when {
+  margin: 8px 0 0;
+  font-size: 13px;
+  letter-spacing: 0.03em;
+  color: var(--tm-gold);
+}
+.tm-event__date,
+.tm-event__time {
+  display: block;
+}
+.tm-event__time {
+  margin-top: 2px;
+  font-weight: 500;
+  color: var(--tm-ember);
+}
+.tm-event__venue {
+  margin: 12px 0 0;
+  font-family: var(--tm-font-display);
+  font-size: 19px;
+  color: var(--tm-text-soft);
+}
+.tm-event__address {
+  margin: 2px 0 0;
+  font-size: 13px;
+  line-height: 1.5;
+  color: var(--tm-text-muted);
+}
+.tm-event__desc {
+  margin: 10px 0 0;
+  font-size: 13px;
+  line-height: 1.6;
+  color: var(--tm-text-muted);
+}
+
+.tm-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin-top: 16px;
+}
+.tm-pill {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 8px 12px;
+  border: 1px solid var(--tm-line-strong);
+  border-radius: 999px;
+  background: transparent;
+  color: var(--tm-text-soft);
+  font: inherit;
+  font-size: 11px;
+  font-weight: 400;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  text-decoration: none;
+  cursor: pointer;
+  transition: background 0.3s, border-color 0.3s, color 0.3s;
+}
+.tm-pill:hover {
+  background: rgba(158, 111, 36, 0.12);
+  border-color: var(--tm-gold);
+  color: var(--tm-gold);
+}
+.tm-pill:focus-visible {
+  outline: 2px solid var(--tm-gold);
+  outline-offset: 2px;
+}
+.tm-pill svg {
+  width: 12px;
+  height: 12px;
+  fill: none;
+  stroke: currentColor;
+  stroke-width: 1.5;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+}

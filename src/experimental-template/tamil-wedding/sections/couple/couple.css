@@ -1,0 +1,190 @@
+/* Couple — mavilai-and-malli toran, Pillaiyar Suzhi, two Kanchi-korvai family cards joined by a turmeric thread. */
+
+.tm-couple {
+  position: relative;
+  padding-top: 132px;
+  overflow: hidden;
+  background: var(--tm-bg);
+}
+.tm-couple__valance {
+  position: absolute;
+  top: 0;
+  left: 50%;
+  z-index: 0;
+  width: 100%;
+  max-width: 520px;
+  height: auto;
+  transform: translateX(-50%);
+  pointer-events: none;
+}
+.tm-couple .tm-section__inner {
+  position: relative;
+  z-index: 1;
+}
+/* once, top-centre, above the names; never repeated, cropped or animated away */
+.tm-couple__suzhi {
+  margin: 0 0 10px;
+  font-family: var(--tm-font-tamil);
+  font-weight: 600;
+  font-size: 40px;
+  line-height: 1.2;
+  color: var(--tm-gold);
+}
+.tm-couple .tm-couple__tamil {
+  margin: 0 0 14px;
+  font-family: var(--tm-font-tamil);
+  font-size: 13px;
+  font-weight: 400;
+  letter-spacing: 0.04em;
+  text-transform: none;
+  color: var(--tm-text-muted);
+}
+.tm-couple__heading {
+  margin: 0 0 12px;
+  font-family: var(--tm-font-display);
+  font-style: italic;
+  font-weight: 400;
+  font-size: 22px;
+  line-height: 1.5;
+  color: var(--tm-text-soft);
+}
+
+/* ── Family card: a flexible panel. The Chettinad lintel crest perches on the top edge, annapakshi
+      corners hold the corners, a korvai band of temple teeth runs under the crest and along the foot. ── */
+.tm-family {
+  position: relative;
+  margin-top: 100px;
+  padding: 98px 28px 78px;
+  border: 1px solid rgba(158, 111, 36, 0.5);
+  border-radius: 6px;
+  background: linear-gradient(180deg, #faf4e6 0%, #f4ebd6 100%);
+  box-shadow:
+    inset 0 0 0 6px #faf4e6,
+    inset 0 0 0 7px rgba(158, 111, 36, 0.3),
+    0 14px 28px -18px rgba(74, 24, 21, 0.4);
+}
+.tm-family::before,
+.tm-family::after {
+  content: '';
+  position: absolute;
+  left: 22px;
+  right: 22px;
+  height: 14px;
+  background: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='20' height='14' viewBox='0 0 20 14'%3E%3Crect width='20' height='14' fill='%238e1b1b'/%3E%3Cpath d='M1 14 L10 3 L19 14Z' fill='%23c9a24b'/%3E%3Cpath d='M5 14 L10 8 L15 14Z' fill='%238e1b1b'/%3E%3Crect y='0' width='20' height='1.4' fill='%23c9a24b'/%3E%3C/svg%3E") repeat-x center / 20px 14px;
+  opacity: 0.92;
+  pointer-events: none;
+}
+.tm-family::before {
+  top: 48px;
+}
+.tm-family::after {
+  bottom: 20px;
+}
+.tm-family__crest {
+  position: absolute;
+  top: -92px;
+  left: 50%;
+  z-index: 2;
+  width: 190px;
+  height: auto;
+  transform: translateX(-50%);
+  pointer-events: none;
+}
+.tm-family__corner {
+  position: absolute;
+  z-index: 1;
+  width: 70px;
+  height: auto;
+  pointer-events: none;
+}
+.tm-family__corner--tl {
+  top: -8px;
+  left: -8px;
+}
+.tm-family__corner--tr {
+  top: -8px;
+  right: -8px;
+  transform: scaleX(-1);
+}
+.tm-family__corner--bl {
+  bottom: -8px;
+  left: -8px;
+  transform: scaleY(-1);
+}
+.tm-family__corner--br {
+  right: -8px;
+  bottom: -8px;
+  transform: scale(-1, -1);
+}
+.tm-family__body {
+  position: relative;
+  z-index: 3;
+}
+.tm-family__label {
+  margin: 0 0 10px;
+  font-size: 10px;
+  font-weight: 500;
+  letter-spacing: 0.3em;
+  text-indent: 0.3em;
+  text-transform: uppercase;
+  color: var(--tm-gold);
+}
+.tm-family__parent {
+  margin: 0;
+  font-family: var(--tm-font-display);
+  font-size: 20px;
+  line-height: 1.35;
+  color: var(--tm-text-soft);
+}
+.tm-family__amp {
+  margin: 0;
+  font-family: var(--tm-font-display);
+  font-style: italic;
+  font-size: 16px;
+  color: var(--tm-ember);
+}
+.tm-family__rule {
+  display: block;
+  width: 120px;
+  height: 1px;
+  margin: 20px auto 0;
+  position: relative;
+  background: linear-gradient(90deg, transparent, var(--tm-gold-dim), transparent);
+}
+.tm-family__rule::after {
+  content: '';
+  position: absolute;
+  top: -3px;
+  left: calc(50% - 3px);
+  width: 6px;
+  height: 6px;
+  background: var(--tm-ember);
+  transform: rotate(45deg);
+}
+.tm-family__name {
+  margin: 18px 0 0;
+  font-family: var(--tm-font-display);
+  font-weight: 500;
+  font-size: clamp(26px, 7.4vw, 32px);
+  line-height: 1.12;
+  color: var(--tm-text);
+}
+
+/* ── Manjal kayiru: the thread ties the groom's card to the crest of the bride's ── */
+.tm-couple__thread {
+  display: block;
+  width: 54px;
+  height: 58px;
+  margin: 0 auto 92px;
+  overflow: visible;
+}
+.tm-couple__thread + .tm-family {
+  margin-top: 0;
+}
+.tm-couple__thread .tm-draw {
+  stroke-width: 1.4;
+}
+.tm-draw--manjal {
+  stroke: var(--tm-lamp);
+  stroke-width: 2;
+}

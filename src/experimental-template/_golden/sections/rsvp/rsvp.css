@@ -1,0 +1,104 @@
+/* RSVP — shared useRsvp state, this section's form. */
+
+.gd-rsvp {
+  background: linear-gradient(to bottom, var(--gd-bg), var(--gd-bg-deep));
+}
+.gd-rsvp__lede {
+  margin: 16px 0 40px;
+}
+.gd-form {
+  display: grid;
+  gap: 24px;
+  text-align: left;
+}
+.gd-field {
+  display: grid;
+  gap: 8px;
+}
+.gd-field__label {
+  font-size: 10px;
+  letter-spacing: 0.3em;
+  text-transform: uppercase;
+  color: var(--gd-gold);
+}
+.gd-input {
+  width: 100%;
+  padding: 12px 0;
+  border: 0;
+  border-bottom: 1px solid var(--gd-line-strong);
+  border-radius: 0;
+  background: transparent;
+  color: var(--gd-text);
+  font: inherit;
+  font-size: 16px;
+  transition: border-color 0.3s;
+}
+.gd-input::placeholder {
+  color: var(--gd-text-dim);
+}
+.gd-input:focus {
+  outline: none;
+  border-bottom-color: var(--gd-gold-bright);
+}
+.gd-input:focus-visible {
+  box-shadow: 0 1px 0 0 var(--gd-gold-bright);
+}
+select.gd-input option {
+  background: var(--gd-bg-elevated);
+  color: var(--gd-text);
+}
+.gd-choice {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 12px;
+}
+.gd-btn {
+  padding: 14px 16px;
+  border: 1px solid var(--gd-gold);
+  border-radius: var(--gd-radius);
+  background: transparent;
+  color: var(--gd-text-soft);
+  font: inherit;
+  font-size: 12px;
+  font-weight: 400;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  cursor: pointer;
+  transition: background 0.3s, color 0.3s, opacity 0.3s;
+}
+.gd-btn:hover:not(:disabled),
+.gd-btn.is-active {
+  background: var(--gd-gold);
+  color: var(--gd-bg-deep);
+}
+.gd-btn:focus-visible {
+  outline: 2px solid var(--gd-gold-bright);
+  outline-offset: 3px;
+}
+.gd-btn:disabled {
+  opacity: 0.4;
+  cursor: not-allowed;
+}
+.gd-btn--solid {
+  background: var(--gd-gold);
+  color: var(--gd-bg-deep);
+}
+.gd-form__error {
+  margin: 0;
+  font-size: 13px;
+  text-align: center;
+  color: var(--gd-error);
+}
+.gd-rsvp__thanks {
+  display: grid;
+  justify-items: center;
+  gap: 12px;
+}
+.gd-rsvp__check {
+  width: 64px;
+  height: 64px;
+}
+.gd-rsvp__check .gd-draw {
+  stroke: var(--gd-gold-bright);
+  stroke-width: 1.6;
+}

@@ -1,0 +1,77 @@
+/* Closing — blessing, note, sign-off. */
+
+.gw-closing {
+  isolation: isolate;
+  min-height: 100svh;
+  justify-content: flex-start;
+  padding-top: 108px;
+  padding-bottom: 150px;
+  background: var(--gw-bg-deep);
+}
+.gw-closing::before {
+  content: '';
+  position: absolute;
+  z-index: -2;
+  inset: 0;
+  background: url('../../assets/generated/closing-mandap.jpg') center bottom / 94% auto no-repeat;
+  pointer-events: none;
+}
+.gw-closing::after {
+  content: '';
+  position: absolute;
+  z-index: -1;
+  inset: 0;
+  background: linear-gradient(
+    to bottom,
+    rgba(251, 243, 232, 0.92) 0%,
+    rgba(251, 243, 232, 0.86) 42%,
+    rgba(251, 243, 232, 0.42) 67%,
+    rgba(251, 243, 232, 0.08) 100%
+  );
+  pointer-events: none;
+}
+.gw-closing .gw-section__inner {
+  position: relative;
+  z-index: 1;
+}
+.gw-closing__lotus {
+  display: none;
+}
+.gw-closing__blessing {
+  margin: 0 0 28px;
+  font-family: var(--gw-font-display);
+  font-style: italic;
+  font-weight: 300;
+  font-size: clamp(24px, 7vw, 30px);
+  line-height: 1.45;
+  color: var(--gw-text);
+}
+.gw-closing__note {
+  margin-bottom: 28px;
+}
+.gw-closing__sign {
+  margin: 0;
+  font-family: var(--gw-font-display);
+  font-weight: 300;
+  font-style: italic;
+  font-size: 44px;
+  line-height: 1.1;
+  color: #7e3328;
+  text-shadow: 0 0 12px rgba(251, 243, 232, 0.95), 0 1px 2px rgba(251, 243, 232, 0.95);
+}
+.gw-closing__date {
+  margin: 20px 0 0;
+  font-size: 11px;
+  letter-spacing: 0.4em;
+  text-transform: uppercase;
+  color: var(--gw-text-soft);
+  text-shadow: 0 0 10px rgba(251, 243, 232, 0.95);
+}
+.gw-closing__foot {
+  margin: 28px 0 0;
+  font-size: 10px;
+  letter-spacing: 0.3em;
+  text-transform: uppercase;
+  color: #7e3328;
+  text-shadow: 0 0 12px rgba(251, 243, 232, 0.98), 0 1px 2px rgba(251, 243, 232, 0.98);
+}

@@ -1,0 +1,20 @@
+{
+  "name": "frontend-conventions",
+  "description": "Frontend coding conventions for JS/TS, React, Node.js, and accessibility.",
+  "version": "1.0.3",
+  "author": {
+    "name": "Joost Kiens",
+    "email": "dev@joostkiens.com",
+    "url": "https://github.com/JoostKiens"
+  },
+  "repository": "https://github.com/JoostKiens/frontend-convention-skills",
+  "license": "MIT",
+  "skills": [
+    "./",
+    "./skills/general",
+    "./skills/node",
+    "./skills/react",
+    "./skills/react-architecture",
+    "./skills/accessibility"
+  ]
+}

@@ -1,0 +1,6 @@
+Tool: built-in image_gen
+Edit target: public/templates/mandap-at-dusk/border3.webp
+Output: public/templates/mandap-at-dusk/border3-florals.webp
+The closing section uses the original border2.webp parchment beneath this transparent artwork.
+
+Use case: background-extraction. Edit target is the supplied portrait floral wedding border. Remove ALL beige parchment background and replace it with genuine alpha transparency, including the large central writing area, every gap between petals, leaves, bells and garland strands, and the outer margins. Preserve the two narrow floral garlands in their EXACT original positions and scale with their red and blush roses, jasmine, green leaves, gold bells and scattered petals. Preserve the complete top and bottom flowers and their margins. Retain only subtle translucent contact shadows close to the flowers, with no beige matte or paper fringe. Keep the same portrait canvas and layout; do not crop, add, redraw, resize or rearrange flowers. Do not add text or any background. Output transparent PNG RGBA, not a checkerboard painted into the image.

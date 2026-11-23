@@ -1,0 +1,177 @@
+/* Couple — valance, Ik Onkar, two jharokha-arch family cards joined by a palla knot. */
+
+.pb-couple {
+  position: relative;
+  padding-top: 150px;
+  overflow: hidden;
+  background: var(--pb-bg);
+}
+.pb-couple__valance {
+  position: absolute;
+  top: 0;
+  left: 50%;
+  z-index: 0;
+  width: 100%;
+  max-width: 560px;
+  height: auto;
+  transform: translateX(-50%);
+  pointer-events: none;
+}
+.pb-couple .pb-section__inner {
+  position: relative;
+  z-index: 1;
+}
+.pb-couple__onkar {
+  margin: 0 0 14px;
+  font-family: var(--pb-font-gurmukhi);
+  font-weight: 600;
+  font-size: 38px;
+  line-height: 1.2;
+  color: var(--pb-gold);
+}
+.pb-couple__heading {
+  margin: 0 0 44px;
+  font-family: var(--pb-font-display);
+  font-style: italic;
+  font-weight: 400;
+  font-size: 22px;
+  line-height: 1.5;
+  color: var(--pb-text-soft);
+}
+
+/* ── Family card: a flexible panel. The ancestral-home crest perches on the top edge,
+      sarson + wheat corners hold the corners, phulkari stitching runs along top and bottom. ── */
+.pb-family {
+  position: relative;
+  margin-top: 104px;
+  padding: 108px 30px 76px;
+  border: 1px solid rgba(181, 128, 36, 0.42);
+  border-radius: 18px;
+  background: linear-gradient(180deg, #fffbfa 0%, #fcefec 100%);
+  box-shadow:
+    inset 0 0 0 6px #fffbfa,
+    inset 0 0 0 7px rgba(181, 128, 36, 0.24),
+    0 14px 30px -18px rgba(120, 40, 60, 0.35);
+}
+.pb-family::before,
+.pb-family::after {
+  content: '';
+  position: absolute;
+  left: 22px;
+  right: 22px;
+  height: 12px;
+  background: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='28' height='12' viewBox='0 0 28 12'%3E%3Cpath d='M14 1 L21 6 L14 11 L7 6Z' fill='%23b8294b'/%3E%3Cpath d='M14 3.6 L17.4 6 L14 8.4 L10.6 6Z' fill='%23eec04e'/%3E%3Cpath d='M0 6 H4 M24 6 H28' stroke='%235c7c58' stroke-width='1.4'/%3E%3C/svg%3E") repeat-x center / 28px 12px;
+  opacity: 0.9;
+  pointer-events: none;
+}
+.pb-family::before {
+  top: 20px;
+}
+.pb-family::after {
+  bottom: 20px;
+}
+.pb-family__crest {
+  position: absolute;
+  top: -96px;
+  left: 50%;
+  z-index: 2;
+  width: 208px;
+  height: auto;
+  transform: translateX(-50%);
+  pointer-events: none;
+}
+.pb-family__corner {
+  position: absolute;
+  z-index: 1;
+  width: 88px;
+  height: auto;
+  pointer-events: none;
+}
+.pb-family__corner--tl {
+  top: -8px;
+  left: -8px;
+}
+.pb-family__corner--tr {
+  top: -8px;
+  right: -8px;
+  transform: scaleX(-1);
+}
+.pb-family__corner--bl {
+  bottom: -8px;
+  left: -8px;
+  transform: scaleY(-1);
+}
+.pb-family__corner--br {
+  right: -8px;
+  bottom: -8px;
+  transform: scale(-1, -1);
+}
+.pb-family__body {
+  position: relative;
+  z-index: 3;
+}
+.pb-family__label {
+  margin: 0 0 10px;
+  font-size: 10px;
+  font-weight: 500;
+  letter-spacing: 0.34em;
+  text-indent: 0.34em;
+  text-transform: uppercase;
+  color: var(--pb-gold);
+}
+.pb-family__parent {
+  margin: 0;
+  font-family: var(--pb-font-display);
+  font-size: 19px;
+  line-height: 1.35;
+  color: var(--pb-text-soft);
+}
+.pb-family__amp {
+  margin: 0;
+  font-family: var(--pb-font-display);
+  font-style: italic;
+  font-size: 15px;
+  color: var(--pb-ember);
+}
+.pb-family__rule {
+  display: block;
+  width: 120px;
+  height: 1px;
+  margin: 20px auto 0;
+  position: relative;
+  background: linear-gradient(90deg, transparent, var(--pb-gold-dim), transparent);
+}
+.pb-family__rule::after {
+  content: '';
+  position: absolute;
+  top: -3px;
+  left: calc(50% - 3px);
+  width: 6px;
+  height: 6px;
+  background: var(--pb-ember);
+  transform: rotate(45deg);
+}
+.pb-family__name {
+  margin: 18px 0 0;
+  font-family: var(--pb-font-display);
+  font-weight: 500;
+  font-size: clamp(27px, 7.6vw, 33px);
+  line-height: 1.12;
+  color: var(--pb-text);
+}
+
+/* ── Palla knot ── */
+.pb-couple__knot {
+  display: block;
+  width: 220px;
+  height: 40px;
+  margin: -20px auto 0;
+  position: relative;
+  z-index: 4;
+  overflow: visible;
+}
+.pb-couple__knot .pb-draw {
+  stroke: var(--pb-ember);
+  stroke-width: 1.3;
+  opacity: 0.85;
+}

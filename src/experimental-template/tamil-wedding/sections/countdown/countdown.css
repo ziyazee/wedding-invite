@@ -1,0 +1,105 @@
+/* Countdown — padi-kolam plaques over the Chettinad valavu backdrop. */
+
+.tm-countdown {
+  min-height: 780px;
+  justify-content: flex-start;
+  padding-top: 130px;
+  padding-bottom: 260px;
+  background: var(--tm-bg);
+}
+.tm-host.has-media .tm-countdown {
+  background: transparent;
+}
+/* the backdrop fades into its neighbours instead of ending on a seam */
+.tm-host[data-section='countdown'] > .tm-media {
+  -webkit-mask-image: linear-gradient(to bottom, transparent 0, #000 10%, #000 94%, transparent 100%);
+  mask-image: linear-gradient(to bottom, transparent 0, #000 10%, #000 94%, transparent 100%);
+}
+.tm-countdown .tm-title,
+.tm-countdown .tm-eyebrow {
+  text-shadow: 0 0 18px rgba(242, 234, 217, 0.95), 0 0 4px rgba(242, 234, 217, 0.8);
+}
+.tm-countdown .tm-eyebrow {
+  font-family: var(--tm-font-tamil);
+  font-size: 14px;
+  font-weight: 600;
+  letter-spacing: 0.06em;
+  text-transform: none;
+}
+
+.tm-countdown__rack {
+  position: relative;
+  margin-top: 40px;
+}
+.tm-countdown__thread {
+  position: absolute;
+  left: 0;
+  top: 50%;
+  width: 100%;
+  height: 12px;
+  margin-top: -6px;
+  overflow: visible;
+}
+.tm-countdown__thread .tm-draw {
+  stroke: var(--tm-gold-bright);
+  stroke-width: 1.6;
+}
+.tm-countdown__grid {
+  position: relative;
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 10px;
+  padding: 0 2px;
+}
+.tm-unit {
+  display: flex;
+  justify-content: center;
+}
+.tm-unit__body {
+  position: relative;
+  width: 100%;
+  max-width: 80px;
+  aspect-ratio: 80 / 92;
+  filter: drop-shadow(0 6px 8px rgba(74, 24, 21, 0.3));
+}
+.tm-unit__plaque {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+}
+.tm-unit__face {
+  position: absolute;
+  inset: 16% 10% 14%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 5px;
+}
+.tm-unit__num {
+  display: block;
+  overflow: hidden;
+  font-family: var(--tm-font-display);
+  font-weight: 500;
+  font-size: clamp(27px, 8vw, 34px);
+  line-height: 1;
+  font-variant-numeric: tabular-nums;
+  color: #f7f1e3;
+}
+.tm-unit__label {
+  font-size: 7.5px;
+  font-weight: 500;
+  letter-spacing: 0.18em;
+  text-indent: 0.18em;
+  text-transform: uppercase;
+  color: #e4cfa3;
+}
+
+.tm-countdown__ended {
+  margin: 48px 0 0;
+  font-family: var(--tm-font-display);
+  font-style: italic;
+  font-size: 26px;
+  color: var(--tm-text-soft);
+}

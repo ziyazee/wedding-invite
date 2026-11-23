@@ -47,7 +47,7 @@
 |------|---------|--------|
 | `model.ts` | **Core data model**: `InvitationData`, `Celebration`, `designs[]`, validation, slug generation, URL helpers | Very High |
 | `InvitationRenderer.tsx` | **Template router**: maps template ID → component, wraps with context/SiteFonts/TextLayoutLayer | Very High |
-| `AnimatedInvitation.tsx` | Iframe-based renderer for Embroidered Garden (6) and Bloom (7) with DOM personalization | High |
+| `AnimatedInvitation.tsx` | Iframe-based renderer for Embroidered Garden (6) with DOM personalization — Bloom migrated to native React | High |
 | `context.tsx` | `InvitationContext` React context for passing invitation data | High |
 | `TextLayoutLayer.tsx` | DOM text overlay editor for iframe-based templates (legacy text adapters) | High |
 | `OrderFrameInvitation.tsx` | Iframe renderer for templates 9–14 with order personalization | High |
@@ -98,6 +98,8 @@
 |------|---------|
 | `Landing.tsx` / `.css` | Public landing page — template showcase, phone preview |
 | `Login.tsx` / `.css` | Authentication page (email/password via Supabase) |
+| `AccountSetup.tsx` | New account onboarding (`/account/setup`) |
+| `CompanyPreview.tsx` | Store/company preview component (served via `?invite=slug`) |
 | `ClientDashboard.tsx` / `.css` | Client workspace — orders, templates, settings, overview |
 | `AdminDashboard.tsx` | Admin workspace — cross-company order management |
 | `DashboardAccess.tsx` | Auth guard component for dashboards |
@@ -136,7 +138,15 @@
 | `secret-garden/useSecretGardenFit.ts` | Secret Garden names fitting |
 | `EmbroideredGarden.tsx` | Embroidered Garden (template 6) wrapper |
 | `EmbroideredGardenPreview.tsx` | Preview route |
-| `BloomPreview.tsx` | Bloom (template 7) preview route |
+| `bloom/Bloom.tsx` / `.css` | Bloom (template 7) — native React (migrated af6e8d7) |
+| `bloom/useBloomCardFit.ts` | Bloom card content fitting |
+| `bloom/useBloomCardVideo.ts` | Bloom background video hook |
+| `bloom/useBloomCountdown.ts` | Bloom countdown timer |
+| `bloom/useBloomGate.ts` | Bloom gate/opening animation |
+| `bloom/useBloomMusic.ts` | Bloom music playback |
+| `bloom/useBloomNameFit.ts` | Bloom names fitting |
+| `bloom/useBloomReveal.ts` | Bloom scroll reveal |
+| `BloomPreview.tsx` | Bloom (template 7) preview route — re-exports `bloom/Bloom.tsx` |
 | `ArtfulLoveStory.tsx` | The Artful Love Story (template 8) |
 | `ArtfulLoveStoryPreview.tsx` | Preview route |
 | `MajesticPage.tsx` / `MajesticPreview.tsx` | Majestic page/preview routes |
@@ -146,12 +156,30 @@
 
 | File | Purpose |
 |------|---------|
-| `MaroonLetter.tsx` | Template 9 wrapper |
-| `EmeraldParchment.tsx` | Template 10 wrapper |
-| `ShaadiPathT02.tsx` | Template 11 (Royal Jodhpur) wrapper |
-| `DestinationWedding.tsx` | Template 12 wrapper |
-| `Raabta.tsx` | Template 13 wrapper |
-| `Qubool.tsx` | Template 14 wrapper |
+| `maroon-letter/MaroonLetter.tsx` | Template 9 wrapper |
+| `emerald-parchment/EmeraldParchment.tsx` | Template 10 wrapper |
+| `royal-jodhpur/RoyalJodhpur.tsx` | Template 11 (Royal Jodhpur) wrapper |
+| `destination-wedding/DestinationWedding.tsx` | Template 12 wrapper — multi-file directory |
+| `raabta/Raabta.tsx` | Template 13 wrapper |
+| `qubool/Qubool.tsx` | Template 14 wrapper |
+| `mangal/Mangal.tsx` | Mangal template wrapper (`/mangal` route) |
+| `viah/Viah.tsx` | Viah template wrapper (`/viah` route) |
+
+#### Experimental Templates
+
+| Directory | Purpose |
+|-----------|---------|
+| `src/experimental-template/` | 10 experimental templates (dev preview only — not in production catalog) |
+| `→ punjabi-premium/` | Punjabi Premium concept |
+| `→ kerala-dawn/` | Kerala Dawn concept |
+| `→ taj/` | Taj concept |
+| `→ jaipur-theme/` | Jaipur Theme concept |
+| `→ amrit-glow/` | Amrit Glow concept |
+| `→ nikah-noor/` | Nikah Noor concept |
+| `→ ivory-nikah/` | Ivory Nikah concept |
+| `→ couple/` | Couple concept |
+| `→ hawa-mahal/` | Hawa Mahal concept |
+| `→ muslim-couple/` | Muslim Couple concept |
 
 #### Deprecated Templates
 
@@ -248,13 +276,52 @@ Legacy types from original create flow: `WeddingDetails`, `Invitation`, `Templat
 | `202610290001_template_folder_restructure.sql` | Template folder restructure |
 | `202610300001_multi_store_landing.sql` | Multi-store landing support |
 
+### Migrations (Post-October 2024)
+
+| Migration | Purpose |
+|-----------|---------|
+| `202611010001_admin_company_activity.sql` | `company_pdf_uploads` table; `admin_company_activity` RPC |
+| `202611010001_celebration_time_optional.sql` | Make celebration time optional |
+| `202611020001_public_invitation_company_phone.sql` | Include company phone in `get_published_invitation` |
+| `202611030001_public_invitation_company_logo.sql` | Include company logo in public invitation |
+| `202611030002_public_invitation_company_branding.sql` | Include branding in public invitation |
+| `202611030003_store_onboarding.sql` | `company_template_access`, `store_onboarding_requests` tables; store branding bucket |
+| `202611030004_company_preview.sql` | Company preview feature |
+| `202611030005_path_based_invite_urls.sql` | Switch invitation URLs to path-based (www.shaadiinvites.in/slug) |
+| `202611030006_client_update_order.sql` | `update_company_order` RPC for clients |
+| `202611040001_add_viah_template.sql` | Viah template catalog entry |
+| `202611040002_add_tajmahal_template.sql` | Taj Mahal template catalog entry |
+| `202611070001_test_order.sql` | Test order infrastructure |
+| `202611070002_seven_order_url_options.sql` | `reserve_company_order_path` RPC with 7 candidate URLs |
+| `202611070003_order_url_id_fallback.sql` | URL path fallback to order ID |
+| `202611070004_test_order_couple_order.sql` | Test couple order |
+| `202611070005_admin_delete_order.sql` | Admin delete order policy |
+| `202611070006_music_library.sql` | `music_tracks` table; `invitation-music` storage bucket |
+| `202611070007_store_existing_music.sql` | Migrate existing music to library |
+| `202611070008_embroidered_rsvp_count_only.sql` | RSVP guest count constraint update |
+| `202611070009_embroidered_rsvp_guest_count.sql` | RSVP guest count follow-up |
+| `202611080001_music_upload_staging.sql` | Music upload staging (placeholder) |
+| `202611100001_couple_invitation_foundation.sql` | `couple_orders`, `invitations` tables — couple architecture foundation |
+| `202611100001_venue_images.sql` | `venue-images` storage bucket for Embroidered Garden footer |
+| `202611100002_couple_rsvp_management_board.sql` | `management_id` on `couple_orders` |
+| `202611100002_store_music_ownership.sql` | Per-company music tracks (company_id on music_tracks) |
+| `202611100003_company_music_tags.sql` | `company_music_tags` table |
+| `202611100003_multi_invitation_plans.sql` | `invitation_name`, `selected_event_ids` on `invitations`; `configure_order_invitations` RPC |
+| `202611110001_fix_couple_order_publishing.sql` | `publish_couple_order_with_candidates` RPC fix |
+
 ### Edge Functions
 
 | Function | Purpose |
 |----------|---------|
+| `send-whatsapp/index.ts` | WhatsApp invitation delivery via Meta API |
 | `extract-pdf/index.ts` | PDF invitation detail extraction |
 | `openai-extract/index.ts` | OpenAI-based PDF extraction |
-| `send-whatsapp/index.ts` | WhatsApp invitation delivery via Meta API |
+| `openai-translate-invitation/index.ts` | Translate invitation fields (Hindi / Kannada / Malayalam) |
+| `card-image/index.ts` | Generate invitation card image/thumbnail |
+| `generate-illustration/index.ts` | AI-generated couple illustration |
+| `google-places/index.ts` | Venue autocomplete via Google Places API |
+| `onboard-store/index.ts` | Admin: set up a new store (branding, templates, slug) |
+| `_shared/` | Shared utilities (CORS headers, Supabase client) |
 
 ## `api/` — Vercel Edge Functions
 

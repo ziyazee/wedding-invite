@@ -1,0 +1,152 @@
+/* Opening — full-bleed image or video, names reveal, tap-to-open for video. */
+
+.gw-opening {
+  min-height: 100svh;
+  justify-content: center;
+  padding: 0 24px;
+  overflow: hidden;
+}
+.gw-opening .gw-opening__media {
+  position: absolute;
+  inset: 0;
+  z-index: 0;
+}
+.gw-opening__veil {
+  position: absolute;
+  inset: 0;
+  z-index: 1;
+  pointer-events: none;
+  background:
+    radial-gradient(ellipse 80% 38% at 50% 40%, rgba(251, 243, 232, 0.62) 0%, rgba(251, 243, 232, 0) 100%),
+    linear-gradient(to bottom, rgba(251, 243, 232, 0.2), rgba(251, 243, 232, 0) 30%, rgba(251, 243, 232, 0.55) 78%, rgba(251, 243, 232, 0.95) 100%);
+}
+.gw-opening__content {
+  position: relative;
+  z-index: 3;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+.gw-opening__names {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  margin: 0;
+  font-family: var(--gw-font-display);
+  font-weight: 300;
+  font-style: italic;
+  font-size: clamp(56px, 18vw, 88px);
+  line-height: 0.98;
+  color: var(--gw-text);
+  text-shadow: 0 0 22px rgba(251, 243, 232, 0.9);
+}
+.gw-opening__amp {
+  margin: 4px 0;
+  font-size: 0.42em;
+  font-style: normal;
+  color: var(--gw-gold-bright);
+}
+.gw-opening__orn {
+  margin: 28px 0 22px;
+  overflow: visible;
+}
+.gw-opening__date {
+  margin: 0;
+  font-size: 13px;
+  font-weight: 400;
+  letter-spacing: 0.42em;
+  text-transform: uppercase;
+  color: var(--gw-text-soft);
+}
+
+.gw-opening__cta {
+  position: absolute;
+  inset: 0;
+  z-index: 4;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: flex-end;
+  gap: 14px;
+  padding: 0 0 18svh;
+  border: 0;
+  background: transparent;
+  color: var(--gw-text);
+  font: inherit;
+  cursor: pointer;
+}
+.gw-opening__cta:focus-visible {
+  outline: 2px solid var(--gw-gold-bright);
+  outline-offset: -8px;
+}
+.gw-opening__cta-ring {
+  position: relative;
+  width: 58px;
+  height: 76px;
+  display: grid;
+  place-items: center;
+  border: 1px solid var(--gw-gold);
+  border-radius: 999px 999px 4px 4px;
+  background: rgba(251, 243, 232, 0.55);
+  color: var(--gw-gold-bright);
+  animation: gw-cta-pulse 2.4s ease-in-out infinite;
+}
+.gw-opening__cta-ring svg {
+  width: 18px;
+  height: 18px;
+  margin-left: 3px;
+}
+.gw-opening__cta-text {
+  font-size: 11px;
+  font-weight: 400;
+  letter-spacing: 0.4em;
+  text-transform: uppercase;
+  color: var(--gw-text-soft);
+}
+.gw-opening__cta-ring::before {
+  content: '';
+  position: absolute;
+  inset: 4px;
+  border: 1px solid var(--gw-gold-dim);
+  border-radius: inherit;
+}
+@keyframes gw-cta-pulse {
+  0%, 100% { box-shadow: 0 0 0 0 rgba(184, 132, 42, 0.35); transform: scale(1); }
+  50% { box-shadow: 0 0 0 14px rgba(184, 132, 42, 0); transform: scale(1.06); }
+}
+
+.gw-opening__hint {
+  position: absolute;
+  left: 50%;
+  bottom: 24px;
+  z-index: 3;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 8px;
+  transform: translateX(-50%);
+  font-size: 10px;
+  letter-spacing: 0.4em;
+  text-transform: uppercase;
+  color: var(--gw-text-muted);
+}
+.gw-opening__hint i {
+  display: block;
+  width: 1px;
+  height: 36px;
+  background: linear-gradient(to bottom, var(--gw-gold), transparent);
+  transform-origin: top;
+  animation: gw-hint 2s ease-in-out infinite;
+}
+@keyframes gw-hint {
+  0% { transform: scaleY(0); opacity: 1; }
+  60% { transform: scaleY(1); opacity: 1; }
+  100% { transform: scaleY(1); opacity: 0; }
+}
+
+/* Light theme: the eyebrow sits on a pastel film, so use the deepest gold and a cream halo. */
+.gw-opening__eyebrow {
+  color: var(--gw-gold-bright);
+  font-weight: 500;
+  text-shadow: 0 0 12px rgba(251, 243, 232, 0.95), 0 0 4px rgba(251, 243, 232, 0.9);
+}

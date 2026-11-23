@@ -1,0 +1,70 @@
+/* Celebrations — timeline of events with map and calendar actions. */
+
+.gd-celebrations {
+  background: var(--gd-bg);
+}
+.gd-host.has-media .gd-celebrations {
+  background: transparent;
+}
+.gd-celebrations__head {
+  margin-bottom: 56px;
+}
+.gd-timeline {
+  position: relative;
+  width: 100%;
+  max-width: 420px;
+}
+.gd-timeline__line {
+  position: absolute;
+  top: 36px;
+  bottom: 36px;
+  left: 31px;
+  width: 1px;
+  background: linear-gradient(to bottom, transparent, var(--gd-gold) 8%, var(--gd-gold) 92%, transparent);
+  transform-origin: top;
+}
+.gd-timeline .gd-events {
+  gap: 56px;
+}
+.gd-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin-top: 18px;
+}
+.gd-pill {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 8px 12px;
+  border: 1px solid var(--gd-line-strong);
+  border-radius: 999px;
+  background: transparent;
+  color: var(--gd-text-soft);
+  font: inherit;
+  font-size: 11px;
+  font-weight: 400;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  text-decoration: none;
+  cursor: pointer;
+  transition: background 0.3s, border-color 0.3s, color 0.3s;
+}
+.gd-pill:hover {
+  background: rgba(212, 168, 67, 0.14);
+  border-color: var(--gd-gold-bright);
+  color: var(--gd-gold-bright);
+}
+.gd-pill:focus-visible {
+  outline: 2px solid var(--gd-gold-bright);
+  outline-offset: 2px;
+}
+.gd-pill svg {
+  width: 12px;
+  height: 12px;
+  fill: none;
+  stroke: currentColor;
+  stroke-width: 1.5;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+}
